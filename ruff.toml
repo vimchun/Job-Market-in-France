@@ -1,0 +1,73 @@
+line-length = 160
+indent-width = 4
+
+[lint.isort]
+case-sensitive = true
+classes = []
+combine-as-imports = true
+constants = []
+default-section = "third-party"
+detect-same-package = false
+extra-standard-library = []
+force-single-line = false
+force-sort-within-sections = false
+force-to-top = []
+force-wrap-aliases = false
+forced-separate = []
+from-first = false
+known-first-party = []
+known-local-folder = []
+known-third-party = []
+length-sort = false
+length-sort-straight = false
+lines-after-imports = 1
+lines-between-types = 1
+no-lines-before = []
+no-sections = false
+order-by-type = false
+relative-imports-order = "closest-to-furthest"
+required-imports = []
+section-order = [
+  "future",
+  "standard-library",
+  "third-party",
+  "first-party",
+  "local-folder",
+]
+single-line-exclusions = []
+split-on-trailing-comma = false
+
+
+[lint.flake8-implicit-str-concat]
+allow-multiline = false
+
+
+[lint]
+select = [
+    "E501",
+]
+
+ignore = [
+    "E402",
+    "F821",
+    "E703"
+]
+
+fixable = ["ALL"]
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[lint.pycodestyle]
+max-line-length = 160
+
+
+[format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = false
+docstring-code-line-length = "dynamic"
+
+[lint.flake8-quotes]
+multiline-quotes = "single"
+inline-quotes = "single"
