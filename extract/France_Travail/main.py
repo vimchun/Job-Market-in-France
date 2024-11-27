@@ -26,6 +26,6 @@ token = get_bearer_token(
 )
 
 
-get_appellations(token)
+# get_appellations(token)
 
 get_offres(token)
