@@ -3918,6 +3918,107 @@
             }
         },
         {
+            "id": "184SQHW",
+            "intitule": "DATA MANAGER JUNIOR (H/F)",
+            "description": "Pour renforcer nos équipes au sein de la Plateforme d'Aide à l'Investigation Clinique (PAIC), nous recherchons des data manager dans le cadre de la mise en place des projets de recherche clinique sur notre GHU Nord secteur Ouest.\nAu sein d'une équipe dynamique, vous travaillerez en étroite collaboration avec les personnels au sein des services cliniques au plus près de l'investigation sur différents projets. \nVous serez aussi en contact avec les investigateurs des projets et l'équipe coordinatrice de la PAIC.\nMissions proposées :\n Analyse des besoins du projet de recherche et étude de faisabilité technique pour le recueil des données électroniques\n Conception d'eCRF: paramétrage des formulaires de recueil et des contrôles de saisie sur le logiciel CleanWEB et REDCap\n Organisation des phases de vérifications en interaction avec les différents acteurs des projets\n Rédaction des documents de vérifications, de suivi des modifications et de validation\n Récupération des données saisies par une société extérieure et programmation de contrôles de leur cohérence\n Emission si besoin des demandes de clarification à destination des Attachés de Recherche Clinique (ARC) et intégration, en les traçant, des éventuelles modifications de la base de données\n Préparation de la base de données en vue de l'analyse statistique, création de variables, gel de la base, réalisation d'analyses descriptives préliminaires\n Participation à la rédaction et à la mise à jour des procédures relatives aux tâches de data-management\n Organiser et participer aux réunions avec les investigateurs, ARC, chefs de projets, biostatisticiens, méthodologistes (Paramétrage du CRF, suivi d'étude, revue des données, .) \nCompétences souhaitées :\n Maîtrise de la logique informatique\n Maitrise des principes de gestion de bases de données \n Connaissance du logiciel SAS (Base et Macro) \n Connaissances en statistique \n Bonne qualité rédactionnelle\n Aptitude à travailler en équipe, à s'adapter aux contraintes\n Communiquer : savoir rendre compte, organiser des réunions \n Sens de l'organisation et respect des délais\n Autonomie, rigueur\n Confidentialité : le designer est soumis au secret professionnel\n\nNiveau requis :\nFormation Data / Licence pro statistique et informatique pour la santé / Master 1 Santé Publique\n\nAvantages :\nPart variable recherche (PVR) : Prime qui peut être attribuée annuellement par la direction après une année civile de service continu en tant que personnel de recherche à l'AP-HP sous réserve d'une évaluation annuelle positive des résultats obtenus dans la fonction : 5 à 10% en fonction du métier\nProgression salariale conformément aux grilles de rémunération, sous réserve d'une évaluation annuelle positive des résultats obtenus dans la fonction\nPrime « SEGUR de la santé » 183€ net par mois\nPlace en crèche (sous condition)\nRemboursement partiel des transport et forfait mobilité durable\nTarif restauration self\nStationnement dans l'enceinte de l'hôpital\nAccès facilité aux soins Chèque emploi-service CESU AP-HP (sous condition)\nSupplément familiale de traitement (enfants)\nPrestation AGOSPAP : accès à une offre de loisirs (spectacle, cinéma.) et de vacances à tarifs préférentiels + diverses aides financières (CDD sur poste permanent uniquement)\nAccès à une offre multiple de formation continue\nDroit aux congés (temps de travail) : 7h30 par jour : 25 CA + 14 RTT\nPas d'astreinte\nDroit aux absences pour enfant malade",
+            "dateCreation": "2024-11-27T18:16:40.608Z",
+            "dateActualisation": "2024-11-27T18:16:41.299Z",
+            "lieuTravail": {
+                "libelle": "75 - Paris 18e Arrondissement",
+                "latitude": 48.891943,
+                "longitude": 2.348602,
+                "codePostal": "75018",
+                "commune": "75118"
+            },
+            "romeCode": "M1811",
+            "romeLibelle": "Data engineer",
+            "appellationlibelle": "Data manager",
+            "entreprise": {
+                "nom": "ASSISTANCE PUBLIQUE HOPITAUX DE PARIS",
+                "entrepriseAdaptee": false
+            },
+            "typeContrat": "CDD",
+            "typeContratLibelle": "CDD - 6 Mois",
+            "natureContrat": "Contrat travail",
+            "experienceExige": "D",
+            "experienceLibelle": "Débutant accepté",
+            "formations": [
+                {
+                    "niveauLibelle": "Bac+3, Bac+4 ou équivalents",
+                    "exigence": "S"
+                }
+            ],
+            "langues": [
+                {
+                    "libelle": "Anglais",
+                    "exigence": "S"
+                }
+            ],
+            "competences": [
+                {
+                    "code": "113317",
+                    "libelle": "Développer une application en lien avec une base de données",
+                    "exigence": "S"
+                },
+                {
+                    "code": "120209",
+                    "libelle": "Enrichir une base de données",
+                    "exigence": "S"
+                },
+                {
+                    "code": "404167",
+                    "libelle": "Gérer et maitriser des bases de données (SQL/NoSQL)",
+                    "exigence": "S"
+                },
+                {
+                    "code": "400568",
+                    "libelle": "Paramétrer un logiciel métier et l'interfacer à d'autres applicatifs",
+                    "exigence": "S"
+                }
+            ],
+            "salaire": {
+                "libelle": "Mensuel de 2601.0 Euros à 3000.0 Euros sur 12.0 mois",
+                "complement1": "Restauration"
+            },
+            "dureeTravailLibelle": "35H\nTravail en journée",
+            "dureeTravailLibelleConverti": "Temps plein",
+            "alternance": false,
+            "contact": {
+                "nom": "ASSISTANCE PUBLIQUE HOPITAUX DE PARIS - Mme Naima BELDJOUDI",
+                "coordonnees1": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/184SQHW",
+                "courriel": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/184SQHW"
+            },
+            "agence": {},
+            "nombrePostes": 1,
+            "accessibleTH": false,
+            "deplacementCode": "1",
+            "deplacementLibelle": "Jamais",
+            "qualificationCode": "7",
+            "qualificationLibelle": "Technicien",
+            "codeNAF": "86.10Z",
+            "secteurActivite": "86",
+            "secteurActiviteLibelle": "Activités hospitalières",
+            "qualitesProfessionnelles": [
+                {
+                    "libelle": "Faire preuve d'autonomie",
+                    "description": "Capacité à prendre en charge son activité sans devoir être encadré de façon continue (le cas échéant, à solliciter les autres acteurs de l'entreprise)."
+                },
+                {
+                    "libelle": "Faire preuve de créativité, d'inventivité",
+                    "description": "Capacité à créer, imaginer quelque chose de nouveau (nouveau produit, nouvelle solution, …)."
+                },
+                {
+                    "libelle": "Faire preuve de rigueur et de précision",
+                    "description": "Capacité à réaliser des tâches en suivant avec exactitude les règles, les procédures, les instructions qui ont été fournies, sans réaliser d'erreur et à transmettre clairement des informations. Se montrer ponctuel et respectueux des règles de savoir-vivre usuelles."
+                }
+            ],
+            "origineOffre": {
+                "origine": "1",
+                "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/184SQHW"
+            },
+            "offresManqueCandidats": false
+        },
+        {
             "id": "184SDZC",
             "intitule": "Un.e ingénieur.e réseaux (H/F)",
             "description": "Au sein de la direction des systèmes d'information et du numérique et en lien avec le responsable du service production et intégration, vous pilotez les projets d'infrastructures réseaux et télécoms ; vous concevez, suivez et diagnostiquez les différents réseaux de télécommunications.  Vous garantissez le bon fonctionnement de l'infrastructure et participez à son évolution. Dans ce cadre, vos missions principales sont les suivantes :               \n  \n\n\nConcevoir et gérer les infrastructures réseaux : gérer les projets de refonte technologique des réseaux ; mettre en place les interconnexions entre les différents réseaux (LAN, WAN, Opérateurs) ; gérer les performances et adapter les équipements à l'évolution de l'infrastructure ; assurer la mise à jour des équipements ; superviser l'installation et le paramétrage des équipements (switch, routeurs, pares-feux) ainsi que des logiciels de supervision ; réaliser et maintenir à jour les schémas de l'infrastructure ; écrire des procédures d'architecture et d'exploitation ; participer à l'écriture des marchés publics.\n\nGérer le support d'expertise Niveau 3 : apporter et partager son expertise auprès des analystes réseaux et télécoms en cas de panne ou difficulté ; proposer des améliorations des méthodes de travail et d'automatisation des tâches ; auditer les réseaux lors de dysfonctionnement et mettre en place des solutions pour le maintien en condition opérationnelle ; assurer une veille technique afin d'anticiper les évolutions.\n\nConcevoir et gérer la sécurité : mettre en place la sécurité des équipements réseaux en relation avec l'ingénieur sécurité et le RSSI ; auditer les équipements réseaux et les flux.\n\nCoordonner et suivre les prestations : définir les besoins en matériel ; commander les matériels et établir les prestations de maintenance des équipements ; définir et suivre les prestations, contrôler les recettes associées ; participer à la réalisation des marchés publics.",
@@ -10068,76 +10169,6 @@
                 "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/184KXZX"
             },
             "offresManqueCandidats": false
-        },
-        {
-            "id": "184KXYH",
-            "intitule": "Tech Lead Data BI (H/F)",
-            "description": "Le Client : Votre futur employeur\n\nNotre client, un groupe reconnu pour ses valeurs de solidarité, de proximité et d'éthique, dispose de son siège social en France et compte plus de 900 collaborateurs. Avec un impact national, le groupe dessert 700 000 clients utilisateurs de son système d'information.\n\nVous serez rattaché(e) au responsable du département Data, au sein d'une équipe de 12 personnes spécialisée en Business Intelligence traditionnelle, utilisant une approche Agile (Scrum) pour les projets et la maintenance des solutions. Vous interagirez avec les collaborateurs de la DSI (120 personnes réparties en 6 divisions) ainsi qu'avec les managers fonctionnels impliqués dans vos projets\n\nChronologie du Processus de Gestion des Données :\n- Capture des Changements de Données (Change Data Capture) :\nEn tant que Tech Lead Data, vous superviserez la capture des modifications des données sources en temps réel à l'aide de Debezium. Cet outil détecte les changements dans les bases de données et les envoie sous forme de flux de données\n- Transmission des Données avec Kafka :\nLes données capturées sont ensuite transmises via Apache Kafka, une plateforme de streaming distribuée. Kafka joue un rôle crucial dans la transmission rapide et fiable des données vers le Data Lake\n- Stockage dans un Data Lake & Interrogation avec Trino :\nLes données sont stockées dans un Data Lake et peuvent être interrogées à l'aide de Trino (anciennement Presto), un moteur SQL distribué. Trino permet d'exécuter des requêtes fédérées, c'est-à-dire de combiner et d'analyser des données provenant de différentes sources en une seule requête\n- Développement d'une Interface Utilisateur avec Spring Boot :\nEnfin, vous serez responsable de superviser le développement d'une interface utilisateur en Java Spring Boot permettant aux utilisateurs finaux de visualiser et d'interagir avec les données traitées et centralisées\n\nVos Missions :\n\nLeadership technique :\n- Assurer un rôle de leadership technique auprès des équipes de développement\n- Porter la vision technique au sein des équipes Agile\n- Animer les équipes de développement et transmettre les bonnes pratiques\n- Participer aux conceptions techniques et veiller à leur alignement avec la stratégie\n\nConception et traduction des exigences :\n- Conseiller les parties prenantes sur les meilleures solutions techniques\n- Traduire les exigences stratégiques en conceptions robustes, scalables et sécurisées\n- Accompagner et valider les architectures techniques, les conceptions et la modélisation, en assurant le respect des standards\n\nGestion de la qualité et gouvernance technologique :\n- Garantir les bonnes pratiques de développement et de gouvernance technologique\n- Veiller à la qualité des livrables et au respect des plannings\n- Anticiper les problématiques et être proactif dans leur résolution\n\nVeille technologique et amélioration continue :\n- Assurer une veille technologique active pour maintenir la pertinence et l'efficacité des solutions\n- Proposer des innovations pour améliorer la stabilité, la performance, et l'évolutivité des systèmes\n- Participer à la mise en place de nouveaux concepts comme l'architecture Data Mesh",
-            "dateCreation": "2024-11-20T15:58:51.265Z",
-            "dateActualisation": "2024-11-26T12:00:44.819Z",
-            "lieuTravail": {
-                "libelle": "13 - Aix-en-Provence",
-                "latitude": 43.541369,
-                "longitude": 5.406124,
-                "codePostal": "13080",
-                "commune": "13001"
-            },
-            "romeCode": "M1811",
-            "romeLibelle": "Data engineer",
-            "appellationlibelle": "Responsable big data",
-            "entreprise": {
-                "nom": "OMNICIEL PROFILS ET SOLUTIONS",
-                "entrepriseAdaptee": false
-            },
-            "typeContrat": "CDI",
-            "typeContratLibelle": "CDI",
-            "natureContrat": "Contrat travail",
-            "experienceExige": "E",
-            "experienceLibelle": "5 An(s)",
-            "formations": [
-                {
-                    "niveauLibelle": "Bac+5 et plus ou équivalents",
-                    "exigence": "S"
-                }
-            ],
-            "salaire": {
-                "libelle": "Annuel de 60000.0 Euros à 70000.0 Euros sur 12.0 mois"
-            },
-            "dureeTravailLibelle": "35H\nTravail en journée",
-            "dureeTravailLibelleConverti": "Temps plein",
-            "alternance": false,
-            "contact": {
-                "nom": "OMNICIEL PROFILS ET SOLUTIONS - M. Samuel Masson",
-                "coordonnees1": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/184KXYH",
-                "courriel": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/184KXYH"
-            },
-            "agence": {},
-            "nombrePostes": 1,
-            "accessibleTH": false,
-            "qualificationCode": "9",
-            "qualificationLibelle": "Cadre",
-            "codeNAF": "62.02A",
-            "secteurActivite": "62",
-            "secteurActiviteLibelle": "Conseil en systèmes et logiciels informatiques",
-            "qualitesProfessionnelles": [
-                {
-                    "libelle": "Faire preuve de rigueur et de précision",
-                    "description": "Capacité à réaliser des tâches en suivant avec exactitude les règles, les procédures, les instructions qui ont été fournies, sans réaliser d'erreur et à transmettre clairement des informations. Se montrer ponctuel et respectueux des règles de savoir-vivre usuelles."
-                },
-                {
-                    "libelle": "Organiser son travail selon les priorités et les objectifs",
-                    "description": "Capacité à planifier, prioriser, anticiper des actions, en tenant compte des moyens, des ressources, des objectifs et du calendrier pour les réaliser."
-                },
-                {
-                    "libelle": "Prendre des initiatives et être force de proposition",
-                    "description": "Capacité à initier, imaginer des propositions nouvelles pour résoudre les problèmes identifiés ou améliorer une situation. Être proactif."
-                }
-            ],
-            "origineOffre": {
-                "origine": "1",
-                "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/184KXYH"
-            },
-            "offresManqueCandidats": false
         }
     ],
     "filtresPossibles": [
@@ -10150,11 +10181,11 @@
                 },
                 {
                     "valeurPossible": "CDD",
-                    "nbResultats": 403
+                    "nbResultats": 404
                 },
                 {
                     "valeurPossible": "CDI",
-                    "nbResultats": 8404
+                    "nbResultats": 8421
                 },
                 {
                     "valeurPossible": "FRA",
@@ -10166,7 +10197,7 @@
                 },
                 {
                     "valeurPossible": "MIS",
-                    "nbResultats": 718
+                    "nbResultats": 720
                 }
             ]
         },
@@ -10175,11 +10206,11 @@
             "agregation": [
                 {
                     "valeurPossible": "0",
-                    "nbResultats": 2128
+                    "nbResultats": 2130
                 },
                 {
                     "valeurPossible": "4",
-                    "nbResultats": 2716
+                    "nbResultats": 2733
                 },
                 {
                     "valeurPossible": "1",
@@ -10187,11 +10218,11 @@
                 },
                 {
                     "valeurPossible": "2",
-                    "nbResultats": 3598
+                    "nbResultats": 3600
                 },
                 {
                     "valeurPossible": "3",
-                    "nbResultats": 1358
+                    "nbResultats": 1357
                 }
             ]
         },
@@ -10200,7 +10231,7 @@
             "agregation": [
                 {
                     "valeurPossible": "0",
-                    "nbResultats": 680
+                    "nbResultats": 682
                 },
                 {
                     "valeurPossible": "9",
@@ -10208,7 +10239,7 @@
                 },
                 {
                     "valeurPossible": "X",
-                    "nbResultats": 7711
+                    "nbResultats": 7729
                 }
             ]
         },
@@ -10225,7 +10256,7 @@
                 },
                 {
                     "valeurPossible": "E1",
-                    "nbResultats": 9397
+                    "nbResultats": 9417
                 },
                 {
                     "valeurPossible": "E2",

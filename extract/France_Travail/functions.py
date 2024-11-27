@@ -2,9 +2,15 @@ import json
 import os
 
 import requests
-import yaml  # pip install pyyaml
 
-CREDENTIALS_FILE = "api_credentials_minh.yml"  # à modifier selon qui lance le script (todo: trouver une meilleure solution)
+from colorama import Back, Fore, Style, init
+
+init(autoreset=True)  # avoid the need to reset the coloring
+
+
+token = ""
+
+current_directory = os.path.dirname(os.path.abspath(__file__))
 
 
 def get_bearer_token(client_id, client_secret, scope):
@@ -20,8 +26,7 @@ def get_bearer_token(client_id, client_secret, scope):
     - str : Le Bearer Token pour l'authentification des requêtes, ou None en cas d'erreur.
     """
 
-    # On renseigne les params conformément à la page suivante :
-    # https://francetravail.io/produits-partages/documentation/utilisation-api-france-travail/generer-access-token
+    # paramètres décrits ici https://francetravail.io/produits-partages/documentation/utilisation-api-france-travail/generer-access-token
     url = "https://entreprise.francetravail.fr/connexion/oauth2/access_token"
     params = {"realm": "/partenaire"}
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
@@ -32,10 +37,9 @@ def get_bearer_token(client_id, client_secret, scope):
         "scope": scope,
     }
 
-    # requête POST pour obtenir le token
     response = requests.post(url, headers=headers, params=params, data=data)
 
-    print("== Récupération du bearer token :")
+    print(f"{Fore.GREEN}== Récupération du bearer token :{Style.NORMAL}")
     if response.status_code == 200:
         response_json = response.json()
         bearer_token = response_json["access_token"]
@@ -43,36 +47,18 @@ def get_bearer_token(client_id, client_secret, scope):
         return bearer_token
     else:
         print(f"Erreur, Status Code: {response.status_code}\n")
+        print("oo")
         print(f"=> {response.json()}")
         return None
 
 
-# récupération des credentials données sur le site de FT, depuis un fichier yaml
-current_directory = os.path.dirname(os.path.abspath(__file__))
-print(current_directory)
-
-file_path = os.path.join(current_directory, "..", CREDENTIALS_FILE)
-
-with open(file_path, "r") as file:
-    creds = yaml.safe_load(file)
-
-IDENTIFIANT_CLIENT = creds["API_FRANCE_TRAVAIL"]["IDENTIFIANT_CLIENT"]
-CLE_SECRETE = creds["API_FRANCE_TRAVAIL"]["CLE_SECRETE"]
-
-token = get_bearer_token(
-    client_id=IDENTIFIANT_CLIENT,
-    client_secret=CLE_SECRETE,
-    scope="o2dsoffre api_offresdemploiv2",  # scopes définis dans https://francetravail.io/produits-partages/catalogue/offres-emploi/documentation#/
-)
-
-
-def get_appellation():
+def get_appellations(token):
     """
-    Récupérer les appellations
-    Un "code" correspon à un "libelle", par exemple :
+    Récupérer les appellations et les écrit dans un fichier json.
+    Ne retourne rien.
+    Un "code" correspond à un "libelle", par exemple :
 
      - { "code": "404278", "libelle": "Data engineer" }
-
     """
     url = "https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/appellations"
 
@@ -84,21 +70,32 @@ def get_appellation():
     response = requests.get(url, headers=headers)
 
     if response.status_code == 200:
-        print(f"Réponse de l'API: {json.dumps(response.json(), indent=4, ensure_ascii=False)}")
+        # print(f"Réponse de l'API: {json.dumps(response.json(), indent=4, ensure_ascii=False)}")
+        print(f"Status Code: {response.status_code}")
         # ensure_ascii=False sinon on a des caractères non compréhensible (ex: Op\u00e9rateur)
+
+        file_path = os.path.join(current_directory, "outputs", "appellations.json")
+        data = response.json()
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+
     else:
         print(f"Erreur lors de la requête API: {response.status_code}")
         print(response.text)
 
+    return None
 
-# get_appellation()
 
-
-def get_offres():
+def get_offres(token):
+    """
+    Récupérer les offre et les écrit dans un fichier json.
+    Ne retourne rien.
+    Possibilité d'ajouter beaucoup de filtres (todo)
+    """
     url = "https://api.francetravail.io/partenaire/offresdemploi/v2/offres/search"
 
     headers = {
-        "Authorization": f"Bearer {token}",  # Utilisation du Bearer Token dans l'en-tête
+        "Authorization": f"Bearer {token}",
         "Content-Type": "application/json",
     }
 
@@ -117,7 +114,6 @@ def get_offres():
         print("Plage de contenu:", response.headers.get("Content-Range"))
 
         # Ecrire la sortie dans un fichier json
-        current_directory = os.path.dirname(os.path.abspath(__file__))
         file_path = os.path.join(current_directory, "outputs", "offres.json")
         data = response.json()
         with open(file_path, "w", encoding="utf-8") as f:
@@ -127,6 +123,3 @@ def get_offres():
         print(f"Erreur lors de la requête API: {response.status_code}")
         print(response.text)
         print(response.json())
-
-
-get_offres()
