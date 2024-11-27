@@ -126,9 +126,9 @@ def get_offres(token):
     print(f"{Fore.GREEN}==== Récupération des offres (requête 1) :{Style.NORMAL}")
 
     if response.status_code == 200:
-        print(f"Réponse de l'API: {response.status_code}")
+        print(f"Réponse: {response.status_code}")
     elif response.status_code == 206:
-        print(f"Réponse de l'API: {response.status_code} (Réponse partielle)")
+        print(f"Réponse: {response.status_code} (Réponse partielle)")
         print(f"Plage de contenu: {response.headers.get("Content-Range")}")  ##==> Plage de contenu: offres 0-0/9848
 
         max_offres = int(response.headers.get("Content-Range").split("/")[-1])
@@ -147,11 +147,11 @@ def get_offres(token):
         response = requests.get(url, headers=headers, params=params)
 
         if response.status_code == 200:
-            print(f"Réponse de l'API: {response.status_code}")
+            print(f"Réponse: {response.status_code}")
 
             # file_path = os.path.join(current_directory, "outputs", "offres.json")
             # data = response.json()
-            data = response.json()
+            # data = response.json()
             with open(output_file, "w", encoding="utf-8") as f:
                 # with open(file_path, "w", encoding="utf-8") as f:
                 # json.dump(data, f, ensure_ascii=False, indent=4)
@@ -163,7 +163,8 @@ def get_offres(token):
             print(response.json())
 
     else:
-        print(f"{Fore.GREEN}==== Récupération des offres (requêtes 2...n) :{Style.NORMAL}")
+        # print(f"{Fore.GREEN}==== Récupération des offres (requêtes 2...n) :{Style.NORMAL}")
+        print(f"{Fore.GREEN}==== Récupération des offres (requêtes 2...{2+int(max_offres/150)}) :{Style.NORMAL}")
         range_start = 0
         range_end = 149
         request_id = 2
@@ -174,12 +175,11 @@ def get_offres(token):
 
         document_id = 0
         while max_offres >= range_end:
-            print(f"{Fore.GREEN}====== Récupération des offres (requête {request_id}) :{Style.NORMAL}")
-            print(range_end)
+            print(f"{Fore.GREEN}====== Récupération des offres (requête {request_id}) :{Style.NORMAL}", end=" ")
             response = requests.get(url, headers=headers, params=params)
 
             if response.status_code == 206:
-                print(f"Réponse de l'API: {response.status_code}")
+                print(f"Réponse: {response.status_code}", end=", ")
 
                 with open(output_file, "a", encoding="utf-8") as f:
                     for obj in response.json()["resultats"]:
@@ -189,6 +189,7 @@ def get_offres(token):
                         else:
                             f.write("\n")  # Pour le dernier document, on ne met pas de virgule, sinon le json n'est pas valide
                         document_id += 1
+                print(f"range_end: {range_end}")
 
             range_start += 150
             range_end += 150
@@ -196,11 +197,11 @@ def get_offres(token):
             request_id += 1
 
         # la dernière requête pour avoir les dernières offres
-        print(f"{Fore.GREEN}====== Récupération des offres (requête {request_id}) :{Style.NORMAL}")
+        print(f"{Fore.GREEN}====== Récupération des offres (requête {request_id}) :{Style.NORMAL}", end=" ")
         response = requests.get(url, headers=headers, params=params)
 
         if response.status_code == 206:
-            print(f"Réponse de l'API: {response.status_code}")
+            print(f"Réponse: {response.status_code}")
 
             with open(output_file, "a", encoding="utf-8") as f:
                 for obj in response.json()["resultats"]:
@@ -236,41 +237,41 @@ def get_offres(token):
     #     print(response.json())
 
     # à nettoyer : autres éléments qui permettent de filtrer
-        # "appellation": "404278, 10438",  # todo : ca a pas l'air de marcher... ça renvoie le même nombre que si on met que le premier élément
-        # "codeNAF": "",
-        # "codeROME": "",
-        # "commune": "",
-        # "departement": "",
-        # "distance": "",
-        # "domaine": "",
-        # "dureeContratMax": "",
-        # "dureeContratMin": "",
-        # "dureeHebdo": "",
-        # "dureeHebdoMax": "",
-        # "dureeHebdoMin": "",
-        # "entreprisesAdaptees": "",
-        # "experience": "",
-        # "experienceExigence": "",
-        # "inclureLimitrophes": "",
-        # "maxCreationDate": "",
-        # "minCreationDate": "",
-        # "modeSelectionPartenaires": "",
-        # "motsCles": "",
-        # "natureContrat": "",
-        # "niveauFormation": "",
-        # "offresMRS": "",
-        # "offresManqueCandidats": "",
-        # "origineOffre": "",
-        # "partenaires": "",
-        # "paysContinent": "",
-        # "periodeSalaire": "",
-        # "permis": "",
-        # "publieeDepuis": "",
-        # "qualification": "",
-        # "region": "",
-        # "salaireMin": "",
-        # "secteurActivite": "",
-        # "sort": "",
-        # "tempsPlein": "",
-        # "theme": "",
-        # "typeContrat": "",
+    # "appellation": "404278, 10438",  # todo : ca a pas l'air de marcher... ça renvoie le même nombre que si on met que le premier élément
+    # "codeNAF": "",
+    # "codeROME": "",
+    # "commune": "",
+    # "departement": "",
+    # "distance": "",
+    # "domaine": "",
+    # "dureeContratMax": "",
+    # "dureeContratMin": "",
+    # "dureeHebdo": "",
+    # "dureeHebdoMax": "",
+    # "dureeHebdoMin": "",
+    # "entreprisesAdaptees": "",
+    # "experience": "",
+    # "experienceExigence": "",
+    # "inclureLimitrophes": "",
+    # "maxCreationDate": "",
+    # "minCreationDate": "",
+    # "modeSelectionPartenaires": "",
+    # "motsCles": "",
+    # "natureContrat": "",
+    # "niveauFormation": "",
+    # "offresMRS": "",
+    # "offresManqueCandidats": "",
+    # "origineOffre": "",
+    # "partenaires": "",
+    # "paysContinent": "",
+    # "periodeSalaire": "",
+    # "permis": "",
+    # "publieeDepuis": "",
+    # "qualification": "",
+    # "region": "",
+    # "salaireMin": "",
+    # "secteurActivite": "",
+    # "sort": "",
+    # "tempsPlein": "",
+    # "theme": "",
+    # "typeContrat": "",
