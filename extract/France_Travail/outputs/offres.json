@@ -10181,11 +10181,11 @@
                 },
                 {
                     "valeurPossible": "CDD",
-                    "nbResultats": 404
+                    "nbResultats": 407
                 },
                 {
                     "valeurPossible": "CDI",
-                    "nbResultats": 8421
+                    "nbResultats": 8461
                 },
                 {
                     "valeurPossible": "FRA",
@@ -10197,7 +10197,7 @@
                 },
                 {
                     "valeurPossible": "MIS",
-                    "nbResultats": 720
+                    "nbResultats": 719
                 }
             ]
         },
@@ -10206,11 +10206,11 @@
             "agregation": [
                 {
                     "valeurPossible": "0",
-                    "nbResultats": 2130
+                    "nbResultats": 2146
                 },
                 {
                     "valeurPossible": "4",
-                    "nbResultats": 2733
+                    "nbResultats": 2753
                 },
                 {
                     "valeurPossible": "1",
@@ -10218,11 +10218,11 @@
                 },
                 {
                     "valeurPossible": "2",
-                    "nbResultats": 3600
+                    "nbResultats": 3605
                 },
                 {
                     "valeurPossible": "3",
-                    "nbResultats": 1357
+                    "nbResultats": 1358
                 }
             ]
         },
@@ -10231,15 +10231,15 @@
             "agregation": [
                 {
                     "valeurPossible": "0",
-                    "nbResultats": 682
+                    "nbResultats": 689
                 },
                 {
                     "valeurPossible": "9",
-                    "nbResultats": 1454
+                    "nbResultats": 1484
                 },
                 {
                     "valeurPossible": "X",
-                    "nbResultats": 7729
+                    "nbResultats": 7734
                 }
             ]
         },
@@ -10256,7 +10256,7 @@
                 },
                 {
                     "valeurPossible": "E1",
-                    "nbResultats": 9417
+                    "nbResultats": 9459
                 },
                 {
                     "valeurPossible": "E2",

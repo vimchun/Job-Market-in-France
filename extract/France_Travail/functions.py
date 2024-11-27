@@ -47,7 +47,6 @@ def get_bearer_token(client_id, client_secret, scope):
         return bearer_token
     else:
         print(f"Erreur, Status Code: {response.status_code}\n")
-        print("oo")
         print(f"=> {response.json()}")
         return None
 
@@ -69,9 +68,10 @@ def get_appellations(token):
 
     response = requests.get(url, headers=headers)
 
+    print(f"{Fore.GREEN}== Récupération des appellations :{Style.NORMAL}")
     if response.status_code == 200:
         # print(f"Réponse de l'API: {json.dumps(response.json(), indent=4, ensure_ascii=False)}")
-        print(f"Status Code: {response.status_code}")
+        print(f"Status Code: {response.status_code}\n")
         # ensure_ascii=False sinon on a des caractères non compréhensible (ex: Op\u00e9rateur)
 
         file_path = os.path.join(current_directory, "outputs", "appellations.json")
@@ -80,7 +80,7 @@ def get_appellations(token):
             json.dump(data, f, ensure_ascii=False, indent=4)
 
     else:
-        print(f"Erreur lors de la requête API: {response.status_code}")
+        print(f"Erreur lors de la requête API: {response.status_code}\n")
         print(response.text)
 
     return None
@@ -105,7 +105,7 @@ def get_offres(token):
 
     response = requests.get(url, headers=headers, params=params)
 
-    print("== Récupération des offres :")
+    print(f"{Fore.GREEN}== Récupération des offres :{Style.NORMAL}")
 
     if response.status_code == 200:
         print(f"Réponse de l'API: {response.status_code}")

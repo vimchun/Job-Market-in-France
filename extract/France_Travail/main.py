@@ -2,10 +2,10 @@ import os
 
 import yaml
 
-from functions import get_bearer_token, get_appellations
+from functions import get_appellations, get_bearer_token, get_offres
 
 
-# récupération des credentials données sur le site de FT, depuis un fichier yaml
+# Récupération des credentials données sur le site de FT, depuis un fichier yaml
 CREDENTIALS_FILE = "api_credentials_minh.yml"  # à modifier selon qui lance le script (todo: trouver une meilleure solution)
 current_directory = os.path.dirname(os.path.abspath(__file__))
 file_path = os.path.join(current_directory, "..", CREDENTIALS_FILE)
