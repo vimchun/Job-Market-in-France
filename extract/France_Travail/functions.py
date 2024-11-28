@@ -87,7 +87,7 @@ def get_appellations(token):
     return None
 
 
-def get_offres(token):
+def get_offres(token, filter_params):
     """
     Récupérer les offre et les écrit dans un fichier json.
     Une requête retourne au maximum 150 offres (cf paramètres range), donc il faut en faire plusieurs s'il y a plus de 150 offres.
@@ -114,46 +114,68 @@ def get_offres(token):
         "Content-Type": "application/json",
     }
 
-    # Première requête pour voir combien d'offres sont disponibles
-    range_start = 0
-    range_end = 0
+    #### Première requête pour voir combien d'offres sont disponibles
+    # range_start = 0
+    # range_end = 0
 
-    params = {
-        "range": f"{range_start}-{range_end}",
-        "accesTravailleurHandicape": False,
-        "appellation": "404278",  # filtre sur { "code": "404278", "libelle": "Data engineer" },
-        # "appellation": "10438",  # permet de lancer un test plus rapide car moins d'offres
-    }
+    # params = {}
+    # params["range"] = f"{range_start}-{range_end}"
+    # params = {
+    #     "range": f"{range_start}-{range_end}",
+    #     # "accesTravailleurHandicape": False,
+    #     # "appellation": "404278",  # filtre sur { "code": "404278", "libelle": "Data engineer" },
+    #     # "appellation": "10438",  # permet de lancer un test plus rapide car moins d'offres
+    # }
 
-    response = requests.get(url, headers=headers, params=params)
+    # print(params)
+    response = requests.get(
+        url,
+        headers=headers,
+        params=filter_params,
+        # params=params,
+        # params={"range": f"{range_start}-{range_end}"},
+        # params={"range": "0-0"},
+    )
 
-    print(f"{Fore.GREEN}==== Récupération des offres (requête 0) :", end=" ")
+    print(f"{Fore.GREEN}==== Récupération des offres (requête 0), pour connaître le nombre d'offres :", end=" ")
 
     if response.status_code == 200:
+        # réponse 200 : on peut récupérer déjà récupérer toutes les offres disponibles
         print(f"Status Code: {response.status_code}")
+        max_offres = int(response.headers.get("Content-Range").split("/")[-1])  # response.headers.get('Content-Range') = offres 0-0/9848
+        print(f"  => {Fore.CYAN}[{max_offres+1}]{Style.RESET_ALL} offres au total")
+
     elif response.status_code == 206:
         print(f"Status Code: {response.status_code} (Réponse partielle)")
         max_offres = int(response.headers.get("Content-Range").split("/")[-1])  # response.headers.get('Content-Range') = offres 0-0/9848
-        print(f"{Fore.CYAN}[{max_offres+1}]{Style.RESET_ALL} offres au total")
+        print(f"  => {Fore.CYAN}[{max_offres+1}]{Style.RESET_ALL} offres au total")  # , end=" ")
         if max_offres < 150:
-            print(f"=> {int(max_offres/150)+1} requête nécessaire pour tout récupérer")
+            # print(f"  => {int(max_offres/150)+1} requête nécessaire pour tout récupérer")
+            print(f"  => {Fore.CYAN}[{int(max_offres/150)+1}]{Style.RESET_ALL} requête nécessaire pour tout récupérer", end="")
         else:
-            print(f"=> {int(max_offres/150)+1} requêtes nécessaires (avec 150 documents) pour tout récupérer")
-        print(f"=> Rappel : limité à 21 requêtes, soit 3150 offres maximum (voir limitation du paramètre range)\n")
+            # print(f"  => {int(max_offres/150)+1} requêtes nécessaires (avec 150 documents) pour tout récupérer")
+            print(f"  => {Fore.CYAN}[{int(max_offres/150)+1}]{Style.RESET_ALL} requêtes nécessaires (avec 150 documents) pour tout récupérer", end="")
+        print(f" {Style.DIM} (rappel: limité à 21 requêtes, soit 3150 offres maximum)\n")  # (voir limitation du paramètre range)
     else:
         print(f"Erreur lors de la requête API: {response.status_code}")
         print(response.text)
         print(response.json())
+
+    import sys
+
+    sys.exit()
 
     if max_offres == 1:
         pass  # todo: cas à traiter (et le cas 0 aussi)
     elif max_offres < 150:
         # Si on a moins de 150 offres, une seule requête suffit
         print(f"{Fore.GREEN}==== Récupération des offres (requête 1) :", end=" ")
-        params["range"] = f"{range_start}-{max_offres}"
+        # params["range"] = f"{range_start}-{max_offres}"
+        filter_params = {}
+        filter_params["range"] = f"{range_start}-{max_offres}"
         range_end = 150
 
-        response = requests.get(url, headers=headers, params=params)
+        response = requests.get(url, headers=headers, params=filter_params)
 
         document_id = 0
         if response.status_code == 200:
@@ -183,7 +205,8 @@ def get_offres(token):
         range_start = 0
         range_end = 149
         request_id = 1
-        params["range"] = f"{range_start}-{range_end}"
+        # params["range"] = f"{range_start}-{range_end}"
+        filter_params["range"] = f"{range_start}-{range_end}"
 
         with open(output_file, "w", encoding="utf-8") as f:
             f.write("[\n")  # Ajouter un "[" pour "initialiser" le fichier json
@@ -192,7 +215,8 @@ def get_offres(token):
 
         for _ in range(int(max_offres / 150) + 1):
             print(f"{Fore.GREEN}==== Récupération des offres (requête {request_id}) :", end=" ")
-            response = requests.get(url, headers=headers, params=params)
+            # response = requests.get(url, headers=headers, params=params)
+            response = requests.get(url, headers=headers, params=filter_params)
 
             if response.status_code == 206:
                 print(f"Status Code: {response.status_code}", end=", ")
@@ -218,7 +242,8 @@ def get_offres(token):
 
             range_start += 150
             range_end += 150
-            params["range"] = f"{range_start}-{range_end}"
+            # params["range"] = f"{range_start}-{range_end}"
+            filter_params["range"] = f"{range_start}-{range_end}"
             request_id += 1
 
         with open(output_file, "a", encoding="utf-8") as f:

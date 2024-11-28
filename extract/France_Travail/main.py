@@ -28,4 +28,10 @@ token = get_bearer_token(
 
 # get_appellations(token)
 
-get_offres(token)
+get_offres(
+    token,
+    filter_params={
+        "accesTravailleurHandicape": False,
+        "appellation": "404278",  # filtre sur { "code": "404278", "libelle": "Data engineer" },
+    },
+)
