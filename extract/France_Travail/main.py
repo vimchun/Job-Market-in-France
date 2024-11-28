@@ -32,6 +32,8 @@ get_offres(
     token,
     filter_params={
         "accesTravailleurHandicape": False,
-        "appellation": "404278",  # filtre sur { "code": "404278", "libelle": "Data engineer" },
+        # "accesTravailleurHandicape": True,
+        # "appellation": "404278",  # filtre sur { "code": "404278", "libelle": "Data engineer" },
+        "appellation": "11026",
     },
 )

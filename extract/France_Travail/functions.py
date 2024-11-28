@@ -115,46 +115,45 @@ def get_offres(token, filter_params):
     }
 
     #### Première requête pour voir combien d'offres sont disponibles
-    # range_start = 0
-    # range_end = 0
 
-    # params = {}
-    # params["range"] = f"{range_start}-{range_end}"
-    # params = {
-    #     "range": f"{range_start}-{range_end}",
-    #     # "accesTravailleurHandicape": False,
-    #     # "appellation": "404278",  # filtre sur { "code": "404278", "libelle": "Data engineer" },
-    #     # "appellation": "10438",  # permet de lancer un test plus rapide car moins d'offres
-    # }
-
-    # print(params)
-    response = requests.get(
-        url,
-        headers=headers,
-        params=filter_params,
-        # params=params,
-        # params={"range": f"{range_start}-{range_end}"},
-        # params={"range": "0-0"},
-    )
+    response = requests.get(url, headers=headers, params=filter_params)
 
     print(f"{Fore.GREEN}==== Récupération des offres (requête 0), pour connaître le nombre d'offres :", end=" ")
 
+    max_offres = int(response.headers.get("Content-Range").split("/")[-1])  # response.headers.get('Content-Range') = offres 0-0/9848
+    ###### réponse 200 : on peut récupérer déjà récupérer toutes les offres disponibles
     if response.status_code == 200:
-        # réponse 200 : on peut récupérer déjà récupérer toutes les offres disponibles
         print(f"Status Code: {response.status_code}")
-        max_offres = int(response.headers.get("Content-Range").split("/")[-1])  # response.headers.get('Content-Range') = offres 0-0/9848
-        print(f"  => {Fore.CYAN}[{max_offres+1}]{Style.RESET_ALL} offres au total")
+        print(response.headers.get("Content-Range"))
+        print(f"  => {Fore.CYAN}[{max_offres}]{Style.RESET_ALL} offres au total {Fore.YELLOW}--> writing to file")
 
+        document_id = 0
+
+        with open(output_file, "a", encoding="utf-8") as f:
+            f.write("[\n")  # Ajouter un "[" pour "initialiser" le fichier json
+
+            for obj in response.json()["resultats"]:  # Boucle for pour écrire uniquement les documents
+                json.dump(obj, f, ensure_ascii=False)
+                if document_id < max_offres - 1:
+                    f.write(",\n")  # Ajouter une virgule après chaque objet
+                else:
+                    f.write("\n")  # Pour le dernier document, on ne met pas de virgule, sinon le json n'est pas valide
+                document_id += 1
+
+            f.write("]")  # Clore le json en ajoutant un crochet fermant "]"
+
+    ###### réponse 206 : on doit faire plusieurs requêtes pour récupérer tous les documents (limité à 3150 documents)
     elif response.status_code == 206:
         print(f"Status Code: {response.status_code} (Réponse partielle)")
-        max_offres = int(response.headers.get("Content-Range").split("/")[-1])  # response.headers.get('Content-Range') = offres 0-0/9848
-        print(f"  => {Fore.CYAN}[{max_offres+1}]{Style.RESET_ALL} offres au total")  # , end=" ")
-        if max_offres < 150:
-            # print(f"  => {int(max_offres/150)+1} requête nécessaire pour tout récupérer")
-            print(f"  => {Fore.CYAN}[{int(max_offres/150)+1}]{Style.RESET_ALL} requête nécessaire pour tout récupérer", end="")
-        else:
-            # print(f"  => {int(max_offres/150)+1} requêtes nécessaires (avec 150 documents) pour tout récupérer")
-            print(f"  => {Fore.CYAN}[{int(max_offres/150)+1}]{Style.RESET_ALL} requêtes nécessaires (avec 150 documents) pour tout récupérer", end="")
+        print(response.headers.get("Content-Range"))
+        print(f"  => {Fore.CYAN}[{max_offres+1}]{Style.RESET_ALL} offres au total")  # , end=" ")  # todo pas +1
+        # if max_offres < 150:
+        #     # print(f"  => {int(max_offres/150)+1} requête nécessaire pour tout récupérer")
+        #     print(f"  => {Fore.CYAN}[{int(max_offres/150)+1}]{Style.RESET_ALL} requête nécessaire pour tout récupérer", end="")
+        # else:
+        #     # print(f"  => {int(max_offres/150)+1} requêtes nécessaires (avec 150 documents) pour tout récupérer")
+        #     print(f"  => {Fore.CYAN}[{int(max_offres/150)+1}]{Style.RESET_ALL} requêtes nécessaires (avec 150 documents) pour tout récupérer", end="")
+        print(f"  => {Fore.CYAN}[{int(max_offres/150)+1}]{Style.RESET_ALL} requêtes nécessaires (avec 150 documents) pour tout récupérer", end="")
         print(f" {Style.DIM} (rappel: limité à 21 requêtes, soit 3150 offres maximum)\n")  # (voir limitation du paramètre range)
     else:
         print(f"Erreur lors de la requête API: {response.status_code}")
@@ -191,7 +190,7 @@ def get_offres(token, filter_params):
                         f.write("\n")  # Pour le dernier document, on ne met pas de virgule, sinon le json n'est pas valide
                     document_id += 1
 
-            with open(output_file, "a", encoding="utf-8") as f:
+            with open(output_file, "a", encoding="utf-8") as f:  # todo supprimer ?
                 f.write("]")  # Clore le json en ajoutant un crochet fermant "]"
 
         else:
