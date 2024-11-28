@@ -1,3 +1,4 @@
 _notes_perso/
 api_credentials_minh.yml
 __pycache__
+extract/France_Travail/outputs/*.json

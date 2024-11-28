@@ -96,15 +96,13 @@ def get_offres(token, filter_params):
 
     Ne retourne rien.
     """
-    # print(f"{Fore.GREEN}== Récupération des offres :")
 
-    # current_directory = os.path.dirname(os.path.abspath(__file__))
+    current_directory = os.path.dirname(os.path.abspath(__file__))
 
     appellation = filter_params["appellation"]
 
     # Recherche le "libelle" correspondant à "l'appellation"
-
-    code_libelle = [
+    code_libelle = [  # modification du libelle pour pouvoir renommer les fichiers de sortie
         {"code": "38970", "libelle": "Data_Miner"},
         {"code": "38971", "libelle": "Data_Analyst"},
         {"code": "38972", "libelle": "Data_Scientist"},
@@ -136,11 +134,6 @@ def get_offres(token, filter_params):
 
     print(f"{Fore.GREEN}== Récupération des offres ({appellation}: {libelle}) :")
 
-    output_file = os.path.join(current_directory, "outputs", f"offres_{appellation}_{libelle}.json")
-
-    if os.path.exists(output_file):
-        os.remove(output_file)
-
     url = "https://api.francetravail.io/partenaire/offresdemploi/v2/offres/search"
 
     headers = {
@@ -155,6 +148,11 @@ def get_offres(token, filter_params):
     print(f"{Fore.GREEN}==== Récupération des offres (requête 0), pour connaître le nombre d'offres :", end=" ")
 
     max_offres = int(response.headers.get("Content-Range").split("/")[-1])  # response.headers.get('Content-Range') = offres 0-0/9848
+
+    output_file = os.path.join(current_directory, "outputs", f"{appellation}_{libelle}__{max_offres}_offres.json")
+
+    if os.path.exists(output_file):
+        os.remove(output_file)
 
     ###### réponse 200 : on peut récupérer déjà récupérer toutes les offres disponibles
     if response.status_code == 200:

@@ -59,44 +59,50 @@ for code in codes:
     get_offres(
         token,
         filter_params={
-            "accesTravailleurHandicape": False,  # Offres pour lesquelles l’employeur est handi friendly
+            #### codes
             "appellation": code,  # Code appellation ROME de l’offre, voir le référentiel ci-dessous
             # "codeNAF": "",  # Code NAF de l’offre, (format 99.99X)
             # "codeROME": "",  # Code ROME de l’offre, voir le référentiel des métiers ci-dessous
+            #### localisation
             # "commune": "",  # Code INSEE de la commune, voir le référentiel ci-dessous
             # "departement": "",  # Département de l’offre, voir le référentiel ci-dessous
             # "distance": "",  # Distance à la commune (pris en compte uniquement si une commune est renseignée, plus d'information dans la documentation)
-            # "domaine": "",  # Domaine de l’offre, voir le référentiel ci-dessous
+            # "inclureLimitrophes": "",  # Inclure les départements limitrophes dans la recherche
+            # "paysContinent": "",  # Pays ou continent de l’offre, voir le référentiel ci-dessous
+            # "region": "",  # Région de l’offre, voir le référentiel ci-dessous
+            #### contrat
             # "dureeContratMax": "",  # Recherche les offres avec une durée de contrat maximale (format double de 0 à 99 bornes incluses)
             # "dureeContratMin": "",  # Recherche les offres avec une durée de contrat minimale (format double de 0 à 99 bornes incluses)
             # "dureeHebdo": "",  # Type de durée du contrat de l'offre
             # "dureeHebdoMax": "",  # Recherche les offres avec une durée maximale (format HHMM)
             # "dureeHebdoMin": "",  # Recherche les offres avec une durée minimale (format HHMM)
-            # "entreprisesAdaptees": "",  # Filtre sur les offres dont les entreprises sont adaptées
+            # "tempsPlein": "",  # Temps plein ou partiel
+            # "natureContrat": "",  # Code de la nature du contrat, voir le référentiel ci-dessous
+            # "typeContrat": "",  # Code du type de contrat, voir le référentiel ci-dessous
+            # "periodeSalaire": "",  # Période pour le calcul du salaire minimum (M Mensuel, A Annuel, H Horaire, C Cachet). Si cette donnée est renseignée, le salaire minimum est obligatoire. # noqa
+            # "salaireMin": "",  # Salaire minimum recherché. Si cette donnée est renseignée, le code du type de salaire minimum est obligatoire.
+            #### experience
             # "experience": "",  # Niveau d’expérience demandé, (1 moins d'un an, 2 de 1 à 3 ans, 3 plus de 3 ans)
             # "experienceExigence": "",  # Exigence d'expérience (D débutant accepté, S expérience souhaitée, E expérience exigée)
-            # "inclureLimitrophes": "",  # Inclure les départements limitrophes dans la recherche
+            #### date de création
             # "maxCreationDate": "",  # Date maximale pour laquelle rechercher des offres (format yyyy-MM-dd'T'hh:mm:ss'Z')
             # "minCreationDate": "",  # Date minimale pour laquelle rechercher des offres (format yyyy-MM-dd'T'hh:mm:ss'Z')
+            # "publieeDepuis": "",  # Recherche les offres publiées depuis maximum « X » jours
+            #### misc.
+            # "accesTravailleurHandicape": False,  # Offres pour lesquelles l’employeur est handi friendly
             # "modeSelectionPartenaires": "",  # Énumération (INCLUS ou EXCLU) - Mode de sélection des partenaires.
             # "motsCles": "data",  # Recherche de mots clés dans l’offre, voir documentation
-            # "natureContrat": "",  # Code de la nature du contrat, voir le référentiel ci-dessous
             # "niveauFormation": "",  # Niveau de formation demandé, voir le référentiel ci-dessous
             # "offresMRS": "",  # Uniquement les offres d'emplois avec méthode de recrutement par simulation proposée
             # "offresManqueCandidats": "",  # Filtre sur les offres difficiles à pouvoir
             # "origineOffre": "",  # Origine de l'offres
             # "partenaires": "",  # Chaine de caractères - Liste des codes partenaires dont les offres sont à inclure ou exclure en fonction du mode de sélection associé et du filtre de l’origine de l’offre # noqa
-            # "paysContinent": "",  # Pays ou continent de l’offre, voir le référentiel ci-dessous
-            # "periodeSalaire": "",  # Période pour le calcul du salaire minimum (M Mensuel, A Annuel, H Horaire, C Cachet). Si cette donnée est renseignée, le salaire minimum est obligatoire. # noqa
             # "permis": "",  # Permis demandé, voir le référentiel ci-dessous
-            # "publieeDepuis": "",  # Recherche les offres publiées depuis maximum « X » jours
             # "qualification": "",  # Qualification du poste (0 non-cadre, 9 cadre)
-            # "region": "",  # Région de l’offre, voir le référentiel ci-dessous
-            # "salaireMin": "",  # Salaire minimum recherché. Si cette donnée est renseignée, le code du type de salaire minimum est obligatoire.
             # "secteurActivite": "",  # Division NAF de l’offre (2 premiers chiffres), voir le référentiel ci-dessous
             # "sort": "",  # Tri selon 3 façons différentes
-            # "tempsPlein": "",  # Temps plein ou partiel
             # "theme": "",  # Thème ROME du métier, voir le référentiel ci-dessous
-            # "typeContrat": "",  # Code du type de contrat, voir le référentiel ci-dessous
+            # "domaine": "",  # Domaine de l’offre, voir le référentiel ci-dessous
+            # "entreprisesAdaptees": "",  # Filtre sur les offres dont les entreprises sont adaptées
         },
     )
