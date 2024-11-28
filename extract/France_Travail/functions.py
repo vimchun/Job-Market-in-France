@@ -114,15 +114,15 @@ def get_offres(token):
         "Content-Type": "application/json",
     }
 
-    # Première requête pour voir elle peut retourner combien d'offres
+    # Première requête pour voir combien d'offres sont disponibles
     range_start = 0
     range_end = 0
 
     params = {
         "range": f"{range_start}-{range_end}",
-        "accesTravailleurHandicape": True,
-        # "appellation": "404278",  # filtre sur { "code": "404278", "libelle": "Data engineer" },
-        "appellation": "10438",  # permet de lancer un test plus rapide car moins d'offres
+        "accesTravailleurHandicape": False,
+        "appellation": "404278",  # filtre sur { "code": "404278", "libelle": "Data engineer" },
+        # "appellation": "10438",  # permet de lancer un test plus rapide car moins d'offres
     }
 
     response = requests.get(url, headers=headers, params=params)
@@ -134,8 +134,11 @@ def get_offres(token):
     elif response.status_code == 206:
         print(f"Status Code: {response.status_code} (Réponse partielle)")
         max_offres = int(response.headers.get("Content-Range").split("/")[-1])  # response.headers.get('Content-Range') = offres 0-0/9848
-        print(f"{Fore.CYAN}{max_offres+1}{Style.RESET_ALL} offres au total")  # noqa
-        print(f"=> {int(max_offres/150)+1} requête(s) nécessaire(s) (avec 150 documents) pour tout récupérer")
+        print(f"{Fore.CYAN}[{max_offres+1}]{Style.RESET_ALL} offres au total")
+        if max_offres < 150:
+            print(f"=> {int(max_offres/150)+1} requête nécessaire pour tout récupérer")
+        else:
+            print(f"=> {int(max_offres/150)+1} requêtes nécessaires (avec 150 documents) pour tout récupérer")
         print(f"=> Rappel : limité à 21 requêtes, soit 3150 offres maximum (voir limitation du paramètre range)\n")
     else:
         print(f"Erreur lors de la requête API: {response.status_code}")
@@ -210,8 +213,7 @@ def get_offres(token):
                 print(f"{range_start}-{range_end}/{max_offres}")
 
             else:
-                print(f"Status Code: {response.status_code}")
-                print(f"{response.json()}")
+                print(f"Status Code: {response.status_code}, {response.json()}")
                 break
 
             range_start += 150
