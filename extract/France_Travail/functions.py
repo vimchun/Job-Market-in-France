@@ -98,8 +98,6 @@ def get_offres(token):
 
     output_file = os.path.join(current_directory, "outputs", "offres.json")
 
-    # if os.path.exists(file_path):
-    #     os.remove(file_path)
     if os.path.exists(output_file):
         os.remove(output_file)
 
@@ -126,13 +124,13 @@ def get_offres(token):
     print(f"{Fore.GREEN}==== Récupération des offres (requête 1) :{Style.NORMAL}")
 
     if response.status_code == 200:
-        print(f"Réponse: {response.status_code}")
+        print(f"Status Code: {response.status_code}")
     elif response.status_code == 206:
-        print(f"Réponse: {response.status_code} (Réponse partielle)")
+        print(f"Status Code: {response.status_code} (Réponse partielle)")
         print(f"Plage de contenu: {response.headers.get("Content-Range")}")  ##==> Plage de contenu: offres 0-0/9848
 
         max_offres = int(response.headers.get("Content-Range").split("/")[-1])
-        print(f"Il y a {max_offres} offres au total pour cette requête.\n")
+        print(f"Il y a {max_offres+1} offres au total => {int(max_offres/150)+1} requêtes nécessaires (avec 150 documents) pour récupérer toutes les offres.\n")
     else:
         print(f"Erreur lors de la requête API: {response.status_code}")
         print(response.text)
@@ -141,20 +139,16 @@ def get_offres(token):
     if max_offres == 1:
         pass  # cas à traiter
     elif max_offres < 150:
+        # Si on a moins de 150 offres, une seule requête suffit
         print(f"{Fore.GREEN}==== Récupération des offres (requête 2) :{Style.NORMAL}")
         params["range"] = f"{range_start}-{max_offres}"
 
         response = requests.get(url, headers=headers, params=params)
 
         if response.status_code == 200:
-            print(f"Réponse: {response.status_code}")
+            print(f"Status Code: {response.status_code}")
 
-            # file_path = os.path.join(current_directory, "outputs", "offres.json")
-            # data = response.json()
-            # data = response.json()
             with open(output_file, "w", encoding="utf-8") as f:
-                # with open(file_path, "w", encoding="utf-8") as f:
-                # json.dump(data, f, ensure_ascii=False, indent=4)
                 json.dump(response.json(), f, ensure_ascii=False, indent=4)
 
         else:
@@ -163,7 +157,7 @@ def get_offres(token):
             print(response.json())
 
     else:
-        # print(f"{Fore.GREEN}==== Récupération des offres (requêtes 2...n) :{Style.NORMAL}")
+        # Si on a plus de 150 offres, il faut faire plusieurs requêtes (une requête renvoie 150 documents max)
         print(f"{Fore.GREEN}==== Récupération des offres (requêtes 2...{2+int(max_offres/150)}) :{Style.NORMAL}")
         range_start = 0
         range_end = 149
@@ -174,104 +168,114 @@ def get_offres(token):
             f.write("[\n")  # Ajouter un "[" pour "initialiser" le fichier json
 
         document_id = 0
-        while max_offres >= range_end:
+
+        for i in range(int(max_offres / 150) + 1):
+            # while max_offres >= range_end:
             print(f"{Fore.GREEN}====== Récupération des offres (requête {request_id}) :{Style.NORMAL}", end=" ")
             response = requests.get(url, headers=headers, params=params)
 
             if response.status_code == 206:
-                print(f"Réponse: {response.status_code}", end=", ")
+                print(f"Status Code: {response.status_code}", end=", ")
 
                 with open(output_file, "a", encoding="utf-8") as f:
                     for obj in response.json()["resultats"]:
                         json.dump(obj, f, ensure_ascii=False)
-                        if document_id < max_offres:
+                        if document_id < max_offres - 1:
                             f.write(",\n")  # Ajouter une virgule après chaque objet
+                            # f.write(f",{document_id}\n")  # Ajouter une virgule après chaque objet
                         else:
                             f.write("\n")  # Pour le dernier document, on ne met pas de virgule, sinon le json n'est pas valide
                         document_id += 1
-                print(f"range_end: {range_end}")
+                print(f"{range_start}-{range_end}/{max_offres}")
+
+            else:
+                print(f"Status Code: {response.status_code}")  # à investiguer
 
             range_start += 150
             range_end += 150
             params["range"] = f"{range_start}-{range_end}"
             request_id += 1
 
-        # la dernière requête pour avoir les dernières offres
-        print(f"{Fore.GREEN}====== Récupération des offres (requête {request_id}) :{Style.NORMAL}", end=" ")
-        response = requests.get(url, headers=headers, params=params)
+        with open(output_file, "a", encoding="utf-8") as f:
+            f.write("]")  # Clore le json en ajoutant un crochet fermant "]"
 
-        if response.status_code == 206:
-            print(f"Réponse: {response.status_code}")
 
-            with open(output_file, "a", encoding="utf-8") as f:
-                for obj in response.json()["resultats"]:
-                    json.dump(obj, f, ensure_ascii=False)
-                    if document_id < max_offres - 1:
-                        f.write(",\n")  # Ajouter une virgule après chaque objet
-                    else:
-                        f.write("\n")  # Pour le dernier document, on ne met pas de virgule, sinon le json n'est pas valide
-                    document_id += 1
+#        # la dernière requête pour avoir les dernières offres
+#        print(f"{Fore.GREEN}====== Récupération des offres (requête {request_id}) :{Style.NORMAL}", end=" ")
+#        response = requests.get(url, headers=headers, params=params)
+#
+#        if response.status_code == 206:
+#            print(f"Status Code: {response.status_code}")
+#
+#            with open(output_file, "a", encoding="utf-8") as f:
+#                for obj in response.json()["resultats"]:
+#                    json.dump(obj, f, ensure_ascii=False)
+#                    if document_id < max_offres - 1:
+#                        f.write(",\n")  # Ajouter une virgule après chaque objet
+#                    else:
+#                        f.write("\n")  # Pour le dernier document, on ne met pas de virgule, sinon le json n'est pas valide
+#                    document_id += 1
+#
+#            with open(output_file, "a", encoding="utf-8") as f:
+#                f.write("]")  # Clore le json en ajoutant un crochet fermant "]"
+#
+# import sys
 
-            with open(output_file, "a", encoding="utf-8") as f:
-                f.write("]")  # Clore le json en ajoutant un crochet fermant "]"
+# sys.exit()
 
-    # import sys
+# if response.status_code == 200:
+#     print(f"Réponse de l'API: {response.status_code}")
+# elif response.status_code == 206:
+#     print(f"Réponse de l'API: {response.status_code} (Réponse partielle)")
+#     print("Plage de contenu:", response.headers.get("Content-Range"))
 
-    # sys.exit()
+#     # Ecrire la sortie dans un fichier json
+#     file_path = os.path.join(current_directory, "outputs", "offres.json")
+#     data = response.json()
+#     with open(file_path, "w", encoding="utf-8") as f:
+#         json.dump(data, f, ensure_ascii=False, indent=4)
 
-    # if response.status_code == 200:
-    #     print(f"Réponse de l'API: {response.status_code}")
-    # elif response.status_code == 206:
-    #     print(f"Réponse de l'API: {response.status_code} (Réponse partielle)")
-    #     print("Plage de contenu:", response.headers.get("Content-Range"))
+# else:
+#     print(f"Erreur lors de la requête API: {response.status_code}")
+#     print(response.text)
+#     print(response.json())
 
-    #     # Ecrire la sortie dans un fichier json
-    #     file_path = os.path.join(current_directory, "outputs", "offres.json")
-    #     data = response.json()
-    #     with open(file_path, "w", encoding="utf-8") as f:
-    #         json.dump(data, f, ensure_ascii=False, indent=4)
-
-    # else:
-    #     print(f"Erreur lors de la requête API: {response.status_code}")
-    #     print(response.text)
-    #     print(response.json())
-
-    # à nettoyer : autres éléments qui permettent de filtrer
-    # "appellation": "404278, 10438",  # todo : ca a pas l'air de marcher... ça renvoie le même nombre que si on met que le premier élément
-    # "codeNAF": "",
-    # "codeROME": "",
-    # "commune": "",
-    # "departement": "",
-    # "distance": "",
-    # "domaine": "",
-    # "dureeContratMax": "",
-    # "dureeContratMin": "",
-    # "dureeHebdo": "",
-    # "dureeHebdoMax": "",
-    # "dureeHebdoMin": "",
-    # "entreprisesAdaptees": "",
-    # "experience": "",
-    # "experienceExigence": "",
-    # "inclureLimitrophes": "",
-    # "maxCreationDate": "",
-    # "minCreationDate": "",
-    # "modeSelectionPartenaires": "",
-    # "motsCles": "",
-    # "natureContrat": "",
-    # "niveauFormation": "",
-    # "offresMRS": "",
-    # "offresManqueCandidats": "",
-    # "origineOffre": "",
-    # "partenaires": "",
-    # "paysContinent": "",
-    # "periodeSalaire": "",
-    # "permis": "",
-    # "publieeDepuis": "",
-    # "qualification": "",
-    # "region": "",
-    # "salaireMin": "",
-    # "secteurActivite": "",
-    # "sort": "",
-    # "tempsPlein": "",
-    # "theme": "",
-    # "typeContrat": "",
+# à nettoyer : autres éléments qui permettent de filtrer
+# "appellation": "404278, 10438",  # todo : ca a pas l'air de marcher... ça renvoie le même nombre que si on met que le premier élément
+# "codeNAF": "",
+# "codeROME": "",
+# "commune": "",
+# "departement": "",
+# "distance": "",
+# "domaine": "",
+# "dureeContratMax": "",
+# "dureeContratMin": "",
+# "dureeHebdo": "",
+# "dureeHebdoMax": "",
+# "dureeHebdoMin": "",
+# "entreprisesAdaptees": "",
+# "experience": "",
+# "experienceExigence": "",
+# "inclureLimitrophes": "",
+# "maxCreationDate": "",
+# "minCreationDate": "",
+# "modeSelectionPartenaires": "",
+# "motsCles": "",
+# "natureContrat": "",
+# "niveauFormation": "",
+# "offresMRS": "",
+# "offresManqueCandidats": "",
+# "origineOffre": "",
+# "partenaires": "",
+# "paysContinent": "",
+# "periodeSalaire": "",
+# "permis": "",
+# "publieeDepuis": "",
+# "qualification": "",
+# "region": "",
+# "salaireMin": "",
+# "secteurActivite": "",
+# "sort": "",
+# "tempsPlein": "",
+# "theme": "",
+# "typeContrat": "",
