@@ -71,8 +71,8 @@ def get_appellations(token):
     response = requests.get(url, headers=headers)
 
     if response.status_code == 200:
-        # print(f"Réponse de l'API: {json.dumps(response.json(), indent=4, ensure_ascii=False)}")
         print(f"Status Code: {response.status_code}\n")
+        # print(f"Réponse de l'API: {json.dumps(response.json(), indent=4, ensure_ascii=False)}")
         # ensure_ascii=False sinon on a des caractères non compréhensible (ex: Op\u00e9rateur)
 
         file_path = os.path.join(current_directory, "outputs", "appellations.json")
@@ -121,24 +121,24 @@ def get_offres(token):
 
     response = requests.get(url, headers=headers, params=params)
 
-    print(f"{Fore.GREEN}==== Récupération des offres (requête 1) :{Style.NORMAL}")
+    print(f"{Fore.GREEN}==== Récupération des offres (requête 0) :{Style.NORMAL}")
 
     if response.status_code == 200:
         print(f"Status Code: {response.status_code}")
     elif response.status_code == 206:
         print(f"Status Code: {response.status_code} (Réponse partielle)")
-        print(f"Plage de contenu: {response.headers.get("Content-Range")}")  ##==> Plage de contenu: offres 0-0/9848
-
-        max_offres = int(response.headers.get("Content-Range").split("/")[-1])
-        print(f"Il y a {max_offres+1} offres au total => {int(max_offres/150)+1} requêtes nécessaires (avec 150 documents) pour récupérer toutes les offres.\n")
+        max_offres = int(response.headers.get("Content-Range").split("/")[-1])  # response.headers.get('Content-Range') = offres 0-0/9848
+        print(f"{Fore.YELLOW}{max_offres+1}{Style.RESET_ALL} offres au total")  # noqa
+        print(f"=> {int(max_offres/150)+1} requêtes nécessaires (avec 150 documents) pour tout récupérer")
+        print(f"=> Rappel : limité à 21 requêtes, soit 3150 offres maximum (voir limitation du paramètre range)\n")
     else:
         print(f"Erreur lors de la requête API: {response.status_code}")
         print(response.text)
         print(response.json())
 
     if max_offres == 1:
-        pass  # cas à traiter
-    elif max_offres < 150:
+        pass  # todo: cas à traiter
+    elif max_offres < 150:  # todo : json à formatter de la même manière que si max_offres > 150
         # Si on a moins de 150 offres, une seule requête suffit
         print(f"{Fore.GREEN}==== Récupération des offres (requête 2) :{Style.NORMAL}")
         params["range"] = f"{range_start}-{max_offres}"
@@ -158,10 +158,10 @@ def get_offres(token):
 
     else:
         # Si on a plus de 150 offres, il faut faire plusieurs requêtes (une requête renvoie 150 documents max)
-        print(f"{Fore.GREEN}==== Récupération des offres (requêtes 2...{2+int(max_offres/150)}) :{Style.NORMAL}")
+        # print(f"{Fore.GREEN}==== Récupération des offres (requêtes 2...{2+int(max_offres/150)}) :{Style.NORMAL}")
         range_start = 0
         range_end = 149
-        request_id = 2
+        request_id = 1
         params["range"] = f"{range_start}-{range_end}"
 
         with open(output_file, "w", encoding="utf-8") as f:
@@ -169,32 +169,42 @@ def get_offres(token):
 
         document_id = 0
 
-        for i in range(int(max_offres / 150) + 1):
-            # while max_offres >= range_end:
-            print(f"{Fore.GREEN}====== Récupération des offres (requête {request_id}) :{Style.NORMAL}", end=" ")
+        for _ in range(int(max_offres / 150) + 1):
+            print(f"{Fore.GREEN}==== Récupération des offres (requête {request_id}) :{Style.NORMAL}", end=" ")
             response = requests.get(url, headers=headers, params=params)
 
             if response.status_code == 206:
                 print(f"Status Code: {response.status_code}", end=", ")
 
                 with open(output_file, "a", encoding="utf-8") as f:
+                    # Boucle for pour écrire uniquement les documents
                     for obj in response.json()["resultats"]:
                         json.dump(obj, f, ensure_ascii=False)
-                        if document_id < max_offres - 1:
-                            f.write(",\n")  # Ajouter une virgule après chaque objet
-                            # f.write(f",{document_id}\n")  # Ajouter une virgule après chaque objet
-                        else:
+                        # Si on écrit le dernier document possible (le 3150e), on ne met pas de virgule à la fin, sinon le json n'est pas valide
+                        if document_id == 3149:
                             f.write("\n")  # Pour le dernier document, on ne met pas de virgule, sinon le json n'est pas valide
+                        else:
+                            if document_id < max_offres - 1:
+                                f.write(",\n")  # Ajouter une virgule après chaque objet
+                            else:
+                                f.write("\n")  # Pour le dernier document, on ne met pas de virgule, sinon le json n'est pas valide
                         document_id += 1
                 print(f"{range_start}-{range_end}/{max_offres}")
 
             else:
                 print(f"Status Code: {response.status_code}")  # à investiguer
+                print(f"{response.json()}")  # à investiguer
+                break
 
             range_start += 150
             range_end += 150
             params["range"] = f"{range_start}-{range_end}"
             request_id += 1
+
+        # Pagination des données. La plage de résultats est limitée à 150.
+        # Format : p-d, où :
+        #  - p est l’index (débutant à 0) du premier élément demandé ne devant pas dépasser 3000
+        #  - d est l’index de dernier élément demandé ne devant pas dépasser 3149
 
         with open(output_file, "a", encoding="utf-8") as f:
             f.write("]")  # Clore le json en ajoutant un crochet fermant "]"
