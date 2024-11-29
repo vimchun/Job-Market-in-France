@@ -2,8 +2,7 @@ import os
 
 import yaml
 
-from functions import get_appellations, get_bearer_token, get_offres
-
+from functions import get_appellations, get_bearer_token, get_offres, get_offres_no_appellation
 
 # Récupération des credentials données sur le site de FT, depuis un fichier yaml
 CREDENTIALS_FILE = "api_credentials_minh.yml"  # à modifier selon qui lance le script (todo: trouver une meilleure solution)
@@ -26,33 +25,44 @@ token = get_bearer_token(
 )
 
 
-get_appellations(token)
+# get_appellations(token)
 
 
 # toutes les offres des métiers de la data
 codes = [
-    "38970",  # { "code": "38970", "libelle": "Data Miner" },
-    "38971",  # { "code": "38971", "libelle": "Data analyst" },
-    "38972",  # { "code": "38972", "libelle": "Data scientist" },
-    "38975",  # { "code": "38975", "libelle": "Data manager" },
-    "38977",  # { "code": "38977", "libelle": "Développeur / Développeuse Big Data" },
-    "404274",  # { "code": "404274", "libelle": "Ingénieur / Ingénieure data scientist" },
-    "404276",  # { "code": "404276", "libelle": "Architecte big data" },
-    "404277",  # { "code": "404277", "libelle": "Big data engineer" },
-    "404278",  # { "code": "404278", "libelle": "Data engineer" },
-    "404279",  # { "code": "404279", "libelle": "Docteur big data" },
-    "404280",  # { "code": "404280", "libelle": "Expert / Experte big data" },
-    "404281",  # { "code": "404281", "libelle": "Expert / Experte technique big data" },
-    "404282",  # { "code": "404282", "libelle": "Ingénieur / Ingénieure big data" },
-    "404283",  # { "code": "404283", "libelle": "Ingénieur / Ingénieure dataviz" },
-    "404285",  # { "code": "404285", "libelle": "Ingénieur / Ingénieure en développement big data" },
-    "404286",  # { "code": "404286", "libelle": "Responsable architecture conception data" },
-    "404287",  # { "code": "404287", "libelle": "Responsable big data" },
-    "404288",  # { "code": "404288", "libelle": "Développeur / Développeuse data" },
-    "404291",  # { "code": "404291", "libelle": "Data Protection Officer" },
-    "404939",  # { "code": "404939", "libelle": "Biostatisticien / Biostatisticienne data manager" },
-    "405222",  # { "code": "405222", "libelle": "Data analyst de la performance" },
-    "489091",  # { "code": "489091", "libelle": "Database administrator" },
+    # "38970",  # { "code": "38970", "libelle": "Data Miner" }
+    # "38971",  # { "code": "38971", "libelle": "Data analyst" }
+    # "38972",  # { "code": "38972", "libelle": "Data scientist" }
+    # "38975",  # { "code": "38975", "libelle": "Data manager" }
+    # "38977",  # { "code": "38977", "libelle": "Développeur / Développeuse Big Data" }
+    # "404274",  # { "code": "404274", "libelle": "Ingénieur / Ingénieure data scientist" }
+    # "404276",  # { "code": "404276", "libelle": "Architecte big data" }
+    # "404277",  # { "code": "404277", "libelle": "Big data engineer" }
+    # "404278",  # { "code": "404278", "libelle": "Data engineer" }
+    # "404279",  # { "code": "404279", "libelle": "Docteur big data" }
+    "404280",  # { "code": "404280", "libelle": "Expert / Experte big data" }
+    # "404281",  # { "code": "404281", "libelle": "Expert / Experte technique big data" }
+    # "404282",  # { "code": "404282", "libelle": "Ingénieur / Ingénieure big data" }
+    # "404283",  # { "code": "404283", "libelle": "Ingénieur / Ingénieure dataviz" }
+    "404285",  # { "code": "404285", "libelle": "Ingénieur / Ingénieure en développement big data" }
+    # "404286",  # { "code": "404286", "libelle": "Responsable architecture conception data" }
+    # "404287",  # { "code": "404287", "libelle": "Responsable big data" }
+    # "404288",  # { "code": "404288", "libelle": "Développeur / Développeuse data" }
+    # "404291",  # { "code": "404291", "libelle": "Data Protection Officer" }
+    # "404939",  # { "code": "404939", "libelle": "Biostatisticien / Biostatisticienne data manager" }
+    # "405222",  # { "code": "405222", "libelle": "Data analyst de la performance" }
+    # "489091",  # { "code": "489091", "libelle": "Database administrator" }
+    #### new
+    "38095",  # { "code": "38095", "libelle": "Analyste décisionnel - Business Intelligence" }
+    # "404275",  # { "code": "404275", "libelle": "Analyste qualité des données" }
+    # "404289",  # { "code": "404289", "libelle": "Analyste scientifique des données" }
+    # "404271",  # {"code": "404271", "libelle": "Expert / Experte en sciences des données"}
+    # "404273",  # {"code": "404273", "libelle": "Explorateur / Exploratrice de données"}
+    # "404284",  # {"code": "404284", "libelle": "Ingénieur / Ingénieure données"}
+    # "404289",  # {"code": "404289", "libelle": "Analyste scientifique des données"}
+    #### rien à voir avec la data
+    "11573",  # {"code": "11573", "libelle": "Boulanger / Boulangère"}
+    "17406",  # {"code": "17406", "libelle": "Ouvrier boucher / Ouvrière bouchère"}
 ]
 
 for code in codes:

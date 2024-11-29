@@ -99,8 +99,6 @@ def get_offres(token, filter_params):
 
     current_directory = os.path.dirname(os.path.abspath(__file__))
 
-    appellation = filter_params["appellation"]
-
     # Recherche le "libelle" correspondant à "l'appellation"
     code_libelle = [  # modification du libelle pour pouvoir renommer les fichiers de sortie
         {"code": "38970", "libelle": "Data_Miner"},
@@ -125,14 +123,152 @@ def get_offres(token, filter_params):
         {"code": "404939", "libelle": "Biostatisticien_data_manager"},
         {"code": "405222", "libelle": "Data_Analyst_De_La_Performance"},
         {"code": "489091", "libelle": "Database_Administrator"},
+        #### new
+        {"code": "38095", "libelle": "Analyste_Decisionnel_Business_Intelligence"},
+        {"code": "404275", "libelle": "Analyste_Qualite_Des_Donnees"},
+        {"code": "404289", "libelle": "Analyste_Scientifique_Des_Donnees"},
+        {"code": "404271", "libelle": "Expert_En_Sciences_Des_Donnees"},
+        {"code": "404273", "libelle": "Explorateur_De_Donnees"},
+        {"code": "404284", "libelle": "Ingenieur_Donnees"},
+        {"code": "404289", "libelle": "Analyste_Scientifique_Des_Donnees"},
     ]
+
+    codes_list = [i["code"] for i in code_libelle]
+
+    appellation = filter_params["appellation"]
 
     for item in code_libelle:
         if item["code"] == appellation:
             libelle = item["libelle"]
             break
 
-    print(f"{Fore.GREEN}== Récupération des offres ({appellation}: {libelle}) :")
+    if filter_params["appellation"] in codes_list:
+        print(f"{Fore.GREEN}== Récupération des offres ({appellation}: {libelle}) :")
+    else:
+        print(f"{Fore.GREEN}== Récupération des offres ({appellation}) :")
+
+    url = "https://api.francetravail.io/partenaire/offresdemploi/v2/offres/search"
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json",
+    }
+
+    #### Première requête pour voir combien d'offres sont disponibles
+
+    response = requests.get(url, headers=headers, params=filter_params)
+
+    print(f"{Fore.GREEN}==== Récupération des offres (requête 0), pour connaître le nombre d'offres :", end=" ")
+
+    # print(
+    #     response.headers.get("Content-Range"),  # exemple : "offres 0-0/9848"
+    #     int(response.headers.get("Content-Range").split("/")[-1]),
+    # )
+
+    max_offres = int(response.headers.get("Content-Range").split("/")[-1])  # response.headers.get('Content-Range') = offres 0-0/9848
+
+    if filter_params["appellation"] in codes_list:
+        output_file = os.path.join(current_directory, "outputs", f"{appellation}_{libelle}__{max_offres}_offres.json")
+    else:
+        output_file = os.path.join(current_directory, "outputs", f"{appellation}__{max_offres}_offres.json")
+
+    if os.path.exists(output_file):
+        os.remove(output_file)
+
+    ###### réponse 200 : on peut récupérer déjà récupérer toutes les offres disponibles
+    if response.status_code == 200:
+        print(f"Status Code: {response.status_code}")
+        # print(response.headers.get("Content-Range"))
+        print(f"  => {Fore.CYAN}[{max_offres}]{Style.RESET_ALL} offres au total {Fore.YELLOW}--> writing to file")
+
+        document_id = 0
+
+        with open(output_file, "a", encoding="utf-8") as f:
+            f.write("[\n")  # Ajouter un "[" pour "initialiser" le fichier json
+
+            for obj in response.json()["resultats"]:  # Boucle for pour écrire uniquement les documents
+                json.dump(obj, f, ensure_ascii=False)
+                if document_id < max_offres - 1:
+                    f.write(",\n")  # Ajouter une virgule après chaque objet
+                else:
+                    f.write("\n")  # Pour le dernier document, on ne met pas de virgule, sinon le json n'est pas valide
+                document_id += 1
+
+            f.write("]")  # Clore le json en ajoutant un crochet fermant "]"
+
+    ###### réponse 206 : on doit faire plusieurs requêtes pour récupérer tous les documents (limité à 3150 documents)
+    elif response.status_code == 206:
+        print(f"Status Code: {response.status_code} (Réponse partielle)")
+        # print(response.headers.get("Content-Range"))
+        print(f"  => {Fore.CYAN}[{max_offres}]{Style.RESET_ALL} offres au total")
+        print(f"  => {Fore.CYAN}[{int(max_offres/150)+1}]{Style.RESET_ALL} requêtes nécessaires (avec 150 documents) pour tout récupérer", end="")
+        print(f" {Style.DIM} (limité à 21 requêtes, soit 3150 offres maximum)")  # (voir limitation du paramètre range)
+
+        range_start = 0
+        range_end = 149
+        request_id = 1
+        filter_params["range"] = f"{range_start}-{range_end}"
+
+        with open(output_file, "a", encoding="utf-8") as f:
+            f.write("[\n")  # Ajouter un "[" pour "initialiser" le fichier json
+
+            document_id = 0
+
+            for _ in range(int(max_offres / 150) + 1):
+                print(f"{Fore.GREEN}==== Récupération des offres (requête {request_id}) :", end=" ")
+                # response = requests.get(url, headers=headers, params=params)
+                response = requests.get(url, headers=headers, params=filter_params)
+
+                if response.status_code == 206:
+                    print(f"Status Code: {response.status_code}", end=", ")
+
+                    # Boucle for pour écrire uniquement les documents
+                    for obj in response.json()["resultats"]:
+                        json.dump(obj, f, ensure_ascii=False)
+                        # Si on écrit le dernier document possible (le 3150e), on ne met pas de virgule à la fin, sinon le json n'est pas valide
+                        if document_id == 3149:
+                            f.write("\n")  # Pour le dernier document, on ne met pas de virgule, sinon le json n'est pas valide
+                        else:
+                            if document_id < max_offres - 1:
+                                f.write(",\n")  # Ajouter une virgule après chaque objet
+                            else:
+                                f.write("\n")  # Pour le dernier document, on ne met pas de virgule, sinon le json n'est pas valide
+                        document_id += 1
+                    print(f"{range_start}-{range_end}/{max_offres} {Fore.YELLOW}--> writing to file")
+                else:
+                    print(f"Status Code: {response.status_code}, {response.json()}")
+                    break
+
+                range_start += 150
+                range_end += 150
+                filter_params["range"] = f"{range_start}-{range_end}"
+                request_id += 1
+
+            f.write("]")  # Clore le json en ajoutant un crochet fermant "]"
+
+    ###### autres cas
+    elif response.status_code == 204:
+        print(f"Status Code : {response.status_code} : Aucune offre correspondante")
+    else:
+        print(f"Status Code : {response.status_code}")
+        print(response.text)
+        print(response.json())
+
+    print("")
+
+
+def get_offres_no_appellation(token, filter_params):
+    """
+    Récupérer les offre et les écrit dans un fichier json.
+    Une requête retourne au maximum 150 offres (cf paramètres range), donc il faut en faire plusieurs s'il y a plus de 150 offres.
+    Beaucoup de paramètres possibles, dont le paramètre range qui limite le nombre d'offres retourné à 3150
+
+    Ne retourne rien.
+    """
+
+    current_directory = os.path.dirname(os.path.abspath(__file__))
+
+    print(f"{Fore.GREEN}== Récupération des offres :")
 
     url = "https://api.francetravail.io/partenaire/offresdemploi/v2/offres/search"
 
@@ -149,7 +285,7 @@ def get_offres(token, filter_params):
 
     max_offres = int(response.headers.get("Content-Range").split("/")[-1])  # response.headers.get('Content-Range') = offres 0-0/9848
 
-    output_file = os.path.join(current_directory, "outputs", f"{appellation}_{libelle}__{max_offres}_offres.json")
+    output_file = os.path.join(current_directory, "outputs", f"offres.json")
 
     if os.path.exists(output_file):
         os.remove(output_file)
