@@ -2,7 +2,7 @@ import os
 
 import yaml
 
-from functions import get_appellations, get_bearer_token, get_offres, get_offres_no_appellation
+from functions import get_appellations, get_bearer_token, get_offres
 
 # Récupération des credentials données sur le site de FT, depuis un fichier yaml
 CREDENTIALS_FILE = "api_credentials_minh.yml"  # à modifier selon qui lance le script (todo: trouver une meilleure solution)
@@ -25,7 +25,7 @@ token = get_bearer_token(
 )
 
 
-# get_appellations(token)
+get_appellations(token)
 
 
 # toutes les offres des métiers de la data
