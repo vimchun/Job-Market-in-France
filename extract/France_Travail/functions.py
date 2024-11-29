@@ -188,6 +188,8 @@ def get_offres(token, filter_params):
 
             for obj in response.json()["resultats"]:  # Boucle for pour écrire uniquement les documents
                 json.dump(obj, f, ensure_ascii=False)
+                print(obj)
+                print("toto")
                 if document_id < max_offres - 1:
                     f.write(",\n")  # Ajouter une virgule après chaque objet
                 else:
@@ -209,32 +211,59 @@ def get_offres(token, filter_params):
         request_id = 1
         filter_params["range"] = f"{range_start}-{range_end}"
 
+        # print()  # todo : à supprimer plus tard
+
+        mots_a_inclure_dans_offre = [
+            "Data Engineer",
+            "Ingénieur Data",
+            # #### pareil que DE ?
+            "Ingénieur big data",
+            "Ingénieur en traitement de données",
+        ]
+
+        import unicodedata
+
+        def normalize_string(s):
+            # Normalise la chaîne en forme "NFD" et enlève les accents
+            return unicodedata.normalize("NFD", s).encode("ascii", "ignore").decode("utf-8").lower()
+
         with open(output_file, "a", encoding="utf-8") as f:
             f.write("[\n")  # Ajouter un "[" pour "initialiser" le fichier json
 
-            document_id = 0
-
+            doc_id = 1
             for _ in range(int(max_offres / 150) + 1):
-                print(f"{Fore.GREEN}==== Récupération des offres (requête {request_id}) :", end=" ")
+                # print(f"{Fore.GREEN}==== Récupération des offres (requête {request_id}) :", end=" ") # todo : à décommenter
                 # response = requests.get(url, headers=headers, params=params)
                 response = requests.get(url, headers=headers, params=filter_params)
 
                 if response.status_code == 206:
-                    print(f"Status Code: {response.status_code}", end=", ")
+                    # print(f"Status Code: {response.status_code}", end=", ")  # todo : à décommenter
 
                     # Boucle for pour écrire uniquement les documents
-                    for obj in response.json()["resultats"]:
-                        json.dump(obj, f, ensure_ascii=False)
+                    for doc in response.json()["resultats"]:
+                        intitule = doc["intitule"]
+                        description = doc["description"]
+                        appellation_libelle = doc["appellationlibelle"]
+
+                        for mots in mots_a_inclure_dans_offre:
+                            # if mots in intitule:
+                            if mots.lower() in intitule.lower():
+                                # print(f"id: {doc_id:<4} - appellation: {appellation_libelle:20} - intitule: {intitule}")
+                                print(f"id: {doc_id:<4} - intitule: {intitule}")
+
+                        # print(f"{doc_id} : {doc['intitule']}")
+                        json.dump(doc, f, ensure_ascii=False)
                         # Si on écrit le dernier document possible (le 3150e), on ne met pas de virgule à la fin, sinon le json n'est pas valide
-                        if document_id == 3149:
+                        if doc_id == 3150:
                             f.write("\n")  # Pour le dernier document, on ne met pas de virgule, sinon le json n'est pas valide
                         else:
-                            if document_id < max_offres - 1:
+                            # if doc_id < max_offres - 1:
+                            if doc_id < max_offres:
                                 f.write(",\n")  # Ajouter une virgule après chaque objet
                             else:
                                 f.write("\n")  # Pour le dernier document, on ne met pas de virgule, sinon le json n'est pas valide
-                        document_id += 1
-                    print(f"{range_start}-{range_end}/{max_offres} {Fore.YELLOW}--> writing to file")
+                        doc_id += 1
+                    # print(f"{range_start}-{range_end}/{max_offres} {Fore.YELLOW}--> writing to file")  # todo : à décommenter
                 else:
                     print(f"Status Code: {response.status_code}, {response.json()}")
                     break
@@ -255,4 +284,3 @@ def get_offres(token, filter_params):
         print(response.json())
 
     print("")
-

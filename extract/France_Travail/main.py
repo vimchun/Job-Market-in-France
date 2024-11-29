@@ -25,11 +25,17 @@ token = get_bearer_token(
 )
 
 
-get_appellations(token)
+# get_appellations(token)
 
 
 # toutes les offres des métiers de la data
 codes = [
+    #### métier Data Engineer
+    # "404278",  # { "code": "404278", "libelle": "Data engineer" }
+    # "404277",  # { "code": "404277", "libelle": "Big data engineer" }
+    # "404282",  # { "code": "404282", "libelle": "Ingénieur / Ingénieure big data" }
+    "404284",  # {"code": "404284", "libelle": "Ingénieur / Ingénieure données"}
+    #### autres métiers de la data
     # "38970",  # { "code": "38970", "libelle": "Data Miner" }
     # "38971",  # { "code": "38971", "libelle": "Data analyst" }
     # "38972",  # { "code": "38972", "libelle": "Data scientist" }
@@ -37,14 +43,11 @@ codes = [
     # "38977",  # { "code": "38977", "libelle": "Développeur / Développeuse Big Data" }
     # "404274",  # { "code": "404274", "libelle": "Ingénieur / Ingénieure data scientist" }
     # "404276",  # { "code": "404276", "libelle": "Architecte big data" }
-    # "404277",  # { "code": "404277", "libelle": "Big data engineer" }
-    # "404278",  # { "code": "404278", "libelle": "Data engineer" }
     # "404279",  # { "code": "404279", "libelle": "Docteur big data" }
-    "404280",  # { "code": "404280", "libelle": "Expert / Experte big data" }
+    # "404280",  # { "code": "404280", "libelle": "Expert / Experte big data" }
     # "404281",  # { "code": "404281", "libelle": "Expert / Experte technique big data" }
-    # "404282",  # { "code": "404282", "libelle": "Ingénieur / Ingénieure big data" }
     # "404283",  # { "code": "404283", "libelle": "Ingénieur / Ingénieure dataviz" }
-    "404285",  # { "code": "404285", "libelle": "Ingénieur / Ingénieure en développement big data" }
+    # "404285",  # { "code": "404285", "libelle": "Ingénieur / Ingénieure en développement big data" }
     # "404286",  # { "code": "404286", "libelle": "Responsable architecture conception data" }
     # "404287",  # { "code": "404287", "libelle": "Responsable big data" }
     # "404288",  # { "code": "404288", "libelle": "Développeur / Développeuse data" }
@@ -53,16 +56,16 @@ codes = [
     # "405222",  # { "code": "405222", "libelle": "Data analyst de la performance" }
     # "489091",  # { "code": "489091", "libelle": "Database administrator" }
     #### new
-    "38095",  # { "code": "38095", "libelle": "Analyste décisionnel - Business Intelligence" }
+    # "38095",  # { "code": "38095", "libelle": "Analyste décisionnel - Business Intelligence" }
     # "404275",  # { "code": "404275", "libelle": "Analyste qualité des données" }
     # "404289",  # { "code": "404289", "libelle": "Analyste scientifique des données" }
     # "404271",  # {"code": "404271", "libelle": "Expert / Experte en sciences des données"}
     # "404273",  # {"code": "404273", "libelle": "Explorateur / Exploratrice de données"}
-    # "404284",  # {"code": "404284", "libelle": "Ingénieur / Ingénieure données"}
     # "404289",  # {"code": "404289", "libelle": "Analyste scientifique des données"}
     #### rien à voir avec la data
-    "11573",  # {"code": "11573", "libelle": "Boulanger / Boulangère"}
-    "17406",  # {"code": "17406", "libelle": "Ouvrier boucher / Ouvrière bouchère"}
+    # "11573",  # {"code": "11573", "libelle": "Boulanger / Boulangère"}
+    # "17406",  # {"code": "17406", "libelle": "Ouvrier boucher / Ouvrière bouchère"}
+    # "10438",  # {"code": "10438", "libelle": "Agent / Agente de destruction d'insectes"},
 ]
 
 for code in codes:
@@ -75,7 +78,7 @@ for code in codes:
             # "codeROME": "",  # Code ROME de l’offre, voir le référentiel des métiers ci-dessous
             #### localisation
             # "commune": "",  # Code INSEE de la commune, voir le référentiel ci-dessous
-            # "departement": "",  # Département de l’offre, voir le référentiel ci-dessous
+            # "departement": "75",  # Département de l’offre, voir le référentiel ci-dessous
             # "distance": "",  # Distance à la commune (pris en compte uniquement si une commune est renseignée, plus d'information dans la documentation)
             # "inclureLimitrophes": "",  # Inclure les départements limitrophes dans la recherche
             # "paysContinent": "",  # Pays ou continent de l’offre, voir le référentiel ci-dessous
@@ -93,13 +96,13 @@ for code in codes:
             # "salaireMin": "",  # Salaire minimum recherché. Si cette donnée est renseignée, le code du type de salaire minimum est obligatoire.
             #### experience
             # "experience": "",  # Niveau d’expérience demandé, (1 moins d'un an, 2 de 1 à 3 ans, 3 plus de 3 ans)
-            # "experienceExigence": "",  # Exigence d'expérience (D débutant accepté, S expérience souhaitée, E expérience exigée)
+            "experienceExigence": "D",  # Exigence d'expérience (D débutant accepté, S expérience souhaitée, E expérience exigée)
             #### date de création
             # "maxCreationDate": "",  # Date maximale pour laquelle rechercher des offres (format yyyy-MM-dd'T'hh:mm:ss'Z')
             # "minCreationDate": "",  # Date minimale pour laquelle rechercher des offres (format yyyy-MM-dd'T'hh:mm:ss'Z')
             # "publieeDepuis": "",  # Recherche les offres publiées depuis maximum « X » jours
             #### misc.
-            # "accesTravailleurHandicape": False,  # Offres pour lesquelles l’employeur est handi friendly
+            # "accesTravailleurHandicape": True,  # Offres pour lesquelles l’employeur est handi friendly
             # "modeSelectionPartenaires": "",  # Énumération (INCLUS ou EXCLU) - Mode de sélection des partenaires.
             # "motsCles": "data",  # Recherche de mots clés dans l’offre, voir documentation
             # "niveauFormation": "",  # Niveau de formation demandé, voir le référentiel ci-dessous
