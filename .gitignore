@@ -1,7 +1,8 @@
 _notes_perso/
 api_credentials_minh.yml
 __pycache__
-extract/France_Travail/outputs/*.json
+extract/France_Travail/outputs/appellations/*.json
+extract/France_Travail/outputs/offres/*.json
 todel.py
 package-lock.json
 package.json

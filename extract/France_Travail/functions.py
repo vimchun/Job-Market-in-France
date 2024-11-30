@@ -76,7 +76,7 @@ def get_appellations(token):
         # print(f"Réponse de l'API: {json.dumps(response.json(), indent=4, ensure_ascii=False)}")
         # ensure_ascii=False sinon on a des caractères non compréhensible (ex: Op\u00e9rateur)
 
-        file_path = os.path.join(current_directory, "outputs", "appellations.json")
+        file_path = os.path.join(current_directory, "outputs", "appellations", "appellations.json")
         data = response.json()
         with open(file_path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
@@ -168,9 +168,9 @@ def get_offres(token, filter_params):
     max_offres = int(response.headers.get("Content-Range").split("/")[-1])  # response.headers.get('Content-Range') = offres 0-0/9848
 
     if filter_params["appellation"] in codes_list:
-        output_file = os.path.join(current_directory, "outputs", f"{appellation}_{libelle}__{max_offres}_offres.json")
+        output_file = os.path.join(current_directory, "outputs", "offres", f"{appellation}_{libelle}__{max_offres}_offres.json")
     else:
-        output_file = os.path.join(current_directory, "outputs", f"{appellation}__{max_offres}_offres.json")
+        output_file = os.path.join(current_directory, "outputs", "offres", f"{appellation}__{max_offres}_offres.json")
 
     if os.path.exists(output_file):
         os.remove(output_file)
@@ -188,8 +188,6 @@ def get_offres(token, filter_params):
 
             for obj in response.json()["resultats"]:  # Boucle for pour écrire uniquement les documents
                 json.dump(obj, f, ensure_ascii=False)
-                print(obj)
-                print("toto")
                 if document_id < max_offres - 1:
                     f.write(",\n")  # Ajouter une virgule après chaque objet
                 else:
@@ -211,59 +209,32 @@ def get_offres(token, filter_params):
         request_id = 1
         filter_params["range"] = f"{range_start}-{range_end}"
 
-        # print()  # todo : à supprimer plus tard
-
-        mots_a_inclure_dans_offre = [
-            "Data Engineer",
-            "Ingénieur Data",
-            # #### pareil que DE ?
-            "Ingénieur big data",
-            "Ingénieur en traitement de données",
-        ]
-
-        import unicodedata
-
-        def normalize_string(s):
-            # Normalise la chaîne en forme "NFD" et enlève les accents
-            return unicodedata.normalize("NFD", s).encode("ascii", "ignore").decode("utf-8").lower()
-
         with open(output_file, "a", encoding="utf-8") as f:
             f.write("[\n")  # Ajouter un "[" pour "initialiser" le fichier json
 
-            doc_id = 1
+            document_id = 0
+
             for _ in range(int(max_offres / 150) + 1):
-                # print(f"{Fore.GREEN}==== Récupération des offres (requête {request_id}) :", end=" ") # todo : à décommenter
+                print(f"{Fore.GREEN}==== Récupération des offres (requête {request_id}) :", end=" ")
                 # response = requests.get(url, headers=headers, params=params)
                 response = requests.get(url, headers=headers, params=filter_params)
 
                 if response.status_code == 206:
-                    # print(f"Status Code: {response.status_code}", end=", ")  # todo : à décommenter
+                    print(f"Status Code: {response.status_code}", end=", ")
 
                     # Boucle for pour écrire uniquement les documents
-                    for doc in response.json()["resultats"]:
-                        intitule = doc["intitule"]
-                        description = doc["description"]
-                        appellation_libelle = doc["appellationlibelle"]
-
-                        for mots in mots_a_inclure_dans_offre:
-                            # if mots in intitule:
-                            if mots.lower() in intitule.lower():
-                                # print(f"id: {doc_id:<4} - appellation: {appellation_libelle:20} - intitule: {intitule}")
-                                print(f"id: {doc_id:<4} - intitule: {intitule}")
-
-                        # print(f"{doc_id} : {doc['intitule']}")
-                        json.dump(doc, f, ensure_ascii=False)
+                    for obj in response.json()["resultats"]:
+                        json.dump(obj, f, ensure_ascii=False)
                         # Si on écrit le dernier document possible (le 3150e), on ne met pas de virgule à la fin, sinon le json n'est pas valide
-                        if doc_id == 3150:
+                        if document_id == 3149:
                             f.write("\n")  # Pour le dernier document, on ne met pas de virgule, sinon le json n'est pas valide
                         else:
-                            # if doc_id < max_offres - 1:
-                            if doc_id < max_offres:
+                            if document_id < max_offres - 1:
                                 f.write(",\n")  # Ajouter une virgule après chaque objet
                             else:
                                 f.write("\n")  # Pour le dernier document, on ne met pas de virgule, sinon le json n'est pas valide
-                        doc_id += 1
-                    # print(f"{range_start}-{range_end}/{max_offres} {Fore.YELLOW}--> writing to file")  # todo : à décommenter
+                        document_id += 1
+                    print(f"{range_start}-{range_end}/{max_offres} {Fore.YELLOW}--> writing to file")
                 else:
                     print(f"Status Code: {response.status_code}, {response.json()}")
                     break
@@ -284,3 +255,50 @@ def get_offres(token, filter_params):
         print(response.json())
 
     print("")
+
+
+def filtrer_offres_selon_liste(directory, liste_strings_a_verifier_dans_intitule):
+    """
+    Rappel : La fonction get_offres() génèrent des jsons selon les appellations rentrées en paramètres.
+    La fonction courante :
+        - parse ces json et ne conserve que les offres dont les intitulés contiennent les strings qui sont dans une liste passée en argument.
+        - écrire ces offres dans un json
+    """
+
+    # # filename = os.path.join(current_directory, "outputs", "archives", "2024-11-28", "404278_Data_Engineer__10016_offres.json")
+    # filename = os.path.join(current_directory, "outputs", "404284_Ingenieur_Donnees__2940_offres.json")
+
+    # Ouvrir et charger le fichier JSON
+    # with open(filename, "r", encoding="utf-8") as file:
+    #     data = json.load(file)  # Charger le JSON dans un objet Python
+
+    # output_filtered = os.path.join(current_directory, "outputs", "404284_Ingenieur_Donnees__2940_offres_filtered.json")
+
+    # current_directory = os.path.dirname(os.path.abspath(__file__))
+    # filename = os.path.join(current_directory, "outputs", "archives", "2024-11-28", "404278_Data_Engineer__10016_offres.json")
+
+    offres_id_filtered = []
+    doc_nb = 1
+
+    for filename in os.listdir(directory):
+        # with open(filename, "r", encoding="utf-8") as file:
+        with open(os.path.join(directory, filename), "r", encoding="utf-8") as file:
+            data = json.load(file)  # Charger le JSON dans un objet Python
+
+            # print(filename)
+            for line in data:
+                offre_intitule = line["intitule"]
+                offre_id = line["id"]
+                # print(offre_id, offre_intitule)
+                for mot in liste_strings_a_verifier_dans_intitule:
+                    if mot.lower() in offre_intitule.lower():
+                        if offre_id not in offres_id_filtered:
+                            offres_id_filtered.append(offre_id)
+                            print(f"{doc_nb:<5} {offre_id} : {offre_intitule:<100}  {filename}")
+                            doc_nb += 1
+            # print()
+
+    # print(
+    #     len(offres_id_filtered),
+    #     offres_id_filtered,
+    # )

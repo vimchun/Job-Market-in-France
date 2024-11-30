@@ -1,0 +1,61 @@
+{
+  "id": "184TRJB",
+  "intitule": "Data engineer",
+  "description": "Data Engineer (H/F) !\n\nVous êtes passionné(e) par la data et souhaitez relever des défis techniques au sein d'équipes dynamiques ? Ce poste est fait pour vous !\n\nVos missions :\n\nConcevoir, développer et optimiser des pipelines de données robustes et scalables.\nMettre en place et gérer des architectures data modernes (cloud ou on-premise).\nCollaborer avec des data scientists et des analystes pour rendre les données exploitables.\nGarantir la qualité, la sécurité et la gouvernance des données.\nVotre profil :\n\nSolide maîtrise de Python, SQL, ou Spark.\nExpérience avec des bases de données (SQL/NoSQL).\nCompétence sur des outils ETL (Talend, Informatica.) et plateformes cloud (AWS, Azure, GCP).\nEsprit analytique et goût du travail en équipe.",
+  "dateCreation": "2024-11-28T14:23:11.470Z",
+  "dateActualisation": "2024-11-28T14:23:11.957Z",
+  "lieuTravail": { "libelle": "75 - PARIS 08", "latitude": 48.873635, "longitude": 2.3116, "codePostal": "75008", "commune": "75108" },
+  "romeCode": "M1811",
+  "romeLibelle": "Data engineer",
+  "appellationlibelle": "Data engineer",
+  "entreprise": { "nom": "ARTIALYS", "entrepriseAdaptee": false },
+  "typeContrat": "CDI",
+  "typeContratLibelle": "CDI",
+  "natureContrat": "Contrat travail",
+  "experienceExige": "E",
+  "experienceLibelle": "4 An(s)",
+  "formations": [{ "niveauLibelle": "Bac+5 et plus ou équivalents", "exigence": "S" }],
+  "competences": [
+    { "code": "300067", "libelle": "Analyser, exploiter, structurer des données", "exigence": "S" },
+    { "code": "300488", "libelle": "Concevoir et gérer un projet", "exigence": "S" },
+    { "code": "120209", "libelle": "Enrichir une base de données", "exigence": "S" },
+    { "code": "403927", "libelle": "Collaborer dans un groupe pour réaliser un projet", "exigence": "S" },
+    { "code": "404185", "libelle": "Convaincre en argumentant avec un ou plusieurs interlocuteurs (interne et externe)", "exigence": "S" },
+    { "code": "300462", "libelle": "Rendre compte de son activité", "exigence": "S" }
+  ],
+  "salaire": { "libelle": "Mensuel de 40000.0 Euros à 50000.0 Euros sur 12.0 mois", "complement1": "Chèque repas" },
+  "dureeTravailLibelle": "35H\nTravail en journée",
+  "dureeTravailLibelleConverti": "Temps plein",
+  "alternance": false,
+  "contact": {
+    "nom": "ARTIALYS - M. herman afoulatsan",
+    "coordonnees1": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/184TRJB",
+    "courriel": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/184TRJB"
+  },
+  "agence": {},
+  "nombrePostes": 1,
+  "accessibleTH": false,
+  "deplacementCode": "2",
+  "deplacementLibelle": "Ponctuels Zone régionale",
+  "qualificationCode": "9",
+  "qualificationLibelle": "Cadre",
+  "codeNAF": "62.02A",
+  "secteurActivite": "62",
+  "secteurActiviteLibelle": "Conseil en systèmes et logiciels informatiques",
+  "qualitesProfessionnelles": [
+    {
+      "libelle": "Faire preuve d'autonomie",
+      "description": "Capacité à prendre en charge son activité sans devoir être encadré de façon continue (le cas échéant, à solliciter les autres acteurs de l'entreprise)."
+    },
+    {
+      "libelle": "Faire preuve de rigueur et de précision",
+      "description": "Capacité à réaliser des tâches en suivant avec exactitude les règles, les procédures, les instructions qui ont été fournies, sans réaliser d'erreur et à transmettre clairement des informations. Se montrer ponctuel et respectueux des règles de savoir-vivre usuelles."
+    },
+    {
+      "libelle": "Organiser son travail selon les priorités et les objectifs",
+      "description": "Capacité à planifier, prioriser, anticiper des actions, en tenant compte des moyens, des ressources, des objectifs et du calendrier pour les réaliser."
+    }
+  ],
+  "origineOffre": { "origine": "1", "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/184TRJB" },
+  "offresManqueCandidats": false
+}
