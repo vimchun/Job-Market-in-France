@@ -282,21 +282,23 @@ def filtrer_offres_selon_liste(directory, liste_strings_a_verifier_dans_intitule
 
     for filename in os.listdir(directory):
         # with open(filename, "r", encoding="utf-8") as file:
-        with open(os.path.join(directory, filename), "r", encoding="utf-8") as file:
-            data = json.load(file)  # Charger le JSON dans un objet Python
 
-            # print(filename)
-            for line in data:
-                offre_intitule = line["intitule"]
-                offre_id = line["id"]
-                # print(offre_id, offre_intitule)
-                for mot in liste_strings_a_verifier_dans_intitule:
-                    if mot.lower() in offre_intitule.lower():
-                        if offre_id not in offres_id_filtered:
-                            offres_id_filtered.append(offre_id)
-                            print(f"{doc_nb:<5} {offre_id} : {offre_intitule:<100}  {filename}")
-                            doc_nb += 1
-            # print()
+
+        if filename.endswith(".json") :  # traite le cas du fichier sans extension
+            print()
+            print(filename)
+            with open(os.path.join(directory, filename), "r", encoding="utf-8") as file:
+                data = json.load(file)  # Charger le JSON dans un objet Python
+                for line in data:
+                    offre_intitule = line["intitule"]
+                    offre_id = line["id"]
+                    # print(offre_id, offre_intitule)
+                    for mot in liste_strings_a_verifier_dans_intitule:
+                        if mot.lower() in offre_intitule.lower():
+                            if offre_id not in offres_id_filtered:
+                                offres_id_filtered.append(offre_id)
+                                print(f"{doc_nb:<5} {offre_id} : {offre_intitule:<100}  {filename}")
+                                doc_nb += 1
 
     # print(
     #     len(offres_id_filtered),
