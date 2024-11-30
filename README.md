@@ -33,9 +33,9 @@
     - qui limite le nombre total d'offres récupérables à 3150 offres.
 
     - par exemple, si un filtre peut renvoyer 351 offres, il faut enchainer les requêtes pour obtenir toutes les offres :
-      - requête 1 pour les offres 0-149 (status code 206), puis requête 2 pour les offres 150-299 (status code 206), puis requête 3 pour les offres 300-350 (status code 200)
+      - requête 1 pour les offres `0-149` (status code 206), puis requête 2 pour les offres `150-299` (status code 206), puis requête 3 pour les offres `300-350` (status code 200)
 
-  - le paramètre "appellation", pour récupérer les offres de tous les métiers ayant un lien avec la data :
+  - le paramètre `appellation`, pour récupérer les offres de tous les métiers ayant un lien avec la data :
 
     ```json
     # métiers en lien avec Data Engineer
