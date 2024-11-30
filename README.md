@@ -28,7 +28,7 @@
 
 - Parmi les paramètres que nous utilisons le plus, il y a :
 
-  - le paramètre "range" :
+  - le paramètre `range` :
     - qui limite les résultats à 150 offres par requête (status code 206 si un filtre peut renvoyer plus de 150 offres).
     - qui limite le nombre total d'offres récupérables à 3150 offres.
 
