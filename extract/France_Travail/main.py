@@ -137,26 +137,28 @@ if launch_filtrer_offres_selon_liste == 1:
     mots_a_inclure_dans_intitule_offre = [
         "Data Engineer",
         "Data Ingineer",
+        "Data Ingenieur",
+        "Data Ingénieur",
         "Ingénieur Data",  # inclut "Ingénieur Data Center" (métier à exclure ?)
         "Ingenieur Data",
         #### à inclure ?
-        "Ingénieur Big Data",
-        "Ingenieur Big Data",
-        "Ingénieur De Donnée",  # oui, il manque un "s"
-        "Big Data",  # inclut "Développeur Big Data" (métier à exclure ?)
-        "BigData",
-        "Ingénieur En Traitement De Données",
-        "Expert En Bases De Données MongoDB",
-        "Expert Bases De Données PostGre",
-        "Data Expert",
-        "Administrateur De Base De Données",
-        "Administrateur de Base de Données",
-        "Administrateur des données centrales",
-        "Administrateur bases de données",
-        "Administrateur base de données",
-        "Gestionnaire de base de données",
-        "Gestionnaire Base de données",
-        "Administrateur(trice) Base de données MySQL / PostGRE / MongoDB",
+        # "Ingénieur Big Data",
+        # "Ingenieur Big Data",
+        # "Ingénieur De Donnée",  # oui, il manque un "s"
+        # "Big Data",  # inclut "Développeur Big Data" (métier à exclure ?)
+        # "BigData",
+        # "Ingénieur En Traitement De Données",
+        # "Expert En Bases De Données MongoDB",
+        # "Expert Bases De Données PostGre",
+        # "Data Expert",
+        # "Administrateur De Base De Données",
+        # "Administrateur de Base de Données",
+        # "Administrateur des données centrales",
+        # "Administrateur bases de données",
+        # "Administrateur base de données",
+        # "Gestionnaire de base de données",
+        # "Gestionnaire Base de données",
+        # "Administrateur(trice) Base de données MySQL / PostGRE / MongoDB",
     ]
 
     directory = os.path.join(current_directory, "outputs", "offres")

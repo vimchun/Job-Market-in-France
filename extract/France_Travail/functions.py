@@ -290,29 +290,24 @@ def filtrer_offres_selon_liste(directory, liste_strings_a_verifier_dans_intitule
         f.write("[\n")
 
         for filename in os.listdir(directory):
-            # with open(filename, "r", encoding="utf-8") as file:
-
-            if filename.endswith(".json") and filename != output_filename:  # traite le cas du fichier sans extension
-                print()
-                print(filename)
+            if filename.endswith(".json") and filename != output_filename:  # traite aussi le cas du fichier sans extension
                 with open(os.path.join(directory, filename), "r", encoding="utf-8") as file:
-                    data = json.load(file)  # Charger le JSON dans un objet Python
+                    data = json.load(file)
                     for line in data:
                         offre_intitule = line["intitule"]
                         offre_id = line["id"]
-                        # print(offre_id, offre_intitule)
+
+                        date_creation = line["dateCreation"].split("T")[0]
+                        date_actualisation = line["dateActualisation"].split("T")[0]
+
                         for mot in liste_strings_a_verifier_dans_intitule:
                             if mot.lower() in offre_intitule.lower():
                                 if offre_id not in offres_id_filtered:
                                     offres_id_filtered.append(offre_id)
-                                    print(f"{doc_nb:<5} {offre_id} : {offre_intitule:<100}  {filename}")
+                                    print(f"{doc_nb:<5} {offre_id} : {offre_intitule:<85}  {filename:<70} {date_creation}   {date_actualisation} ")
                                     if doc_nb != 1:
                                         f.write(",\n")  # Ajouter un "[" pour "initialiser" le fichier json
                                     json.dump(line, f, ensure_ascii=False)
                                     doc_nb += 1
 
         f.write("\n]")
-    # print(
-    #     len(offres_id_filtered),
-    #     offres_id_filtered,
-    # )
