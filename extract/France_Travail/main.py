@@ -134,33 +134,62 @@ if launch_get_offres == 1:
 
 
 if launch_filtrer_offres_selon_liste == 1:
-    mots_a_inclure_dans_intitule_offre = [
-        "Data Engineer",
-        "Data Ingineer",
-        "Data Ingenieur",
-        "Data Ingénieur",
-        "Ingénieur Data",  # inclut "Ingénieur Data Center" (métier à exclure ?)
-        "Ingenieur Data",
-        #### à inclure ?
-        # "Ingénieur Big Data",
-        # "Ingenieur Big Data",
-        # "Ingénieur De Donnée",  # oui, il manque un "s"
-        # "Big Data",  # inclut "Développeur Big Data" (métier à exclure ?)
-        # "BigData",
-        # "Ingénieur En Traitement De Données",
-        # "Expert En Bases De Données MongoDB",
-        # "Expert Bases De Données PostGre",
-        # "Data Expert",
-        # "Administrateur De Base De Données",
-        # "Administrateur de Base de Données",
-        # "Administrateur des données centrales",
-        # "Administrateur bases de données",
-        # "Administrateur base de données",
-        # "Gestionnaire de base de données",
-        # "Gestionnaire Base de données",
-        # "Administrateur(trice) Base de données MySQL / PostGRE / MongoDB",
-    ]
+    data_engineer = {
+        "a_inclure": [
+            "Data Engineer",
+            "Data Ingineer",
+            "Data Ingenieur",
+            "Data Ingénieur",
+            "Ingénieur Data",  # inclut
+            "Ingenieur Data",
+            #### à inclure ?
+            # "Ingénieur Big Data",
+            # "Ingenieur Big Data",
+            # "Ingénieur De Donnée",  # oui, il manque un "s"
+            # "Big Data",  # inclut "Développeur Big Data" (métier à exclure ?)
+            # "BigData",
+            # "Ingénieur En Traitement De Données",
+            # "Expert En Bases De Données MongoDB",
+            # "Expert Bases De Données PostGre",
+            # "Data Expert",
+            # "Administrateur De Base De Données",
+            # "Administrateur de Base de Données",
+            # "Administrateur des données centrales",
+            # "Administrateur bases de données",
+            # "Administrateur base de données",
+            # "Gestionnaire de base de données",
+            # "Gestionnaire Base de données",
+            # "Administrateur(trice) Base de données MySQL / PostGRE / MongoDB",
+        ],
+        "a_exclure": [
+            "Ingénieur Data Scientist",
+            "Ingénieur Data Center",
+        ],
+    }
+
+    data_analyst = {
+        "a_inclure": [
+            "Analyste Décisionnel",
+            "Data Analyst",
+            "Analyste Data",
+            "Analystes Data",
+            "Analyse De Données",
+            "Analyste De Données",
+        ],
+        "a_exclure": [
+            # "Business Analyst",
+            # "Analyste Fonctionnel",
+            # "Analyste Développeur",
+            # "Analyste Programmeur",
+            # "Analyste SOC",
+            # "Analyste trésorerie",
+            # "Analyste cybersécurité",
+            # "Informaticien",
+        ],
+    }
+
+    strings_a_inclure_exclure_dans_intitule_offre = data_analyst
 
     directory = os.path.join(current_directory, "outputs", "offres")
 
-    filtrer_offres_selon_liste(directory, mots_a_inclure_dans_intitule_offre)
+    filtrer_offres_selon_liste(directory, strings_a_inclure_exclure_dans_intitule_offre)
