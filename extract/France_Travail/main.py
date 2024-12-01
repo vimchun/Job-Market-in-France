@@ -137,7 +137,7 @@ if launch_filtrer_offres_selon_liste == 1:
     data_engineer = {
         "a_inclure": [
             "Data Engineer",
-            "Data Ingineer",
+            "Data Ingineer",  # traiter ça par regex ? à discuter
             "Data Ingenieur",
             "Data Ingénieur",
             "Ingénieur Data",  # inclut
