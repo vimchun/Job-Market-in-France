@@ -53,7 +53,8 @@
 
 - Nous filtrons ensuite à nouveau sur les offres retournées en vérifiant si telles chaînes de charactère sont présentes dans l'intitulé d'une offre, pour les raisons suivantes :
   - elles n'ont parfois pas de lien avec le libellé renseigné en paramètre, par exemple une requête renseignant l'appellation "404278" (pour "Data Engineer") peut renvoyer une offre telle que "Product Owner".
-  - nous voulons filtrer sur un métier spécifique (par exemple le métier de "Data Engineer")
   - une offre de "Data Engineer" peut se retrouver dans des résultats dont les requêtes utilisent une appellation autre que "404278", par exemple nous avons vu des offres de "Data Engineer" en requêtant avec l'appellation "38975" (pour "Data_Manager")
+  - nous voulons filtrer sur un métier spécifique
+    - par exemple pour filtrer sur le métier de "Data Engineer" : nous pouvons si la chaîne de caractères "Ingénieur Data" est présente dans l'intitulé, mais il faut exclure les offres retournées telles que "Ingénieur Data Scientist".
 
 - Nous obtenons finalement un fichier json contenant toutes les offres d'emploi pour le métier que nous souhaitons.
