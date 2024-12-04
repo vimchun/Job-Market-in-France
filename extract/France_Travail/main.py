@@ -2,7 +2,7 @@ import os
 
 import yaml
 
-from functions import get_appellations, get_bearer_token, get_offres, filtrer_offres_selon_liste
+from functions import filtrer_offres_selon_liste, get_appellations, get_bearer_token, get_offres
 
 # Récupération des credentials données sur le site de FT, depuis un fichier yaml
 CREDENTIALS_FILE = "api_credentials_minh.yml"  # à modifier selon qui lance le script (todo: trouver une meilleure solution)
@@ -135,19 +135,55 @@ if launch_get_offres == 1:
 
 if launch_filtrer_offres_selon_liste == 1:
     data_engineer = {
-        "a_inclure": [
+        "a_inclure": [  # traiter ça par regex ? à discuter
             "Data Engineer",
-            "Data Ingineer",  # traiter ça par regex ? à discuter
-            "Data Ingenieur",
+            "Data Ingineer",  # typo recruteur
             "Data Ingénieur",
-            "Ingénieur Data",  # inclut
+            "Data Ingénieur(e)",
+            "Data Ingénieur-e",
+            "Data Ingenieur",
+            "Data Ingenieur(e)",
+            "Data Ingenieur-e",
+            "Ingénieur Data",
+            "Ingénieur(e) Data",
+            "Ingénieur-e Data",
             "Ingenieur Data",
+            "Ingenieur(e) Data",
+            "Ingenieur-e Data",
+            "Ingénieur De Donnée",  # sans "s" (volontaire)
+            "Ingénieur(e) De Donnée",
+            "Ingénieur-e De Donnée",
+            "Ingenieur De Donnée",
+            "Ingenieur(e) De Donnée",
+            "Ingenieur-e De Donnée",
+            "Ingénieur Donnée",
+            "Ingénieur(e) Donnée",
+            "Ingénieur-e Donnée",
+            "Ingenieur Donnée",
+            "Ingenieur(e) Donnée",
+            "Ingenieur-e Donnée",
+            "Ingénieur / Ingénieure Donnée",
+            "Ingénieur / Ingénieure Data",
+            "Ingénieur - Ingénieure Donnée",
+            "Ingénieur - Ingénieure Data",
+            "Ingénieur/Ingénieure Donnée",
+            "Ingénieur/Ingénieure Data",
+            "Ingénieur-Ingénieure Donnée",
+            "Ingénieur-Ingénieure Data",
+            "Ingenieur / Ingenieure Donnée",
+            "Ingenieur / Ingenieure Data",
+            "Ingenieur - Ingenieure Donnée",
+            "Ingenieur - Ingenieure Data",
+            "Ingenieur/Ingenieure Donnée",
+            "Ingenieur/Ingenieure Data",
+            "Ingenieur-Ingenieure Donnée",
+            "Ingenieur-Ingenieure Data",
+            "Ingénieur Big Data",
+            "Ingenieur Big Data",
+            "Big Data",  # inclut "Développeur Big Data" (à exclure)
+            "BigData",
+            "Data Pipeline",
             #### à inclure ?
-            # "Ingénieur Big Data",
-            # "Ingenieur Big Data",
-            # "Ingénieur De Donnée",  # oui, il manque un "s"
-            # "Big Data",  # inclut "Développeur Big Data" (métier à exclure ?)
-            # "BigData",
             # "Ingénieur En Traitement De Données",
             # "Expert En Bases De Données MongoDB",
             # "Expert Bases De Données PostGre",
@@ -164,6 +200,9 @@ if launch_filtrer_offres_selon_liste == 1:
         "a_exclure": [
             "Ingénieur Data Scientist",
             "Ingénieur Data Center",
+            "Développeur",
+            "Chef De Projet",
+            "Architecte",
         ],
     }
 
@@ -173,22 +212,29 @@ if launch_filtrer_offres_selon_liste == 1:
             "Data Analyst",
             "Analyste Data",
             "Analystes Data",
-            "Analyse De Données",
-            "Analyste De Données",
+            "Analyse De Donnée",  # sans "s" (volontaire)
+            "Analyste De Donnée",
+            "Data Viz",
+            "Data Visualisation",
+            "Data Vizualisation",
+            "Business Intelligence",
+            "Power Bi",
         ],
         "a_exclure": [
-            # "Business Analyst",
-            # "Analyste Fonctionnel",
-            # "Analyste Développeur",
-            # "Analyste Programmeur",
-            # "Analyste SOC",
-            # "Analyste trésorerie",
-            # "Analyste cybersécurité",
-            # "Informaticien",
+            "Développeur",
+            "Business Analyst",
+            "Analyste Fonctionnel",
+            "Analyste Développeur",
+            "Analyste Programmeur",
+            "Analyste SOC",
+            "Analyste trésorerie",
+            "Analyste cybersécurité",
+            "Informaticien",
         ],
     }
 
-    strings_a_inclure_exclure_dans_intitule_offre = data_analyst
+    strings_a_inclure_exclure_dans_intitule_offre = data_engineer
+    # strings_a_inclure_exclure_dans_intitule_offre = data_analyst
 
     directory = os.path.join(current_directory, "outputs", "offres")
 

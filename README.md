@@ -17,6 +17,11 @@
   - quelles compétences sont requises
   - quelles sont les villes les plus actives
   - etc …
+  - idées à creuser :
+    - quelles sont les régions les plus actives
+    - top30 des entreprises qui recrutent le plus
+    - carte de France de densité de recrutement
+    - comparatifs métiers DE/DS/DA
 
 
 
