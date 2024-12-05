@@ -2,7 +2,10 @@ import os
 
 import yaml
 
+from colorama import Back, Fore, Style, init
 from functions import filtrer_offres_selon_liste, get_appellations, get_bearer_token, get_offres
+
+init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
 # Récupération des credentials données sur le site de FT, depuis un fichier yaml
 CREDENTIALS_FILE = "api_credentials_minh.yml"  # à modifier selon qui lance le script (todo: trouver une meilleure solution)
@@ -15,7 +18,7 @@ with open(file_path, "r") as file:
 IDENTIFIANT_CLIENT = creds["API_FRANCE_TRAVAIL"]["IDENTIFIANT_CLIENT"]
 CLE_SECRETE = creds["API_FRANCE_TRAVAIL"]["CLE_SECRETE"]
 
-# Lancer les fonctions plus simplement ("= 1" pour lancer)
+# Lancer les fonctions plus simplement ("= 1" pour lancer la fonction)
 launch_get_bearer_token = 0
 launch_get_appellations = 0
 launch_get_offres = 0
@@ -41,22 +44,22 @@ if launch_get_appellations:
 if launch_get_offres:
     # toutes les offres des métiers de la data
     codes = [
-        #### métier Data Engineer
+        #### métiers DE/DA/DS
         "404278",  # { "code": "404278", "libelle": "Data engineer" }
         "404277",  # { "code": "404277", "libelle": "Big data engineer" }
         "404282",  # { "code": "404282", "libelle": "Ingénieur / Ingénieure big data" }
         "404284",  # { "code": "404284", "libelle": "Ingénieur / Ingénieure données"}
-        #### autres métiers de la data
-        "38095",  # { "code": "38095", "libelle": "Analyste décisionnel - Business Intelligence" }
-        "38970",  # { "code": "38970", "libelle": "Data Miner" }
         "38971",  # { "code": "38971", "libelle": "Data analyst" }
+        "38095",  # { "code": "38095", "libelle": "Analyste décisionnel - Business Intelligence" }
+        "404275",  # { "code": "404275", "libelle": "Analyste qualité des données" }
         "38972",  # { "code": "38972", "libelle": "Data scientist" }
+        #### autres métiers de la data
+        "38970",  # { "code": "38970", "libelle": "Data Miner" }
         "38975",  # { "code": "38975", "libelle": "Data manager" }
         "38977",  # { "code": "38977", "libelle": "Développeur / Développeuse Big Data" }
         "404271",  # { "code": "404271", "libelle": "Expert / Experte en sciences des données"}
         "404273",  # { "code": "404273", "libelle": "Explorateur / Exploratrice de données"}
         "404274",  # { "code": "404274", "libelle": "Ingénieur / Ingénieure data scientist" }
-        "404275",  # { "code": "404275", "libelle": "Analyste qualité des données" }
         "404276",  # { "code": "404276", "libelle": "Architecte big data" }
         "404279",  # { "code": "404279", "libelle": "Docteur big data" }
         "404280",  # { "code": "404280", "libelle": "Expert / Experte big data" }
@@ -69,7 +72,6 @@ if launch_get_offres:
         "404289",  # { "code": "404289", "libelle": "Analyste scientifique des données" }
         "404289",  # { "code": "404289", "libelle": "Analyste scientifique des données"}
         "404291",  # { "code": "404291", "libelle": "Data Protection Officer" }
-        "404939",  # { "code": "404939", "libelle": "Biostatisticien / Biostatisticienne data manager" }
         "405222",  # { "code": "405222", "libelle": "Data analyst de la performance" }
         "489091",  # { "code": "489091", "libelle": "Database administrator" }
         #### rien à voir avec la data
@@ -251,10 +253,12 @@ if launch_filtrer_offres_selon_liste:
         ],
     }
 
-    # strings_a_inclure_exclure_dans_intitule_offre = data_engineer  # 134 offres
-    strings_a_inclure_exclure_dans_intitule_offre = data_analyst  # 143 offres
-    # strings_a_inclure_exclure_dans_intitule_offre = data_scientist  # 60 offres
-
     directory = os.path.join(current_directory, "outputs", "offres")
 
-    filtrer_offres_selon_liste(directory, strings_a_inclure_exclure_dans_intitule_offre)
+    for job, job_dict, output_filename in [
+        ("DE", data_engineer, "offres_filtered_DE.json"),
+        ("DA", data_analyst, "offres_filtered_DA.json"),
+        ("DS", data_scientist, "offres_filtered_DS.json"),
+    ]:
+        print(f"\n{Fore.GREEN}============ {job} ============")
+        filtrer_offres_selon_liste(directory, job_dict, output_filename)

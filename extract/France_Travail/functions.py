@@ -216,7 +216,6 @@ def get_offres(token, filter_params):
 
             for _ in range(int(max_offres / 150) + 1):
                 print(f"{Fore.GREEN}==== Récupération des offres (requête {request_id}) :", end=" ")
-                # response = requests.get(url, headers=headers, params=params)
                 response = requests.get(url, headers=headers, params=filter_params)
 
                 if response.status_code == 206:
@@ -257,31 +256,24 @@ def get_offres(token, filter_params):
     print("")
 
 
-def filtrer_offres_selon_liste(directory, strings_a_verifier_dans_intitule):
+def filtrer_offres_selon_liste(directory, strings_a_verifier_dans_intitule, output_filename):
     """
-    Rappel : La fonction get_offres() génèrent des jsons selon les appellations rentrées en paramètres.
+    Rappel : La fonction get_offres() génèrent des fichiers json selon les appellations rentrées en paramètres.
     La fonction courante :
-        - parse ces json et ne conserve que les offres dont les intitulés contiennent les strings qui sont dans une liste passée en argument.
-        - écrire ces offres dans un json
+        - parse ces fichiers json :
+          - en conservant que les offres dont les intitulés contiennent les strings spécifiés
+            parmi les valeurs de la clé "a_inclure" du dictionnaire passé en argument,
+          - en retirant les offres dont les intitulés contiennent les strings spécifiés
+            parmi les valeurs de la clé "a_exclure" du dictionnaire passé en argument,
+        - écrit ces offres dans un json
     """
-
-    # # filename = os.path.join(current_directory, "outputs", "archives", "2024-11-28", "404278_Data_Engineer__10016_offres.json")
-    # filename = os.path.join(current_directory, "outputs", "404284_Ingenieur_Donnees__2940_offres.json")
-
-    # Ouvrir et charger le fichier JSON
-    # with open(filename, "r", encoding="utf-8") as file:
-    #     data = json.load(file)  # Charger le JSON dans un objet Python
-
-    # output_filtered = os.path.join(current_directory, "outputs", "404284_Ingenieur_Donnees__2940_offres_filtered.json")
-
-    # current_directory = os.path.dirname(os.path.abspath(__file__))
-    # filename = os.path.join(current_directory, "outputs", "archives", "2024-11-28", "404278_Data_Engineer__10016_offres.json")
 
     offres_id_filtered = []
     doc_nb = 1
 
-    output_filename = "offres_filtered.json"
-    output_file = os.path.join(current_directory, "outputs", "offres", output_filename)
+    # print(f"======================== {output_filename}")
+
+    output_file = os.path.join(current_directory, "outputs", "offres", "offres_filtered", output_filename)
 
     if os.path.exists(output_file):
         os.remove(output_file)
@@ -291,23 +283,43 @@ def filtrer_offres_selon_liste(directory, strings_a_verifier_dans_intitule):
 
         for filename in os.listdir(directory):
             if filename.endswith(".json") and filename != output_filename:  # traite aussi le cas du fichier sans extension
-                with open(os.path.join(directory, filename), "r", encoding="utf-8") as file:
-                    data = json.load(file)
-                    for line in data:
-                        intitule = line["intitule"]
-                        offre_id = line["id"]
+                # print(f"{Fore.CYAN}========= Fichier json: {filename} =========")
+                try:
+                    # si le json est bien valide
+                    with open(os.path.join(directory, filename), "r", encoding="utf-8") as file:
+                        data = json.load(file)
+                        for line in data:
+                            intitule = line["intitule"]
+                            offre_id = line["id"]
 
-                        date_creation = line["dateCreation"].split("T")[0]
-                        date_actualisation = line["dateActualisation"].split("T")[0]
+                            date_creation = line["dateCreation"].split("T")[0]
+                            date_actualisation = line["dateActualisation"].split("T")[0]
 
-                        for inclu in strings_a_verifier_dans_intitule["a_inclure"]:
-                            if (inclu.lower() in intitule.lower()) and all(exclu.lower() not in intitule.lower() for exclu in strings_a_verifier_dans_intitule["a_exclure"]):  # fmt:skip # noqa
-                                if offre_id not in offres_id_filtered:
-                                    offres_id_filtered.append(offre_id)
-                                    print(f"{doc_nb:<5} {offre_id} : {intitule:<85}  {filename:<70} {date_creation}   {date_actualisation} ")
-                                    if doc_nb != 1:
-                                        f.write(",\n")  # Ajouter un "[" pour "initialiser" le fichier json
-                                    json.dump(line, f, ensure_ascii=False)
-                                    doc_nb += 1
+                            for inclu in strings_a_verifier_dans_intitule["a_inclure"]:
+                                if (inclu.lower() in intitule.lower()) and all(exclu.lower() not in intitule.lower() for exclu in strings_a_verifier_dans_intitule["a_exclure"]):  # fmt:skip # noqa
+                                    if offre_id not in offres_id_filtered:
+                                        offres_id_filtered.append(offre_id)
+                                        print(f"{doc_nb:<5} {offre_id} : {intitule:<85}  {filename:<70} {date_creation}   {date_actualisation} ")
+                                        if doc_nb != 1:
+                                            f.write(",\n")
+                                        json.dump(line, f, ensure_ascii=False)
+                                        doc_nb += 1
+                except json.JSONDecodeError as e:
+                    print(f"{Fore.RED}Erreur lors du chargement du fichier JSON : {e}")
+                except FileNotFoundError:
+                    print(f'{Fore.RED}Le fichier "{filename}" n\'a pas été trouvé.')
+                except Exception as e:
+                    print(f"{Fore.RED}Une erreur inattendue s'est produite : {e}")
 
         f.write("\n]")
+
+    try:
+        with open(output_file, "r", encoding="utf-8") as file:
+            data = json.load(file)  # todo: ajouter des assertions ?
+            print(f'{Fore.GREEN}Le fichier généré "{output_filename}" est bien un json valide.')
+    except json.JSONDecodeError as e:
+        print(f"{Fore.RED}Erreur lors du chargement du fichier JSON : {e}")
+    except FileNotFoundError:
+        print(f'{Fore.RED}Le fichier "{output_filename}" n\'a pas été trouvé.')
+    except Exception as e:
+        print(f"{Fore.RED}Une erreur inattendue s'est produite : {e}")
