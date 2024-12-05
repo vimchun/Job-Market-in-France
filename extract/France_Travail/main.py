@@ -217,6 +217,7 @@ if launch_filtrer_offres_selon_liste == 1:
             "Analyse De Donnée",  # sans "s" (volontaire)
             "Analyste De Donnée",
             "Data Viz",
+            "DataViz",
             "Data Visualisation",
             "Data Vizualisation",
             "Business Intelligence",
@@ -251,7 +252,7 @@ if launch_filtrer_offres_selon_liste == 1:
     }
 
     # strings_a_inclure_exclure_dans_intitule_offre = data_engineer  # 134 offres
-    strings_a_inclure_exclure_dans_intitule_offre = data_analyst  # 141 offres
+    strings_a_inclure_exclure_dans_intitule_offre = data_analyst  # 143 offres
     # strings_a_inclure_exclure_dans_intitule_offre = data_scientist  # 60 offres
 
     directory = os.path.join(current_directory, "outputs", "offres")
