@@ -183,6 +183,7 @@ if launch_filtrer_offres_selon_liste == 1:
             "Big Data",  # inclut "Développeur Big Data" (à exclure)
             "BigData",
             "Data Pipeline",
+            # "Spark"
             #### à inclure ?
             # "Ingénieur En Traitement De Données",
             # "Expert En Bases De Données MongoDB",
@@ -210,6 +211,7 @@ if launch_filtrer_offres_selon_liste == 1:
         "a_inclure": [
             "Analyste Décisionnel",
             "Data Analyst",
+            "Data-Analyst",
             "Analyste Data",
             "Analystes Data",
             "Analyse De Donnée",  # sans "s" (volontaire)
@@ -233,8 +235,24 @@ if launch_filtrer_offres_selon_liste == 1:
         ],
     }
 
-    strings_a_inclure_exclure_dans_intitule_offre = data_engineer
-    # strings_a_inclure_exclure_dans_intitule_offre = data_analyst
+    data_scientist = {
+        "a_inclure": [
+            "Data Scientist",
+            "Data-Scientist",
+            "Datascientist",
+            "Data-Science",
+            "Data Science",
+            "Scientifique de données",
+            "Scientifique des données",
+        ],
+        "a_exclure": [
+            # "analyst"
+        ],
+    }
+
+    # strings_a_inclure_exclure_dans_intitule_offre = data_engineer  # 134 offres
+    strings_a_inclure_exclure_dans_intitule_offre = data_analyst  # 141 offres
+    # strings_a_inclure_exclure_dans_intitule_offre = data_scientist  # 60 offres
 
     directory = os.path.join(current_directory, "outputs", "offres")
 
