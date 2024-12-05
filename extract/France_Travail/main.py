@@ -23,7 +23,7 @@ launch_filtrer_offres_selon_liste = 1
 
 ################################################################################################################################################################
 
-if launch_get_bearer_token == 1:
+if launch_get_bearer_token:
     token = get_bearer_token(
         client_id=IDENTIFIANT_CLIENT,
         client_secret=CLE_SECRETE,
@@ -32,13 +32,13 @@ if launch_get_bearer_token == 1:
 
 ################################################################################################################################################################
 
-if launch_get_appellations == 1:
+if launch_get_appellations:
     get_appellations(token)
 
 ################################################################################################################################################################
 
 
-if launch_get_offres == 1:
+if launch_get_offres:
     # toutes les offres des métiers de la data
     codes = [
         #### métier Data Engineer
@@ -133,7 +133,7 @@ if launch_get_offres == 1:
 ################################################################################################################################################################
 
 
-if launch_filtrer_offres_selon_liste == 1:
+if launch_filtrer_offres_selon_liste:
     data_engineer = {
         "a_inclure": [  # traiter ça par regex ? à discuter
             "Data Engineer",
