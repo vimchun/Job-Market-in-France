@@ -1,6 +1,6 @@
 # Table des matières
 
-- [Étape 1 : Récolte des données](#étape-1--récolte-des-données)
+- [Étape 1 : Récolte des données par API](#étape-1--récolte-des-données-par-API)
 
 ajouter la partie "adzuna"
 ajouter la partie "the muse"
@@ -27,7 +27,9 @@ ajouter la partie "the muse"
 
 
 
-## Étape 1 : Récolte des données
+## Étape 1 : Récolte des données par API
+
+### API de "France Travail"
 
 - France Travail (https://francetravail.io/data/api) met à disposition 18 APIs pour récolter diverses données.
 - Nous utilisons l'API "Offres d'emploi" pour rechercher des offres selon plusieurs paramètres.
@@ -67,3 +69,20 @@ ajouter la partie "the muse"
     - Par exemple, pour filtrer sur le métier de "Data Engineer", nous pouvons filtrer sur la chaîne de caractères "Ingénieur Data" et vérifier si celle-ci est présente dans l'intitulé, mais il faut exclure les offres retournées telles que "Ingénieur Data Scientist". Nous rajoutons d'autres chaînes de caractères telles que "Data Engineer", et d'autres possibilités en cas de typo du recruteur qu'il faut gérer (par exemple, nous avons vu une offre "Data Ingineer").
 
 - Nous obtenons finalement un fichier json contenant toutes les offres d'emploi pour le métier que nous souhaitons.
+
+
+
+### API de "The Muse"
+
+L'API `GET https://www.themuse.com/api/public/jobs` permet de récupérer les offres d'emploi sur 3 critères principales :
+  - la catégorie du métier ("category")
+    - par exemple : "Data and Analytics", "Data Science"
+  - le niveau d'expérience requis pour l'offre ("level")
+    - par exemple : "Entry Level", "Mid Level", "Senior Level"
+  - la localisation ("location")
+    - par exemple "Paris, France"
+    - il y a près de 21 000 villes proposés, dont 409 villes françaises, que nous devons sélectionner pour la requête (ce qui fait une requête énorme)
+
+Parmi les résultats, les offres de télétravail sont présentes (on veut les retirer ? sûrement oui).
+
+Une requête donne au maximum 20 offres, nous faisons donc une requête initiale pour voir combien de requêtes sont nécessaires pour récupérer toutes les offres (clé "page_count" de la réponse).
