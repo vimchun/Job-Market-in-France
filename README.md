@@ -2,6 +2,7 @@
 
 - [Étape 1 : Récolte des données](#étape-1--récolte-des-données)
 
+ajouter la partie adzuna
 
 # Projet Job Market
 
