@@ -33,7 +33,6 @@ levels = "&".join([f"level={lvl.replace(" ", "%20")}" for lvl in level])
 # print(levels) ##==> permet d'avoir par exemple : level=Entry%20Level&level=Mid%20Level&level=Senior%20Level&level=management&level=Internship
 
 
-
 url = (
     f"https://www.themuse.com/api/public/jobs?"
     # f"api_key={api_key}&"
@@ -46,7 +45,6 @@ url = (
     )  # fmt: skip
 
 print(url)
-
 
 
 # sys.exit()
