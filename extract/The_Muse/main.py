@@ -20,6 +20,7 @@ level = [  # The experience level required for the job
     "Internship",
 ]
 location = [  # The job location to get (you can include flexible/remote jobs from here)
+    "Zvolen, Slovakia"  # location=Zvolen%2C%20Slovakia
 ]
 
 
@@ -32,7 +33,6 @@ levels = "&".join([f"level={lvl.replace(" ", "%20")}" for lvl in level])
 # print(levels) ##==> permet d'avoir par exemple : level=Entry%20Level&level=Mid%20Level&level=Senior%20Level&level=management&level=Internship
 
 
-# sys.exit()
 
 url = (
     f"https://www.themuse.com/api/public/jobs?"
@@ -41,8 +41,15 @@ url = (
     f"descending={descending}&"
     f"{categories}&"
     f"{levels}&"
+    # f"location=Abbeville%2C%20France"
+    f"location=Paris%2C%20France"
     )  # fmt: skip
 
+print(url)
+
+
+
+# sys.exit()
 
 response = requests.get(url)
 
