@@ -1,0 +1,148 @@
+filtre_codes_appellation: # "libelle" associé au code en commentaire
+  #### métiers DE/DA/DS
+  - '404278' # Data engineer
+  - '404277' # Big data engineer
+  - '404282' # Ingénieur / Ingénieure big data
+  - '404284' # Ingénieur / Ingénieure données
+  - '38971' # Data analyst
+  - '38095' # Analyste décisionnel - Business Intelligence
+  - '404275' # Analyste qualité des données
+  - '38972' # Data scientist
+  #### autres métiers de la data
+  - '38970' # Data Miner
+  - '38975' # Data manager
+  - '38977' # Développeur / Développeuse Big Data
+  - '404271' # Expert / Experte en sciences des données
+  - '404273' # Explorateur / Exploratrice de données
+  - '404274' # Ingénieur / Ingénieure data scientist
+  - '404276' # Architecte big data
+  - '404279' # Docteur big data
+  - '404280' # Expert / Experte big data
+  - '404281' # Expert / Experte technique big data
+  - '404283' # Ingénieur / Ingénieure dataviz
+  - '404285' # Ingénieur / Ingénieure en développement big data
+  - '404286' # Responsable architecture conception data
+  - '404287' # Responsable big data
+  - '404288' # Développeur / Développeuse data
+  - '404289' # Analyste scientifique des données
+  - '404289' # Analyste scientifique des données
+  - '404291' # Data Protection Officer
+  - '405222' # Data analyst de la performance
+  - '489091' # Database administrator
+
+filtre_inclusion_pour_offres_DE:
+  - Data Engineer
+  - Data Ingineer # typo recruteur
+  - Data Eng # aepgjea
+  - Data Ing
+  - Data Ingénieur
+  - Data Ingénieur(e)
+  - Data Ingénieur-e
+  - Data Ingenieur
+  - Data Ingenieur(e)
+  - Data Ingenieur-e
+  - Ingénieur Data
+  - Ingénieur(e) Data
+  - Ingénieur-e Data
+  - Ingenieur Data
+  - Ingenieur(e) Data
+  - Ingenieur-e Data
+  - Ingénieur De Donnée # sans s (volontaire)
+  - Ingénieur(e) De Donnée
+  - Ingénieur-e De Donnée
+  - Ingenieur De Donnée
+  - Ingenieur(e) De Donnée
+  - Ingenieur-e De Donnée
+  - Ingénieur Donnée
+  - Ingénieur(e) Donnée
+  - Ingénieur-e Donnée
+  - Ingenieur Donnée
+  - Ingenieur(e) Donnée
+  - Ingenieur-e Donnée
+  - Ingénieur / Ingénieure Donnée
+  - Ingénieur / Ingénieure Data
+  - Ingénieur - Ingénieure Donnée
+  - Ingénieur - Ingénieure Data
+  - Ingénieur/Ingénieure Donnée
+  - Ingénieur/Ingénieure Data
+  - Ingénieur-Ingénieure Donnée
+  - Ingénieur-Ingénieure Data
+  - Ingenieur / Ingenieure Donnée
+  - Ingenieur / Ingenieure Data
+  - Ingenieur - Ingenieure Donnée
+  - Ingenieur - Ingenieure Data
+  - Ingenieur/Ingenieure Donnée
+  - Ingenieur/Ingenieure Data
+  - Ingenieur-Ingenieure Donnée
+  - Ingenieur-Ingenieure Data
+  - Ingénieur Big Data
+  - Ingenieur Big Data
+  - Big Data # inclut Développeur Big Data (à exclure)
+  - BigData
+  - Data Pipeline
+  - Data Expert
+  #### à inclure ?
+  # Spark
+  # Ingénieur En Traitement De Données,
+  # Expert En Bases De Données MongoDB,
+  # Expert Bases De Données PostGre,
+  # Administrateur De Base De Données,
+  # Administrateur de Base de Données,
+  # Administrateur des données centrales,
+  # Administrateur bases de données,
+  # Administrateur base de données,
+  # Gestionnaire de base de données,
+  # Gestionnaire Base de données,
+  # Administrateur(trice) Base de données MySQL / PostGRE / MongoDB,
+
+filtre_exclusion_pour_offres_DE:
+  - DataVisualisation
+  - Ingénieur Data Scientist
+  - Ingénieur Data Center
+  - Développeur
+  - Chef De Projet
+  - Architecte
+  - Manager
+
+filtre_inclusion_pour_offres_DA:
+  - Analyste Décisionnel
+  - Data Analyst
+  - Data-Analyst
+  - Analyste Data
+  - Analystes Data
+  - Analyse De Donnée # sans s (volontaire)
+  - Analyste De Donnée
+  - Data Viz
+  - DataViz
+  - Data Visualisation
+  - Data Vizualisation
+  - Business Intelligence
+  - Power Bi
+  - DataVisualisation
+
+filtre_exclusion_pour_offres_DA:
+  - Développeur
+  - Business Analyst
+  - Analyste Fonctionnel
+  - Analyste Développeur
+  - Analyste Programmeur
+  - Analyste SOC
+  - Analyste trésorerie
+  - Analyste cybersécurité
+  - Informaticien
+  - Manager
+  - Responsable
+  - Directeur
+
+filtre_inclusion_pour_offres_DS:
+  - Data Scientist
+  - Data-Scientist
+  - Datascientist
+  - Data-Science
+  - Data Science
+  - Scientifique de données
+  - Scientifique des données
+
+filtre_exclusion_pour_offres_DS:
+  - Manager
+  # analyst

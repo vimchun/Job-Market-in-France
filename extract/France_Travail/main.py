@@ -42,43 +42,11 @@ if launch_get_appellations:
 
 
 if launch_get_offres:
-    # toutes les offres des métiers de la data
-    codes = [
-        #### métiers DE/DA/DS
-        "404278",  # { "code": "404278", "libelle": "Data engineer" }
-        "404277",  # { "code": "404277", "libelle": "Big data engineer" }
-        "404282",  # { "code": "404282", "libelle": "Ingénieur / Ingénieure big data" }
-        "404284",  # { "code": "404284", "libelle": "Ingénieur / Ingénieure données"}
-        "38971",  # { "code": "38971", "libelle": "Data analyst" }
-        "38095",  # { "code": "38095", "libelle": "Analyste décisionnel - Business Intelligence" }
-        "404275",  # { "code": "404275", "libelle": "Analyste qualité des données" }
-        "38972",  # { "code": "38972", "libelle": "Data scientist" }
-        #### autres métiers de la data
-        "38970",  # { "code": "38970", "libelle": "Data Miner" }
-        "38975",  # { "code": "38975", "libelle": "Data manager" }
-        "38977",  # { "code": "38977", "libelle": "Développeur / Développeuse Big Data" }
-        "404271",  # { "code": "404271", "libelle": "Expert / Experte en sciences des données"}
-        "404273",  # { "code": "404273", "libelle": "Explorateur / Exploratrice de données"}
-        "404274",  # { "code": "404274", "libelle": "Ingénieur / Ingénieure data scientist" }
-        "404276",  # { "code": "404276", "libelle": "Architecte big data" }
-        "404279",  # { "code": "404279", "libelle": "Docteur big data" }
-        "404280",  # { "code": "404280", "libelle": "Expert / Experte big data" }
-        "404281",  # { "code": "404281", "libelle": "Expert / Experte technique big data" }
-        "404283",  # { "code": "404283", "libelle": "Ingénieur / Ingénieure dataviz" }
-        "404285",  # { "code": "404285", "libelle": "Ingénieur / Ingénieure en développement big data" }
-        "404286",  # { "code": "404286", "libelle": "Responsable architecture conception data" }
-        "404287",  # { "code": "404287", "libelle": "Responsable big data" }
-        "404288",  # { "code": "404288", "libelle": "Développeur / Développeuse data" }
-        "404289",  # { "code": "404289", "libelle": "Analyste scientifique des données" }
-        "404289",  # { "code": "404289", "libelle": "Analyste scientifique des données"}
-        "404291",  # { "code": "404291", "libelle": "Data Protection Officer" }
-        "405222",  # { "code": "405222", "libelle": "Data analyst de la performance" }
-        "489091",  # { "code": "489091", "libelle": "Database administrator" }
-        #### rien à voir avec la data
-        # "11573",  # {"code": "11573", "libelle": "Boulanger / Boulangère"}
-        # "17406",  # {"code": "17406", "libelle": "Ouvrier boucher / Ouvrière bouchère"}
-        # "10438",  # {"code": "10438", "libelle": "Agent / Agente de destruction d'insectes"},
-    ]
+    file_path = os.path.join(current_directory, "filtres_offres.yml")
+
+    with open(file_path, "r") as file:
+        content = yaml.safe_load(file)
+        codes = content["filtre_codes_appellation"]
 
     for code in codes:
         get_offres(
@@ -136,129 +104,143 @@ if launch_get_offres:
 
 
 if launch_filtrer_offres_selon_liste:
-    data_engineer = {
-        "a_inclure": [  # traiter ça par regex ? à discuter
-            "Data Engineer",
-            "Data Ingineer",  # typo recruteur
-            "Data Ingénieur",
-            "Data Ingénieur(e)",
-            "Data Ingénieur-e",
-            "Data Ingenieur",
-            "Data Ingenieur(e)",
-            "Data Ingenieur-e",
-            "Ingénieur Data",
-            "Ingénieur(e) Data",
-            "Ingénieur-e Data",
-            "Ingenieur Data",
-            "Ingenieur(e) Data",
-            "Ingenieur-e Data",
-            "Ingénieur De Donnée",  # sans "s" (volontaire)
-            "Ingénieur(e) De Donnée",
-            "Ingénieur-e De Donnée",
-            "Ingenieur De Donnée",
-            "Ingenieur(e) De Donnée",
-            "Ingenieur-e De Donnée",
-            "Ingénieur Donnée",
-            "Ingénieur(e) Donnée",
-            "Ingénieur-e Donnée",
-            "Ingenieur Donnée",
-            "Ingenieur(e) Donnée",
-            "Ingenieur-e Donnée",
-            "Ingénieur / Ingénieure Donnée",
-            "Ingénieur / Ingénieure Data",
-            "Ingénieur - Ingénieure Donnée",
-            "Ingénieur - Ingénieure Data",
-            "Ingénieur/Ingénieure Donnée",
-            "Ingénieur/Ingénieure Data",
-            "Ingénieur-Ingénieure Donnée",
-            "Ingénieur-Ingénieure Data",
-            "Ingenieur / Ingenieure Donnée",
-            "Ingenieur / Ingenieure Data",
-            "Ingenieur - Ingenieure Donnée",
-            "Ingenieur - Ingenieure Data",
-            "Ingenieur/Ingenieure Donnée",
-            "Ingenieur/Ingenieure Data",
-            "Ingenieur-Ingenieure Donnée",
-            "Ingenieur-Ingenieure Data",
-            "Ingénieur Big Data",
-            "Ingenieur Big Data",
-            "Big Data",  # inclut "Développeur Big Data" (à exclure)
-            "BigData",
-            "Data Pipeline",
-            # "Spark"
-            #### à inclure ?
-            # "Ingénieur En Traitement De Données",
-            # "Expert En Bases De Données MongoDB",
-            # "Expert Bases De Données PostGre",
-            # "Data Expert",
-            # "Administrateur De Base De Données",
-            # "Administrateur de Base de Données",
-            # "Administrateur des données centrales",
-            # "Administrateur bases de données",
-            # "Administrateur base de données",
-            # "Gestionnaire de base de données",
-            # "Gestionnaire Base de données",
-            # "Administrateur(trice) Base de données MySQL / PostGRE / MongoDB",
-        ],
-        "a_exclure": [
-            "Ingénieur Data Scientist",
-            "Ingénieur Data Center",
-            "Développeur",
-            "Chef De Projet",
-            "Architecte",
-        ],
-    }
+    # data_engineer = {
+    #     "a_inclure": [  # traiter ça par regex ? à discuter
+    #         "Data Engineer",
+    #         "Data Eng",
+    #         "Data Ingineer",  # typo recruteur
+    #         "Data Ingénieur",
+    #         "Data Ingénieur(e)",
+    #         "Data Ingénieur-e",
+    #         "Data Ingenieur",
+    #         "Data Ingenieur(e)",
+    #         "Data Ingenieur-e",
+    #         "Ingénieur Data",
+    #         "Ingénieur(e) Data",
+    #         "Ingénieur-e Data",
+    #         "Ingenieur Data",
+    #         "Ingenieur(e) Data",
+    #         "Ingenieur-e Data",
+    #         "Ingénieur De Donnée",  # sans "s" (volontaire)
+    #         "Ingénieur(e) De Donnée",
+    #         "Ingénieur-e De Donnée",
+    #         "Ingenieur De Donnée",
+    #         "Ingenieur(e) De Donnée",
+    #         "Ingenieur-e De Donnée",
+    #         "Ingénieur Donnée",
+    #         "Ingénieur(e) Donnée",
+    #         "Ingénieur-e Donnée",
+    #         "Ingenieur Donnée",
+    #         "Ingenieur(e) Donnée",
+    #         "Ingenieur-e Donnée",
+    #         "Ingénieur / Ingénieure Donnée",
+    #         "Ingénieur / Ingénieure Data",
+    #         "Ingénieur - Ingénieure Donnée",
+    #         "Ingénieur - Ingénieure Data",
+    #         "Ingénieur/Ingénieure Donnée",
+    #         "Ingénieur/Ingénieure Data",
+    #         "Ingénieur-Ingénieure Donnée",
+    #         "Ingénieur-Ingénieure Data",
+    #         "Ingenieur / Ingenieure Donnée",
+    #         "Ingenieur / Ingenieure Data",
+    #         "Ingenieur - Ingenieure Donnée",
+    #         "Ingenieur - Ingenieure Data",
+    #         "Ingenieur/Ingenieure Donnée",
+    #         "Ingenieur/Ingenieure Data",
+    #         "Ingenieur-Ingenieure Donnée",
+    #         "Ingenieur-Ingenieure Data",
+    #         "Ingénieur Big Data",
+    #         "Ingenieur Big Data",
+    #         "Big Data",  # inclut "Développeur Big Data" (à exclure)
+    #         "BigData",
+    #         "Data Pipeline",
+    #         "Data Expert",
+    #         # "Spark"
+    #         #### à inclure ?
+    #         # "Ingénieur En Traitement De Données",
+    #         # "Expert En Bases De Données MongoDB",
+    #         # "Expert Bases De Données PostGre",
+    #         # "Administrateur De Base De Données",
+    #         # "Administrateur de Base de Données",
+    #         # "Administrateur des données centrales",
+    #         # "Administrateur bases de données",
+    #         # "Administrateur base de données",
+    #         # "Gestionnaire de base de données",
+    #         # "Gestionnaire Base de données",
+    #         # "Administrateur(trice) Base de données MySQL / PostGRE / MongoDB",
+    #     ],
+    #     "a_exclure": [
+    #         "DataVisualisation",
+    #         "Ingénieur Data Scientist",
+    #         "Ingénieur Data Center",
+    #         "Développeur",
+    #         "Chef De Projet",
+    #         "Architecte",
+    #         "Manager",
+    #     ],
+    # }
 
-    data_analyst = {
-        "a_inclure": [
-            "Analyste Décisionnel",
-            "Data Analyst",
-            "Data-Analyst",
-            "Analyste Data",
-            "Analystes Data",
-            "Analyse De Donnée",  # sans "s" (volontaire)
-            "Analyste De Donnée",
-            "Data Viz",
-            "DataViz",
-            "Data Visualisation",
-            "Data Vizualisation",
-            "Business Intelligence",
-            "Power Bi",
-        ],
-        "a_exclure": [
-            "Développeur",
-            "Business Analyst",
-            "Analyste Fonctionnel",
-            "Analyste Développeur",
-            "Analyste Programmeur",
-            "Analyste SOC",
-            "Analyste trésorerie",
-            "Analyste cybersécurité",
-            "Informaticien",
-        ],
-    }
+    # data_analyst = {
+    #     "a_inclure": [
+    #         "Analyste Décisionnel",
+    #         "Data Analyst",
+    #         "Data-Analyst",
+    #         "Analyste Data",
+    #         "Analystes Data",
+    #         "Analyse De Donnée",  # sans "s" (volontaire)
+    #         "Analyste De Donnée",
+    #         "Data Viz",
+    #         "DataViz",
+    #         "Data Visualisation",
+    #         "Data Vizualisation",
+    #         "Business Intelligence",
+    #         "Power Bi",
+    #         "DataVisualisation",
+    #     ],
+    #     "a_exclure": [
+    #         "Développeur",
+    #         "Business Analyst",
+    #         "Analyste Fonctionnel",
+    #         "Analyste Développeur",
+    #         "Analyste Programmeur",
+    #         "Analyste SOC",
+    #         "Analyste trésorerie",
+    #         "Analyste cybersécurité",
+    #         "Informaticien",
+    #         "Manager",
+    #         "Responsable",
+    #         "Directeur",
+    #     ],
+    # }
 
-    data_scientist = {
-        "a_inclure": [
-            "Data Scientist",
-            "Data-Scientist",
-            "Datascientist",
-            "Data-Science",
-            "Data Science",
-            "Scientifique de données",
-            "Scientifique des données",
-        ],
-        "a_exclure": [
-            # "analyst"
-        ],
-    }
+    # data_scientist = {
+    #     "a_inclure": [
+    #         "Data Scientist",
+    #         "Data-Scientist",
+    #         "Datascientist",
+    #         "Data-Science",
+    #         "Data Science",
+    #         "Scientifique de données",
+    #         "Scientifique des données",
+    #     ],
+    #     "a_exclure": [
+    #         # "analyst"
+    #         "Manager",
+    #     ],
+    # }
 
-    directory = os.path.join(current_directory, "outputs", "offres")
 
-    for job, job_dict, output_filename in [
-        ("DE", data_engineer, "offres_filtered_DE.json"),
-        ("DA", data_analyst, "offres_filtered_DA.json"),
-        ("DS", data_scientist, "offres_filtered_DS.json"),
-    ]:
-        print(f"\n{Fore.GREEN}============ {job} ============")
-        filtrer_offres_selon_liste(directory, job_dict, output_filename)
+    with open(file_path, "r") as file:
+        content = yaml.safe_load(file)
+        codes = content["filtre_codes_appellation"]
+
+
+    # directory = os.path.join(current_directory, "outputs", "offres")
+
+    # for job, job_dict, output_filename in [
+    #     # ("DE", data_engineer, "offres_filtered_DE.json"),
+    #     # ("DA", data_analyst, "offres_filtered_DA.json"),
+    #     ("DS", data_scientist, "offres_filtered_DS.json"),
+    # ]:
+    #     print(f"\n{Fore.GREEN}============ {job} ============")
+    #     filtrer_offres_selon_liste(directory, job_dict, output_filename)
