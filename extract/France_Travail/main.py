@@ -19,7 +19,7 @@ IDENTIFIANT_CLIENT = creds["API_FRANCE_TRAVAIL"]["IDENTIFIANT_CLIENT"]
 CLE_SECRETE = creds["API_FRANCE_TRAVAIL"]["CLE_SECRETE"]
 
 # Lancer les fonctions plus simplement ("= 1" pour lancer la fonction)
-launch_get_bearer_token = 0
+launch_get_bearer_token = 1
 launch_get_appellations = 0
 launch_get_offres = 0
 launch_filtrer_offres_selon_liste = 1
@@ -57,11 +57,11 @@ if launch_get_offres:
                 # "codeNAF": "",  # Code NAF de l’offre, (format 99.99X)
                 # "codeROME": "",  # Code ROME de l’offre, voir le référentiel des métiers ci-dessous
                 #### localisation
+                # "paysContinent": "",  # Pays ou continent de l’offre, voir le référentiel ci-dessous
                 # "commune": "",  # Code INSEE de la commune, voir le référentiel ci-dessous
                 # "departement": "75",  # Département de l’offre, voir le référentiel ci-dessous
                 # "distance": "",  # Distance à la commune (pris en compte uniquement si une commune est renseignée, plus d'information dans la documentation)
                 # "inclureLimitrophes": "",  # Inclure les départements limitrophes dans la recherche
-                # "paysContinent": "",  # Pays ou continent de l’offre, voir le référentiel ci-dessous
                 # "region": "",  # Région de l’offre, voir le référentiel ci-dessous
                 #### contrat
                 # "dureeContratMax": "",  # Recherche les offres avec une durée de contrat maximale (format double de 0 à 99 bornes incluses)
@@ -121,8 +121,8 @@ if launch_filtrer_offres_selon_liste:
     # appels de la fonction pour filtrer les offres selon les valeurs dans les clés "a_inclure" / "a_exclure"
     for job_dict, output_filename in [
         (data_engineer, "offres_filtered_DE.json"),
-        (data_analyst, "offres_filtered_DA.json"),
-        (data_scientist, "offres_filtered_DS.json"),
+        # (data_analyst, "offres_filtered_DA.json"),
+        # (data_scientist, "offres_filtered_DS.json"),
     ]:
         print(f"\n{Fore.GREEN}============ {output_filename} ============")
         filtrer_offres_selon_liste(directory, job_dict, output_filename)

@@ -160,20 +160,22 @@ def get_offres(token, filter_params):
 
     print(f"{Fore.GREEN}==== Récupération des offres (requête 0), pour connaître le nombre d'offres :", end=" ")
 
-    # print(
-    #     response.headers.get("Content-Range"),  # exemple : "offres 0-0/9848"
-    #     int(response.headers.get("Content-Range").split("/")[-1]),
-    # )
+    print(
+        response,
+        # response.headers.get("Content-Range"),  # exemple : "offres 0-0/9848"
+        # int(response.headers.get("Content-Range").split("/")[-1]),
+    )
 
-    max_offres = int(response.headers.get("Content-Range").split("/")[-1])  # response.headers.get('Content-Range') = offres 0-0/9848
+    if response.status_code in [200, 206]:
+        max_offres = int(response.headers.get("Content-Range").split("/")[-1])  # response.headers.get('Content-Range') = offres 0-0/9848
 
-    if filter_params["appellation"] in codes_list:
-        output_file = os.path.join(current_directory, "outputs", "offres", f"{appellation}_{libelle}__{max_offres}_offres.json")
-    else:
-        output_file = os.path.join(current_directory, "outputs", "offres", f"{appellation}__{max_offres}_offres.json")
+        if filter_params["appellation"] in codes_list:
+            output_file = os.path.join(current_directory, "outputs", "offres", f"{appellation}_{libelle}__{max_offres}_offres.json")
+        else:
+            output_file = os.path.join(current_directory, "outputs", "offres", f"{appellation}__{max_offres}_offres.json")
 
-    if os.path.exists(output_file):
-        os.remove(output_file)
+        if os.path.exists(output_file):
+            os.remove(output_file)
 
     ###### réponse 200 : on peut récupérer déjà récupérer toutes les offres disponibles
     if response.status_code == 200:
@@ -250,7 +252,7 @@ def get_offres(token, filter_params):
         print(f"Status Code : {response.status_code} : Aucune offre correspondante")
     else:
         print(f"Status Code : {response.status_code}")
-        print(response.text)
+        # print(response.text)
         print(response.json())
 
     print("")
@@ -299,7 +301,8 @@ def filtrer_offres_selon_liste(directory, strings_a_verifier_dans_intitule, outp
                                 if (inclu.lower() in intitule.lower()) and all(exclu.lower() not in intitule.lower() for exclu in strings_a_verifier_dans_intitule["a_exclure"]):  # fmt:skip # noqa
                                     if offre_id not in offres_id_filtered:
                                         offres_id_filtered.append(offre_id)
-                                        print(f"{doc_nb:<5} {offre_id} : {intitule:<85}  {filename:<70} {date_creation}   {date_actualisation}   {lieu:25}   {nom_entreprise}")  # fmt:skip
+                                        # print(f"{doc_nb:<5} {offre_id} : {intitule:<85}  {filename:<70} {date_creation}   {date_actualisation}   {lieu:25}   {nom_entreprise}")  # fmt:skip
+                                        print(f"{filename.split("_")[0]:<8} n°{doc_nb:<5} id:{offre_id}  {intitule:<85} {date_creation}   {date_actualisation}   {lieu:25}   {nom_entreprise}")  # fmt:skip
                                         if doc_nb != 1:
                                             f.write(",\n")
                                         json.dump(line, f, ensure_ascii=False)
