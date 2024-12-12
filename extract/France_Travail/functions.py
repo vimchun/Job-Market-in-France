@@ -283,23 +283,23 @@ def filtrer_offres_selon_liste(directory, strings_a_verifier_dans_intitule, outp
 
         for filename in os.listdir(directory):
             if filename.endswith(".json") and filename != output_filename:  # traite aussi le cas du fichier sans extension
-                # print(f"{Fore.CYAN}========= Fichier json: {filename} =========")
                 try:
                     # si le json est bien valide
                     with open(os.path.join(directory, filename), "r", encoding="utf-8") as file:
                         data = json.load(file)
                         for line in data:
-                            intitule = line["intitule"]
                             offre_id = line["id"]
-
+                            intitule = line["intitule"]
                             date_creation = line["dateCreation"].split("T")[0]
                             date_actualisation = line["dateActualisation"].split("T")[0]
+                            lieu = line["lieuTravail"]["libelle"]
+                            nom_entreprise = line.get("entreprise", {}).get("nom", "-")  # "{}" pour renvoyer un dictionnaire vide si la clé "entreprise" n'existe pas  # fmt:skip
 
                             for inclu in strings_a_verifier_dans_intitule["a_inclure"]:
                                 if (inclu.lower() in intitule.lower()) and all(exclu.lower() not in intitule.lower() for exclu in strings_a_verifier_dans_intitule["a_exclure"]):  # fmt:skip # noqa
                                     if offre_id not in offres_id_filtered:
                                         offres_id_filtered.append(offre_id)
-                                        print(f"{doc_nb:<5} {offre_id} : {intitule:<85}  {filename:<70} {date_creation}   {date_actualisation} ")
+                                        print(f"{doc_nb:<5} {offre_id} : {intitule:<85}  {filename:<70} {date_creation}   {date_actualisation}   {lieu:25}   {nom_entreprise}")  # fmt:skip
                                         if doc_nb != 1:
                                             f.write(",\n")
                                         json.dump(line, f, ensure_ascii=False)

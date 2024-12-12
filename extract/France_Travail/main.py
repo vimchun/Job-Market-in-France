@@ -118,6 +118,7 @@ if launch_filtrer_offres_selon_liste:
 
     directory = os.path.join(current_directory, "outputs", "offres")
 
+    # appels de la fonction pour filtrer les offres selon les valeurs dans les clés "a_inclure" / "a_exclure"
     for job_dict, output_filename in [
         (data_engineer, "offres_filtered_DE.json"),
         (data_analyst, "offres_filtered_DA.json"),
