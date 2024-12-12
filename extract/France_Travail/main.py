@@ -104,143 +104,24 @@ if launch_get_offres:
 
 
 if launch_filtrer_offres_selon_liste:
-    # data_engineer = {
-    #     "a_inclure": [  # traiter ça par regex ? à discuter
-    #         "Data Engineer",
-    #         "Data Eng",
-    #         "Data Ingineer",  # typo recruteur
-    #         "Data Ingénieur",
-    #         "Data Ingénieur(e)",
-    #         "Data Ingénieur-e",
-    #         "Data Ingenieur",
-    #         "Data Ingenieur(e)",
-    #         "Data Ingenieur-e",
-    #         "Ingénieur Data",
-    #         "Ingénieur(e) Data",
-    #         "Ingénieur-e Data",
-    #         "Ingenieur Data",
-    #         "Ingenieur(e) Data",
-    #         "Ingenieur-e Data",
-    #         "Ingénieur De Donnée",  # sans "s" (volontaire)
-    #         "Ingénieur(e) De Donnée",
-    #         "Ingénieur-e De Donnée",
-    #         "Ingenieur De Donnée",
-    #         "Ingenieur(e) De Donnée",
-    #         "Ingenieur-e De Donnée",
-    #         "Ingénieur Donnée",
-    #         "Ingénieur(e) Donnée",
-    #         "Ingénieur-e Donnée",
-    #         "Ingenieur Donnée",
-    #         "Ingenieur(e) Donnée",
-    #         "Ingenieur-e Donnée",
-    #         "Ingénieur / Ingénieure Donnée",
-    #         "Ingénieur / Ingénieure Data",
-    #         "Ingénieur - Ingénieure Donnée",
-    #         "Ingénieur - Ingénieure Data",
-    #         "Ingénieur/Ingénieure Donnée",
-    #         "Ingénieur/Ingénieure Data",
-    #         "Ingénieur-Ingénieure Donnée",
-    #         "Ingénieur-Ingénieure Data",
-    #         "Ingenieur / Ingenieure Donnée",
-    #         "Ingenieur / Ingenieure Data",
-    #         "Ingenieur - Ingenieure Donnée",
-    #         "Ingenieur - Ingenieure Data",
-    #         "Ingenieur/Ingenieure Donnée",
-    #         "Ingenieur/Ingenieure Data",
-    #         "Ingenieur-Ingenieure Donnée",
-    #         "Ingenieur-Ingenieure Data",
-    #         "Ingénieur Big Data",
-    #         "Ingenieur Big Data",
-    #         "Big Data",  # inclut "Développeur Big Data" (à exclure)
-    #         "BigData",
-    #         "Data Pipeline",
-    #         "Data Expert",
-    #         # "Spark"
-    #         #### à inclure ?
-    #         # "Ingénieur En Traitement De Données",
-    #         # "Expert En Bases De Données MongoDB",
-    #         # "Expert Bases De Données PostGre",
-    #         # "Administrateur De Base De Données",
-    #         # "Administrateur de Base de Données",
-    #         # "Administrateur des données centrales",
-    #         # "Administrateur bases de données",
-    #         # "Administrateur base de données",
-    #         # "Gestionnaire de base de données",
-    #         # "Gestionnaire Base de données",
-    #         # "Administrateur(trice) Base de données MySQL / PostGRE / MongoDB",
-    #     ],
-    #     "a_exclure": [
-    #         "DataVisualisation",
-    #         "Ingénieur Data Scientist",
-    #         "Ingénieur Data Center",
-    #         "Développeur",
-    #         "Chef De Projet",
-    #         "Architecte",
-    #         "Manager",
-    #     ],
-    # }
-
-    # data_analyst = {
-    #     "a_inclure": [
-    #         "Analyste Décisionnel",
-    #         "Data Analyst",
-    #         "Data-Analyst",
-    #         "Analyste Data",
-    #         "Analystes Data",
-    #         "Analyse De Donnée",  # sans "s" (volontaire)
-    #         "Analyste De Donnée",
-    #         "Data Viz",
-    #         "DataViz",
-    #         "Data Visualisation",
-    #         "Data Vizualisation",
-    #         "Business Intelligence",
-    #         "Power Bi",
-    #         "DataVisualisation",
-    #     ],
-    #     "a_exclure": [
-    #         "Développeur",
-    #         "Business Analyst",
-    #         "Analyste Fonctionnel",
-    #         "Analyste Développeur",
-    #         "Analyste Programmeur",
-    #         "Analyste SOC",
-    #         "Analyste trésorerie",
-    #         "Analyste cybersécurité",
-    #         "Informaticien",
-    #         "Manager",
-    #         "Responsable",
-    #         "Directeur",
-    #     ],
-    # }
-
-    # data_scientist = {
-    #     "a_inclure": [
-    #         "Data Scientist",
-    #         "Data-Scientist",
-    #         "Datascientist",
-    #         "Data-Science",
-    #         "Data Science",
-    #         "Scientifique de données",
-    #         "Scientifique des données",
-    #     ],
-    #     "a_exclure": [
-    #         # "analyst"
-    #         "Manager",
-    #     ],
-    # }
-
+    file_path = os.path.join(current_directory, "filtres_offres.yml")
 
     with open(file_path, "r") as file:
         content = yaml.safe_load(file)
-        codes = content["filtre_codes_appellation"]
 
+    # construction de dictionnaires "métiers" à partir du fichier yaml
+    data_engineer, data_analyst, data_scientist = {}, {}, {}
 
-    # directory = os.path.join(current_directory, "outputs", "offres")
+    for job, key in [(data_engineer, "filtre_offres_DE"), (data_analyst, "filtre_offres_DA"), (data_scientist, "filtre_offres_DS")]:
+        job["a_inclure"] = content[key][0]["a_inclure"]
+        job["a_exclure"] = content[key][1]["a_exclure"]
 
-    # for job, job_dict, output_filename in [
-    #     # ("DE", data_engineer, "offres_filtered_DE.json"),
-    #     # ("DA", data_analyst, "offres_filtered_DA.json"),
-    #     ("DS", data_scientist, "offres_filtered_DS.json"),
-    # ]:
-    #     print(f"\n{Fore.GREEN}============ {job} ============")
-    #     filtrer_offres_selon_liste(directory, job_dict, output_filename)
+    directory = os.path.join(current_directory, "outputs", "offres")
+
+    for job_dict, output_filename in [
+        (data_engineer, "offres_filtered_DE.json"),
+        (data_analyst, "offres_filtered_DA.json"),
+        (data_scientist, "offres_filtered_DS.json"),
+    ]:
+        print(f"\n{Fore.GREEN}============ {output_filename} ============")
+        filtrer_offres_selon_liste(directory, job_dict, output_filename)

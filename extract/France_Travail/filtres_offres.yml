@@ -30,119 +30,125 @@ filtre_codes_appellation: # "libelle" associé au code en commentaire
   - '405222' # Data analyst de la performance
   - '489091' # Database administrator
 
-filtre_inclusion_pour_offres_DE:
-  - Data Engineer
-  - Data Ingineer # typo recruteur
-  - Data Eng # aepgjea
-  - Data Ing
-  - Data Ingénieur
-  - Data Ingénieur(e)
-  - Data Ingénieur-e
-  - Data Ingenieur
-  - Data Ingenieur(e)
-  - Data Ingenieur-e
-  - Ingénieur Data
-  - Ingénieur(e) Data
-  - Ingénieur-e Data
-  - Ingenieur Data
-  - Ingenieur(e) Data
-  - Ingenieur-e Data
-  - Ingénieur De Donnée # sans s (volontaire)
-  - Ingénieur(e) De Donnée
-  - Ingénieur-e De Donnée
-  - Ingenieur De Donnée
-  - Ingenieur(e) De Donnée
-  - Ingenieur-e De Donnée
-  - Ingénieur Donnée
-  - Ingénieur(e) Donnée
-  - Ingénieur-e Donnée
-  - Ingenieur Donnée
-  - Ingenieur(e) Donnée
-  - Ingenieur-e Donnée
-  - Ingénieur / Ingénieure Donnée
-  - Ingénieur / Ingénieure Data
-  - Ingénieur - Ingénieure Donnée
-  - Ingénieur - Ingénieure Data
-  - Ingénieur/Ingénieure Donnée
-  - Ingénieur/Ingénieure Data
-  - Ingénieur-Ingénieure Donnée
-  - Ingénieur-Ingénieure Data
-  - Ingenieur / Ingenieure Donnée
-  - Ingenieur / Ingenieure Data
-  - Ingenieur - Ingenieure Donnée
-  - Ingenieur - Ingenieure Data
-  - Ingenieur/Ingenieure Donnée
-  - Ingenieur/Ingenieure Data
-  - Ingenieur-Ingenieure Donnée
-  - Ingenieur-Ingenieure Data
-  - Ingénieur Big Data
-  - Ingenieur Big Data
-  - Big Data # inclut Développeur Big Data (à exclure)
-  - BigData
-  - Data Pipeline
-  - Data Expert
-  #### à inclure ?
-  # Spark
-  # Ingénieur En Traitement De Données,
-  # Expert En Bases De Données MongoDB,
-  # Expert Bases De Données PostGre,
-  # Administrateur De Base De Données,
-  # Administrateur de Base de Données,
-  # Administrateur des données centrales,
-  # Administrateur bases de données,
-  # Administrateur base de données,
-  # Gestionnaire de base de données,
-  # Gestionnaire Base de données,
-  # Administrateur(trice) Base de données MySQL / PostGRE / MongoDB,
+filtre_offres_DE:
+  - a_inclure:
+      - Data Engineer
+      - Data Ingineer # typo recruteur
+      - Data Eng # aepgjea
+      - Data Ing
+      - Data Ingénieur
+      - Data Ingénieur(e)
+      - Data Ingénieur-e
+      - Data Ingenieur
+      - Data Ingenieur(e)
+      - Data Ingenieur-e
+      - Ingénieur Data
+      - Ingénieur(e) Data
+      - Ingénieur-e Data
+      - Ingenieur Data
+      - Ingenieur(e) Data
+      - Ingenieur-e Data
+      - Ingénieur De Donnée # sans s (volontaire)
+      - Ingénieur(e) De Donnée
+      - Ingénieur-e De Donnée
+      - Ingenieur De Donnée
+      - Ingenieur(e) De Donnée
+      - Ingenieur-e De Donnée
+      - Ingénieur Donnée
+      - Ingénieur(e) Donnée
+      - Ingénieur-e Donnée
+      - Ingenieur Donnée
+      - Ingenieur(e) Donnée
+      - Ingenieur-e Donnée
+      - Ingénieur / Ingénieure Donnée
+      - Ingénieur / Ingénieure Data
+      - Ingénieur - Ingénieure Donnée
+      - Ingénieur - Ingénieure Data
+      - Ingénieur/Ingénieure Donnée
+      - Ingénieur/Ingénieure Data
+      - Ingénieur-Ingénieure Donnée
+      - Ingénieur-Ingénieure Data
+      - Ingenieur / Ingenieure Donnée
+      - Ingenieur / Ingenieure Data
+      - Ingenieur - Ingenieure Donnée
+      - Ingenieur - Ingenieure Data
+      - Ingenieur/Ingenieure Donnée
+      - Ingenieur/Ingenieure Data
+      - Ingenieur-Ingenieure Donnée
+      - Ingenieur-Ingenieure Data
+      - Ingénieur Big Data
+      - Ingenieur Big Data
+      - Big Data # inclut Développeur Big Data (à exclure)
+      - BigData
+      - Data Pipeline
+      - Data Expert
+      #### à inclure ?
+      # - Spark
+      # - Ingénieur En Traitement De Données
+      # - Expert En Bases De Données MongoDB
+      # - Expert Bases De Données PostGre
+      # - Administrateur De Base De Données
+      # - Administrateur de Base de Données
+      # - Administrateur des données centrales
+      # - Administrateur bases de données
+      # - Administrateur base de données
+      # - Gestionnaire de base de données
+      # - Gestionnaire Base de données
+      # - Administrateur(trice) Base de données MySQL / PostGRE / MongoDB
 
-filtre_exclusion_pour_offres_DE:
-  - DataVisualisation
-  - Ingénieur Data Scientist
-  - Ingénieur Data Center
-  - Développeur
-  - Chef De Projet
-  - Architecte
-  - Manager
+  - a_exclure:
+      - DataVisualisation
+      - Ingénieur Data Scientist
+      - Ingénieur Data Center
+      - Développeur
+      - Chef De Projet
+      - Architecte
+      - Manager
+      - Responsable
 
-filtre_inclusion_pour_offres_DA:
-  - Analyste Décisionnel
-  - Data Analyst
-  - Data-Analyst
-  - Analyste Data
-  - Analystes Data
-  - Analyse De Donnée # sans s (volontaire)
-  - Analyste De Donnée
-  - Data Viz
-  - DataViz
-  - Data Visualisation
-  - Data Vizualisation
-  - Business Intelligence
-  - Power Bi
-  - DataVisualisation
+filtre_offres_DA:
+  - a_inclure:
+      - Analyste Décisionnel
+      - Data Analyst
+      - Data-Analyst
+      - Analyste Data
+      - Analystes Data
+      - Analyse De Donnée # sans s (volontaire)
+      - Analyste De Donnée
+      - Data Viz
+      - DataViz
+      - Data Visualisation
+      - Data Vizualisation
+      - Business Intelligence
+      - Power Bi
+      - DataVisualisation
 
-filtre_exclusion_pour_offres_DA:
-  - Développeur
-  - Business Analyst
-  - Analyste Fonctionnel
-  - Analyste Développeur
-  - Analyste Programmeur
-  - Analyste SOC
-  - Analyste trésorerie
-  - Analyste cybersécurité
-  - Informaticien
-  - Manager
-  - Responsable
-  - Directeur
+  - a_exclure:
+      - Développeur
+      - Business Analyst
+      - Analyste Fonctionnel
+      - Analyste Développeur
+      - Analyste Programmeur
+      - Analyste SOC
+      - Analyste trésorerie
+      - Analyste cybersécurité
+      - Informaticien
+      - Manager
+      - Responsable
+      - Directeur
 
-filtre_inclusion_pour_offres_DS:
-  - Data Scientist
-  - Data-Scientist
-  - Datascientist
-  - Data-Science
-  - Data Science
-  - Scientifique de données
-  - Scientifique des données
+filtre_offres_DS:
+  - a_inclure:
+      - Data Scientist
+      - Data-Scientist
+      - Datascientist
+      - Data-Science
+      - Data Science
+      - Scientifique de données
+      - Scientifique des données
 
-filtre_exclusion_pour_offres_DS:
-  - Manager
-  # analyst
+  - a_exclure:
+      - Manager
+      - Responsable
+      - Directeur
+      # - analyst
