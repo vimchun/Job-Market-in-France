@@ -52,15 +52,14 @@ def get_bearer_token(client_id, client_secret, scope):
         return None
 
 
-def get_appellations(token):
+def get_referentiel_appellations_rome(token):
     """
-    Récupérer les appellations et les écrit dans un fichier json.
+    https://francetravail.io/produits-partages/catalogue/offres-emploi/documentation#/api-reference/operations/recupererReferentielAppellations
+    Récupérer le référentiel des appellations ROME et les écrit dans un fichier json.
     Ne retourne rien.
-    Un "code" correspond à un "libelle", par exemple :
-
-     - { "code": "404278", "libelle": "Data engineer" }
+    Un "code" correspond à un "libelle", par exemple { "code": "404278", "libelle": "Data engineer" }
     """
-    print(f"{Fore.GREEN}== Récupération des appellations :")
+    print(f"{Fore.GREEN}== Récupération du référentiel des appellations ROME:")
 
     url = "https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/appellations"
 
@@ -76,7 +75,44 @@ def get_appellations(token):
         # print(f"Réponse de l'API: {json.dumps(response.json(), indent=4, ensure_ascii=False)}")
         # ensure_ascii=False sinon on a des caractères non compréhensible (ex: Op\u00e9rateur)
 
-        file_path = os.path.join(current_directory, "outputs", "appellations", "appellations.json")
+        # file_path = os.path.join(current_directory, "outputs", "appellations", "appellations.json")
+        file_path = os.path.join(current_directory, "outputs", "referentiels", "appellations_rome.json")
+        data = response.json()
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+
+    else:
+        print(f"Erreur lors de la requête API: {response.status_code}\n")
+        print(response.text)
+
+    return None
+
+
+def get_referentiel_pays(token):
+    """
+    https://francetravail.io/produits-partages/catalogue/offres-emploi/documentation#/api-reference/operations/recupererReferentielPays
+    Récupérer le référentiel des pays et les écrit dans un fichier json.
+    Ne retourne rien.
+    Un "code" correspond à un "libelle", par exemple  { "code": "01", "libelle": "France" }
+    """
+    print(f"{Fore.GREEN}== Récupération du référentiel des pays :")
+
+    url = "https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/pays"
+
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json",
+    }
+
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        print(f"Status Code: {response.status_code}\n")
+        # print(f"Réponse de l'API: {json.dumps(response.json(), indent=4, ensure_ascii=False)}")
+        # ensure_ascii=False sinon on a des caractères non compréhensible (ex: Op\u00e9rateur)
+
+        # file_path = os.path.join(current_directory, "outputs", "appellations", "appellations.json")
+        file_path = os.path.join(current_directory, "outputs", "referentiels", "pays.json")
         data = response.json()
         with open(file_path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
@@ -161,7 +197,7 @@ def get_offres(token, filter_params):
     print(f"{Fore.GREEN}==== Récupération des offres (requête 0), pour connaître le nombre d'offres :", end=" ")
 
     print(
-        response,
+        # response,
         # response.headers.get("Content-Range"),  # exemple : "offres 0-0/9848"
         # int(response.headers.get("Content-Range").split("/")[-1]),
     )
@@ -251,9 +287,9 @@ def get_offres(token, filter_params):
     elif response.status_code == 204:
         print(f"Status Code : {response.status_code} : Aucune offre correspondante")
     else:
-        print(f"Status Code : {response.status_code}")
+        print(f"Status Code : {response.status_code} ==> {response.json()}")
         # print(response.text)
-        print(response.json())
+        # print(response.json())
 
     print("")
 

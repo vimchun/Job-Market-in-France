@@ -3,7 +3,7 @@ import os
 import yaml
 
 from colorama import Back, Fore, Style, init
-from functions import filtrer_offres_selon_liste, get_appellations, get_bearer_token, get_offres
+from functions import filtrer_offres_selon_liste, get_bearer_token, get_offres, get_referentiel_appellations_rome, get_referentiel_pays
 
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
@@ -19,9 +19,10 @@ IDENTIFIANT_CLIENT = creds["API_FRANCE_TRAVAIL"]["IDENTIFIANT_CLIENT"]
 CLE_SECRETE = creds["API_FRANCE_TRAVAIL"]["CLE_SECRETE"]
 
 # Lancer les fonctions plus simplement ("= 1" pour lancer la fonction)
-launch_get_bearer_token = 1
-launch_get_appellations = 0
-launch_get_offres = 0
+launch_get_bearer_token = 0
+launch_get_referentiel_appellations_rome = 0
+launch_get_referentiel_pays = 0
+launch_get_offres = 0  # todo : bug intermittent assez rare (le script arrête parfois d'écrire dans le fichier json)
 launch_filtrer_offres_selon_liste = 1
 
 ################################################################################################################################################################
@@ -35,8 +36,13 @@ if launch_get_bearer_token:
 
 ################################################################################################################################################################
 
-if launch_get_appellations:
-    get_appellations(token)
+if launch_get_referentiel_appellations_rome:
+    get_referentiel_appellations_rome(token)
+
+################################################################################################################################################################
+
+if launch_get_referentiel_pays:
+    get_referentiel_pays(token)
 
 ################################################################################################################################################################
 
@@ -53,16 +59,16 @@ if launch_get_offres:
             token,
             filter_params={
                 #### codes
-                "appellation": code,  # Code appellation ROME de l’offre, voir le référentiel ci-dessous
+                "appellation": code,  # Code appellation ROME de l’offre
                 # "codeNAF": "",  # Code NAF de l’offre, (format 99.99X)
                 # "codeROME": "",  # Code ROME de l’offre, voir le référentiel des métiers ci-dessous
                 #### localisation
-                # "paysContinent": "",  # Pays ou continent de l’offre, voir le référentiel ci-dessous
-                # "commune": "",  # Code INSEE de la commune, voir le référentiel ci-dessous
-                # "departement": "75",  # Département de l’offre, voir le référentiel ci-dessous
+                "paysContinent": "01",  # Pays ou continent de l’offre  ("01" est le code de la France)  # todo : pas restreint à la métropôle (le faire ?)
+                # "commune": "",  # Code INSEE de la commune
+                # "departement": "",  # Département de l’offre
                 # "distance": "",  # Distance à la commune (pris en compte uniquement si une commune est renseignée, plus d'information dans la documentation)
                 # "inclureLimitrophes": "",  # Inclure les départements limitrophes dans la recherche
-                # "region": "",  # Région de l’offre, voir le référentiel ci-dessous
+                # "region": "",  # Région de l’offre
                 #### contrat
                 # "dureeContratMax": "",  # Recherche les offres avec une durée de contrat maximale (format double de 0 à 99 bornes incluses)
                 # "dureeContratMin": "",  # Recherche les offres avec une durée de contrat minimale (format double de 0 à 99 bornes incluses)
@@ -70,8 +76,8 @@ if launch_get_offres:
                 # "dureeHebdoMax": "",  # Recherche les offres avec une durée maximale (format HHMM)
                 # "dureeHebdoMin": "",  # Recherche les offres avec une durée minimale (format HHMM)
                 # "tempsPlein": "",  # Temps plein ou partiel
-                # "natureContrat": "",  # Code de la nature du contrat, voir le référentiel ci-dessous
-                # "typeContrat": "",  # Code du type de contrat, voir le référentiel ci-dessous
+                # "natureContrat": "",  # Code de la nature du contrat
+                # "typeContrat": "",  # Code du type de contrat
                 # "periodeSalaire": "",  # Période pour le calcul du salaire minimum (M Mensuel, A Annuel, H Horaire, C Cachet). Si cette donnée est renseignée, le salaire minimum est obligatoire. # noqa
                 # "salaireMin": "",  # Salaire minimum recherché. Si cette donnée est renseignée, le code du type de salaire minimum est obligatoire.
                 #### experience
@@ -82,20 +88,20 @@ if launch_get_offres:
                 # "minCreationDate": "",  # Date minimale pour laquelle rechercher des offres (format yyyy-MM-dd'T'hh:mm:ss'Z')
                 # "publieeDepuis": "",  # Recherche les offres publiées depuis maximum « X » jours
                 #### misc.
+                # "sort": "",  # Tri selon 3 façons différentes
                 # "accesTravailleurHandicape": True,  # Offres pour lesquelles l’employeur est handi friendly
                 # "modeSelectionPartenaires": "",  # Énumération (INCLUS ou EXCLU) - Mode de sélection des partenaires.
                 # "motsCles": "data",  # Recherche de mots clés dans l’offre, voir documentation
-                # "niveauFormation": "",  # Niveau de formation demandé, voir le référentiel ci-dessous
+                # "niveauFormation": "",  # Niveau de formation demandé
                 # "offresMRS": "",  # Uniquement les offres d'emplois avec méthode de recrutement par simulation proposée
                 # "offresManqueCandidats": "",  # Filtre sur les offres difficiles à pouvoir
                 # "origineOffre": "",  # Origine de l'offres
                 # "partenaires": "",  # Chaine de caractères - Liste des codes partenaires dont les offres sont à inclure ou exclure en fonction du mode de sélection associé et du filtre de l’origine de l’offre # noqa
-                # "permis": "",  # Permis demandé, voir le référentiel ci-dessous
+                # "permis": "",  # Permis demandé
                 # "qualification": "",  # Qualification du poste (0 non-cadre, 9 cadre)
-                # "secteurActivite": "",  # Division NAF de l’offre (2 premiers chiffres), voir le référentiel ci-dessous
-                # "sort": "",  # Tri selon 3 façons différentes
-                # "theme": "",  # Thème ROME du métier, voir le référentiel ci-dessous
-                # "domaine": "",  # Domaine de l’offre, voir le référentiel ci-dessous
+                # "secteurActivite": "",  # Division NAF de l’offre (2 premiers chiffres)
+                # "theme": "",  # Thème ROME du métier
+                # "domaine": "",  # Domaine de l’offre
                 # "entreprisesAdaptees": "",  # Filtre sur les offres dont les entreprises sont adaptées
             },
         )
