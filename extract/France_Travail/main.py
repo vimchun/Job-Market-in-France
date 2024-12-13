@@ -19,7 +19,7 @@ IDENTIFIANT_CLIENT = creds["API_FRANCE_TRAVAIL"]["IDENTIFIANT_CLIENT"]
 CLE_SECRETE = creds["API_FRANCE_TRAVAIL"]["CLE_SECRETE"]
 
 # Lancer les fonctions plus simplement ("= 1" pour lancer la fonction)
-launch_get_bearer_token = 0
+launch_get_bearer_token = 1
 launch_get_referentiel_appellations_rome = 0
 launch_get_referentiel_pays = 0
 launch_get_offres = 0  # todo : bug intermittent assez rare (le script arrête parfois d'écrire dans le fichier json)
@@ -48,7 +48,7 @@ if launch_get_referentiel_pays:
 
 
 if launch_get_offres:
-    file_path = os.path.join(current_directory, "filtres_offres.yml")
+    file_path = os.path.join(current_directory, "..", "filtres_offres.yml")
 
     with open(file_path, "r") as file:
         content = yaml.safe_load(file)
@@ -65,7 +65,7 @@ if launch_get_offres:
                 #### localisation
                 "paysContinent": "01",  # Pays ou continent de l’offre  ("01" est le code de la France)  # todo : pas restreint à la métropôle (le faire ?)
                 # "commune": "",  # Code INSEE de la commune
-                # "departement": "",  # Département de l’offre
+                # "departement": "",  # Département de l’offre (Jusqu'à 5 valeurs possibles, séparées par une virgule)
                 # "distance": "",  # Distance à la commune (pris en compte uniquement si une commune est renseignée, plus d'information dans la documentation)
                 # "inclureLimitrophes": "",  # Inclure les départements limitrophes dans la recherche
                 # "region": "",  # Région de l’offre
@@ -106,11 +106,16 @@ if launch_get_offres:
             },
         )
 
+# notes :
+# pour filtrer qu'en France métropolitaine :
+#   - on ne peut pas filtrer sur les 13 régions en une fois (une seule région possible dans la requête)
+#   - on ne peut mettre que 5 départements d'un coup
+
 ################################################################################################################################################################
 
 
 if launch_filtrer_offres_selon_liste:
-    file_path = os.path.join(current_directory, "filtres_offres.yml")
+    file_path = os.path.join(current_directory, "..", "filtres_offres.yml")
 
     with open(file_path, "r") as file:
         content = yaml.safe_load(file)

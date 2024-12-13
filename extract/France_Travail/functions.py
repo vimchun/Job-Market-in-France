@@ -10,7 +10,6 @@ init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
 
 token = ""
-
 current_directory = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -75,7 +74,6 @@ def get_referentiel_appellations_rome(token):
         # print(f"Réponse de l'API: {json.dumps(response.json(), indent=4, ensure_ascii=False)}")
         # ensure_ascii=False sinon on a des caractères non compréhensible (ex: Op\u00e9rateur)
 
-        # file_path = os.path.join(current_directory, "outputs", "appellations", "appellations.json")
         file_path = os.path.join(current_directory, "outputs", "referentiels", "appellations_rome.json")
         data = response.json()
         with open(file_path, "w", encoding="utf-8") as f:
@@ -111,7 +109,6 @@ def get_referentiel_pays(token):
         # print(f"Réponse de l'API: {json.dumps(response.json(), indent=4, ensure_ascii=False)}")
         # ensure_ascii=False sinon on a des caractères non compréhensible (ex: Op\u00e9rateur)
 
-        # file_path = os.path.join(current_directory, "outputs", "appellations", "appellations.json")
         file_path = os.path.join(current_directory, "outputs", "referentiels", "pays.json")
         data = response.json()
         with open(file_path, "w", encoding="utf-8") as f:
@@ -133,7 +130,7 @@ def get_offres(token, filter_params):
     Ne retourne rien.
     """
 
-    current_directory = os.path.dirname(os.path.abspath(__file__))
+    # current_directory = os.path.dirname(os.path.abspath(__file__))
 
     # Recherche le "libelle" correspondant à "l'appellation"
     code_libelle = [  # modification du libelle pour pouvoir renommer les fichiers de sortie
@@ -142,6 +139,7 @@ def get_offres(token, filter_params):
         {"code": "38972", "libelle": "Data_Scientist"},
         {"code": "38975", "libelle": "Data_Manager"},
         {"code": "38977", "libelle": "Developpeur_Big_Data"},
+        {"code": "38095", "libelle": "Analyste_Decisionnel_Business_Intelligence"},
         {"code": "404274", "libelle": "Ingenieur_Data_Scientist"},
         {"code": "404276", "libelle": "Architecte_Big_Data"},
         {"code": "404277", "libelle": "Big_Data_Engineer"},
@@ -159,8 +157,6 @@ def get_offres(token, filter_params):
         {"code": "404939", "libelle": "Biostatisticien_Data_Manager"},
         {"code": "405222", "libelle": "Data_Analyst_De_La_Performance"},
         {"code": "489091", "libelle": "Database_Administrator"},
-        #### new
-        {"code": "38095", "libelle": "Analyste_Decisionnel_Business_Intelligence"},
         {"code": "404275", "libelle": "Analyste_Qualite_Des_Donnees"},
         {"code": "404289", "libelle": "Analyste_Scientifique_Des_Donnees"},
         {"code": "404271", "libelle": "Expert_En_Sciences_Des_Donnees"},
@@ -196,11 +192,11 @@ def get_offres(token, filter_params):
 
     print(f"{Fore.GREEN}==== Récupération des offres (requête 0), pour connaître le nombre d'offres :", end=" ")
 
-    print(
-        # response,
-        # response.headers.get("Content-Range"),  # exemple : "offres 0-0/9848"
-        # int(response.headers.get("Content-Range").split("/")[-1]),
-    )
+    # print(
+    #     response,
+    #     response.headers.get("Content-Range"),  # exemple : "offres 0-0/9848"
+    #     int(response.headers.get("Content-Range").split("/")[-1]),
+    # )
 
     if response.status_code in [200, 206]:
         max_offres = int(response.headers.get("Content-Range").split("/")[-1])  # response.headers.get('Content-Range') = offres 0-0/9848
@@ -288,8 +284,6 @@ def get_offres(token, filter_params):
         print(f"Status Code : {response.status_code} : Aucune offre correspondante")
     else:
         print(f"Status Code : {response.status_code} ==> {response.json()}")
-        # print(response.text)
-        # print(response.json())
 
     print("")
 
@@ -308,8 +302,6 @@ def filtrer_offres_selon_liste(directory, strings_a_verifier_dans_intitule, outp
 
     offres_id_filtered = []
     doc_nb = 1
-
-    # print(f"======================== {output_filename}")
 
     output_file = os.path.join(current_directory, "outputs", "offres", "offres_filtered", output_filename)
 
@@ -337,8 +329,7 @@ def filtrer_offres_selon_liste(directory, strings_a_verifier_dans_intitule, outp
                                 if (inclu.lower() in intitule.lower()) and all(exclu.lower() not in intitule.lower() for exclu in strings_a_verifier_dans_intitule["a_exclure"]):  # fmt:skip # noqa
                                     if offre_id not in offres_id_filtered:
                                         offres_id_filtered.append(offre_id)
-                                        # print(f"{doc_nb:<5} {offre_id} : {intitule:<85}  {filename:<70} {date_creation}   {date_actualisation}   {lieu:25}   {nom_entreprise}")  # fmt:skip
-                                        print(f"{filename.split("_")[0]:<8} n°{doc_nb:<5} id:{offre_id}  {intitule:<85} {date_creation}   {date_actualisation}   {lieu:25}   {nom_entreprise}")  # fmt:skip
+                                        print(f"{filename.split("_")[0]:<8} n°{doc_nb:<5} id:{offre_id}  {intitule:<85} {date_creation}   {date_actualisation}   {lieu:30}   {nom_entreprise}")  # fmt:skip
                                         if doc_nb != 1:
                                             f.write(",\n")
                                         json.dump(line, f, ensure_ascii=False)
