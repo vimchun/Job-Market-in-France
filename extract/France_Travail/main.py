@@ -2,15 +2,17 @@ import os
 
 import yaml
 
-from colorama import Back, Fore, Style, init
+from colorama import Fore, init
 from functions import filtrer_offres_selon_liste, get_bearer_token, get_offres, get_referentiel_appellations_rome, get_referentiel_pays
 
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
+
 
 # Récupération des credentials données sur le site de FT, depuis un fichier yaml
 CREDENTIALS_FILE = "api_credentials_minh.yml"  # à modifier selon qui lance le script (todo: trouver une meilleure solution)
 current_directory = os.path.dirname(os.path.abspath(__file__))
 file_path = os.path.join(current_directory, "..", CREDENTIALS_FILE)
+SCOPES_OFFRES = "o2dsoffre api_offresdemploiv2"  # scopes définis dans https://francetravail.io/produits-partages/catalogue/offres-emploi/documentation#/
 
 with open(file_path, "r") as file:
     creds = yaml.safe_load(file)
@@ -18,33 +20,25 @@ with open(file_path, "r") as file:
 IDENTIFIANT_CLIENT = creds["API_FRANCE_TRAVAIL"]["IDENTIFIANT_CLIENT"]
 CLE_SECRETE = creds["API_FRANCE_TRAVAIL"]["CLE_SECRETE"]
 
+token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)
+
+
 # Lancer les fonctions plus simplement ("= 1" pour lancer la fonction)
-launch_get_bearer_token = 1
 launch_get_referentiel_appellations_rome = 0
 launch_get_referentiel_pays = 0
-launch_get_offres = 0  # todo : bug intermittent assez rare (le script arrête parfois d'écrire dans le fichier json)
-launch_filtrer_offres_selon_liste = 1
+launch_get_offres = 1
+launch_filtrer_offres_selon_liste = 0
 
-################################################################################################################################################################
-
-if launch_get_bearer_token:
-    token = get_bearer_token(
-        client_id=IDENTIFIANT_CLIENT,
-        client_secret=CLE_SECRETE,
-        scope="o2dsoffre api_offresdemploiv2",  # scopes définis dans https://francetravail.io/produits-partages/catalogue/offres-emploi/documentation#/
-    )
-
-################################################################################################################################################################
 
 if launch_get_referentiel_appellations_rome:
     get_referentiel_appellations_rome(token)
 
-################################################################################################################################################################
+#################################################################################################################################
 
 if launch_get_referentiel_pays:
     get_referentiel_pays(token)
 
-################################################################################################################################################################
+#################################################################################################################################
 
 
 if launch_get_offres:
@@ -111,8 +105,7 @@ if launch_get_offres:
 #   - on ne peut pas filtrer sur les 13 régions en une fois (une seule région possible dans la requête)
 #   - on ne peut mettre que 5 départements d'un coup
 
-################################################################################################################################################################
-
+#################################################################################################################################
 
 if launch_filtrer_offres_selon_liste:
     file_path = os.path.join(current_directory, "..", "filtres_offres.yml")
@@ -132,8 +125,8 @@ if launch_filtrer_offres_selon_liste:
     # appels de la fonction pour filtrer les offres selon les valeurs dans les clés "a_inclure" / "a_exclure"
     for job_dict, output_filename in [
         (data_engineer, "offres_filtered_DE.json"),
-        # (data_analyst, "offres_filtered_DA.json"),
-        # (data_scientist, "offres_filtered_DS.json"),
+        (data_analyst, "offres_filtered_DA.json"),
+        (data_scientist, "offres_filtered_DS.json"),
     ]:
         print(f"\n{Fore.GREEN}============ {output_filename} ============")
         filtrer_offres_selon_liste(directory, job_dict, output_filename)

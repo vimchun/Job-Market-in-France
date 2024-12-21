@@ -1,10 +1,9 @@
 import json
 import os
-import sys
 
 import requests
 
-from colorama import Back, Fore, Style, init
+from colorama import Fore, Style, init
 
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
@@ -169,6 +168,8 @@ def get_offres(token, filter_params):
 
     appellation = filter_params["appellation"]
 
+    libelle = ""
+
     for item in code_libelle:
         if item["code"] == appellation:
             libelle = item["libelle"]
@@ -198,8 +199,13 @@ def get_offres(token, filter_params):
     #     int(response.headers.get("Content-Range").split("/")[-1]),
     # )
 
+    max_offres = 0
+    output_file = ""
+
     if response.status_code in [200, 206]:
-        max_offres = int(response.headers.get("Content-Range").split("/")[-1])  # response.headers.get('Content-Range') = offres 0-0/9848
+        content_range = response.headers.get("Content-Range")
+        if content_range is not None:
+            max_offres = int(content_range.split("/")[-1])
 
         if filter_params["appellation"] in codes_list:
             output_file = os.path.join(current_directory, "outputs", "offres", f"{appellation}_{libelle}__{max_offres}_offres.json")
@@ -323,13 +329,13 @@ def filtrer_offres_selon_liste(directory, strings_a_verifier_dans_intitule, outp
                             date_creation = line["dateCreation"].split("T")[0]
                             date_actualisation = line["dateActualisation"].split("T")[0]
                             lieu = line["lieuTravail"]["libelle"]
-                            nom_entreprise = line.get("entreprise", {}).get("nom", "-")  # "{}" pour renvoyer un dictionnaire vide si la clé "entreprise" n'existe pas  # fmt:skip
+                            nom_entreprise = line.get("entreprise", {}).get("nom", "-")  # "{}" pour renvoyer un dictionnaire vide si la clé "entreprise" n'existe pas  # fmt:skip #noqa
 
                             for inclu in strings_a_verifier_dans_intitule["a_inclure"]:
                                 if (inclu.lower() in intitule.lower()) and all(exclu.lower() not in intitule.lower() for exclu in strings_a_verifier_dans_intitule["a_exclure"]):  # fmt:skip # noqa
                                     if offre_id not in offres_id_filtered:
                                         offres_id_filtered.append(offre_id)
-                                        print(f"{filename.split("_")[0]:<8} n°{doc_nb:<5} id:{offre_id}  {intitule:<85} {date_creation}   {date_actualisation}   {lieu:30}   {nom_entreprise}")  # fmt:skip
+                                        print(f"{filename.split('_')[0]:<8} n°{doc_nb:<5} id:{offre_id}  {intitule:<85} {date_creation}   {date_actualisation}   {lieu:30}   {nom_entreprise}")  # fmt:skip  # noqa
                                         if doc_nb != 1:
                                             f.write(",\n")
                                         json.dump(line, f, ensure_ascii=False)

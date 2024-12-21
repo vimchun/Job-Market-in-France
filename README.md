@@ -32,14 +32,12 @@ ajouter la partie "the muse"
 ### API de "France Travail"
 
 - France Travail (https://francetravail.io/data/api) met à disposition 18 APIs pour récolter diverses données.
-- Nous utilisons l'API "Offres d'emploi" pour rechercher des offres selon plusieurs paramètres.
+- Nous utilisons l'API "Offres d'emploi" (`GET https://api.francetravail.io/partenaire/offresdemploi`) pour rechercher des offres selon plusieurs paramètres.
   - Ainsi, pour un métier donné, nous aurons des informations sur les secteurs qui recrutent le plus grâce au code NAF, les compétences requises, les villes qui recrutent le plus...
 
-- Parmi les paramètres que nous utilisons le plus, il y a :
+- Parmi les paramètres que nous utilisons, il y a :
 
-  - le paramètre `range` :
-    - qui limite les résultats à 150 offres par requête (status code 206 si un filtre peut renvoyer plus de 150 offres).
-    - qui limite le nombre total d'offres récupérables à 3150 offres.
+  - le paramètre `range` qui limite les résultats à 150 offres par requête (status code `206` si une requête peut renvoyer plus de 150 offres), et ainsi le nombre total d'offres récupérables à 3150 offres.
 
     - par exemple, si un filtre peut renvoyer 351 offres, il faut enchainer les requêtes pour obtenir toutes les offres :
       - requête 1 pour les offres `0-149` (status code 206), puis requête 2 pour les offres `150-299` (status code 206), puis requête 3 pour les offres `300-350` (status code 200)
@@ -56,7 +54,8 @@ ajouter la partie "the muse"
     { "code": "38972", "libelle": "Data scientist" },
     {...}
     ```
-  - <compléter avec les paramètres qui permettront de récupérer plus d'offres>
+  - le paramètre `paysContinent`, pour récupérer les offres en France (inclut les offres en France d'outre-mer)
+
 
 - Cet API nous retourne des offres sous forme de documents json avec beaucoup d'informations dont l'identifiant de l'offre, son intitulé, sa description, le lieu de travail, des informations sur l'entreprise et sur le contrat, les compétences demandées et l'expérience nécessaires, etc...
 
@@ -68,7 +67,10 @@ ajouter la partie "the muse"
   - nous voulons filtrer sur un métier spécifique
     - Par exemple, pour filtrer sur le métier de "Data Engineer", nous pouvons filtrer sur la chaîne de caractères "Ingénieur Data" et vérifier si celle-ci est présente dans l'intitulé, mais il faut exclure les offres retournées telles que "Ingénieur Data Scientist". Nous rajoutons d'autres chaînes de caractères telles que "Data Engineer", et d'autres possibilités en cas de typo du recruteur qu'il faut gérer (par exemple, nous avons vu une offre "Data Ingineer").
 
-- Nous obtenons finalement un fichier json contenant toutes les offres d'emploi pour le métier que nous souhaitons.
+- Nous obtenons finalement un fichier json contenant toutes les offres d'emploi pour le métier que nous souhaitons :
+  - 1 fichier json pour le métier de Data Engineer
+  - 1 fichier json pour le métier de Data Analyst
+  - 1 fichier json pour le métier de Data Scientist
 
 
 
