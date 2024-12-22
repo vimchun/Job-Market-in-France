@@ -27,7 +27,7 @@ token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE
 launch_get_referentiel_appellations_rome = 0
 launch_get_referentiel_pays = 0
 launch_get_offres = 1
-launch_filtrer_offres_selon_liste = 0
+launch_filtrer_offres_selon_liste = 1
 
 
 if launch_get_referentiel_appellations_rome:

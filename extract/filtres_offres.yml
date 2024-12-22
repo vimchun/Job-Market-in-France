@@ -1,4 +1,4 @@
-filtre_codes_appellation: # "libelle" associé au code en commentaire
+filtre_codes_appellation: # "libelle" associé au code en commentaire (spécifique à l'API France Travail)
   #### métiers DE/DA/DS
   - '404278' # Data engineer
   - '404277' # Big data engineer
@@ -34,7 +34,7 @@ filtre_offres_DE:
   - a_inclure:
       - Data Engineer
       - Data Ingineer # typo recruteur
-      - Data Eng # aepgjea
+      - Data Eng
       - Data Ing
       - Data Ingénieur
       - Data Ingénieur(e)
@@ -78,7 +78,7 @@ filtre_offres_DE:
       - Ingenieur-Ingenieure Data
       - Ingénieur Big Data
       - Ingenieur Big Data
-      - Big Data # inclut Développeur Big Data (à exclure)
+      - Big Data
       - BigData
       - Data Pipeline
       - Data Expert
@@ -96,12 +96,12 @@ filtre_offres_DE:
       # - Gestionnaire Base de données
       # - Administrateur(trice) Base de données MySQL / PostGRE / MongoDB
 
-  - a_exclure:
+  - a_exclure: # chaque clé ne doit avoir qu'un mot (restriction liée à l'API d'Adzuna)
       - DataVisualisation
-      - Ingénieur Data Scientist
-      - Ingénieur Data Center
-      - Développeur
-      - Chef De Projet
+      - Scientist # exclut "Ingénieur Data Scientist"
+      - Center # exclut "Ingénieur Data Center"
+      - Développeur # exclut "Développeur Big Data"
+      - Chef # exclut "Chef De Projet Data Engineer"
       - Architecte
       - Manager
       - Responsable
@@ -125,15 +125,14 @@ filtre_offres_DA:
       - Power Bi
       - DataVisualisation
 
-  - a_exclure:
-      - Développeur
-      - Business Analyst
-      - Analyste Fonctionnel
-      - Analyste Développeur
-      - Analyste Programmeur
-      - Analyste SOC
-      - Analyste trésorerie
-      - Analyste cybersécurité
+  - a_exclure: # chaque clé ne doit avoir qu'un mot (restriction liée à l'API d'Adzuna)
+      - Business # exclut "Business Analyst"
+      - Fonctionnel # exclut "Analyste Fonctionnel"
+      - Développeur # exclut "Analyste Développeur"
+      - Programmeur # exclut "Analyste Programmeur"
+      - SOC # exclut "Analyste SOC"
+      - trésorerie # exclut "Analyste trésorerie"
+      - cybersécurité # exclut "Analyste cybersécurité"
       - Informaticien
       - Manager
       - Responsable
@@ -148,13 +147,13 @@ filtre_offres_DS:
       - Datascientist
       - Data-Science
       - Data Science
-      - Scientifique de données
-      - Scientifique des données
+      - Scientifique de donnée # sans s (volontaire)
+      - Scientifique des donnée # sans s (volontaire)
 
-  - a_exclure:
+  - a_exclure: # chaque clé ne doit avoir qu'un mot (restriction liée à l'API d'Adzuna)
       - Manager
       - Responsable
       - Directeur
       - Formation
       - Certification
-      # - analyst
+      - Analyst

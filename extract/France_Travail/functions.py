@@ -341,7 +341,8 @@ def filtrer_offres_selon_liste(directory, strings_a_verifier_dans_intitule, outp
                                         json.dump(line, f, ensure_ascii=False)
                                         doc_nb += 1
                 except json.JSONDecodeError as e:
-                    print(f"{Fore.RED}Erreur lors du chargement du fichier JSON : {e}")
+                    # print(f"{Fore.RED}Erreur lors du chargement du fichier JSON : {e}")
+                    print(f"{Fore.RED}Erreur 1 lors du chargement du fichier JSON {filename} : {e}")
                 except FileNotFoundError:
                     print(f'{Fore.RED}Le fichier "{filename}" n\'a pas été trouvé.')
                 except Exception as e:
@@ -354,7 +355,7 @@ def filtrer_offres_selon_liste(directory, strings_a_verifier_dans_intitule, outp
             data = json.load(file)  # todo: ajouter des assertions ?
             print(f'{Fore.GREEN}Le fichier généré "{output_filename}" est bien un json valide.')
     except json.JSONDecodeError as e:
-        print(f"{Fore.RED}Erreur lors du chargement du fichier JSON : {e}")
+        print(f"{Fore.RED}Erreur 2 lors du chargement du fichier JSON {output_file} : {e}")
     except FileNotFoundError:
         print(f'{Fore.RED}Le fichier "{output_filename}" n\'a pas été trouvé.')
     except Exception as e:
