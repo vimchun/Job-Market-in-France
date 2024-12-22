@@ -1,5 +1,4 @@
-filtre_codes_appellation: # "libelle" associé au code en commentaire (spécifique à l'API France Travail)
-  #### métiers DE/DA/DS
+filtre_codes_appellation: # "libelle" associé au code en commentaire (spécifique à l'API France Travail) ### métiers DE/DA/DS
   - '404278' # Data engineer
   - '404277' # Big data engineer
   - '404282' # Ingénieur / Ingénieure big data
@@ -101,10 +100,11 @@ filtre_offres_DE:
       - Scientist # exclut "Ingénieur Data Scientist"
       - Center # exclut "Ingénieur Data Center"
       - Développeur # exclut "Développeur Big Data"
-      - Chef # exclut "Chef De Projet Data Engineer"
       - Architecte
+      - Chef # exclut "Chef De Projet Data Engineer"
       - Manager
       - Responsable
+      - Directeur
       - Formation
       - Certification
 
@@ -126,14 +126,14 @@ filtre_offres_DA:
       - DataVisualisation
 
   - a_exclure: # chaque clé ne doit avoir qu'un mot (restriction liée à l'API d'Adzuna)
-      - Business # exclut "Business Analyst"
       - Fonctionnel # exclut "Analyste Fonctionnel"
       - Développeur # exclut "Analyste Développeur"
       - Programmeur # exclut "Analyste Programmeur"
       - SOC # exclut "Analyste SOC"
-      - trésorerie # exclut "Analyste trésorerie"
-      - cybersécurité # exclut "Analyste cybersécurité"
+      - Trésorerie # exclut "Analyste trésorerie"
+      - Cybersécurité # exclut "Analyste cybersécurité"
       - Informaticien
+      - Chef
       - Manager
       - Responsable
       - Directeur
@@ -151,9 +151,10 @@ filtre_offres_DS:
       - Scientifique des donnée # sans s (volontaire)
 
   - a_exclure: # chaque clé ne doit avoir qu'un mot (restriction liée à l'API d'Adzuna)
+      - Analyst
+      - Chef
       - Manager
       - Responsable
       - Directeur
       - Formation
       - Certification
-      - Analyst
