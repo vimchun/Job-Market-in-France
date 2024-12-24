@@ -1,9 +1,11 @@
 import json
 import os
+import re
 
 import requests
 
 from colorama import Fore, Style, init
+from unidecode import unidecode
 
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
@@ -294,7 +296,7 @@ def get_offres(token, filter_params):
     print("")
 
 
-def filtrer_offres_selon_liste(directory, strings_a_verifier_dans_intitule, output_filename):
+def filtrer_offres_selon_dictionnaire(directory, strings_a_verifier_dans_intitule, output_filename):
     """
     Rappel : La fonction get_offres() génèrent des fichiers json selon les appellations rentrées en paramètres.
     La fonction courante :
@@ -331,17 +333,58 @@ def filtrer_offres_selon_liste(directory, strings_a_verifier_dans_intitule, outp
                             lieu = line["lieuTravail"]["libelle"]
                             nom_entreprise = line.get("entreprise", {}).get("nom", "-")  # "{}" pour renvoyer un dictionnaire vide si la clé "entreprise" n'existe pas  # fmt:skip #noqa
 
+                            # print(f"\n{Fore.GREEN}-> intitulé : {intitule}")  # [utile pour investigation]
                             for inclu in strings_a_verifier_dans_intitule["a_inclure"]:
-                                if (inclu.lower() in intitule.lower()) and all(exclu.lower() not in intitule.lower() for exclu in strings_a_verifier_dans_intitule["a_exclure"]):  # fmt:skip # noqa
-                                    if offre_id not in offres_id_filtered:
-                                        offres_id_filtered.append(offre_id)
-                                        print(f"{filename.split('_')[0]:<8} n°{doc_nb:<5} id:{offre_id}  {intitule:<85} {date_creation}   {date_actualisation}   {lieu:30}   {nom_entreprise}")  # fmt:skip  # noqa
-                                        if doc_nb != 1:
-                                            f.write(",\n")
-                                        json.dump(line, f, ensure_ascii=False)
-                                        doc_nb += 1
+                                if len(inclu.split(" ")) == 1:
+                                    mot = unidecode(inclu.split(" ")[0].lower())
+                                    # print(f"{Fore.YELLOW}pattern : {mot}", end=" => ")  # [utile pour investigation]
+
+                                    condition_1 = re.search(mot, unidecode(intitule.lower()))
+                                    condition_3 = all(
+                                        not re.search(unidecode(exclu.lower()), unidecode(intitule.lower()))
+                                        for exclu in strings_a_verifier_dans_intitule["a_exclure"]
+                                    )
+
+                                    if condition_1 and condition_3:
+                                        # print("oui")  # [utile pour investigation]
+                                        if offre_id not in offres_id_filtered:
+                                            offres_id_filtered.append(offre_id)
+                                            print(f"{filename.split('_')[0]:<8} n°{doc_nb:<5} id:{offre_id}  {intitule:<85} {date_creation}   {date_actualisation}   {lieu:30}   {nom_entreprise}")  # fmt:skip  # noqa
+                                            if doc_nb != 1:
+                                                f.write(",\n")
+                                            json.dump(line, f, ensure_ascii=False)
+                                            doc_nb += 1
+                                        break
+                                    # else:  # [utile pour investigation]
+                                    #     print("non")  # [utile pour investigation]
+
+                                elif len(inclu.split(" ")) == 2:
+                                    mot_1 = unidecode(inclu.split(" ")[0].lower())
+                                    mot_2 = unidecode(inclu.split(" ")[1].lower())
+                                    pattern_1 = f"{mot_1}(.*?){mot_2}"
+                                    pattern_2 = f"{mot_2}(.*?){mot_1}"
+                                    # print(f"{Fore.YELLOW}patterns : {pattern_1} | {pattern_2}", end=" => ")  # [utile pour investigation]
+                                    condition_1 = re.search(pattern_1, unidecode(intitule.lower()))
+                                    condition_2 = re.search(pattern_2, unidecode(intitule.lower()))
+                                    condition_3 = all(
+                                        not re.search(unidecode(exclu.lower()), unidecode(intitule.lower()))
+                                        for exclu in strings_a_verifier_dans_intitule["a_exclure"]
+                                    )
+
+                                    if (condition_1 and condition_3) or (condition_2 and condition_3):
+                                        # print("oui")  # [utile pour investigation]
+                                        if offre_id not in offres_id_filtered:
+                                            offres_id_filtered.append(offre_id)
+                                            print(f"{filename.split('_')[0]:<8} n°{doc_nb:<5} id:{offre_id}  {intitule:<85} {date_creation}   {date_actualisation}   {lieu:30}   {nom_entreprise}")  # fmt:skip  # noqa
+                                            if doc_nb != 1:
+                                                f.write(",\n")
+                                            json.dump(line, f, ensure_ascii=False)
+                                            doc_nb += 1
+                                        break
+                                    # else: # [utile pour investigation]
+                                    #     print("non")  # [utile pour investigation]
+
                 except json.JSONDecodeError as e:
-                    # print(f"{Fore.RED}Erreur lors du chargement du fichier JSON : {e}")
                     print(f"{Fore.RED}Erreur 1 lors du chargement du fichier JSON {filename} : {e}")
                 except FileNotFoundError:
                     print(f'{Fore.RED}Le fichier "{filename}" n\'a pas été trouvé.')

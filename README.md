@@ -32,7 +32,13 @@ ajouter la partie "the muse"
 ### API de "France Travail"
 
 - France Travail (https://francetravail.io/data/api) met à disposition 18 APIs pour récolter diverses données.
+
 - Nous utilisons l'API "Offres d'emploi" (`GET https://api.francetravail.io/partenaire/offresdemploi`) pour rechercher des offres selon plusieurs paramètres.
+
+    - Une première requête `GET https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/appellations` perme de récupérer le référentiel des appellations ROME.
+        
+        - Celui-ci nous fournit
+
   - Ainsi, pour un métier donné, nous aurons des informations sur les secteurs qui recrutent le plus grâce au code NAF, les compétences requises, les villes qui recrutent le plus...
 
 - Parmi les paramètres que nous utilisons, il y a :

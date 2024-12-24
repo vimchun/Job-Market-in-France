@@ -31,76 +31,28 @@ filtre_codes_appellation: # "libelle" associé au code en commentaire (spécifiq
 
 filtre_offres_DE:
   - a_inclure:
-      - Data Engineer
-      - Data Ingineer # typo recruteur
-      - Data Eng
-      - Data Ing
-      - Data Ingénieur
-      - Data Ingénieur(e)
-      - Data Ingénieur-e
-      - Data Ingenieur
-      - Data Ingenieur(e)
-      - Data Ingenieur-e
-      - Ingénieur Data
-      - Ingénieur(e) Data
-      - Ingénieur-e Data
-      - Ingenieur Data
-      - Ingenieur(e) Data
-      - Ingenieur-e Data
-      - Ingénieur De Donnée # sans s (volontaire)
-      - Ingénieur(e) De Donnée
-      - Ingénieur-e De Donnée
-      - Ingenieur De Donnée
-      - Ingenieur(e) De Donnée
-      - Ingenieur-e De Donnée
-      - Ingénieur Donnée
-      - Ingénieur(e) Donnée
-      - Ingénieur-e Donnée
-      - Ingenieur Donnée
-      - Ingenieur(e) Donnée
-      - Ingenieur-e Donnée
-      - Ingénieur / Ingénieure Donnée
-      - Ingénieur / Ingénieure Data
-      - Ingénieur - Ingénieure Donnée
-      - Ingénieur - Ingénieure Data
-      - Ingénieur/Ingénieure Donnée
-      - Ingénieur/Ingénieure Data
-      - Ingénieur-Ingénieure Donnée
-      - Ingénieur-Ingénieure Data
-      - Ingenieur / Ingenieure Donnée
-      - Ingenieur / Ingenieure Data
-      - Ingenieur - Ingenieure Donnée
-      - Ingenieur - Ingenieure Data
-      - Ingenieur/Ingenieure Donnée
-      - Ingenieur/Ingenieure Data
-      - Ingenieur-Ingenieure Donnée
-      - Ingenieur-Ingenieure Data
-      - Ingénieur Big Data
-      - Ingenieur Big Data
-      - Big Data
-      - BigData
-      - Data Pipeline
-      - Data Expert
-      #### à inclure ?
-      # - Spark
-      # - Ingénieur En Traitement De Données
-      # - Expert En Bases De Données MongoDB
-      # - Expert Bases De Données PostGre
-      # - Administrateur De Base De Données
-      # - Administrateur de Base de Données
-      # - Administrateur des données centrales
-      # - Administrateur bases de données
-      # - Administrateur base de données
-      # - Gestionnaire de base de données
-      # - Gestionnaire Base de données
-      # - Administrateur(trice) Base de données MySQL / PostGRE / MongoDB
+      - (Ing|Eng) (Data|Donnée)
+      # le code récupérera par exemple :
+      #  - "Ingénieur Data", "Ingenieur(e) Data", "Ingenieur / Ingénieure Data", "Data Ingénieur(e)"
+      #  - "Ingénieur Donnée", "Ingenieur De Données", "Ingenieur - Ingenieure Donnée"
+      #  - "Data Engineer", "Data Ingénieur"
+      - Big\s?Data # le code récupérera "BigData" et "Big Data"
+      - Data Pipeline # le code récupérera "Data xxx Pipeline" ou "Pipeline xxx Data"
+      - Data Expert # le code récupérera "Data xxx Expert" ou "Expert xxx Data"
 
   - a_exclure: # chaque clé ne doit avoir qu'un mot (restriction liée à l'API d'Adzuna)
-      - DataVisualisation
+      - Visuali(s|z)ation # exclut "Data Visualisation" et "Data Visualization"
+      - Viz # exclut "Data Viz"
       - Scientist # exclut "Ingénieur Data Scientist"
       - Center # exclut "Ingénieur Data Center"
       - Développeur # exclut "Développeur Big Data"
-      - Architecte
+      - Architect # exclut "Architecte Data"
+      - Base # exclut "Ingénieur Base de Données"
+      - Réseau # exclut "Ingénieur Système, réseaux, données"
+      - Observabilité # exclut "Ingénieur Observabilité (Dynatrace/Datadog)"
+      - Logiciel # exclut "Ingénieur Logiciel"
+      - Analyst # exclut "Data Analyst"
+      - Analytics # exclut "Data Analytics"
       - Chef # exclut "Chef De Projet Data Engineer"
       - Manager
       - Responsable

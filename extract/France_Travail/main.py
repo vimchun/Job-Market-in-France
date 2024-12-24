@@ -3,7 +3,7 @@ import os
 import yaml
 
 from colorama import Fore, init
-from functions import filtrer_offres_selon_liste, get_bearer_token, get_offres, get_referentiel_appellations_rome, get_referentiel_pays
+from functions import filtrer_offres_selon_dictionnaire, get_bearer_token, get_offres, get_referentiel_appellations_rome, get_referentiel_pays
 
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
@@ -20,13 +20,13 @@ with open(file_path, "r") as file:
 IDENTIFIANT_CLIENT = creds["API_FRANCE_TRAVAIL"]["IDENTIFIANT_CLIENT"]
 CLE_SECRETE = creds["API_FRANCE_TRAVAIL"]["CLE_SECRETE"]
 
-token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)
+# token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)
 
 
 # Lancer les fonctions plus simplement ("= 1" pour lancer la fonction)
 launch_get_referentiel_appellations_rome = 0
 launch_get_referentiel_pays = 0
-launch_get_offres = 1
+launch_get_offres = 0
 launch_filtrer_offres_selon_liste = 1
 
 
@@ -125,8 +125,8 @@ if launch_filtrer_offres_selon_liste:
     # appels de la fonction pour filtrer les offres selon les valeurs dans les clés "a_inclure" / "a_exclure"
     for job_dict, output_filename in [
         (data_engineer, "offres_filtered_DE.json"),
-        (data_analyst, "offres_filtered_DA.json"),
-        (data_scientist, "offres_filtered_DS.json"),
+        # (data_analyst, "offres_filtered_DA.json"),
+        # (data_scientist, "offres_filtered_DS.json"),
     ]:
         print(f"\n{Fore.GREEN}============ {output_filename} ============")
-        filtrer_offres_selon_liste(directory, job_dict, output_filename)
+        filtrer_offres_selon_dictionnaire(directory, job_dict, output_filename)
