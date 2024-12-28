@@ -20,7 +20,7 @@ with open(file_path, "r") as file:
 IDENTIFIANT_CLIENT = creds["API_FRANCE_TRAVAIL"]["IDENTIFIANT_CLIENT"]
 CLE_SECRETE = creds["API_FRANCE_TRAVAIL"]["CLE_SECRETE"]
 
-# token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)
+token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)
 
 
 # Lancer les fonctions plus simplement ("= 1" pour lancer la fonction)
@@ -57,7 +57,7 @@ if launch_get_offres:
                 # "codeNAF": "",  # Code NAF de l’offre, (format 99.99X)
                 # "codeROME": "",  # Code ROME de l’offre, voir le référentiel des métiers ci-dessous
                 #### localisation
-                "paysContinent": "01",  # Pays ou continent de l’offre  ("01" est le code de la France)  # todo : pas restreint à la métropôle (le faire ?)
+                "paysContinent": "01",  # Pays ou continent de l’offre  ("01" est le code de la France), note : non restreint à la métropôle
                 # "commune": "",  # Code INSEE de la commune
                 # "departement": "",  # Département de l’offre (Jusqu'à 5 valeurs possibles, séparées par une virgule)
                 # "distance": "",  # Distance à la commune (pris en compte uniquement si une commune est renseignée, plus d'information dans la documentation)
@@ -124,9 +124,10 @@ if launch_filtrer_offres_selon_liste:
 
     # appels de la fonction pour filtrer les offres selon les valeurs dans les clés "a_inclure" / "a_exclure"
     for job_dict, output_filename in [
-        (data_engineer, "offres_filtered_DE.json"),
+        # (data_engineer, "offres_filtered_DE.json"),
         # (data_analyst, "offres_filtered_DA.json"),
-        # (data_scientist, "offres_filtered_DS.json"),
+        (data_scientist, "offres_filtered_DS.json"),
     ]:
         print(f"\n{Fore.GREEN}============ {output_filename} ============")
         filtrer_offres_selon_dictionnaire(directory, job_dict, output_filename)
+

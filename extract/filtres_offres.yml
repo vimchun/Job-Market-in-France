@@ -33,9 +33,9 @@ filtre_offres_DE:
   - a_inclure:
       - (Ing|Eng) (Data|Donnée)
       # le code récupérera par exemple :
-      #  - "Ingénieur Data", "Ingenieur(e) Data", "Ingenieur / Ingénieure Data", "Data Ingénieur(e)"
-      #  - "Ingénieur Donnée", "Ingenieur De Données", "Ingenieur - Ingenieure Donnée"
-      #  - "Data Engineer", "Data Ingénieur"
+      #  - "Ingénieur Data", "Ingenieur(e) Data", "Ingenieur / Ingénieure Data", "Data Ingénieur(e)"...
+      #  - "Ingénieur Donnée", "Ingenieur De Données", "Ingenieur - Ingenieure Donnée"...
+      #  - "Data Engineer", "Data Ingénieur"...
       - Big\s?Data # le code récupérera "BigData" et "Big Data"
       - Data Pipeline # le code récupérera "Data xxx Pipeline" ou "Pipeline xxx Data"
       - Data Expert # le code récupérera "Data xxx Expert" ou "Expert xxx Data"
@@ -63,19 +63,11 @@ filtre_offres_DE:
 filtre_offres_DA:
   - a_inclure:
       - Analyste Décisionnel
-      - Data Analyst
-      - Data-Analyst
-      - Analyste Data
-      - Analystes Data
-      - Analyse De Donnée # sans s (volontaire)
-      - Analyste De Donnée
-      - Data Viz
-      - DataViz
-      - Data Visualisation
-      - Data Vizualisation
+      - Data Analyst # le code récupérera par exemple : "Data-Analyst", "Analyste Data", "Analystes Data"...
+      - Analys Donnée # le code récupérera par exemple : "Analyse De Données", "Analyste De Données"...
+      - Data Vi(s|z) # le code récupérera par exemple : "DataViz", "DataVis", "Data Visualisation", "Data Vizualisation", "DataVisualisation"...
       - Business Intelligence
-      - Power Bi
-      - DataVisualisation
+      - Power BI
 
   - a_exclure: # chaque clé ne doit avoir qu'un mot (restriction liée à l'API d'Adzuna)
       - Fonctionnel # exclut "Analyste Fonctionnel"
@@ -84,6 +76,7 @@ filtre_offres_DA:
       - SOC # exclut "Analyste SOC"
       - Trésorerie # exclut "Analyste trésorerie"
       - Cybersécurité # exclut "Analyste cybersécurité"
+      - Advisory # exclut Data Advisory
       - Informaticien
       - Chef
       - Manager
@@ -94,13 +87,9 @@ filtre_offres_DA:
 
 filtre_offres_DS:
   - a_inclure:
-      - Data Scientist
-      - Data-Scientist
-      - Datascientist
-      - Data-Science
-      - Data Science
-      - Scientifique de donnée # sans s (volontaire)
-      - Scientifique des donnée # sans s (volontaire)
+      - Data Scientist # le code récupérera par exemple : "Data-Scientist", "Datascientist"
+      - Data Science # le code récupérera par exemple : "Data-Science"
+      - Scientifique Donnée # le code récupérera par exemple : "Scientifique des données"
 
   - a_exclure: # chaque clé ne doit avoir qu'un mot (restriction liée à l'API d'Adzuna)
       - Analyst
