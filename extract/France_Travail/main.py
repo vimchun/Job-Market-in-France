@@ -57,7 +57,14 @@ if launch_get_offres:
                 # "codeNAF": "",  # Code NAF de l’offre, (format 99.99X)
                 # "codeROME": "",  # Code ROME de l’offre, voir le référentiel des métiers ci-dessous
                 #### localisation
-                "paysContinent": "01",  # Pays ou continent de l’offre  ("01" est le code de la France), note : non restreint à la métropôle
+                # "paysContinent" : Pays ou continent de l’offre
+                "paysContinent": "01",  # pour la France (non restreint à la métropôle)
+                # "paysContinent": "02",  # pour l'Allemagne (presque pas d'offre)
+                # "paysContinent": "04",  # pour la Belgique (presque pas d'offre)
+                # "paysContinent": "07",  # pour l'Espagne (presque pas d'offre)
+                # "paysContinent": "23",  # pour la Suisse (presque pas d'offre)
+                # "paysContinent": "61",  # pour le US (presque pas d'offre)
+                # "paysContinent": "83",  # pour le Japon (presque pas d'offre)
                 # "commune": "",  # Code INSEE de la commune
                 # "departement": "",  # Département de l’offre (Jusqu'à 5 valeurs possibles, séparées par une virgule)
                 # "distance": "",  # Distance à la commune (pris en compte uniquement si une commune est renseignée, plus d'information dans la documentation)
@@ -130,4 +137,3 @@ if launch_filtrer_offres_selon_liste:
     ]:
         print(f"\n{Fore.GREEN}============ {output_filename} ============")
         filtrer_offres_selon_dictionnaire(directory, job_dict, output_filename)
-
