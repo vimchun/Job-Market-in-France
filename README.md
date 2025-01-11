@@ -68,7 +68,7 @@
   - En effet, pour filtrer les offres de "Data Engineer", nous testons si l'intitulé d'une offre matche avec plusieurs regex définies dans le fichier `filtres_offres.yml`, et aussi si elle ne matche pas d'autres regex aussi présente dans le même fichier.
 
     - Par exemple, pour filtrer les offres DE, pour chaque offre, la chaîne de caractère d'un intitulé est mis en miniscule et les accents retirés, et nous gardons l'offre si l'intitulé matche la regex `(ing|eng)(.*?)(data|donnee)`, et si l'intitulé ne matche pas `scientist`.
-        - Une offre dont l'intitulé est `Inginieur de donnees` sera vu comme une offre DE, malgré la typo volontaire et déjà rencontré.
+        - Une offre dont l'intitulé est `Inginieur de donnees` sera vu comme une offre DE, malgré la typo involontaire du recruteur et déjà rencontré.
         - Une offre dont l'intitulé est `Ingénieur Data Scientist` ne sera pas vu comme une offre DE, car c'est en réalité une offre DS.
 
 
