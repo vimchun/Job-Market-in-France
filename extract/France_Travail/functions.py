@@ -361,8 +361,8 @@ def filtrer_offres_selon_dictionnaire(directory, strings_a_verifier_dans_intitul
                                 elif len(inclu.split(" ")) == 2:
                                     mot_1 = unidecode(inclu.split(" ")[0].lower())
                                     mot_2 = unidecode(inclu.split(" ")[1].lower())
-                                    pattern_1 = f"{mot_1}(.*?){mot_2}"
-                                    pattern_2 = f"{mot_2}(.*?){mot_1}"
+                                    pattern_1 = f"{mot_1}(.*?){mot_2}"  # regex
+                                    pattern_2 = f"{mot_2}(.*?){mot_1}"  # regex
                                     # print(f"{Fore.YELLOW}patterns : {pattern_1} | {pattern_2}", end=" => ")  # [utile pour investigation]
                                     condition_1 = re.search(pattern_1, unidecode(intitule.lower()))
                                     condition_2 = re.search(pattern_2, unidecode(intitule.lower()))

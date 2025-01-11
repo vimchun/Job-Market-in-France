@@ -2,82 +2,77 @@
 
 - [Étape 1 : Récolte des données par API](#étape-1--récolte-des-données-par-API)
 
-ajouter la partie "adzuna"
-ajouter la partie "the muse"
 
 # Projet Job Market
 
 
-(repris de la fiche)
+- Nous allons regrouper des informations sur les offres d’emplois récupérées par API, et les compagnies qui les proposent.
 
-- Ce projet a pour but de mettre en avant nos compétences de Data Engineer.
-
-- Nous allons regrouper des informations sur les offres d’emplois et les compagnies qui les proposent.
-
-- À la fin du projet, nous aurons une meilleure vision du marché de l’emploi :
-  - quels secteurs recrutent le plus
-  - quelles compétences sont requises
-  - quelles sont les villes les plus actives
-  - etc …
-  - idées à creuser :
-    - quelles sont les régions les plus actives
-    - top30 des entreprises qui recrutent le plus
-    - carte de France de densité de recrutement
-    - comparatifs métiers DE/DS/DA
-
+- Notre objectif est d'analysé les offres liées aux métiers `Data Engineer` (DE), `Data Analyst` (DA) et `Data Scientist` (DS) :
+  - évolution de la répartition des offres de ces 3 métiers
+  - compétences les plus demandés (mots qui apparaissent le plus)
+  - secteurs recrutent le plus
+  - régions/villes les plus actives (avec carte de France de densité de recrutement)
+  - top 20 des entreprises qui recrutent le plus
 
 
 ## Étape 1 : Récolte des données par API
 
 ### API de "France Travail"
 
-- France Travail (https://francetravail.io/data/api) met à disposition 18 APIs pour récolter diverses données.
+- France Travail (https://francetravail.io/data/api) met à disposition plusieurs APIs pour récolter diverses données.
 
-- Nous utilisons l'API "Offres d'emploi" (`GET https://api.francetravail.io/partenaire/offresdemploi`) pour rechercher des offres selon plusieurs paramètres.
+- Nous utilisons l'API "Offres d'emploi" (`GET https://api.francetravail.io/partenaire/offresdemploi`) qui proposent plusieurs endpoints :
 
-    - Une première requête `GET https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/appellations` perme de récupérer le référentiel des appellations ROME.
-        
-        - Celui-ci nous fournit
+  - Le endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/offres/search` nous permet de récupérer les offres d'emplois selon plusieurs paramètres dont :
+    - le code des appellations ROME, codes récupérés à partir du endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/appellations`
 
-  - Ainsi, pour un métier donné, nous aurons des informations sur les secteurs qui recrutent le plus grâce au code NAF, les compétences requises, les villes qui recrutent le plus...
+      ```json
+      // documents ayant un lien avec les métiers à analyser
+      { "code": "38971",  "libelle": "Data analyst" },
+      { "code": "38972",  "libelle": "Data scientist" },
+      { "code": "404278", "libelle": "Data engineer" },
+      { "code": "404284", "libelle": "Ingenieur_Donnees" },
+      // documents sans lien direct avec les métiers à analyser, mais susceptibles de retourner des offres liées aux métiers à analyser
+      { "code": "404280", "libelle": "Expert_Big_Data" },
+      { "code": "404282", "libelle": "Ingénieur / Ingénieure big data" },
+      { "code": "404283", "libelle": "Ingenieur_Dataviz" },
+      ...
+      ```
 
-- Parmi les paramètres que nous utilisons, il y a :
+    - le code des pays, codes récupérés à partir du endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/pays`
 
-  - le paramètre `range` qui limite les résultats à 150 offres par requête (status code `206` si une requête peut renvoyer plus de 150 offres), et ainsi le nombre total d'offres récupérables à 3150 offres.
+      ```json
+      // exemples de documents pour le référentiel "pays"
+      { "code": "01", "libelle": "France" },    // inclut les offres en France d'outre-mer
+      { "code": "02", "libelle": "Allemagne" }, // les pays étrangers ne retournent malheureusement pas d'offres sur les métiers à analyser
+      ...
+      ```
 
-    - par exemple, si un filtre peut renvoyer 351 offres, il faut enchainer les requêtes pour obtenir toutes les offres :
-      - requête 1 pour les offres `0-149` (status code 206), puis requête 2 pour les offres `150-299` (status code 206), puis requête 3 pour les offres `300-350` (status code 200)
-
-  - le paramètre `appellation`, pour récupérer les offres de tous les métiers ayant un lien avec la data :
-
-    ```json
-    # métiers en lien avec Data Engineer
-    { "code": "404278", "libelle": "Data engineer" },
-    { "code": "404282", "libelle": "Ingénieur / Ingénieure big data" },
-    {...}
-    # autres métiers de la Data
-    { "code": "38971", "libelle": "Data analyst" },
-    { "code": "38972", "libelle": "Data scientist" },
-    {...}
-    ```
-  - le paramètre `paysContinent`, pour récupérer les offres en France (inclut les offres en France d'outre-mer)
-
+    - le paramètre `range` qui limite les résultats à 150 offres par requête (status code `206` si une requête renvoie plus de 150 offres), sachant que le nombre d'offres maximum récupérables est de 3150 offres.
+      - Ainsi, si une requête peut renvoyer 351 offres, il faut enchainer 3 requêtes pour obtenir toutes les offres :
+        - une première requête pour les offres `0-149` (status code 206),
+        - une deuxième requête pour les offres `150-299` (status code 206),
+        - une troisième requête pour les offres `300-350` (status code 200)
 
 - Cet API nous retourne des offres sous forme de documents json avec beaucoup d'informations dont l'identifiant de l'offre, son intitulé, sa description, le lieu de travail, des informations sur l'entreprise et sur le contrat, les compétences demandées et l'expérience nécessaires, etc...
 
-- Nous filtrons ensuite à nouveau sur les offres retournées en vérifiant si telles chaînes de charactère sont présentes dans l'intitulé d'une offre, pour les raisons suivantes :
-  - les offres n'ont parfois pas de lien avec le libellé renseigné en paramètre
-    - Par exemple, une requête renseignant l'appellation "404278" (pour "Data Engineer") peut renvoyer une offre telle que "Product Owner".
-  - une offre de "Data Engineer" peut se retrouver dans des résultats dont les requêtes utilisent une appellation autre que "404278"
-    - Par exemple, nous avons vu des offres de "Data Engineer" en requêtant avec l'appellation "38975" (pour "Data_Manager").
-  - nous voulons filtrer sur un métier spécifique
-    - Par exemple, pour filtrer sur le métier de "Data Engineer", nous pouvons filtrer sur la chaîne de caractères "Ingénieur Data" et vérifier si celle-ci est présente dans l'intitulé, mais il faut exclure les offres retournées telles que "Ingénieur Data Scientist". Nous rajoutons d'autres chaînes de caractères telles que "Data Engineer", et d'autres possibilités en cas de typo du recruteur qu'il faut gérer (par exemple, nous avons vu une offre "Data Ingineer").
+- Toutefois, l'API retourne aussi énormément d'offres sans lien avec le métier renseigné en paramètre (par exemple, une requête renseignant l'appellation "Data Engineer" peut renvoyer une offre telle que "Product Owner" car les termes "Data Engineer" peuvent être présents dans la description de l'offre d'emploi).
 
-- Nous obtenons finalement un fichier json contenant toutes les offres d'emploi pour le métier que nous souhaitons :
-  - 1 fichier json pour le métier de Data Engineer
-  - 1 fichier json pour le métier de Data Analyst
-  - 1 fichier json pour le métier de Data Scientist
+- Nous requêtons ainsi un maximum d'appellations ROME en utilisant les 28 métiers ayant un lien avec la data, pour maximiser les chances d'obtenir le plus d'offres d'emploi ayant un lien avec les métiers DE, DA et DS.
 
+  - En effet, des offres de "Data Engineer" peuvent être présentes en requêtant l'appellation "Data_Manager" par exemple.
+
+- Nous filtrons ensuite à nouveau sur l'intitulé de chacune de ces offres :
+
+  - En effet, pour filtrer les offres de "Data Engineer", nous testons si l'intitulé d'une offre matche avec plusieurs regex définies dans le fichier `filtres_offres.yml`, et aussi si elle ne matche pas d'autres regex aussi présente dans le même fichier.
+
+    - Par exemple, pour filtrer les offres DE, pour chaque offre, la chaîne de caractère d'un intitulé est mis en miniscule et les accents retirés, et nous gardons l'offre si l'intitulé matche la regex `(ing|eng)(.*?)(data|donnee)`, et si l'intitulé ne matche pas `scientist`.
+        - Une offre dont l'intitulé est `Inginieur de donnees` sera vu comme une offre DE, malgré la typo volontaire et déjà rencontré.
+        - Une offre dont l'intitulé est `Ingénieur Data Scientist` ne sera pas vu comme une offre DE, car c'est en réalité une offre DS.
+
+
+- Nous obtenons finalement pour chaque métier DE, DA et DS : un fichier json contenant toutes les offres d'emploi, pour la France et DOM-TOM uniquement car France Travail ne renvoie quasiment pas d'offre d'emploi teintée data pour les autres pays.
 
 
 ### API de "The Muse"
