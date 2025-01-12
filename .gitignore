@@ -12,4 +12,4 @@ package-lock.json
 package.json
 todel.py
 # fichier > 100MB
-extract/France_Travail/outputs/offres/offres_merged/offres_merged.json
+extract/France_Travail/outputs/offres/_offres_merged.json

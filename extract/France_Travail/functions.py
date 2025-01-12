@@ -261,217 +261,37 @@ def get_offres(token, code_appellation_libelle, filter_params):
 
     return None
 
-def merge_all_json_into_one(directory, strings_a_verifier_dans_intitule, output_filename):
-# def filtrer_offres_selon_dictionnaire(directory, strings_a_verifier_dans_intitule, output_filename):
+
+def merge_all_json_into_one(json_files_directory, merged_json_filename):
     """
-    Nous obtenons suite à l'exécution de get_offres() x fichiers json (x = nombre d'appellations présents dans "code_appellation_libelle.yml".
+    Nous obtenons suite à l'exécution de get_offres() x fichiers json (x = nombre d'appellations présents dans "code_appellation_libelle.yml").
     Cette fonction écrira dans un json chaque ligne de tous les json précédents, en supprimant les doublons.
-
     """
 
-    pass
-    # offres_id_filtered = []
-    # doc_nb = 1
+    import pandas as pd
+    import json
 
-    # output_file = os.path.join(current_directory, "outputs", "offres", "offres_merged", output_filename)
+    df_merged = pd.DataFrame()
 
-    # if os.path.exists(output_file):
-    #     os.remove(output_file)
+    for filename in os.listdir(json_files_directory):
+        if filename.endswith(".json") and filename != merged_json_filename:  # traite aussi le cas du fichier sans extension
+            print(filename)
+            try:
+                # si le json est bien valide
+                with open(os.path.join(json_files_directory, filename), "r", encoding="utf-8") as file:
+                    data = json.load(file)
+                df = pd.DataFrame(data)
+                df_merged = pd.concat([df, df_merged], ignore_index=True)
 
-    # with open(output_file, "a", encoding="utf-8") as f:
-    #     f.write("[\n")
+            except json.JSONDecodeError as e:
+                print(f"{Fore.RED}Erreur 1 lors du chargement du fichier JSON {filename} : {e}")
+            except FileNotFoundError:
+                print(f'{Fore.RED}Le fichier "{filename}" n\'a pas été trouvé.')
+            except Exception as e:
+                print(f"{Fore.RED}Une erreur inattendue s'est produite : {e}")
 
-    #     for filename in os.listdir(directory):
-    #         if filename.endswith(".json") and filename != output_filename:  # traite aussi le cas du fichier sans extension
-    #             try:
-    #                 # si le json est bien valide
-    #                 with open(os.path.join(directory, filename), "r", encoding="utf-8") as file:
-    #                     data = json.load(file)
-    #                     for line in data:
-    #                         offre_id = line["id"]
-    #                         intitule = line["intitule"]
-    #                         date_creation = line["dateCreation"].split("T")[0]
-    #                         date_actualisation = line["dateActualisation"].split("T")[0]
-    #                         lieu = line["lieuTravail"]["libelle"]
-    #                         nom_entreprise = line.get("entreprise", {}).get("nom", "-")  # "{}" pour renvoyer un dictionnaire vide si la clé "entreprise" n'existe pas  # fmt:skip #noqa
+    print(f"\n --> df_merged : {df_merged.shape[0]} offres, df_merged_drop_duplicates : {df_merged.drop_duplicates(["id"]).shape[0]} offres")
 
-    #                         # print(f"\n{Fore.GREEN}-> intitulé : {intitule}")  # [utile pour investigation]
-    #                         for inclu in strings_a_verifier_dans_intitule["a_inclure"]:
-    #                             if len(inclu.split(" ")) == 1:
-    #                                 mot = unidecode(inclu.split(" ")[0].lower())
-    #                                 # print(f"{Fore.YELLOW}pattern : {mot}", end=" => ")  # [utile pour investigation]
+    df_merged.to_json(os.path.join(json_files_directory, merged_json_filename))
 
-    #                                 condition_1 = re.search(mot, unidecode(intitule.lower()))
-    #                                 condition_3 = all(
-    #                                     not re.search(unidecode(exclu.lower()), unidecode(intitule.lower()))
-    #                                     for exclu in strings_a_verifier_dans_intitule["a_exclure"]
-    #                                 )
-
-    #                                 if condition_1 and condition_3:
-    #                                     # print("oui")  # [utile pour investigation]
-    #                                     if offre_id not in offres_id_filtered:
-    #                                         offres_id_filtered.append(offre_id)
-    #                                         print(f"{filename.split('_')[0]:<8} n°{doc_nb:<5} id:{offre_id}  {intitule:<85} {date_creation}   {date_actualisation}   {lieu:30}   {nom_entreprise}")  # fmt:skip  # noqa
-    #                                         if doc_nb != 1:
-    #                                             f.write(",\n")
-    #                                         json.dump(line, f, ensure_ascii=False)
-    #                                         doc_nb += 1
-    #                                     break
-    #                                 # else:  # [utile pour investigation]
-    #                                 #     print("non")  # [utile pour investigation]
-
-    #                             elif len(inclu.split(" ")) == 2:
-    #                                 mot_1 = unidecode(inclu.split(" ")[0].lower())
-    #                                 mot_2 = unidecode(inclu.split(" ")[1].lower())
-    #                                 pattern_1 = f"{mot_1}(.*?){mot_2}"  # regex
-    #                                 pattern_2 = f"{mot_2}(.*?){mot_1}"  # regex
-    #                                 # print(f"{Fore.YELLOW}patterns : {pattern_1} | {pattern_2}", end=" => ")  # [utile pour investigation]
-    #                                 condition_1 = re.search(pattern_1, unidecode(intitule.lower()))
-    #                                 condition_2 = re.search(pattern_2, unidecode(intitule.lower()))
-    #                                 condition_3 = all(
-    #                                     not re.search(unidecode(exclu.lower()), unidecode(intitule.lower()))
-    #                                     for exclu in strings_a_verifier_dans_intitule["a_exclure"]
-    #                                 )
-
-    #                                 if (condition_1 and condition_3) or (condition_2 and condition_3):
-    #                                     # print("oui")  # [utile pour investigation]
-    #                                     if offre_id not in offres_id_filtered:
-    #                                         offres_id_filtered.append(offre_id)
-    #                                         print(f"{filename.split('_')[0]:<8} n°{doc_nb:<5} id:{offre_id}  {intitule:<85} {date_creation}   {date_actualisation}   {lieu:30}   {nom_entreprise}")  # fmt:skip  # noqa
-    #                                         if doc_nb != 1:
-    #                                             f.write(",\n")
-    #                                         json.dump(line, f, ensure_ascii=False)
-    #                                         doc_nb += 1
-    #                                     break
-    #                                 # else: # [utile pour investigation]
-    #                                 #     print("non")  # [utile pour investigation]
-
-    #             except json.JSONDecodeError as e:
-    #                 print(f"{Fore.RED}Erreur 1 lors du chargement du fichier JSON {filename} : {e}")
-    #             except FileNotFoundError:
-    #                 print(f'{Fore.RED}Le fichier "{filename}" n\'a pas été trouvé.')
-    #             except Exception as e:
-    #                 print(f"{Fore.RED}Une erreur inattendue s'est produite : {e}")
-
-    #     f.write("\n]")
-
-    # try:
-    #     with open(output_file, "r", encoding="utf-8") as file:
-    #         data = json.load(file)  # todo: ajouter des assertions ?
-    #         print(f'{Fore.GREEN}Le fichier généré "{output_filename}" est bien un json valide.')
-    # except json.JSONDecodeError as e:
-    #     print(f"{Fore.RED}Erreur 2 lors du chargement du fichier JSON {output_file} : {e}")
-    # except FileNotFoundError:
-    #     print(f'{Fore.RED}Le fichier "{output_filename}" n\'a pas été trouvé.')
-    # except Exception as e:
-    #     print(f"{Fore.RED}Une erreur inattendue s'est produite : {e}")
-
-# mhh : la suite ne sera normalement pas utilisé, je la laisse en commentaire provisoirement au cas où
-
-# def filtrer_offres_selon_dictionnaire(directory, strings_a_verifier_dans_intitule, output_filename):
-    """
-    Rappel : La fonction get_offres() génèrent des fichiers json selon les appellations rentrées en paramètres.
-    La fonction courante :
-        - parse ces fichiers json :
-          - en conservant que les offres dont les intitulés contiennent les strings spécifiés
-            parmi les valeurs de la clé "a_inclure" du dictionnaire passé en argument,
-          - en retirant les offres dont les intitulés contiennent les strings spécifiés
-            parmi les valeurs de la clé "a_exclure" du dictionnaire passé en argument,
-        - écrit ces offres dans un json
-    """
-
-    # offres_id_filtered = []
-    # doc_nb = 1
-
-    # output_file = os.path.join(current_directory, "outputs", "offres", "offres_filtered", output_filename)
-
-    # if os.path.exists(output_file):
-    #     os.remove(output_file)
-
-    # with open(output_file, "a", encoding="utf-8") as f:
-    #     f.write("[\n")
-
-    #     for filename in os.listdir(directory):
-    #         if filename.endswith(".json") and filename != output_filename:  # traite aussi le cas du fichier sans extension
-    #             try:
-    #                 # si le json est bien valide
-    #                 with open(os.path.join(directory, filename), "r", encoding="utf-8") as file:
-    #                     data = json.load(file)
-    #                     for line in data:
-    #                         offre_id = line["id"]
-    #                         intitule = line["intitule"]
-    #                         date_creation = line["dateCreation"].split("T")[0]
-    #                         date_actualisation = line["dateActualisation"].split("T")[0]
-    #                         lieu = line["lieuTravail"]["libelle"]
-    #                         nom_entreprise = line.get("entreprise", {}).get("nom", "-")  # "{}" pour renvoyer un dictionnaire vide si la clé "entreprise" n'existe pas  # fmt:skip #noqa
-
-    #                         # print(f"\n{Fore.GREEN}-> intitulé : {intitule}")  # [utile pour investigation]
-    #                         for inclu in strings_a_verifier_dans_intitule["a_inclure"]:
-    #                             if len(inclu.split(" ")) == 1:
-    #                                 mot = unidecode(inclu.split(" ")[0].lower())
-    #                                 # print(f"{Fore.YELLOW}pattern : {mot}", end=" => ")  # [utile pour investigation]
-
-    #                                 condition_1 = re.search(mot, unidecode(intitule.lower()))
-    #                                 condition_3 = all(
-    #                                     not re.search(unidecode(exclu.lower()), unidecode(intitule.lower()))
-    #                                     for exclu in strings_a_verifier_dans_intitule["a_exclure"]
-    #                                 )
-
-    #                                 if condition_1 and condition_3:
-    #                                     # print("oui")  # [utile pour investigation]
-    #                                     if offre_id not in offres_id_filtered:
-    #                                         offres_id_filtered.append(offre_id)
-    #                                         print(f"{filename.split('_')[0]:<8} n°{doc_nb:<5} id:{offre_id}  {intitule:<85} {date_creation}   {date_actualisation}   {lieu:30}   {nom_entreprise}")  # fmt:skip  # noqa
-    #                                         if doc_nb != 1:
-    #                                             f.write(",\n")
-    #                                         json.dump(line, f, ensure_ascii=False)
-    #                                         doc_nb += 1
-    #                                     break
-    #                                 # else:  # [utile pour investigation]
-    #                                 #     print("non")  # [utile pour investigation]
-
-    #                             elif len(inclu.split(" ")) == 2:
-    #                                 mot_1 = unidecode(inclu.split(" ")[0].lower())
-    #                                 mot_2 = unidecode(inclu.split(" ")[1].lower())
-    #                                 pattern_1 = f"{mot_1}(.*?){mot_2}"  # regex
-    #                                 pattern_2 = f"{mot_2}(.*?){mot_1}"  # regex
-    #                                 # print(f"{Fore.YELLOW}patterns : {pattern_1} | {pattern_2}", end=" => ")  # [utile pour investigation]
-    #                                 condition_1 = re.search(pattern_1, unidecode(intitule.lower()))
-    #                                 condition_2 = re.search(pattern_2, unidecode(intitule.lower()))
-    #                                 condition_3 = all(
-    #                                     not re.search(unidecode(exclu.lower()), unidecode(intitule.lower()))
-    #                                     for exclu in strings_a_verifier_dans_intitule["a_exclure"]
-    #                                 )
-
-    #                                 if (condition_1 and condition_3) or (condition_2 and condition_3):
-    #                                     # print("oui")  # [utile pour investigation]
-    #                                     if offre_id not in offres_id_filtered:
-    #                                         offres_id_filtered.append(offre_id)
-    #                                         print(f"{filename.split('_')[0]:<8} n°{doc_nb:<5} id:{offre_id}  {intitule:<85} {date_creation}   {date_actualisation}   {lieu:30}   {nom_entreprise}")  # fmt:skip  # noqa
-    #                                         if doc_nb != 1:
-    #                                             f.write(",\n")
-    #                                         json.dump(line, f, ensure_ascii=False)
-    #                                         doc_nb += 1
-    #                                     break
-    #                                 # else: # [utile pour investigation]
-    #                                 #     print("non")  # [utile pour investigation]
-
-    #             except json.JSONDecodeError as e:
-    #                 print(f"{Fore.RED}Erreur 1 lors du chargement du fichier JSON {filename} : {e}")
-    #             except FileNotFoundError:
-    #                 print(f'{Fore.RED}Le fichier "{filename}" n\'a pas été trouvé.')
-    #             except Exception as e:
-    #                 print(f"{Fore.RED}Une erreur inattendue s'est produite : {e}")
-
-    #     f.write("\n]")
-
-    # try:
-    #     with open(output_file, "r", encoding="utf-8") as file:
-    #         data = json.load(file)  # todo: ajouter des assertions ?
-    #         print(f'{Fore.GREEN}Le fichier généré "{output_filename}" est bien un json valide.')
-    # except json.JSONDecodeError as e:
-    #     print(f"{Fore.RED}Erreur 2 lors du chargement du fichier JSON {output_file} : {e}")
-    # except FileNotFoundError:
-    #     print(f'{Fore.RED}Le fichier "{output_filename}" n\'a pas été trouvé.')
-    # except Exception as e:
-    #     print(f"{Fore.RED}Une erreur inattendue s'est produite : {e}")
+    return None

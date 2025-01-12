@@ -4,7 +4,7 @@ import yaml
 
 from colorama import Fore, init
 
-from functions import get_bearer_token, get_offres, get_referentiel_appellations_rome, get_referentiel_pays
+from functions import merge_all_json_into_one, get_bearer_token, get_offres, get_referentiel_appellations_rome, get_referentiel_pays
 
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
@@ -117,35 +117,11 @@ if launch_get_offres:
 
 #################################################################################################################################
 
+
 if launch_merge_all_json_into_one:
 
-    import pandas as pd
-    import json
+    merged_json_filename = "_offres_merged.json"
+    json_files_directory = os.path.join(current_directory, "outputs", "offres")
+    merged_json_filename_path = os.path.join(json_files_directory, merged_json_filename)
 
-    directory = os.path.join(current_directory, "outputs", "offres")
-
-    df_merged = pd.DataFrame()
-
-    for filename in os.listdir(directory):
-        if filename.endswith(".json"):  # and filename != output_filename:  # traite aussi le cas du fichier sans extension
-            print(filename)
-            try:
-                # si le json est bien valide
-                with open(os.path.join(directory, filename), "r", encoding="utf-8") as file:
-                    data = json.load(file)
-                df = pd.DataFrame(data)
-                df_merged = pd.concat([df, df_merged], ignore_index=True)
-
-            except json.JSONDecodeError as e:
-                print(f"{Fore.RED}Erreur 1 lors du chargement du fichier JSON {filename} : {e}")
-            except FileNotFoundError:
-                print(f'{Fore.RED}Le fichier "{filename}" n\'a pas été trouvé.')
-            except Exception as e:
-                print(f"{Fore.RED}Une erreur inattendue s'est produite : {e}")
-
-    print("df_merged")
-    print(df_merged)
-    print("df_merged drop duplicates")
-    print(df_merged.drop_duplicates(["id"]))
-
-    df_merged.to_json(os.path.join(directory, "offres_merged", "offres_merged.json"))
+    merge_all_json_into_one(json_files_directory, merged_json_filename)
