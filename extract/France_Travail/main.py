@@ -27,8 +27,8 @@ token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE
 # Lancer les fonctions plus simplement ("= 1" pour lancer la fonction)
 launch_get_referentiel_appellations_rome = 0
 launch_get_referentiel_pays = 0
-launch_get_offres = 1
-launch_get_offres = 1
+launch_get_offres = 0
+launch_merge_all_json_into_one = 1
 
 
 if launch_get_referentiel_appellations_rome:
@@ -114,3 +114,38 @@ if launch_get_offres:
 # pour filtrer qu'en France métropolitaine :
 #   - on ne peut pas filtrer sur les 13 régions en une fois (une seule région possible dans la requête)
 #   - on ne peut mettre que 5 départements d'un coup
+
+#################################################################################################################################
+
+if launch_merge_all_json_into_one:
+
+    import pandas as pd
+    import json
+
+    directory = os.path.join(current_directory, "outputs", "offres")
+
+    df_merged = pd.DataFrame()
+
+    for filename in os.listdir(directory):
+        if filename.endswith(".json"):  # and filename != output_filename:  # traite aussi le cas du fichier sans extension
+            print(filename)
+            try:
+                # si le json est bien valide
+                with open(os.path.join(directory, filename), "r", encoding="utf-8") as file:
+                    data = json.load(file)
+                df = pd.DataFrame(data)
+                df_merged = pd.concat([df, df_merged], ignore_index=True)
+
+            except json.JSONDecodeError as e:
+                print(f"{Fore.RED}Erreur 1 lors du chargement du fichier JSON {filename} : {e}")
+            except FileNotFoundError:
+                print(f'{Fore.RED}Le fichier "{filename}" n\'a pas été trouvé.')
+            except Exception as e:
+                print(f"{Fore.RED}Une erreur inattendue s'est produite : {e}")
+
+    print("df_merged")
+    print(df_merged)
+    print("df_merged drop duplicates")
+    print(df_merged.drop_duplicates(["id"]))
+
+    df_merged.to_json(os.path.join(directory, "offres_merged", "offres_merged.json"))
