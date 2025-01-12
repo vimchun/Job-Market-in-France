@@ -24,19 +24,13 @@
 
 - Nous utilisons l'API "Offres d'emploi" (`GET https://api.francetravail.io/partenaire/offresdemploi`) qui proposent plusieurs endpoints :
 
-  - Le endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/offres/search` nous permet de récupérer les offres d'emplois selon plusieurs paramètres dont :
+  - Le endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/offres/search` nous permet de récupérer les offres d'emplois actuelles selon plusieurs paramètres dont :
     - le code des appellations ROME, codes récupérés à partir du endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/appellations`
 
       ```json
-      // documents ayant un lien avec les métiers à analyser
       { "code": "38971",  "libelle": "Data analyst" },
       { "code": "38972",  "libelle": "Data scientist" },
       { "code": "404278", "libelle": "Data engineer" },
-      { "code": "404284", "libelle": "Ingenieur_Donnees" },
-      // documents sans lien direct avec les métiers à analyser, mais susceptibles de retourner des offres liées aux métiers à analyser
-      { "code": "404280", "libelle": "Expert_Big_Data" },
-      { "code": "404282", "libelle": "Ingénieur / Ingénieure big data" },
-      { "code": "404283", "libelle": "Ingenieur_Dataviz" },
       ...
       ```
 
@@ -54,6 +48,9 @@
         - une première requête pour les offres `0-149` (status code 206),
         - une deuxième requête pour les offres `150-299` (status code 206),
         - une troisième requête pour les offres `300-350` (status code 200)
+
+    - note : les paramètres liés aux dates (`minCreationDate`, `maxCreationDate`, `publieeDepuis`) ne permettent pas d'obtenir des offres expirées (celles qui ont permis de recruter quelqu'un).
+
 
 - Cet API nous retourne des offres sous forme de documents json avec beaucoup d'informations dont l'identifiant de l'offre, son intitulé, sa description, le lieu de travail, des informations sur l'entreprise et sur le contrat, les compétences demandées et l'expérience nécessaires, etc...
 
