@@ -63,64 +63,6 @@ code_appellation_libelle: # "libelle" associé au code en commentaire (spécifiq
 
 # mhh : la suite ne sera normalement pas utilisé, je la laisse en commentaire provisoirement au cas où
 
-  # - '404282' # Ingénieur / Ingénieure big data
-  # - '404284' # Ingénieur / Ingénieure données
-  # - '38971' # Data analyst
-  # - '38095' # Analyste décisionnel - Business Intelligence
-  # - '404275' # Analyste qualité des données
-  # - '38972' # Data scientist
-  # #### autres métiers de la data
-  # - '38970' # Data Miner
-  # - '38975' # Data manager
-  # - '38977' # Développeur / Développeuse Big Data
-  # - '404271' # Expert / Experte en sciences des données
-  # - '404273' # Explorateur / Exploratrice de données
-  # - '404274' # Ingénieur / Ingénieure data scientist
-  # - '404276' # Architecte big data
-  # - '404279' # Docteur big data
-  # - '404280' # Expert / Experte big data
-  # - '404281' # Expert / Experte technique big data
-  # - '404283' # Ingénieur / Ingénieure dataviz
-  # - '404285' # Ingénieur / Ingénieure en développement big data
-  # - '404286' # Responsable architecture conception data
-  # - '404287' # Responsable big data
-  # - '404288' # Développeur / Développeuse data
-  # - '404289' # Analyste scientifique des données
-  # - '404289' # Analyste scientifique des données
-  # - '404291' # Data Protection Officer
-  # - '405222' # Data analyst de la performance
-  # - '489091' # Database administrator
-# filtre_codes_appellation: # "libelle" associé au code en commentaire (spécifique à l'API France Travail) ### métiers DE/DA/DS
-#   - '404278' # Data engineer
-#   - '404277' # Big data engineer
-#   # - '404282' # Ingénieur / Ingénieure big data
-#   # - '404284' # Ingénieur / Ingénieure données
-#   # - '38971' # Data analyst
-#   # - '38095' # Analyste décisionnel - Business Intelligence
-#   # - '404275' # Analyste qualité des données
-#   # - '38972' # Data scientist
-#   # #### autres métiers de la data
-#   # - '38970' # Data Miner
-#   # - '38975' # Data manager
-#   # - '38977' # Développeur / Développeuse Big Data
-#   # - '404271' # Expert / Experte en sciences des données
-#   # - '404273' # Explorateur / Exploratrice de données
-#   # - '404274' # Ingénieur / Ingénieure data scientist
-#   # - '404276' # Architecte big data
-#   # - '404279' # Docteur big data
-#   # - '404280' # Expert / Experte big data
-#   # - '404281' # Expert / Experte technique big data
-#   # - '404283' # Ingénieur / Ingénieure dataviz
-#   # - '404285' # Ingénieur / Ingénieure en développement big data
-#   # - '404286' # Responsable architecture conception data
-#   # - '404287' # Responsable big data
-#   # - '404288' # Développeur / Développeuse data
-#   # - '404289' # Analyste scientifique des données
-#   # - '404289' # Analyste scientifique des données
-#   # - '404291' # Data Protection Officer
-#   # - '405222' # Data analyst de la performance
-#   # - '489091' # Database administrator
-
 # filtre_offres_DE:
 #   - a_inclure:
 #       - (Ing|Eng) (Data|Donnée)

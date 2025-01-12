@@ -65,6 +65,8 @@
 
 - Nous obtenons finalement 28 fichiers json contenant toutes les offres d'emploi liés ou pas à la data, pour la France et DOM-TOM uniquement car France Travail ne renvoie quasiment pas d'offre d'emploi teintée data pour les autres pays.
 
+  - Ces 28 fichiers json seront fusionnés dans un seul fichier json, sans doublon.
+
 
 - Nous filtrerons toutes les offres à la prochaine étape.
 

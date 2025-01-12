@@ -4,7 +4,6 @@ import yaml
 
 from colorama import Fore, init
 
-# from functions import filtrer_offres_selon_dictionnaire, get_bearer_token, get_offres, get_referentiel_appellations_rome, get_referentiel_pays
 from functions import get_bearer_token, get_offres, get_referentiel_appellations_rome, get_referentiel_pays
 
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
@@ -29,7 +28,7 @@ token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE
 launch_get_referentiel_appellations_rome = 0
 launch_get_referentiel_pays = 0
 launch_get_offres = 1
-# launch_filtrer_offres_selon_liste = 0
+launch_get_offres = 1
 
 
 if launch_get_referentiel_appellations_rome:
@@ -44,16 +43,12 @@ if launch_get_referentiel_pays:
 
 
 if launch_get_offres:
-    # file_path = os.path.join(current_directory, "..", "code_appellation_libelle.yml")
     file_path = os.path.join(current_directory, "code_appellation_libelle.yml")
 
     with open(file_path, "r") as file:
         content = yaml.safe_load(file)
         code_appellation_libelle = content["code_appellation_libelle"]  # functions.py
-        # codes_list = [str(i["code"]) for i in code_appellation_libelle]
         codes_list = [i["code"] for i in code_appellation_libelle]
-        # print(codes_list)
-        print(codes_list)
 
     for code in codes_list:
         get_offres(
@@ -92,7 +87,7 @@ if launch_get_offres:
                 #### experience
                 # "experience": "",  # Niveau d’expérience demandé, (1 moins d'un an, 2 de 1 à 3 ans, 3 plus de 3 ans)
                 # "experienceExigence": "D",  # Exigence d'expérience (D débutant accepté, S expérience souhaitée, E expérience exigée)
-                #### date de création
+                #### date de création # todo : jouer sur les dates pour voir si on peut récupérer les vieilles offres
                 # "maxCreationDate": "",  # Date maximale pour laquelle rechercher des offres (format yyyy-MM-dd'T'hh:mm:ss'Z')
                 # "minCreationDate": "",  # Date minimale pour laquelle rechercher des offres (format yyyy-MM-dd'T'hh:mm:ss'Z')
                 # "publieeDepuis": "",  # Recherche les offres publiées depuis maximum « X » jours
@@ -119,29 +114,3 @@ if launch_get_offres:
 # pour filtrer qu'en France métropolitaine :
 #   - on ne peut pas filtrer sur les 13 régions en une fois (une seule région possible dans la requête)
 #   - on ne peut mettre que 5 départements d'un coup
-
-#################################################################################################################################
-
-# if launch_filtrer_offres_selon_liste:
-#     file_path = os.path.join(current_directory, "..", "filtres_offres.yml")
-
-#     with open(file_path, "r") as file:
-#         content = yaml.safe_load(file)
-
-#     # construction de dictionnaires "métiers" à partir du fichier yaml
-#     data_engineer, data_analyst, data_scientist = {}, {}, {}
-
-#     for job, key in [(data_engineer, "filtre_offres_DE"), (data_analyst, "filtre_offres_DA"), (data_scientist, "filtre_offres_DS")]:
-#         job["a_inclure"] = content[key][0]["a_inclure"]
-#         job["a_exclure"] = content[key][1]["a_exclure"]
-
-#     directory = os.path.join(current_directory, "outputs", "offres")
-
-#     # appels de la fonction pour filtrer les offres selon les valeurs dans les clés "a_inclure" / "a_exclure"
-#     for job_dict, output_filename in [
-#         # (data_engineer, "offres_filtered_DE.json"),
-#         # (data_analyst, "offres_filtered_DA.json"),
-#         (data_scientist, "offres_filtered_DS.json"),
-#     ]:
-#         print(f"\n{Fore.GREEN}============ {output_filename} ============")
-#         filtrer_offres_selon_dictionnaire(directory, job_dict, output_filename)
