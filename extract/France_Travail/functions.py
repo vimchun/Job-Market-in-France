@@ -1,11 +1,9 @@
 import json
 import os
-import re
 
 import requests
 
 from colorama import Fore, Style, init
-from unidecode import unidecode
 
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
@@ -269,7 +267,7 @@ def merge_all_json_into_one(json_files_directory, merged_json_filename):
     """
 
     import pandas as pd
-    import json
+    # import json
 
     df_merged = pd.DataFrame()
 
@@ -292,6 +290,18 @@ def merge_all_json_into_one(json_files_directory, merged_json_filename):
 
     print(f"\n --> df_merged : {df_merged.shape[0]} offres, df_merged_drop_duplicates : {df_merged.drop_duplicates(["id"]).shape[0]} offres")
 
-    df_merged.to_json(os.path.join(json_files_directory, merged_json_filename))
+    df_merged.drop_duplicates(["id"]).to_json(os.path.join(json_files_directory, merged_json_filename))
 
     return None
+
+
+def merged_json_file_to_pd_dataframe(merged_json_filename_path):
+    """
+    Prend simplement le fichier json fusionné et retourne le Dataframe Pandas associé
+    """
+    import pandas as pd
+
+    with open(merged_json_filename_path, "r", encoding="utf-8") as file:
+        data = json.load(file)
+
+    return pd.DataFrame(data)

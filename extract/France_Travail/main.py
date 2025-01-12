@@ -4,7 +4,14 @@ import yaml
 
 from colorama import Fore, init
 
-from functions import merge_all_json_into_one, get_bearer_token, get_offres, get_referentiel_appellations_rome, get_referentiel_pays
+from functions import (
+    get_bearer_token,
+    get_offres,
+    get_referentiel_appellations_rome,
+    get_referentiel_pays,
+    merge_all_json_into_one,
+    merged_json_file_to_pd_dataframe,
+)
 
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
@@ -28,7 +35,8 @@ token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE
 launch_get_referentiel_appellations_rome = 0
 launch_get_referentiel_pays = 0
 launch_get_offres = 0
-launch_merge_all_json_into_one = 1
+launch_merge_all_json_into_one = 0
+launch_merged_json_file_to_pd_dataframe = 1
 
 
 if launch_get_referentiel_appellations_rome:
@@ -88,9 +96,9 @@ if launch_get_offres:
                 # "experience": "",  # Niveau d’expérience demandé, (1 moins d'un an, 2 de 1 à 3 ans, 3 plus de 3 ans)
                 # "experienceExigence": "D",  # Exigence d'expérience (D débutant accepté, S expérience souhaitée, E expérience exigée)
                 #### date de création # todo : jouer sur les dates pour voir si on peut récupérer les vieilles offres
-                # "maxCreationDate": "",  # Date maximale pour laquelle rechercher des offres (format yyyy-MM-dd'T'hh:mm:ss'Z')
-                # "minCreationDate": "",  # Date minimale pour laquelle rechercher des offres (format yyyy-MM-dd'T'hh:mm:ss'Z')
-                # "publieeDepuis": "",  # Recherche les offres publiées depuis maximum « X » jours
+                # "minCreationDate": "2023-09-01T00:00:00Z",  # Date minimale pour laquelle rechercher des offres (format yyyy-MM-dd'T'hh:mm:ss'Z')
+                # "maxCreationDate": "2025-01-12T00:00:00Z",  # Date maximale pour laquelle rechercher des offres (format yyyy-MM-dd'T'hh:mm:ss'Z')
+                # "publieeDepuis": "31",  # Recherche les offres publiées depuis maximum « X » jours (1, 3, 7, 14 ou 31 attendu.)
                 #### misc.
                 # "sort": "",  # Tri selon 3 façons différentes
                 # "accesTravailleurHandicape": True,  # Offres pour lesquelles l’employeur est handi friendly
@@ -119,9 +127,18 @@ if launch_get_offres:
 
 
 if launch_merge_all_json_into_one:
-
     merged_json_filename = "_offres_merged.json"
     json_files_directory = os.path.join(current_directory, "outputs", "offres")
     merged_json_filename_path = os.path.join(json_files_directory, merged_json_filename)
 
     merge_all_json_into_one(json_files_directory, merged_json_filename)
+
+
+#################################################################################################################################
+
+
+if launch_merged_json_file_to_pd_dataframe:
+    merged_json_filename_path = os.path.join(current_directory, "outputs", "offres", "_offres_merged.json")
+    df = merged_json_file_to_pd_dataframe(merged_json_filename_path)
+
+print(df)
