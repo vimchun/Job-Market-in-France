@@ -68,8 +68,7 @@ if launch_get_offres:
                 # "codeNAF": "",  # Code NAF de l’offre, (format 99.99X)
                 # "codeROME": "",  # Code ROME de l’offre, voir le référentiel des métiers ci-dessous
                 #### localisation
-                # "paysContinent" : Pays ou continent de l’offre
-                "paysContinent": "01",  # pour la France (non restreint à la métropôle)
+                "paysContinent": "01",  # Pays ou continent de l’offre, 01 pour la France (non restreint à la métropôle)
                 # "paysContinent": "02",  # pour l'Allemagne (presque pas d'offre)
                 # "paysContinent": "04",  # pour la Belgique (presque pas d'offre)
                 # "paysContinent": "07",  # pour l'Espagne (presque pas d'offre)
@@ -78,7 +77,7 @@ if launch_get_offres:
                 # "paysContinent": "83",  # pour le Japon (presque pas d'offre)
                 # "commune": "",  # Code INSEE de la commune
                 # "departement": "",  # Département de l’offre (Jusqu'à 5 valeurs possibles, séparées par une virgule)
-                # "distance": "",  # Distance à la commune (pris en compte uniquement si une commune est renseignée, plus d'information dans la documentation)
+                # "distance": "",  # Distance à la commune (pris en compte uniquement si une commune est renseignée
                 # "inclureLimitrophes": "",  # Inclure les départements limitrophes dans la recherche
                 # "region": "",  # Région de l’offre
                 #### contrat
@@ -95,15 +94,15 @@ if launch_get_offres:
                 #### experience
                 # "experience": "",  # Niveau d’expérience demandé, (1 moins d'un an, 2 de 1 à 3 ans, 3 plus de 3 ans)
                 # "experienceExigence": "D",  # Exigence d'expérience (D débutant accepté, S expérience souhaitée, E expérience exigée)
-                #### date de création # todo : jouer sur les dates pour voir si on peut récupérer les vieilles offres
-                # "minCreationDate": "2023-09-01T00:00:00Z",  # Date minimale pour laquelle rechercher des offres (format yyyy-MM-dd'T'hh:mm:ss'Z')
+                #### date de création # ne permet de pas récupérer les offres anciennes
+                # "minCreationDate": "2015-01-01T00:00:00Z",  # Date minimale pour laquelle rechercher des offres (format yyyy-MM-dd'T'hh:mm:ss'Z')
                 # "maxCreationDate": "2025-01-12T00:00:00Z",  # Date maximale pour laquelle rechercher des offres (format yyyy-MM-dd'T'hh:mm:ss'Z')
                 # "publieeDepuis": "31",  # Recherche les offres publiées depuis maximum « X » jours (1, 3, 7, 14 ou 31 attendu.)
                 #### misc.
                 # "sort": "",  # Tri selon 3 façons différentes
                 # "accesTravailleurHandicape": True,  # Offres pour lesquelles l’employeur est handi friendly
                 # "modeSelectionPartenaires": "",  # Énumération (INCLUS ou EXCLU) - Mode de sélection des partenaires.
-                # "motsCles": "data",  # Recherche de mots clés dans l’offre, voir documentation
+                # "motsCles": "data",  # Recherche de mots clés dans l’offre  # note: on n'utilise pas ce paramètre pour avoir le plus d'offres possible
                 # "niveauFormation": "",  # Niveau de formation demandé
                 # "offresMRS": "",  # Uniquement les offres d'emplois avec méthode de recrutement par simulation proposée
                 # "offresManqueCandidats": "",  # Filtre sur les offres difficiles à pouvoir

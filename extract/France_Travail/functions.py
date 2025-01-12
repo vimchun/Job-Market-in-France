@@ -267,7 +267,6 @@ def merge_all_json_into_one(json_files_directory, merged_json_filename):
     """
 
     import pandas as pd
-    # import json
 
     df_merged = pd.DataFrame()
 
