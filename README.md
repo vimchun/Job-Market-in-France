@@ -63,16 +63,18 @@
 
   - En effet, des offres de "Data Engineer" peuvent être présentes en requêtant l'appellation "Data_Manager" par exemple.
 
-- Nous filtrons ensuite à nouveau sur l'intitulé de chacune de ces offres :
+- Nous obtenons finalement 28 fichiers json contenant toutes les offres d'emploi liés ou pas à la data, pour la France et DOM-TOM uniquement car France Travail ne renvoie quasiment pas d'offre d'emploi teintée data pour les autres pays.
 
-  - En effet, pour filtrer les offres de "Data Engineer", nous testons si l'intitulé d'une offre matche avec plusieurs regex définies dans le fichier `filtres_offres.yml`, et aussi si elle ne matche pas d'autres regex aussi présente dans le même fichier.
+
+- Nous filtrerons toutes les offres à la prochaine étape.
+
+  <!-- - En effet, pour filtrer les offres de "Data Engineer", nous testons si l'intitulé d'une offre matche avec plusieurs regex définies dans le fichier `filtres_offres.yml`, et aussi si elle ne matche pas d'autres regex aussi présente dans le même fichier.
 
     - Par exemple, pour filtrer les offres DE, pour chaque offre, la chaîne de caractère d'un intitulé est mis en miniscule et les accents retirés, et nous gardons l'offre si l'intitulé matche la regex `(ing|eng)(.*?)(data|donnee)`, et si l'intitulé ne matche pas `scientist`.
         - Une offre dont l'intitulé est `Inginieur de donnees` sera vu comme une offre DE, malgré la typo involontaire du recruteur et déjà rencontré.
-        - Une offre dont l'intitulé est `Ingénieur Data Scientist` ne sera pas vu comme une offre DE, car c'est en réalité une offre DS.
+        - Une offre dont l'intitulé est `Ingénieur Data Scientist` ne sera pas vu comme une offre DE, car c'est en réalité une offre DS. -->
 
 
-- Nous obtenons finalement pour chaque métier DE, DA et DS : un fichier json contenant toutes les offres d'emploi, pour la France et DOM-TOM uniquement car France Travail ne renvoie quasiment pas d'offre d'emploi teintée data pour les autres pays.
 
 
 ### API de "The Muse"
