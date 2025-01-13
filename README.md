@@ -37,7 +37,6 @@
     - le code des pays, codes récupérés à partir du endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/pays`
 
       ```json
-      // exemples de documents pour le référentiel "pays"
       { "code": "01", "libelle": "France" },    // inclut les offres en France d'outre-mer
       { "code": "02", "libelle": "Allemagne" }, // les pays étrangers ne retournent malheureusement pas d'offres sur les métiers à analyser
       ...
