@@ -32,11 +32,11 @@ token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE
 
 
 # Lancer les fonctions plus simplement ("= 1" pour lancer la fonction)
-launch_get_referentiel_appellations_rome = 0
+launch_get_referentiel_appellations_rome = 1
 launch_get_referentiel_pays = 0
 launch_get_offres = 0
 launch_merge_all_json_into_one = 0
-launch_merged_json_file_to_pd_dataframe = 1
+launch_merged_json_file_to_pd_dataframe = 0
 
 
 if launch_get_referentiel_appellations_rome:
@@ -140,4 +140,4 @@ if launch_merged_json_file_to_pd_dataframe:
     merged_json_filename_path = os.path.join(current_directory, "outputs", "offres", "_offres_merged.json")
     df = merged_json_file_to_pd_dataframe(merged_json_filename_path)
 
-print(df)
+    print(df)

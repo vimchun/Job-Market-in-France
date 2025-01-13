@@ -76,7 +76,16 @@ def get_referentiel_appellations_rome(token):
         file_path = os.path.join(current_directory, "outputs", "referentiels", "appellations_rome.json")
         data = response.json()
         with open(file_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=4)
+            #     json.dump(data, f, ensure_ascii=False, indent=4)  # écrit le json, mais le formattage classique prend trop de place... le code suivant corrige le tir # noqa
+            f.write("[\n")  # Ajouter un "[" pour "initialiser" le fichier json
+            for i in range(len(data)):
+                f.write("    ")
+                json.dump(data[i], f, ensure_ascii=False)
+                if i < len(data) - 1:  # Ajouter une virgule pour tous les documents sauf pour le dernier
+                    f.write(",\n")
+                else:
+                    f.write("\n")
+            f.write("]")  # Clore le json en ajoutant un crochet fermant "]"
 
     else:
         print(f"Erreur lors de la requête API: {response.status_code}\n")
@@ -111,7 +120,16 @@ def get_referentiel_pays(token):
         file_path = os.path.join(current_directory, "outputs", "referentiels", "pays.json")
         data = response.json()
         with open(file_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=4)
+            # json.dump(data, f, ensure_ascii=False, indent=4) # écrit le json, mais le formattage classique prend trop de place... le code suivant corrige le tir # noqa
+            f.write("[\n")  # Ajouter un "[" pour "initialiser" le fichier json
+            for i in range(len(data)):
+                f.write("    ")
+                json.dump(data[i], f, ensure_ascii=False)
+                if i < len(data) - 1:  # Ajouter une virgule pour tous les documents sauf pour le dernier
+                    f.write(",\n")
+                else:
+                    f.write("\n")
+            f.write("]")  # Clore le json en ajoutant un crochet fermant "]"
 
     else:
         print(f"Erreur lors de la requête API: {response.status_code}\n")
