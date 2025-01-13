@@ -56,13 +56,13 @@
 
 - Toutefois, l'API retourne aussi énormément d'offres sans lien avec le métier renseigné en paramètre (par exemple, une requête renseignant l'appellation "Data Engineer" peut renvoyer une offre telle que "Product Owner" car les termes "Data Engineer" peuvent être présents dans la description de l'offre d'emploi).
 
-- Nous requêtons ainsi un maximum d'appellations ROME en utilisant les 28 métiers ayant un lien avec la data, pour maximiser les chances d'obtenir le plus d'offres d'emploi ayant un lien avec les métiers DE, DA et DS.
+- Nous requêtons ainsi un maximum d'appellations ROME en utilisant les 29 appellations ayant un lien avec la data, ainsi que 32 autres appellations ayant un lien avec les métiers de la tech (dev, sécurité, devops), pour maximiser les chances d'obtenir le plus d'offres d'emploi ayant un lien avec les métiers DE, DA et DS.
 
   - En effet, des offres de "Data Engineer" peuvent être présentes en requêtant l'appellation "Data_Manager" par exemple.
 
-- Nous obtenons finalement 28 fichiers json contenant toutes les offres d'emploi liés ou pas à la data, pour la France et DOM-TOM uniquement car France Travail ne renvoie quasiment pas d'offre d'emploi teintée data pour les autres pays.
+- Nous obtenons finalement 61 fichiers json contenant toutes les offres d'emploi liés ou pas à la data, pour la France et DOM-TOM uniquement car France Travail ne renvoie quasiment pas d'offre d'emploi teintée data pour les autres pays.
 
-  - Ces 28 fichiers json seront fusionnés dans un seul fichier json, sans doublon.
+  - Ces 61 fichiers json seront fusionnés dans un seul fichier json, avec nous supprimons les doublons. Ce fichier json sera notre jeu de données pour l'API de France Travail.
 
 
 - Nous filtrerons toutes les offres à la prochaine étape.
