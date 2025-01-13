@@ -3,7 +3,7 @@ _notes_perso/
 api_credentials_minh.yml
 extract/France_Travail/outputs/*.json
 extract/France_Travail/outputs/_archives/2024-12-11/
-extract/France_Travail/outputs/_archives/2025-01-12/
+# extract/France_Travail/outputs/_archives/2025-01-12/
 extract/France_Travail/outputs/appellations/*.json
 extract/France_Travail/outputs/offres/*.json
 extract/France_Travail/outputs/offres/archives_pb_ecriture_json

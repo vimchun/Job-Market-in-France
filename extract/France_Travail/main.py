@@ -3,7 +3,6 @@ import os
 import yaml
 
 from colorama import Fore, init
-
 from functions import (
     get_bearer_token,
     get_offres,
@@ -11,18 +10,20 @@ from functions import (
     get_referentiel_pays,
     merge_all_json_into_one,
     merged_json_file_to_pd_dataframe,
+    remove_all_json_files_before_merging,
 )
 
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
 
 # Récupération des credentials données sur le site de FT, depuis un fichier yaml
-CREDENTIALS_FILE = "api_credentials_minh.yml"  # à modifier selon qui lance le script (todo: trouver une meilleure solution)
-current_directory = os.path.dirname(os.path.abspath(__file__))
-file_path = os.path.join(current_directory, "..", CREDENTIALS_FILE)
 SCOPES_OFFRES = "o2dsoffre api_offresdemploiv2"  # scopes définis dans https://francetravail.io/produits-partages/catalogue/offres-emploi/documentation#/
+CREDENTIALS_FILE = "api_credentials_minh.yml"  # à modifier selon qui lance le script
+current_directory = os.path.dirname(os.path.abspath(__file__))
+credential_filename = os.path.join(current_directory, "..", CREDENTIALS_FILE)
+json_files_directory = os.path.join(current_directory, "outputs", "offres")
 
-with open(file_path, "r") as file:
+with open(credential_filename, "r") as file:
     creds = yaml.safe_load(file)
 
 IDENTIFIANT_CLIENT = creds["API_FRANCE_TRAVAIL"]["IDENTIFIANT_CLIENT"]
@@ -32,11 +33,13 @@ token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE
 
 
 # Lancer les fonctions plus simplement ("= 1" pour lancer la fonction)
+#  note : il faut tout mettre à 1 pour le script de bout en bout
 launch_get_referentiel_appellations_rome = 1
-launch_get_referentiel_pays = 0
-launch_get_offres = 0
-launch_merge_all_json_into_one = 0
-launch_merged_json_file_to_pd_dataframe = 0
+launch_get_referentiel_pays = 1
+launch_remove_all_json_files_before_merging = 1
+launch_get_offres = 1
+launch_merge_all_json_into_one = 1
+launch_merged_json_file_to_pd_dataframe = 1
 
 
 if launch_get_referentiel_appellations_rome:
@@ -49,11 +52,15 @@ if launch_get_referentiel_pays:
 
 #################################################################################################################################
 
+if launch_remove_all_json_files_before_merging:
+    remove_all_json_files_before_merging(json_files_directory)
+
+#################################################################################################################################
 
 if launch_get_offres:
-    file_path = os.path.join(current_directory, "code_appellation_libelle.yml")
+    credential_filename = os.path.join(current_directory, "code_appellation_libelle.yml")
 
-    with open(file_path, "r") as file:
+    with open(credential_filename, "r") as file:
         content = yaml.safe_load(file)
         code_appellation_libelle = content["code_appellation_libelle"]  # functions.py
         codes_list = [i["code"] for i in code_appellation_libelle]
@@ -124,17 +131,13 @@ if launch_get_offres:
 
 #################################################################################################################################
 
-
 if launch_merge_all_json_into_one:
     merged_json_filename = "_offres_merged.json"
-    json_files_directory = os.path.join(current_directory, "outputs", "offres")
     merged_json_filename_path = os.path.join(json_files_directory, merged_json_filename)
 
     merge_all_json_into_one(json_files_directory, merged_json_filename)
 
-
 #################################################################################################################################
-
 
 if launch_merged_json_file_to_pd_dataframe:
     merged_json_filename_path = os.path.join(current_directory, "outputs", "offres", "_offres_merged.json")

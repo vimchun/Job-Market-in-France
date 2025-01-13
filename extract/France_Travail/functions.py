@@ -138,6 +138,23 @@ def get_referentiel_pays(token):
     return None
 
 
+def remove_all_json_files_before_merging(json_files_directory):
+    """
+    Supprime tous les fichiers json du dossier spécifié
+    """
+    for file in os.listdir(json_files_directory):
+        json_to_delete = os.path.join(json_files_directory, file)
+
+        # Vérifie si c'est un fichier et si son extension est .json
+        if os.path.isfile(json_to_delete) and file.endswith(".json"):
+            try:
+                os.remove(json_to_delete)
+            except Exception as e:
+                print(f"Erreur lors de la suppression de {json_to_delete}: {e}")
+
+    return None
+
+
 def get_offres(token, code_appellation_libelle, filter_params):
     """
     A partir des appellations ROME décrites dans "code_appellation_libelle.yml", récupérer les offres de chaque appellation et les écrit dans un fichier json.
