@@ -8,10 +8,10 @@
 
 - Nous allons regrouper des informations sur les offres d’emplois récupérées par API, et les compagnies qui les proposent.
 
-- Notre objectif est d'analysé les offres liées aux métiers `Data Engineer` (DE), `Data Analyst` (DA) et `Data Scientist` (DS) :
+- Notre objectif est d'analyser les offres liées aux métiers `Data Engineer` (DE), `Data Analyst` (DA) et `Data Scientist` (DS) :
   - évolution de la répartition des offres de ces 3 métiers
-  - compétences les plus demandés (mots qui apparaissent le plus)
-  - secteurs recrutent le plus
+  - compétences les plus demandées (mots qui apparaissent le plus)
+  - secteurs recrutant le plus
   - régions/villes les plus actives (avec carte de France de densité de recrutement)
   - top 20 des entreprises qui recrutent le plus
 
