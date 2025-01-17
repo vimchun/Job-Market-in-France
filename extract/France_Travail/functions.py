@@ -346,3 +346,7 @@ def merged_json_file_to_pd_dataframe(merged_json_filename_path):
         data = json.load(file)
 
     return pd.DataFrame(data)
+
+
+def get_partners_urls():
+    pass  # todo : créer la fonction comme fait dans le notebook

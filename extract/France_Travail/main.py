@@ -38,8 +38,8 @@ launch_get_referentiel_appellations_rome = 0
 launch_get_referentiel_pays = 0
 launch_remove_all_json_files_before_merging = 0
 launch_get_offres = 0
-launch_merge_all_json_into_one = 1
-launch_merged_json_file_to_pd_dataframe = 0
+launch_merge_all_json_into_one = 0
+launch_merged_json_file_to_pd_dataframe = 1
 
 
 if launch_get_referentiel_appellations_rome:
