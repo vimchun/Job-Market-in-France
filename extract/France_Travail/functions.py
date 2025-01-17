@@ -335,13 +335,14 @@ def merge_all_json_into_one(json_files_directory, merged_json_filename):
     return None
 
 
-def get_partners_companies_and_urls_from_json_and_write_urls_to_csv(merged_json_file, urls_csv_file):
+def get_partners_companies_and_urls_from_json_and_write_both_to_csv(merged_json_file, csv_files_path):
     """
-    Récupère pour une offre d'emploi l'url "partenaire" si l'offre vient de celui-ci (si la colonne "origine" vaut 2).
-    Ecrit toutes ces offres dans un csv.
+    Récupère pour une offre d'emploi l'url "partenaire" ainsi que le nom de l'entreprise, si l'offre vient de celui-ci (si la colonne "origine" vaut 2).
+    Ecrit un csv pour les urls, et un autre csv pour les entreprises partenaires.
 
-    Retourne une liste avec la liste des partenaires.
+    Ne retourne rien.
     """
+    import numpy as np
 
     df = pd.read_json(merged_json_file)
 
@@ -352,14 +353,22 @@ def get_partners_companies_and_urls_from_json_and_write_urls_to_csv(merged_json_
 
     # Liste des entreprises
     entreprises = df_normalized_partenaires.apply(lambda x: x[0][0]["nom"], axis=1).sort_values()
+    entreprises_uniques = entreprises.unique()
+
+    np.savetxt(
+        os.path.join(csv_files_path, "_partners_companies.csv"),
+        entreprises_uniques,
+        delimiter="\n",  # chaque valeur est écrite sur une ligne séparée
+        fmt="%s",  # écrire les éléments sous forme de chaînes de caractères
+    )
 
     # Liste des urls partenaires
     urls = df_normalized_partenaires.apply(lambda x: x[0][0]["url"], axis=1).sort_values()
-    urls.sort_values().to_csv(urls_csv_file, index=False, header=False)
+    urls.sort_values().to_csv(os.path.join(csv_files_path, "_partners_urls.csv"), index=False, header=False)
 
     # Note : Warning non bloquant
     #  -> FutureWarning: Series.__getitem__ treating keys as positions is deprecated.
     #  -> In a future version, integer keys will always be treated as labels (consistent with DataFrame behavior).
     #  -> To access a value by position, use `ser.iloc[pos]`
 
-    return entreprises.unique().tolist()
+    return None

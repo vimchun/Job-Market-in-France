@@ -6,11 +6,11 @@ from colorama import Fore, init
 from functions import (
     get_bearer_token,
     get_offres,
+    get_partners_companies_and_urls_from_json_and_write_both_to_csv,
     get_referentiel_appellations_rome,
     get_referentiel_pays,
     merge_all_json_into_one,
     remove_all_json_files_before_merging,
-    get_partners_companies_and_urls_from_json_and_write_urls_to_csv,
 )
 
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
@@ -142,6 +142,6 @@ if launch_merge_all_json_into_one:
 
 if launch_get_partners_companies_and_urls_from_json_and_write_urls_to_csv:
     merged_json_file = os.path.join(current_directory, "outputs", "offres", "_offres_merged.json")
-    url_csv_file = os.path.join(current_directory, "outputs", "offres", "_partners_urls.csv")
+    csv_files_path = os.path.join(current_directory, "outputs", "offres")
 
-    print(get_partners_companies_and_urls_from_json_and_write_urls_to_csv(merged_json_file, url_csv_file))
+    get_partners_companies_and_urls_from_json_and_write_both_to_csv(merged_json_file, csv_files_path)
