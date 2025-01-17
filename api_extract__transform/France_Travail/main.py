@@ -11,6 +11,7 @@ from functions import (
     get_referentiel_pays,
     merge_all_json_into_one,
     remove_all_json_files_before_merging,
+    get_partners_companies_and_urls_from_json_and_write_urls_to_csv,
 )
 
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
@@ -35,12 +36,12 @@ token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE
 # Lancer les fonctions plus simplement ("= 1" pour lancer la fonction)
 #  note : il faut tout mettre à 1 pour le script de bout en bout
 launch_get_referentiel_appellations_rome = 0
-launch_get_partners_companies_and_urls_from_json_and_write_urls_to_csv = 0
 launch_get_referentiel_pays = 0
 launch_remove_all_json_files_before_merging = 0
 launch_get_offres = 0
-launch_merge_all_json_into_one = 1
 launch_merged_json_file_to_pd_dataframe = 0
+launch_merge_all_json_into_one = 0
+launch_get_partners_companies_and_urls_from_json_and_write_urls_to_csv = 1
 
 
 if launch_get_referentiel_appellations_rome:
@@ -143,6 +144,6 @@ if launch_merge_all_json_into_one:
 
 if launch_get_partners_companies_and_urls_from_json_and_write_urls_to_csv:
     merged_json_file = os.path.join(current_directory, "outputs", "offres", "_offres_merged.json")
-    csv_files_path = os.path.join(current_directory, "outputs", "offres")
+    url_csv_file = os.path.join(current_directory, "outputs", "offres", "_partners_urls.csv")
 
-    get_partners_companies_and_urls_from_json_and_write_both_to_csv(merged_json_file, csv_files_path)
+    get_partners_companies_and_urls_from_json_and_write_urls_to_csv(merged_json_file, url_csv_file)
