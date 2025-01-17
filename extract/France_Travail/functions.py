@@ -163,6 +163,8 @@ def get_offres(token, code_appellation_libelle, filter_params):
 
     Ne retourne rien.
     """
+    # todo : vérifier que le json généré est bien valide
+
     appellation = filter_params["appellation"]
 
     libelle = ""
@@ -324,7 +326,12 @@ def merge_all_json_into_one(json_files_directory, merged_json_filename):
 
     print(f"\n --> df_merged : {df_merged.shape[0]} offres, df_merged_drop_duplicates : {df_merged.drop_duplicates(["id"]).shape[0]} offres")
 
-    df_merged.drop_duplicates(["id"]).to_json(os.path.join(json_files_directory, merged_json_filename))
+    df_merged.drop_duplicates(["id"]).to_json(
+        os.path.join(json_files_directory, merged_json_filename),
+        orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
+        force_ascii=False,  # pour convertir les caractères spéciaux
+        indent=4,  # pour formatter la sortie
+    )
 
     return None
 
