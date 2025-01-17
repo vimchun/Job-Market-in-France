@@ -372,3 +372,7 @@ def get_partners_companies_and_urls_from_json_and_write_both_to_csv(merged_json_
     #  -> To access a value by position, use `ser.iloc[pos]`
 
     return None
+
+
+def get_partners_urls():
+    pass  # todo : créer la fonction comme fait dans le notebook
