@@ -1,6 +1,7 @@
 import json
 import os
 
+import pandas as pd
 import requests
 
 from colorama import Fore, Style, init
@@ -303,8 +304,6 @@ def merge_all_json_into_one(json_files_directory, merged_json_filename):
     Cette fonction écrira dans un json chaque ligne de tous les json précédents, en supprimant les doublons.
     """
 
-    import pandas as pd
-
     df_merged = pd.DataFrame()
 
     for filename in os.listdir(json_files_directory):
@@ -336,17 +335,31 @@ def merge_all_json_into_one(json_files_directory, merged_json_filename):
     return None
 
 
-def merged_json_file_to_pd_dataframe(merged_json_filename_path):
+def get_partners_companies_and_urls_from_json_and_write_urls_to_csv(merged_json_file, urls_csv_file):
     """
-    Prend simplement le fichier json fusionné et retourne le Dataframe Pandas associé
+    Récupère pour une offre d'emploi l'url "partenaire" si l'offre vient de celui-ci (si la colonne "origine" vaut 2).
+    Ecrit toutes ces offres dans un csv.
+
+    Retourne une liste avec la liste des partenaires.
     """
-    import pandas as pd
 
-    with open(merged_json_filename_path, "r", encoding="utf-8") as file:
-        data = json.load(file)
+    df = pd.read_json(merged_json_file)
 
-    return pd.DataFrame(data)
+    df_normalized = pd.json_normalize(df["origineOffre"])  # pour mettre le json "à plat" car il contient des colonnes avec des dictionnaires
 
+    # filtre sur "origine=2" (sur les offres venant de "partenaires")
+    df_normalized_partenaires = df_normalized[df_normalized["origine"] == "2"][["partenaires"]]
 
-def get_partners_urls():
-    pass  # todo : créer la fonction comme fait dans le notebook
+    # Liste des entreprises
+    entreprises = df_normalized_partenaires.apply(lambda x: x[0][0]["nom"], axis=1).sort_values()
+
+    # Liste des urls partenaires
+    urls = df_normalized_partenaires.apply(lambda x: x[0][0]["url"], axis=1).sort_values()
+    urls.sort_values().to_csv(urls_csv_file, index=False, header=False)
+
+    # Note : Warning non bloquant
+    #  -> FutureWarning: Series.__getitem__ treating keys as positions is deprecated.
+    #  -> In a future version, integer keys will always be treated as labels (consistent with DataFrame behavior).
+    #  -> To access a value by position, use `ser.iloc[pos]`
+
+    return entreprises.unique()
