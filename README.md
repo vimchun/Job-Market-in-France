@@ -5,7 +5,6 @@
 
 # Projet Job Market
 
-
 - Nous allons regrouper des informations sur les offres d’emplois récupérées par API, et les compagnies qui les proposent.
 
 - Notre objectif est d'analyser les offres liées aux métiers `Data Engineer` (DE), `Data Analyst` (DA) et `Data Scientist` (DS) :
@@ -14,6 +13,7 @@
   - secteurs recrutant le plus
   - régions/villes les plus actives (avec carte de France de densité de recrutement)
   - top 20 des entreprises qui recrutent le plus
+  - etc... (à compléter)
 
 
 ## Étape 1 : Récolte des données par API
@@ -65,6 +65,8 @@
 
 
 - Nous filtrerons toutes les offres à la prochaine étape.
+
+- On notera que les offres d"emploi retournées peuvent provenir soit de France Travail, soit des "partenaires", par exemple ("CADREMPLOI', "DIRECTEMPLOI", "INDEED", etc...)
 
   <!-- - En effet, pour filtrer les offres de "Data Engineer", nous testons si l'intitulé d'une offre matche avec plusieurs regex définies dans le fichier `filtres_offres.yml`, et aussi si elle ne matche pas d'autres regex aussi présente dans le même fichier.
 

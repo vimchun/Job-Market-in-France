@@ -362,4 +362,4 @@ def get_partners_companies_and_urls_from_json_and_write_urls_to_csv(merged_json_
     #  -> In a future version, integer keys will always be treated as labels (consistent with DataFrame behavior).
     #  -> To access a value by position, use `ser.iloc[pos]`
 
-    return entreprises.unique()
+    return entreprises.unique().tolist()

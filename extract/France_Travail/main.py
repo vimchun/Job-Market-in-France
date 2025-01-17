@@ -144,4 +144,4 @@ if launch_get_partners_companies_and_urls_from_json_and_write_urls_to_csv:
     merged_json_file = os.path.join(current_directory, "outputs", "offres", "_offres_merged.json")
     url_csv_file = os.path.join(current_directory, "outputs", "offres", "_partners_urls.csv")
 
-    get_partners_companies_and_urls_from_json_and_write_urls_to_csv(merged_json_file, url_csv_file)
+    print(get_partners_companies_and_urls_from_json_and_write_urls_to_csv(merged_json_file, url_csv_file))
