@@ -1,0 +1,121 @@
+[
+    {
+        "id": "184TRJB",
+        "intitule": "Data engineer",
+        "description": "Data Engineer (H/F) !\n\nVous êtes passionné(e) par la data et souhaitez relever des défis techniques au sein d'équipes dynamiques ? Ce poste est fait pour vous !\n\nVos missions :\n\nConcevoir, développer et optimiser des pipelines de données robustes et scalables.\nMettre en place et gérer des architectures data modernes (cloud ou on-premise).\nCollaborer avec des data scientists et des analystes pour rendre les données exploitables.\nGarantir la qualité, la sécurité et la gouvernance des données.\nVotre profil :\n\nSolide maîtrise de Python, SQL, ou Spark.\nExpérience avec des bases de données (SQL/NoSQL).\nCompétence sur des outils ETL (Talend, Informatica.) et plateformes cloud (AWS, Azure, GCP).\nEsprit analytique et goût du travail en équipe.",
+        "dateCreation": "2024-11-28T14:23:11.470Z",
+        "dateActualisation": "2024-11-28T14:23:11.957Z",
+        "lieuTravail": {
+            "libelle": "75 - PARIS 08",
+            "latitude": 48.873635,
+            "longitude": 2.3116,
+            "codePostal": "75008",
+            "commune": "75108"
+        },
+        "romeCode": "M1811",
+        "romeLibelle": "Data engineer",
+        "appellationlibelle": "Data engineer",
+        "entreprise": {
+            "nom": "ARTIALYS",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "CDI",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "E",
+        "experienceLibelle": "4 An(s)",
+        "formations": [
+            {
+                "niveauLibelle": "Bac+5 et plus ou équivalents",
+                "exigence": "S"
+            }
+        ],
+        "competences": [
+            { "code": "300067", "libelle": "Analyser, exploiter, structurer des données", "exigence": "S" },
+            { "code": "300488", "libelle": "Concevoir et gérer un projet", "exigence": "S" },
+            { "code": "120209", "libelle": "Enrichir une base de données", "exigence": "S" },
+            { "code": "403927", "libelle": "Collaborer dans un groupe pour réaliser un projet", "exigence": "S" },
+            { "code": "404185", "libelle": "Convaincre en argumentant avec un ou plusieurs interlocuteurs (interne et externe)", "exigence": "S" },
+            { "code": "300462", "libelle": "Rendre compte de son activité", "exigence": "S" }
+        ],
+        "salaire": { "libelle": "Mensuel de 40000.0 Euros à 50000.0 Euros sur 12.0 mois", "complement1": "Chèque repas" },
+        "dureeTravailLibelle": "35H\nTravail en journée",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "nom": "ARTIALYS - M. herman afoulatsan",
+            "coordonnees1": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/184TRJB",
+            "courriel": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/184TRJB"
+        },
+        "agence": {},
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": "2",
+        "deplacementLibelle": "Ponctuels Zone régionale",
+        "qualificationCode": "9",
+        "qualificationLibelle": "Cadre",
+        "codeNAF": "62.02A",
+        "secteurActivite": "62",
+        "secteurActiviteLibelle": "Conseil en systèmes et logiciels informatiques",
+        "qualitesProfessionnelles": [
+            {
+                "libelle": "Faire preuve d'autonomie",
+                "description": "Capacité à prendre en charge son activité sans devoir être encadré de façon continue (le cas échéant, à solliciter les autres acteurs de l'entreprise)."
+            },
+            {
+                "libelle": "Faire preuve de rigueur et de précision",
+                "description": "Capacité à réaliser des tâches en suivant avec exactitude les règles, les procédures, les instructions qui ont été fournies, sans réaliser d'erreur et à transmettre clairement des informations. Se montrer ponctuel et respectueux des règles de savoir-vivre usuelles."
+            },
+            {
+                "libelle": "Organiser son travail selon les priorités et les objectifs",
+                "description": "Capacité à planifier, prioriser, anticiper des actions, en tenant compte des moyens, des ressources, des objectifs et du calendrier pour les réaliser."
+            }
+        ],
+        "origineOffre": {
+            "origine": "1",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/184TRJB"
+        },
+        "offresManqueCandidats": false
+    },
+    {
+        "id": "0626202",
+        "intitule": "Ingénieur(e) DBA / Base de données expérimenté(e) - DSI - Annecy (H/F)",
+        "description": "En tant qu&#039;organisateur de forums de recrutement, Talents Handicap accompagne de très nombreuses entreprises &amp; organisations en France dans leurs recrutements de collaborateurs en situation de handicap. Participant actuellement à l&#039;un de nos forums. L'entreprise Sopra Steria recherche actuellement des profils :  Description de l'entrepriseSopra Steria, acteur majeur de la Tech en Europe avec  collaborateurs dans près de 30 pays, est reconnu pour ses activités de conseil, de services numériques et d'édition de logiciels. Il aide ses clients à mener leur transformation digitale et à obtenir des bénéfices concrets et durables. Le Groupe apporte une réponse globale aux enjeux de compétitivité des grandes entreprises et organisations, combinant une connaissance approfondie des secteurs d'activité et des technologies innovantes à une approche résolument collaborative.\nSopra Steria place l'humain au centre de son action et s'engage auprès de ses clients à tirer le meilleur parti du digital pour construire un avenir positif. En , le Groupe a réalisé un chiffre d'affaires de 5,8 milliards d'euros.\nThe world is how we shape itDescription du posteVous intégrez la Direction des Systèmes d'Information qui a pour rôle de garantir le bon fonctionnement des technologies de l'information au sein du Groupe Sopra Steria. Afin de répondre aux enjeux et à la stratégie numérique globale du Groupe, la DSI gère la conception, la mise en œuvre, et le déploiement de solutions informatiques fiables et adaptées aux besoins. Elle assure la gestion et l'optimisation des infrastructures technologiques ainsi que son maintien en condition opérationnelle et de sécurité. Au sein de la DSI du groupe Sopra Steria, vous êtes intégré(e) à une équipe de 5 personnes qui assurent le déploiement, le support et l'exploitation des bases de données de production pour l'ensemble du groupe.Votre rôle et vos missions : En phase avec les priorités du groupe et les technologies émergentes, vous participez à l'évolution des infrastructures, des normes et des standards. Vous travaillez sur un parc d'une quarantaine de serveurs physiques et virtuels et de deux cents bases de données.Vous apporterez également votre expertise sur la gestion des données dans le cloud. Ainsi, vous effectuez les missions suivantes : Administrer le parc de serveurs de bases de données de groupe,Assurer leurs sécurisations et leurs sauvegardes/restaurations,Rédiger et maintenir les documentations techniques,Proposer et mettre en place des solutions d'optimisation des performances,Développer et maintenir les outils d'administration et d'industrialisation,Qualifier et valider les nouvelles versions des moteurs de bases de données,Prendre en charge les incidents N2 et N3,Analyser et traiter les demandes du Système d'Information (conseil et expertise, préconisation de bonnes pratiques)Accompagner et conseiller les équipes de développement sur les déploiements et bonnes pratiques des bases de données et de gestion des données dans le Cloud.Environnement technique : Moteurs de base de données : Oracle, SQL Server, MySQL / MariaDB, PostgreSQLEnvironnement de production en haute disponibilité (clustering, réplication)Systèmes d'exploitation : Windows Server, LinuxCloud AzureScripting PowerShell et BashTémoignage d'Anna, membre de l'équipe depuis 3 ans : « Au cours de ces trois dernières années en tant que DBA j'ai eu la chance de travailler sur de multiples SGBD et de pouvoir développer mes connaissances sur ces derniers. J'ai également eu l'opportunité de pouvoir diriger des projets transverses avec d'autres équipes de la DSI ce qui m'a permis de renforcer mes compétences en communication »QualificationsAyant au moins 5 ans d'expérience dans l'administration de bases de données multi-SGBD (Oracle et SQL Server, MySQL et PostgreSQL étant un plus), vous possédez de solides compétences en automatisation multi-plateformes (scripting PowerShell et Linux).Diplômé(e) d'un bac+5 et issu(e) d'une formation en Ecole d'Ingénieurs ou d'un équivalent Universitaire, vous avez des compétences et des connaissances sur les environnements de bases de données dans le Cloud.Autonome, pragmatique et rigoureux(se), vous savez être force de proposition et prendre des initiatives. Vous disposez de bonnes compétences relationnelles et appréciez travailler dans un environnement multiculturel (France, Inde, UKp>Vous maîtrisez l'anglais à l'oral comme à l'écrit pour répondre aux enjeux du poste.Informations supplémentairesUn accord télétravail pour télétravailler jusqu'à 2 jours par semaine selon vos missions. Un package avantages intéressant : une mutuelle, un CSE, des titres restaurants, un accord d'intéressement, des primes vacances et cooptation.Un accompagnement individualisé avec un mentor.Des opportunités de carrières multiples : plus de 30 familles de métiers, autant de passerelle",
+        "dateCreation": "2025-01-11T18:48:13.000Z",
+        "dateActualisation": "2025-01-11T18:48:13.000Z",
+        "lieuTravail": {
+            "libelle": "74 - ANNECY",
+            "latitude": 45.901584,
+            "longitude": 6.125296,
+            "codePostal": "74000",
+            "commune": "74010"
+        },
+        "romeCode": "M1811",
+        "romeLibelle": "Data engineer",
+        "appellationlibelle": "Ingénieur / Ingénieure données",
+        "entreprise": {
+            "description": "Une offre présentée par Talents Handicap : le forum en ligne au service de l'emploi des personnes en situation de handicap. \n\nAvec près de 10 ans d'expérience, des dizaines de forums réalisés, plus d'une centaine d'entreprises partenaires et plus de 130 000 visiteurs uniques par an, le forum en ligne Talents Handicap s'est installé comme une référence au service de l'emploi des personnes en situation de handicap. \n\nCette année, Talents Handicap propose 5 forum...",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "Contrat à durée indéterminée",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "D",
+        "experienceLibelle": "Débutant accepté",
+        "salaire": {},
+        "alternance": false,
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "origineOffre": {
+            "origine": "2",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/0626202",
+            "partenaires": [
+                {
+                    "nom": "DIRECTEMPLOI",
+                    "url": "https://www.directemploi.com/candidatOffre/49993134?utm_source=pole-emploi&utm_medium=referral&utm_campaign=Pôle-Emploi",
+                    "logo": "https://www.francetravail.fr/logos/img/partenaires/directemploi80.png"
+                }
+            ]
+        }
+    }
+]
