@@ -1,19 +1,19 @@
 __pycache__
 _notes_perso/
 api_credentials_minh.yml
-api_extract_&_transform/France_Travail/outputs/*.json
-api_extract_&_transform/France_Travail/outputs/_archives/2024-12-11/
-# api_extract_&_transform/France_Travail/outputs/_archives/2025-01-12/
-api_extract_&_transform/France_Travail/outputs/appellations/*.json
-api_extract_&_transform/France_Travail/outputs/offres/*.json
-api_extract_&_transform/France_Travail/outputs/offres/archives_pb_ecriture_json
-api_extract_&_transform/France_Travail/outputs/offres/autres/*.json
+api_extract__transform/France_Travail/outputs/*.json
+api_extract__transform/France_Travail/outputs/_archives/2024-12-11/
+# api_extract__transform/France_Travail/outputs/_archives/2025-01-12/
+api_extract__transform/France_Travail/outputs/appellations/*.json
+api_extract__transform/France_Travail/outputs/offres/*.json
+api_extract__transform/France_Travail/outputs/offres/archives_pb_ecriture_json
+api_extract__transform/France_Travail/outputs/offres/autres/*.json
 node_modules
 package-lock.json
 package.json
 todel.py
 # fichier > 100MB
-api_extract_&_transform/France_Travail/outputs/offres/_offres_merged.json
+api_extract__transform/France_Travail/outputs/offres/_offres_merged.json
 .DS_Store
 .idea/
 .venv/
