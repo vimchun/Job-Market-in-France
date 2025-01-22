@@ -1,58 +1,58 @@
-﻿ordre d'apparition dans le json;inutile ?;utile ?;commentaire (in)utilité ?; clé France Travail                            ;clé France Travail (nouveau nom);table;descriptions de la clé;exemple
-1;;x;;`id`;`id_offre`                                          ;offre;Identifiant de l’offre d’emploi;"""184TRJB""  "
-2;;x;;`intitule`;;offre;Intitulé de l’offre;"""Data engineer""  "
-3;;x;;`description`;;offre;Description de l’offre;"""Data Engineer (H/F) !\n\nVous êtes passionné(e) par la data... "
-4;;x;;`dateCreation`;;offre;Date de création de l’offre;"""2024-11-28T14:23:11.470Z"""
-5;;x;;`dateActualisation`;;offre;Date de dernière actualisation de l'offre;"""2024-11-28T14:23:11.957Z"""
-6;x;;;`lieuTravail` > `libelle`;;localisation;Lieu de travail;"""75 - PARIS 08"""
-6;x;;redondant avec le CP;`lieuTravail` > `commune`;;localisation;Lieu de travail;"""75108"""
-6;;x;cartographie;`lieuTravail` > `latitude`;;localisation;Lieu de travail;48.873635
-6;;x;cartographie;`lieuTravail` > `longitude`;;localisation;Lieu de travail;2.3116
-6;;x;;`lieuTravail` > `codePostal`;;localisation;Lieu de travail;"""75008"""
-7;;x;"peut faire le lien avec une table ""code rome - métier""";`romeCode`;;code ROME (spécifique FT);Code ROME de l’offre;"""M1811"""
-8;x;;"inutile si on a une table ""code rome - métier""";`romeLibelle`;;-;Libellé associé au code ROME;"""Data engineer"""
-9;x;;"inutile si on a une table ""code rome - métier""";`appellationlibelle`;;-;Libellé de l’appellation ROME de l’offre;"""Data engineer"""
-10;;x;top10 des entreprises qui recrutent le plus;`entreprise` > `nom`;;entreprise;Informations sur l'entreprise;"""ARTIALYS"""
-10;;x;;`entreprise` > `entrepriseAdaptee`;;entreprise;Informations sur l'entreprise;false
-11;;x;;`typeContrat`;;contrat;Code du type de contrat proposé (CDD, CDI, …);"""CDD"""
-12;;x;;`typeContratLibelle`;;contrat;Libellé du type de contrat proposé;"""CDD - 6 Mois"""
-13;;x;;`natureContrat`;;contrat;Nature du contrat (contrat d’apprentissage, ...);"""Contrat travail"""
-14;;x;;`experienceExige`;;exigences;D : débutant accepté, E : expérience exigée, S : expérience souhaitée;"""E"""
-15;;x;;`experienceLibelle`;;exigences;Libellé de l’expérience;"""4 An(s)"""
-16;;x;min bac+ 3 ou +5 par exemple;`formations` > `niveauLiBelle`;;exigences;Informations sur les formations;"""Bac+5 et plus ou équivalents"""
-16;;x;;`formations` > `exigence`;;exigences;Informations sur les formations;"""S"""
-17;x;;;`langues`;;-;Informations sur les langues;
-18;;x;;`competences` >  `code`;;exigences_compétences;Informations sur les compétences;"""300067"""
-18;;x;;`competences` >  `libelle`;;exigences_compétences;Informations sur les compétences;"""Analyser, exploiter, structurer des données"""
-18;;x;;`competences` >  `exigence`;;exigences_compétences;Informations sur les compétences;"""S"" "
-19;;x;;`salaire` > `libelle`;;salaire;Informations sur les salaires;"""Mensuel de 40000 à 50000 Euros sur 12 mois"""
-19;;x;;`salaire` > `complement1`;;salaire;Informations sur les salaires;"""Chèque repas"""
-20;x;;;`dureeTravailLibelle`;;-;Libellé de la durée de travail;
-21;;x;;`dureeTravailLibelleConverti`;;contrat;Temps plein ou temps partiel;
-22;;x;avoir le % de nombre d'offres en alternance;`alternance`;;contrat;Vrai si c’est une offre pour de l’alternance;
-23;x;;;`contact` > `nom`;;-;Informations sur les contacts;"""M. herman"""
-23;x;;;`contact` > `coordonnees1`;;-;Informations sur les contacts;"""Pour postuler..."""
-23;x;;;`contact` > `courriel`;;-;Informations sur les contacts;"""utiliser le lien..."""
-24;x;;;`agence`;;-;Agence France Travail;
-25;;x;;`nombrePostes`;;offre;Nombre de postes disponibles pour cette offre;
-26;;x;;`accessibleTH`;;offre;Vrai si l’offre est accessible aux travailleurs handicapés;
-27;x;;;`deplacementCode`;;-;Code de la fréquence des déplacements;
-28;;x;;`deplacementLibelle`;;offre;Description des déplacements demandés;
-29;x;;;`qualificationCode`;;-;Qualification du poste : 1=manœuvre, ..., 8=agent de maitrise, 9=cadre;
-30;;x;;`qualificationLibelle`;;offre;Libellé de la qualification du poste;
-31;;x;"utile pour les autres apis quand on aura la table ""entreprise-codenaf""";`codeNAF`;;secteur;Code NAF (Code APE);
-32;;x;"utile pour les autres apis quand on aura la table ""entreprise-codenaf""";`secteurActivite`;;secteur;Division NAF (comprend les deux premiers chiffre du code NAF);
-33;;x;;`secteurActiviteLibelle`;;secteur;Secteur d’activité de l’offre;
-34;;x;;`qualitesProfessionnelles` (liste) > `libelle`;;exigences;Informations sur les qualités professionnelles;"""Faire preuve d'autonomie"""
-34;;x;;`qualitesProfessionnelles` (liste) > `description`;;exigences;Informations sur les qualités professionnelles;"""Capacité à prendre en charge son activité sans devoir être encadré de façon continue (le cas échéant, à solliciter les autres acteurs de l'entreprise)."""
-35;x;;;`origineOffre` > `urlOrigine`;;-;Informations sur l'orgine de l'offre;" ""https://candidat.francetravail.fr/offres/recherche/detail/0626202"""
-35;x;;;`origineOffre` > `partenaires`> `url`;;-;Informations sur l'orgine de l'offre;" ""https://www.directemploi.com/candidatOffre/49993134?utm_source=pole-emploi&utm_medium=referral&utm_campaign=Pôle-Emploi"""
-35;x;;;`origineOffre` > `partenaires`> `logo`;;-;Informations sur l'orgine de l'offre;" ""https://www.francetravail.fr/logos/img/partenaires/directemploi80.png"""
-35;;x;"""origine=1"" => offre FT";`origineOffre` > `origine`;;origine (spécifique à FT);Informations sur l'orgine de l'offre;"""1"""
-35;;x;"""origine=2"" => offre partenaire";`origineOffre` > `partenaires` (si origine:2);;origine (spécifique à FT);Informations sur l'orgine de l'offre;
-35;;x;;`origineOffre` > `partenaires`> `nom`;;origine (spécifique à FT);Informations sur l'orgine de l'offre;"""DIRECTEMPLOI"""
-36;;x;;`offresManqueCandidats`;;offre;Vrai si c'est une offre difficile à pourvoir;false
-37;x;;;`permis`;;-;Permis;
-38;;x;;`complementExercice`;;offre;Complément exercice;autre exemple : Gestion de la comptabilité
-39;;x;;`experienceCommentaire`;;exigences_compétences;Commentaire sur l’expérience;autre exemple : Expérience dans la vente souhaitée
-40;;x;;`conditionExercice`;;-;Conditions d'exercice;autre exemple : Travail de nuit                              
+﻿ordre d'apparition dans le json;inutile ?;utile ?;commentaire (in)utilité ?; clé France Travail                            ; clé France Travail (nouveau nom);table;descriptions de la clé;exemple
+1;;x;;`id`;`id_offre`;offres;Identifiant de l’offre d’emploi;"""184TRJB""  "
+2;;x;;`intitule`;`intitule`;offres;Intitulé de l’offre;"""Data engineer""  "
+3;;x;;`description`;`description`;offres;Description de l’offre;"""Data Engineer (H/F) !\n\nVous êtes passionné(e) par la data... "
+4;;x;;`dateCreation`;`dateCreation`;offres;Date de création de l’offre;"""2024-11-28T14:23:11.470Z"""
+5;;x;;`dateActualisation`;`dateActualisation`;offres;Date de dernière actualisation de l'offre;"""2024-11-28T14:23:11.957Z"""
+6;x;;;`lieuTravail` > `libelle`;`localisation`;entreprises;Lieu de travail;"""75 - PARIS 08"""
+6;x;;redondant avec le CP;`lieuTravail` > `commune`;`commune`;entreprises;Lieu de travail;"""75108"""
+6;;x;cartographie;`lieuTravail` > `latitude`;`latitude`;entreprises;Lieu de travail;48.873635
+6;;x;cartographie;`lieuTravail` > `longitude`;`longitude`;entreprises;Lieu de travail;2.3116
+6;;x;;`lieuTravail` > `codePostal`;`code_postal`;entreprises;Lieu de travail;"""75008"""
+7;;x;"peut faire le lien avec une table ""code rome - métier""";`romeCode`;`code_rome`;codes_rome;Code ROME de l’offre;"""M1811"""
+8;x;;"inutile si on a une table ""code rome - métier""";`romeLibelle`;`nom_rome`;codes_rome;Libellé associé au code ROME;"""Data engineer"""
+9;x;;"inutile si on a une table ""code rome - métier""";`appellationlibelle`;`appellation`;codes_rome;Libellé de l’appellation ROME de l’offre;"""Data engineer"""
+10;;x;top10 des entreprises qui recrutent le plus;`entreprise` > `nom`;`nom_entreprise`;entreprises;Informations sur l'entreprise;"""ARTIALYS"""
+10;;x;;`entreprise` > `entrepriseAdaptee`;`entreprise_adaptee`;entreprises;Informations sur l'entreprise;false
+11;;x;;`typeContrat`;`type_contrat`;contrats;Code du type de contrat proposé (CDD, CDI, …);"""CDD"""
+12;;x;;`typeContratLibelle`;`type_contrat_libelle`;contrats;Libellé du type de contrat proposé;"""CDD - 6 Mois"""
+13;;x;;`natureContrat`;`nature_contrat`;contrats;Nature du contrat (contrat d’apprentissage, ...);"""Contrat travail"""
+14;;x;;`experienceExige`;`experience_exigee`;exigences;D : débutant accepté, E : expérience exigée, S : expérience souhaitée;"""E"""
+15;;x;;`experienceLibelle`;`experience_libelle`;exigences;Libellé de l’expérience;"""4 An(s)"""
+16;;x;min bac+ 3 ou +5 par exemple;`formations` > `niveauLiBelle`;`formation_niveau_libelle`;exigences;Informations sur les formations;"""Bac+5 et plus ou équivalents"""
+16;;x;;`formations` > `exigence`;`formation_exigence`;exigences;Informations sur les formations;"""S"""
+17;x;;;`langues`;`langues`;exigences;Informations sur les langues;
+18;;x;;`competences` >  `code`;`competence_code`;exigences;Informations sur les compétences;"""300067"""
+18;;x;;`competences` >  `libelle`;`competence_libelle`;exigences;Informations sur les compétences;"""Analyser, exploiter, structurer des données"""
+18;;x;;`competences` >  `exigence`;`competences_exigence`;exigences;Informations sur les compétences;"""S"" "
+19;;x;;`salaire` > `libelle`;`salaire_libelle`;contrats;Informations sur les salaires;"""Mensuel de 40000 à 50000 Euros sur 12 mois"""
+19;;x;;`salaire` > `complement1`;`salaire_complement1`;contrats;Informations sur les salaires;"""Chèque repas"""
+20;x;;;`dureeTravailLibelle`;`duree_travail_libelle`;contrats;Libellé de la durée de travail;
+21;;x;;`dureeTravailLibelleConverti`;`duree_travail_libelle_converti`;contrats;Temps plein ou temps partiel;
+22;;x;avoir le % de nombre d'offres en alternance;`alternance`;`alternance`;contrats;Vrai si c’est une offre pour de l’alternance;
+23;x;;;`contact` > `nom`;`contact` > `nom`;-;Informations sur les contacts;"""M. herman"""
+23;x;;;`contact` > `coordonnees1`;`contact` > `coordonnees1`;-;Informations sur les contacts;"""Pour postuler..."""
+23;x;;;`contact` > `courriel`;`contact` > `courriel`;-;Informations sur les contacts;"""utiliser le lien..."""
+24;x;;;`agence`;`agence`;-;Agence France Travail;
+25;;x;;`nombrePostes`;`nombre_postes`;offres;Nombre de postes disponibles pour cette offre;
+26;;x;;`accessibleTH`;`accessibleTH`;offres;Vrai si l’offre est accessible aux travailleurs handicapés;
+27;x;;;`deplacementCode`;`deplacement_code`;contrats;Code de la fréquence des déplacements;
+28;;x;;`deplacementLibelle`;`deplacement`;contrats;Description des déplacements demandés;
+29;x;;;`qualificationCode`;`qualification_code`;offres;Qualification du poste : 1=manœuvre, ..., 8=agent de maitrise, 9=cadre;
+30;;x;;`qualificationLibelle`;`qualification_libelle`;offres;Libellé de la qualification du poste;
+31;;x;"utile pour les autres apis quand on aura la table ""entreprise-codenaf""";`codeNAF`;`code_NAF`;secteurs;Code NAF (Code APE);
+32;;x;"utile pour les autres apis quand on aura la table ""entreprise-codenaf""";`secteurActivite`;`secteur_activite`;secteurs;Division NAF (comprend les deux premiers chiffre du code NAF);
+33;;x;;`secteurActiviteLibelle`;`secteur_activite_libelle`;secteurs;Secteur d’activité de l’offre;
+34;;x;;`qualitesProfessionnelles` (liste) > `libelle`;`qualites_professionnelles_libelle`;exigences;Informations sur les qualités professionnelles;"""Faire preuve d'autonomie"""
+34;;x;;`qualitesProfessionnelles` (liste) > `description`;`qualites_professionnelles_description`;exigences;Informations sur les qualités professionnelles;"""Capacité à prendre en charge son activité sans devoir être encadré de façon continue (le cas échéant, à solliciter les autres acteurs de l'entreprise)."""
+35;x;;;`origineOffre` > `urlOrigine`;`origineOffre` > `urlOrigine`;-;Informations sur l'orgine de l'offre;" ""https://candidat.francetravail.fr/offres/recherche/detail/0626202"""
+35;x;;;`origineOffre` > `partenaires`> `url`;`origineOffre` > `partenaires`> `url`;-;Informations sur l'orgine de l'offre;" ""https://www.directemploi.com/candidatOffre/49993134?utm_source=pole-emploi&utm_medium=referral&utm_campaign=Pôle-Emploi"""
+35;x;;;`origineOffre` > `partenaires`> `logo`;`origineOffre` > `partenaires`> `logo`;-;Informations sur l'orgine de l'offre;" ""https://www.francetravail.fr/logos/img/partenaires/directemploi80.png"""
+35;;x;"""origine=1"" => offre FT";`origineOffre` > `origine`;`origine_offre`;offres;Informations sur l'orgine de l'offre;"""1"""
+35;;x;"""origine=2"" => offre partenaire";`origineOffre` > `partenaires` (si origine:2);`origineOffre` > `partenaires` (si origine:2);-;Informations sur l'orgine de l'offre;
+35;;x;;`origineOffre` > `partenaires`> `nom`;`nom_partenaire`;offres;Informations sur l'orgine de l'offre;"""DIRECTEMPLOI"""
+36;;x;;`offresManqueCandidats`;`manque_candidats`;offres;Vrai si c'est une offre difficile à pourvoir;false
+37;x;;;`permis`;`permis`;-;Permis;
+38;;x;;`complementExercice`;`complementExercice`;offres;Complément exercice;autre exemple : Gestion de la comptabilité
+39;;x;;`experienceCommentaire`;`experienceCommentaire`;exigences;Commentaire sur l’expérience;autre exemple : Expérience dans la vente souhaitée
+40;;x;;`conditionExercice`;`conditionExercice`;contrats;Conditions d'exercice;autre exemple : Travail de nuit                              
