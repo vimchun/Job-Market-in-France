@@ -7,7 +7,6 @@ api_extract__transform/France_Travail/outputs/_archives/2024-12-11/
 api_extract__transform/France_Travail/outputs/appellations/*.json
 api_extract__transform/France_Travail/outputs/offres/*.json
 api_extract__transform/France_Travail/outputs/offres/archives_pb_ecriture_json
-api_extract__transform/France_Travail/outputs/offres/autres/*.json
 node_modules
 package-lock.json
 package.json
