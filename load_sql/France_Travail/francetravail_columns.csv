@@ -5,13 +5,16 @@
 23;`contact` > `courriel`;-;-;-;Informations sur les contacts;"""utiliser le lien..."""
 24;`agence`;-;-;-;Agence France Travail;
 32;`secteurActivite`;-;-;-;Division NAF (comprend les deux premiers chiffre du code NAF);
-35;`origineOffre` > `origine`;`origine_offre`;-;-;Informations sur l'orgine de l'offre;"""1"""
-35;`origineOffre` > `urlOrigine`;`origineOffre` > `urlOrigine`;-;-;Informations sur l'orgine de l'offre;" ""https://candidat.francetravail.fr/offres/recherche/detail/0626202"""
-35;`origineOffre` > `partenaires`> `url`;`origineOffre` > `partenaires`> `url`;-;-;Informations sur l'orgine de l'offre;" ""https://www.directemploi.com/candidatOffre/49993134?utm_source=pole-emploi&utm_medium=referral&utm_campaign=Pôle-Emploi"""
-35;`origineOffre` > `partenaires`> `logo`;`origineOffre` > `partenaires`> `logo`;-;-;Informations sur l'orgine de l'offre;" ""https://www.francetravail.fr/logos/img/partenaires/directemploi80.png"""
-35;`origineOffre` > `partenaires` (si origine:2);`origineOffre` > `partenaires` (si origine:2);-;-;Informations sur l'orgine de l'offre;
+35;`origineOffre` > `origine`;-;-;-;Informations sur l'orgine de l'offre;"""1"""
+35;`origineOffre` > `urlOrigine`;-;-;-;Informations sur l'orgine de l'offre;" ""https://candidat.francetravail.fr/offres/recherche/detail/0626202"""
+35;`origineOffre` > `partenaires`> `url`;-;-;-;Informations sur l'orgine de l'offre;" ""https://www.directemploi.com/candidatOffre/49993134?utm_source=pole-emploi&utm_medium=referral&utm_campaign=Pôle-Emploi"""
+35;`origineOffre` > `partenaires`> `logo`;-;-;-;Informations sur l'orgine de l'offre;" ""https://www.francetravail.fr/logos/img/partenaires/directemploi80.png"""
+35;`origineOffre` > `partenaires` (si origine:2);-;-;-;Informations sur l'orgine de l'offre;
+18;`competences` >  `code`;`code_competence`;varchar(6);Competences;Informations sur les compétences;"""300067"""
+18;`competences` >  `libelle`;`libelle_competence`;varchar(100);Competences;Informations sur les compétences;"""Analyser, exploiter, structurer des données"""
+18;`competences` >  `exigence`;`code_exigence_competences`;varchar(1);Competences;Informations sur les compétences;"""S"" "
 22;`alternance`;`alternance`;boolean;Contrats;Vrai si c’est une offre pour de l’alternance;"""false"""
-40;`conditionExercice`;`conditionExercice`;varchar(50);Contrats;Conditions d'exercice;"autre exemple : ""Travail de nuit"" |  ""renouvelable une fois"" | ..."
+40;`conditionExercice`;`condition_exercice`;varchar(50);Contrats;Conditions d'exercice;"autre exemple : ""Travail de nuit"" |  ""renouvelable une fois"" | ..."
 11;`typeContrat`;`code_type_contrat`;varchar(10);Contrats;Code du type de contrat proposé (CDD, CDI, …);"""CDD""         "
 12;`typeContratLibelle`;`libelle_type_contrat`;varchar(30);Contrats;Libellé du type de contrat proposé;"""CDD - 6 Mois""  ou ""CDD - 12 mois"" par exemple"
 13;`natureContrat`;`nature_contrat`;varchar(30);Contrats;Nature du contrat (contrat d’apprentissage, ...);"""Contrat travail"""
@@ -21,21 +24,16 @@
 21;`dureeTravailLibelleConverti`;`libelle_duree_travail_converti`;varchar(20);DureeTravail;Temps plein ou temps partiel;"""Temps plein"""
 10;`entreprise` > `nom`;`nom_entreprise`;varchar(100);Entreprises;Informations sur l'entreprise;"""ARTIALYS"""
 10;`entreprise` > `entrepriseAdaptee`;`entreprise_adaptee`;boolean;Entreprises;Informations sur l'entreprise;false
-18;`competences` >  `code`;`code_competence`;varchar(6);Exigences;Informations sur les compétences;"""300067"""
-18;`competences` >  `libelle`;`libelle_competence`;varchar(100);Exigences;Informations sur les compétences;"""Analyser, exploiter, structurer des données"""
-18;`competences` >  `exigence`;`code_exigence_competences`;varchar(1);Exigences;Informations sur les compétences;"""S"" "
-39;`experienceCommentaire`;`commentaire_experience`;varchar(200);Exigences;Commentaire sur l’expérience;autre exemple : Expérience dans la vente souhaitée
-14;`experienceExige`;`code_experience`;varchar(1);Experiences;D : débutant accepté, E : expérience exigée, S : expérience souhaitée;"""E"""
+39;`experienceCommentaire`;`commentaire_experience`;varchar(200);Experiences;Commentaire sur l’expérience;autre exemple : Expérience dans la vente souhaitée
+14;`experienceExige`;`code_exigence_experience`;varchar(1);Experiences;D : débutant accepté, E : expérience exigée, S : expérience souhaitée;"""E"""
 15;`experienceLibelle`;`libelle_experience`;varchar(20);Experiences;Libellé de l’expérience;"""4 An(s)"""
 16;`formations` > `niveauLiBelle`;`libelle_formation`;varchar(30);Formations;Informations sur les formations;"""Bac+5 et plus ou équivalents"""
 16;`formations` > `exigence`;`code_exigence_formation`;varchar(1);Formations;Informations sur les formations;"""S"""
 17;`langues` > `libelle`;`libelle_langue`;varchar(30);Langues;Informations sur les langues;"""Anglais"""
 17;`langues` > `exigence`;`code_exigence_langue`;varchar(1);Langues;Informations sur les langues;"""E"""
-6;`lieuTravail` > `libelle`;`dpt_ville_arrdt`;varchar(50);LieuxTravail;Lieu de travail;"""75 - PARIS 08"""
-6;`lieuTravail` > `commune`;`code_commune`;integer;LieuxTravail;Lieu de travail;"""75108"""
+6;`lieuTravail` > `commune`;`code_commune`;varchar(5);LieuxTravail;Lieu de travail;"""75108"""
 6;`lieuTravail` > `latitude`;`latitude`;float;LieuxTravail;Lieu de travail;48.873635
 6;`lieuTravail` > `longitude`;`longitude`;float;LieuxTravail;Lieu de travail;2.3116
-6;`lieuTravail` > `codePostal`;`code_postal`;varchar(5);LieuxTravail;Lieu de travail;"""75008"""
 7;`romeCode`;`code_rome`;varchar(5);Metiers;Code ROME de l’offre;"""M1811"""
 9;`appellationlibelle`;`appellation_rome`;varchar(50);Metiers;Libellé de l’appellation ROME de l’offre;"""Data engineer"""
 1;`id`;`id_offre`;varchar(7);OffresEmploi;Identifiant de l’offre d’emploi;"""184TRJB""  "
@@ -48,10 +46,10 @@
 35;`origineOffre` > `partenaires`> `nom`;`nom_partenaire`;varchar(30);OffresEmploi;Informations sur l'orgine de l'offre;"""DIRECTEMPLOI"""
 36;`offresManqueCandidats`;`difficile_a_pourvoir`;boolean;OffresEmploi;Vrai si c'est une offre difficile à pourvoir;false
 38;`complementExercice`;`description_offre_complement`;varchar(100);OffresEmploi;Complément exercice;autre exemple : Gestion de la comptabilité
-37;`permis` > `libelle`;`permis_libelle`;varchar(20);PermisConduire;Permis;"""B - Véhicule léger"""
-37;`permis` > `exigence`;`permis_code`;varchar(1);PermisConduire;;"""E"""
-29;`qualificationCode`;`code_qualification`;varchar(1);Qualifications;Qualification du poste : 1=manœuvre, ..., 8=agent de maitrise, 9=cadre;
-30;`qualificationLibelle`;`libelle_qualification`;varchar(20);Qualifications;Libellé de la qualification du poste;
+37;`permis` > `libelle`;`libelle_permis`;varchar(20);PermisConduire;Permis;"""B - Véhicule léger"""
+37;`permis` > `exigence`;`code_exigence_permis`;varchar(1);PermisConduire;;"""E"""
+29;`qualificationCode`;`code_qualification`;varchar(1);Qualifications;Qualification du poste : 1=manœuvre, ..., 8=agent de maitrise, 9=cadre;"""6"""
+30;`qualificationLibelle`;`libelle_qualification`;varchar(20);Qualifications;Libellé de la qualification du poste;"""Employé qualifié"""
 34;`qualitesProfessionnelles` (liste) > `libelle`;`libelle_qualite_pro`;varchar(100);QualitesProfessionnelles;Informations sur les qualités professionnelles;"""Faire preuve d'autonomie"""
 34;`qualitesProfessionnelles` (liste) > `description`;`description_qualite_pro`;varchar(300);QualitesProfessionnelles;Informations sur les qualités professionnelles;"""Capacité à prendre en charge son activité sans devoir être encadré de façon continue (le cas échéant, à solliciter les autres acteurs de l'entreprise)."""
 19;`salaire` > `libelle`;`libelle_salaire`;varchar(50);Salaire;Informations sur les salaires;"""Mensuel de 40000 à 50000 Euros sur 12 mois"""
@@ -60,3 +58,5 @@
 19;`salaire` > `commentaire`;`commentaire_salaire`;varchar(30);Salaire;Informations sur les salaires;" ""selon profil"""
 31;`codeNAF`;`code_naf`;varchar(6);Secteurs;Code NAF (Code APE);
 33;`secteurActiviteLibelle`;`secteur_activite`;varchar(50);Secteurs;Secteur d’activité de l’offre;
+6;`lieuTravail` > `libelle`;`dpt_ville_arrdt`;varchar(50);Villes;Lieu de travail;"""75 - PARIS 08"""
+6;`lieuTravail` > `codePostal`;`code_postal`;varchar(5);Villes;Lieu de travail;"""75008"""
