@@ -236,5 +236,42 @@
         ],
         "origineOffre": { "origine": "1", "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/186JDCG" },
         "offresManqueCandidats": false
+    },
+    {
+        "id": "0392897",
+        "intitule": "H/F Projeteur / Ingénieur Méthode en Bâtiment dans le 73",
+        "description": "Société incontournable sur le marché du recrutement français, LTD - IR Consulting est un Cabinet de Recrutement et une Agence de Travail Temporaire spécialisé dans les métiers l'Ingénierie Bâtiment et Génie Civil.\nDans le cadre de notre développement du département Ingénierie Bâtiment nous recherchons un Projeteur / Ingénieur Méthode en Bâtiment.  \n\nLe poste : \n\nConçoit, optimise et organise l'ensemble des solutions techniques (faisabilité, capacité, fiabilité, rentabilité) et des méthodes de production/fabrication de biens ou de produits, selon les impératifs de productivité et de qualité. Peut participer à la conception de nouveaux produits ou de leur industrialisation. Peut encadrer une équipe ou un service et en gérer le budget.\nVotre mission consiste à optimiser les moyens humains et matériels pour la réalisation des travaux, en respectant les exigences QSHE.\nVous interviendrez en phase d'avant-projet et en phase d'exécution pour élaborer les modes opératoires (planning?) et les méthodes d'exécution les plus appropriées.\nIl est en relation constante avec les partenaires internes (direction technique, équipes de production, service commercial) et externes.\n- Organiser et coordonner le projet de fabrication ou d'industrialisation \n- Concevoir et définir les procédés de fabrication et faire évoluer les projets et les dossiers de fabrication ou d'industrialisation \n- Contrôler l'application des procédures et analyser les données d'activité de la production (taux de retour, temps de fabrication, ...) \n- Identifier les dysfonctionnements, les besoins d'évolution et déterminer les actions correctives avec la production, la qualité, les bureaux d'études, ... \n- Réceptionner et préparer les outils de production et suivre la mise en fonction \n- Apporter un appui technique aux services production, qualité, maintenance, ...\nLogiciel : CFAO, de GMAO et de GPAO\n\nProfil recherché : \n\nVous justifiez d'un diplôme en Ecole d'Ingénieur ou d'un Master 2 Génie Civil / Travaux Publics / Bâtiment ?\nVous vous reconnaissez dans ce profil - Rejoignez-nous et apportez votre contribution à la réalisation de nos multiples projets dans une équipe dynamique et en pleine croissance !",
+        "dateCreation": "2025-01-08T12:34:16.000Z",
+        "dateActualisation": "2025-01-08T12:34:16.000Z",
+        "lieuTravail": { "libelle": "73 - CHAMBERY", "latitude": 45.583223, "longitude": 5.909299, "codePostal": "73000", "commune": "73065" },
+        "romeCode": "M1822",
+        "romeLibelle": "Ingénieur / Ingénieure systèmes et réseaux informatiques",
+        "appellationlibelle": "Ingénieur / Ingénieure système réseau informatique",
+        "entreprise": { "nom": "LTd", "description": "LTd", "entrepriseAdaptee": false },
+        "typeContrat": "MIS",
+        "typeContratLibelle": "Mission intérimaire - 18 Mois",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "S",
+        "experienceLibelle": "Expérience souhaitée de 1 An(s)",
+        "salaire": {},
+        "dureeTravailLibelle": "Temps plein",
+        "complementExercice": "Temps plein",
+        "alternance": false,
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "codeNAF": "78.20Z",
+        "secteurActivite": "78",
+        "secteurActiviteLibelle": "Activités des agences de travail temporaire",
+        "origineOffre": {
+            "origine": "2",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/0392897",
+            "partenaires": [
+                {
+                    "nom": "PMEJOB",
+                    "url": "https://www.jobposting.pro/emploi-2022996-120",
+                    "logo": "https://www.francetravail.fr/logos/img/partenaires/pmejob80.png"
+                }
+            ]
+        }
     }
 ]

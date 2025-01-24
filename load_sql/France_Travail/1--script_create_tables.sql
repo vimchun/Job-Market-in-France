@@ -5,7 +5,6 @@ CREATE TABLE OffresEmploi (
     id_offre VARCHAR(7) NOT NULL PRIMARY KEY
     , intitule_offre NOT NULL VARCHAR(100)
     , description_offre NOT NULL VARCHAR(5000)
-    , description_offre_complement VARCHAR(100)
     , date_creation DATE
     , date_actualisation DATE
     , nombre_postes INTEGER
@@ -200,6 +199,7 @@ CREATE TABLE Contrats (
     , code_type_contrat NOT NULL VARCHAR(10)
     , libelle_type_contrat VARCHAR(30)
     , nature_contrat VARCHAR(30)
+    , temps_travail VARCHAR(100)
     , condition_exercice VARCHAR(50)
     , alternance BOOLEAN
 );
