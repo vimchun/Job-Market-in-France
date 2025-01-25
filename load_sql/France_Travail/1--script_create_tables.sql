@@ -120,7 +120,7 @@ CREATE TABLE Competences (
     id_competence SERIAL NOT NULL PRIMARY KEY
     , code_competence NOT NULL VARCHAR(6)
     , libelle_competence NOT NULL VARCHAR(100)
-    , code_exigence_competences NOT NULL VARCHAR(1)
+    , code_exigence_competence NOT NULL VARCHAR(1)
 );
 
 ----------------------------------------------------------------
@@ -135,7 +135,7 @@ CREATE TABLE Offre_QualitePro (
 
 CREATE TABLE QualitesProfessionnelles (
     libelle_qualite_pro VARCHAR(100) NOT NULL PRIMARY KEY
-    , description_qualite_pro NOT NULL VARCHAR(300)
+    , description_qualite_pro NOT NULL VARCHAR(1000)
 );
 
 ----------------------------------------------------------------

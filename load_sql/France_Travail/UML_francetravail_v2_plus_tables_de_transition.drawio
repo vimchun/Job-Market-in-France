@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36" version="26.0.6">
   <diagram name="Page-1" id="PEG4fmZPOcqcN3tmb9fP">
-    <mxGraphModel dx="6111" dy="588" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="4681" pageHeight="3300" background="#99CCFF" math="0" shadow="0">
+    <mxGraphModel dx="6623" dy="949" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="4681" pageHeight="3300" background="#99CCFF" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -258,7 +258,7 @@
             <mxRectangle width="30" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="C7LOxqXwbHzqQDy3l2-N-663" value="condition_exercice&amp;nbsp; &amp;nbsp;&amp;nbsp;&lt;b&gt;varchar(50)&lt;/b&gt;" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;rounded=0;fontFamily=Courier New;fontSize=16;strokeColor=#000000;" vertex="1" parent="C7LOxqXwbHzqQDy3l2-N-661">
+        <mxCell id="C7LOxqXwbHzqQDy3l2-N-663" value="condition_specifique&amp;nbsp;&amp;nbsp;&lt;b&gt;varchar(50)&lt;/b&gt;" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;rounded=0;fontFamily=Courier New;fontSize=16;strokeColor=#000000;" vertex="1" parent="C7LOxqXwbHzqQDy3l2-N-661">
           <mxGeometry x="30" width="344" height="30" as="geometry">
             <mxRectangle width="344" height="30" as="alternateBounds" />
           </mxGeometry>
@@ -629,7 +629,7 @@
             <mxRectangle width="30" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="C7LOxqXwbHzqQDy3l2-N-439" value="&lt;span style=&quot;background-color: transparent;&quot;&gt;code_competence&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&lt;/span&gt;&lt;b&gt;varchar(6&lt;/b&gt;&lt;b style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;)&lt;/b&gt;" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;rounded=0;fontFamily=Courier New;fontSize=16;strokeColor=#000000;" vertex="1" parent="C7LOxqXwbHzqQDy3l2-N-437">
+        <mxCell id="C7LOxqXwbHzqQDy3l2-N-439" value="&lt;font style=&quot;background-color: rgb(255, 255, 153); color: light-dark(rgb(0, 0, 0), rgb(237, 237, 237));&quot;&gt;code_competence&lt;/font&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&amp;nbsp;&lt;b&gt;varchar(6&lt;/b&gt;&lt;b style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;)&lt;/b&gt;" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;rounded=0;fontFamily=Courier New;fontSize=16;strokeColor=#000000;" vertex="1" parent="C7LOxqXwbHzqQDy3l2-N-437">
           <mxGeometry x="30" width="390" height="30" as="geometry">
             <mxRectangle width="390" height="30" as="alternateBounds" />
           </mxGeometry>
@@ -642,7 +642,7 @@
             <mxRectangle width="30" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="C7LOxqXwbHzqQDy3l2-N-459" value="&lt;span style=&quot;background-color: transparent;&quot;&gt;libelle_competence&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &lt;/span&gt;&lt;b&gt;varchar(100&lt;/b&gt;&lt;b style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;)&lt;/b&gt;" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;rounded=0;fontFamily=Courier New;fontSize=16;strokeColor=#000000;" vertex="1" parent="C7LOxqXwbHzqQDy3l2-N-457">
+        <mxCell id="C7LOxqXwbHzqQDy3l2-N-459" value="&lt;span style=&quot;background-color: rgb(255, 255, 153);&quot;&gt;libelle_competence&lt;/span&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&lt;/span&gt;&lt;b&gt;varchar(100&lt;/b&gt;&lt;b style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;)&lt;/b&gt;" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;rounded=0;fontFamily=Courier New;fontSize=16;strokeColor=#000000;" vertex="1" parent="C7LOxqXwbHzqQDy3l2-N-457">
           <mxGeometry x="30" width="390" height="30" as="geometry">
             <mxRectangle width="390" height="30" as="alternateBounds" />
           </mxGeometry>
@@ -655,7 +655,7 @@
             <mxRectangle width="30" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="C7LOxqXwbHzqQDy3l2-N-474" value="code_exigence_competence&amp;nbsp; &lt;b&gt;varchar(1)&lt;/b&gt;" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;rounded=0;fontFamily=Courier New;fontSize=16;strokeColor=#000000;" vertex="1" parent="C7LOxqXwbHzqQDy3l2-N-472">
+        <mxCell id="C7LOxqXwbHzqQDy3l2-N-474" value="&lt;span style=&quot;background-color: rgb(255, 255, 153);&quot;&gt;code_exigence_competences&lt;/span&gt;&amp;nbsp;&amp;nbsp;&lt;b&gt;varchar(1)&lt;/b&gt;" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;rounded=0;fontFamily=Courier New;fontSize=16;strokeColor=#000000;" vertex="1" parent="C7LOxqXwbHzqQDy3l2-N-472">
           <mxGeometry x="30" width="390" height="30" as="geometry">
             <mxRectangle width="390" height="30" as="alternateBounds" />
           </mxGeometry>
@@ -955,7 +955,7 @@
             <mxRectangle width="30" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="C7LOxqXwbHzqQDy3l2-N-488" value="&lt;u&gt;libelle_qualite_pro&lt;/u&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&lt;b&gt;varchar(100)&lt;/b&gt;" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;fontStyle=1;overflow=hidden;whiteSpace=wrap;html=1;rounded=0;fontFamily=Courier New;fontSize=16;strokeColor=#000000;" vertex="1" parent="C7LOxqXwbHzqQDy3l2-N-486">
+        <mxCell id="C7LOxqXwbHzqQDy3l2-N-488" value="&lt;u style=&quot;background-color: rgb(255, 255, 153);&quot;&gt;libelle_qualite_pro&lt;/u&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&lt;b&gt;varchar(100)&lt;/b&gt;" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;fontStyle=1;overflow=hidden;whiteSpace=wrap;html=1;rounded=0;fontFamily=Courier New;fontSize=16;strokeColor=#000000;" vertex="1" parent="C7LOxqXwbHzqQDy3l2-N-486">
           <mxGeometry x="30" width="390" height="30" as="geometry">
             <mxRectangle width="390" height="30" as="alternateBounds" />
           </mxGeometry>
@@ -968,7 +968,7 @@
             <mxRectangle width="30" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="C7LOxqXwbHzqQDy3l2-N-491" value="description_qualite_pro&amp;nbsp; &amp;nbsp;&lt;b&gt;varchar(300)&lt;/b&gt;" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;rounded=0;fontFamily=Courier New;fontSize=16;strokeColor=#000000;" vertex="1" parent="C7LOxqXwbHzqQDy3l2-N-489">
+        <mxCell id="C7LOxqXwbHzqQDy3l2-N-491" value="&lt;span style=&quot;background-color: rgb(255, 255, 153);&quot;&gt;description_qualite_pro&lt;/span&gt;&amp;nbsp; &amp;nbsp;&lt;b&gt;varchar(1000)&lt;/b&gt;" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;rounded=0;fontFamily=Courier New;fontSize=16;strokeColor=#000000;" vertex="1" parent="C7LOxqXwbHzqQDy3l2-N-489">
           <mxGeometry x="30" width="390" height="30" as="geometry">
             <mxRectangle width="390" height="30" as="alternateBounds" />
           </mxGeometry>
@@ -1375,6 +1375,9 @@
               <mxPoint x="-3081" y="1796" />
             </Array>
           </mxGeometry>
+        </mxCell>
+        <mxCell id="C7LOxqXwbHzqQDy3l2-N-733" value="&lt;span style=&quot;background-color: rgb(255, 255, 153);&quot;&gt;Attribut en jaune :&lt;/span&gt; liste" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=#FFFF99;fillColor=none;fontSize=24;fontFamily=Courier New;rounded=1;glass=0;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="-938" y="2092" width="378" height="41" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
