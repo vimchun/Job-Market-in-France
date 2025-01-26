@@ -20,8 +20,8 @@ with open(
         "outputs",
         "_archives",
         "2025-01-13-exemples-jsons-et-json-merged",
-        "404278_Data_Engineer__5_offres.json",
-        # "_offres_merged.json",
+        # "404278_Data_Engineer__5_offres.json",
+        "_offres_merged.json",
     ),
     "r",
 ) as file:
@@ -77,38 +77,91 @@ for offre in offres_data:
     libelle_qualification = offre.get("qualificationLibelle")
 
     # table "Formations"
-    libelle_formation = offre.get("formations", [{}])[0].get("niveauLibelle")
-    code_exigence_formation = offre.get("formations", [{}])[0].get("exigence")
+    if offre.get("formations"):  # car on peut avoir dans le json "formations": null
+        for item in offre.get("formations", []):  # liste de dictionnaires ("[]" si la clé n'existe pas pour une offre)
+            code_formation = offre.get("formations", [{}])[0].get("codeFormation")
+            libelle_niveau_formation = offre.get("formations", [{}])[0].get("niveauLibelle")
+            libelle_domaine_formation = offre.get("formations", [{}])[0].get("domaineLibelle")
+            code_exigence_formation = offre.get("formations", [{}])[0].get("exigence")
+            # print(
+            #     item,
+            #     code_formation,
+            #     libelle_niveau_formation,
+            #     libelle_domaine_formation,
+            #     code_exigence_formation,
+            #     sep="\n-> ",
+            #     end="\n\n",
+            # )
 
     # table "Competences"
-    for item in offre.get("competences", []):  # liste de dictionnaires ("[]" si la clé n'existe pas pour une offre)
-        codes_competences = item.get("code")
-        libelles_competences = item.get("libelle")
-        codes_exigences_competences = item.get("exigence")
-        # print(
-        #     item,
-        #     codes_competences,
-        #     libelles_competences,
-        #     codes_exigences_competences,
-        #     sep="\n-> ",
-        #     end="\n\n",
-        # )
-
-    print(id_offre)
+    if offre.get("competences"):  # car on peut avoir dans le json "competences": null
+        for item in offre.get("competences", []):  # liste de dictionnaires ("[]" si la clé n'existe pas pour une offre)
+            codes_competences = item.get("code")
+            libelles_competences = item.get("libelle")
+            codes_exigences_competences = item.get("exigence")
+            # print(
+            #     item,
+            #     codes_competences,
+            #     libelles_competences,
+            #     codes_exigences_competences,
+            #     sep="\n-> ",
+            #     end="\n\n",
+            # )
 
     # table "QualitesProfessionnelles"
-    for item in offre.get("qualitesProfessionnelles", []):  # liste de dictionnaires ("[]" si la clé n'existe pas pour une offre)
-        libelle_qualite_pro = item.get("libelle")
-        description_qualite_pro = item.get("description")
-        print(
-            item,
-            libelle_qualite_pro,
-            description_qualite_pro,
-            sep="\n-> ",
-            end="\n\n",
-        )
+    if offre.get("qualitesProfessionnelles"):  # car on peut avoir dans le json "qualitesProfessionnelles": null
+        for item in offre.get("qualitesProfessionnelles", []):  # liste de dictionnaires ("[]" si la clé n'existe pas pour une offre)
+            libelle_qualite_pro = item.get("libelle")
+            description_qualite_pro = item.get("description")
+            # print(
+            #     item,
+            #     # libelle_qualite_pro,
+            #     # description_qualite_pro,
+            #     sep="\n-> ",
+            #     end="\n\n",
+            # )
+
+    # table "Langues"
+    if offre.get("langues"):  # car on peut avoir dans le json "langues": null
+        for item in offre.get("langues", []):  # liste de dictionnaires ("[]" si la clé n'existe pas pour une offre)
+            libelle_langue = item.get("libelle")
+            code_exigence_langue = item.get("exigence")
+
+            # print(
+            #     item,
+            #     libelle_langue,
+            #     code_exigence_langue,
+            #     sep="\n-> ",
+            #     end="\n\n",
+            # )
+
+    # table "PermisConduire"
+    if offre.get("permis"):  # car on peut avoir dans le json "permis": null
+        for item in offre.get("permis", []):
+            libelle_permis = item.get("libelle")
+            code_exigence_permis = item.get("exigence")
+
+            # print(
+            #     item,
+            #     libelle_permis,
+            #     code_exigence_permis,
+            #     sep="\n-> ",
+            #     end="\n\n",
+            # )
+
+    # table "LieuxTravail"
+    code_commune = offre.get("lieuTravail").get("commune")
+    latitude = offre.get("lieuTravail").get("latitude")
+    longitude = offre.get("lieuTravail").get("longitude")
+
+    # table "LieuxTravail_Ville"
+    libelle_lieu_travail = offre.get("lieuTravail").get("libelle")
+    code_postal = offre.get("lieuTravail").get("codePostal")
+
+    # if id_offre == "185SYXS":
+    #     break
     break
-    #
+
     # Insérer dans la table "offre"
     # cursor.execute(
     #     """--sql
@@ -185,17 +238,34 @@ for offre in offres_data:
     #     sep="\n-> ",
     # )
 
-    # table "Formations"
-    # print(
-    #     id_offre,
-    #     libelle_formation,
-    #     code_exigence_formation,
-    #     sep="\n-> ",
-    # )
+    # table "Formations" (voir au-dessus car liste...)
 
     # table "Competences" (voir au-dessus car liste...)
 
     # table "QualitesProfessionnelles" (voir au-dessus car liste...)
+
+    # table "Langues" (voir au-dessus car liste...)
+
+    # table "PermisConduire" (voir au-dessus car liste...)
+
+    # table "LieuxTravail"
+    # print(
+    #     id_offre,
+    #     offre.get("lieuTravail"),
+    #     code_commune,
+    #     latitude,
+    #     longitude,
+    #     sep="\n-> ",
+    # )
+
+    # table "LieuxTravail_Ville"
+    # print(
+    #     id_offre,
+    #     offre.get("lieuTravail"),
+    #     libelle_lieu_travail,
+    #     code_postal,
+    #     sep="\n-> ",
+    # )
 
     # table "Contrats"
     # print(

@@ -273,5 +273,113 @@
                 }
             ]
         }
+    },
+    {
+        "id": "186MFHR",
+        "intitule": "Data engineer (H/F)",
+        "description": "Le poste proposé vise à accompagner techniquement les projets depuis la conception jusqu'à la mise en production en prenant en charge les aspects techniques permettant d'obtenir un processus industriel depuis l'apprentissage d'un modèle IA jusqu'à la mise en production du modèle enfin il doit supporter la mise à l'échelle pour la production.\n\nCet accompagnement consiste concrètement à mettre en œuvre les technologies Devops et Mlops pour construire les livrables de façon sécurisée et le plus automatique possible. Cela recouvre des aspects architecture lors de la conception, puis des connaissances devops, mlops, Data ing lors de la réalisation des chaines CICD et MLOPS.\n\nCela nécessite également de construire des tableaux de bord avec des KPI adaptés pour permettre le monitoring de la solution en production.\n\nEnfin il y a une composante rédaction pour capitaliser les connaissances et leur partage au sein du pôle.\n\nLe pôle Data ing est en forte croissance et les projets à venir sont nombreux, c'est aujourd'hui une petite équipe avec un fort esprit de collaboration qui est amener à une forte croissance.",
+        "dateCreation": "2025-01-10T17:14:45.875Z",
+        "dateActualisation": "2025-01-10T17:14:46.316Z",
+        "lieuTravail": { "libelle": "94 - VILLEJUIF", "latitude": 48.793468, "longitude": 2.360996, "codePostal": "94800", "commune": "94076" },
+        "romeCode": "M1811",
+        "romeLibelle": "Data engineer",
+        "appellationlibelle": "Data engineer",
+        "entreprise": { "nom": "LCL CREDIT LYONNAIS", "entrepriseAdaptee": false },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "CDI",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "E",
+        "experienceLibelle": "3 An(s)",
+        "competences": [
+            { "code": "300067", "libelle": "Analyser, exploiter, structurer des données", "exigence": "S" },
+            { "code": "300488", "libelle": "Concevoir et gérer un projet", "exigence": "S" },
+            { "code": "120209", "libelle": "Enrichir une base de données", "exigence": "S" }
+        ],
+        "salaire": { "libelle": "Annuel de 50000.0 Euros sur 12.0 mois", "complement1": "Primes", "complement2": "Participation/action" },
+        "dureeTravailLibelle": "39H Travail en journée",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "nom": "LCL CREDIT LYONNAIS - Mme NELLY  SETBON",
+            "coordonnees1": "https://offres-emploi.lcl.com/accueil.aspx?LCID=1036",
+            "urlPostulation": "https://offres-emploi.lcl.com/accueil.aspx?LCID=1036"
+        },
+        "agence": {},
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": "1",
+        "deplacementLibelle": "Jamais",
+        "qualificationCode": "9",
+        "qualificationLibelle": "Cadre",
+        "codeNAF": "64.19Z",
+        "secteurActivite": "64",
+        "secteurActiviteLibelle": "Autres intermédiations monétaires",
+        "qualitesProfessionnelles": [
+            {
+                "libelle": "Faire preuve d'autonomie",
+                "description": "Capacité à prendre en charge son activité sans devoir être encadré de façon continue (le cas échéant, à solliciter les autres acteurs de l'entreprise)."
+            },
+            {
+                "libelle": "Faire preuve de créativité, d'inventivité",
+                "description": "Capacité à créer, imaginer quelque chose de nouveau (nouveau produit, nouvelle solution, …)."
+            },
+            {
+                "libelle": "Faire preuve de rigueur et de précision",
+                "description": "Capacité à réaliser des tâches en suivant avec exactitude les règles, les procédures, les instructions qui ont été fournies, sans réaliser d'erreur et à transmettre clairement des informations. Se montrer ponctuel et respectueux des règles de savoir-vivre usuelles."
+            }
+        ],
+        "origineOffre": { "origine": "1", "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/186MFHR" },
+        "offresManqueCandidats": false
+    },
+    {
+        "id": "186NWKN",
+        "intitule": "Jobdating numérique: Consultant GRC (H/F)",
+        "description": "Pour répondre à la demande croissante de nos clients, nous renforçons les équipes de la division Cyberdéfense et de son pôle Audit, Conseil et Expertise.\nCHEOPS Technology recherche ainsi un Consultant(e) Cybersécurité GRC, en CDI, pour intervenir sur des projets de gouvernance, risque et conformités variées, à forte valeur ajoutée.\n\nEn tant que Consultant(e) Cybersécurité GRC au sein de CHEOPS Technology, vous participez à la croissance de la division Cyberdéfense et de son pôle Audit, Conseil et Expertise. A ce titre, vous accompagnez nos clients dans l'amélioration de leur maturité en Cybersécurité.\n\nA ce titre, vous aurez pour mission d'assurer :\nL'accompagnement RSSI ou RSI\nLa rédaction de PSSI\nLa conception de schémas directeurs Sécurité\nLa gestion des risques Métiers et IT, cartographies et analyses de risques (EBIOS RM)\nL'élaboration de tableau de bord SSI\nLa formalisation de plan de sensibilisation et sensibilisation des clients à la sécurité\nL'intégration de la sécurité dans les projets (ISP)\nLe pilotage de projets de sécurité\nLa mise en conformité aux règlements nationaux et européens (GDPR, NIS, LPM, PCI-DSS)\nLa réalisation d'audit organisationnel\nL'accompagnement au développement des offres de GRC (avant-vente, amélioration des méthodologies et de l'outillage)",
+        "dateCreation": "2025-01-13T17:00:06.401Z",
+        "dateActualisation": "2025-01-13T17:00:06.401Z",
+        "lieuTravail": { "libelle": "33 - CANEJAN", "latitude": 44.760587, "longitude": -0.654768, "codePostal": "33610", "commune": "33090" },
+        "romeCode": "M1856",
+        "romeLibelle": "Expert / Experte en cybersécurité",
+        "appellationlibelle": "Expert / Experte en cybersécurité",
+        "entreprise": {
+            "nom": "Stand Chéops Technology",
+            "description": "Vendredi 24 Janvier de 10h à 14h \nHôtel Bordeaux Métropole \nInscription via le lien du site entreprise",
+            "url": "https://mesevenementsemploi.francetravail.fr/mes-evenements-emploi/evenement/372394?at_medium=CMP&at_campaign=DSIMonstreuil&at_cmp_indicateur1=PromotionEvenementConseiller&at_cmp_indicateur2=Multicana",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "CDI",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "E",
+        "experienceLibelle": "3 An(s) - en GRC",
+        "experienceCommentaire": "en GRC",
+        "formations": [
+            { "codeFormation": "31006", "domaineLibelle": "sécurité informatique", "niveauLibelle": "Bac+3, Bac+4 ou équivalents", "exigence": "S" }
+        ],
+        "competences": [
+            { "code": "300195", "libelle": "Concevoir un logiciel, un système d'informations, une application", "exigence": "S" },
+            { "code": "300488", "libelle": "Concevoir et gérer un projet", "exigence": "S" },
+            { "code": "300495", "libelle": "Évaluer le résultat de ses actions", "exigence": "S" }
+        ],
+        "salaire": { "commentaire": "selon profil et compétences", "complement1": "Autre" },
+        "dureeTravailLibelle": "35H Autre",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "nom": "Stand Chéops Technology - M. . Cheops",
+            "coordonnees1": "Jobdating Numérique, 24/01 de 10h à 14h",
+            "coordonnees2": "ESP Charles De Gaulle ",
+            "coordonnees3": "33000 Bordeaux"
+        },
+        "agence": {},
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "qualificationCode": "9",
+        "qualificationLibelle": "Cadre",
+        "codeNAF": "62.02A",
+        "secteurActivite": "62",
+        "secteurActiviteLibelle": "Conseil en systèmes et logiciels informatiques",
+        "origineOffre": { "origine": "1", "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/186NWKN" },
+        "offresManqueCandidats": false
     }
 ]

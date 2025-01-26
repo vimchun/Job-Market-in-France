@@ -102,7 +102,9 @@ CREATE TABLE Offre_Formation (
 
 CREATE TABLE Formations (
     id_formation SERIAL NOT NULL PRIMARY KEY
-    , libelle_formation NOT NULL VARCHAR(30)
+    , code_formation NOT NULL VARCHAR(5)
+    , libelle_niveau_formation NOT NULL VARCHAR(30)
+    , libelle_domaine_formation NOT NULL VARCHAR(30)
     , code_exigence_formation NOT NULL VARCHAR(1)
 );
 
@@ -173,6 +175,7 @@ CREATE TABLE PermisConduire (
 ----------------------------------------------------------------
 CREATE TABLE LieuxTravail (
     id_lieu_travail SERIAL NOT NULL PRIMARY KEY
+    , libelle_lieu_travail NOT NULL VARCHAR(30)
     , code_commune NOT NULL VARCHAR(5)
     , latitude FLOAT
     , longitude FLOAT
