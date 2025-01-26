@@ -1,62 +1,62 @@
-DROP TABLE IF EXISTS OffresEmploi;
+DROP TABLE OffresEmploi;
 
-DROP TABLE IF EXISTS Offre_Entreprise;
+DROP TABLE Offre_Entreprise;
 
-DROP TABLE IF EXISTS Entreprises;
+DROP TABLE Entreprises;
 
-DROP TABLE IF EXISTS Offre_Secteur;
+DROP TABLE Offre_Secteur;
 
-DROP TABLE IF EXISTS Secteurs;
+DROP TABLE Secteurs;
 
-DROP TABLE IF EXISTS Offre_Metier;
+DROP TABLE Offre_Metier;
 
-DROP TABLE IF EXISTS Metiers;
+DROP TABLE Metiers;
 
-DROP TABLE IF EXISTS Offre_Experience;
+DROP TABLE Offre_Experience;
 
-DROP TABLE IF EXISTS Experiences;
+DROP TABLE Experiences;
 
-DROP TABLE IF EXISTS Offre_Qualification;
+DROP TABLE Offre_Qualification;
 
-DROP TABLE IF EXISTS Qualifications;
+DROP TABLE Qualifications;
 
-DROP TABLE IF EXISTS Offre_Formation;
+DROP TABLE Offre_Formation;
 
-DROP TABLE IF EXISTS Formations;
+DROP TABLE Formations;
 
-DROP TABLE IF EXISTS Offre_Competence;
+DROP TABLE Offre_Competence;
 
-DROP TABLE IF EXISTS Competences;
+DROP TABLE Competences;
 
-DROP TABLE IF EXISTS Offre_QualitePro;
+DROP TABLE Offre_QualitePro;
 
-DROP TABLE IF EXISTS QualitesProfessionnelles;
+DROP TABLE QualitesProfessionnelles;
 
-DROP TABLE IF EXISTS Offre_Langue;
+DROP TABLE Offre_Langue;
 
-DROP TABLE IF EXISTS Langues;
+DROP TABLE Langues;
 
-DROP TABLE IF EXISTS Offre_PermisConduire;
+DROP TABLE Offre_PermisConduire;
 
-DROP TABLE IF EXISTS PermisConduire;
+DROP TABLE PermisConduire;
 
-DROP TABLE IF EXISTS LieuxTravail;
+DROP TABLE LieuxTravail;
 
-DROP TABLE IF EXISTS LieuTravail_Ville;
+DROP TABLE LieuTravail_Ville;
 
-DROP TABLE IF EXISTS Villes;
+DROP TABLE Villes;
 
-DROP TABLE IF EXISTS Contrats;
+DROP TABLE Contrats;
 
-DROP TABLE IF EXISTS Contrat_DureeTravail;
+DROP TABLE Contrat_DureeTravail;
 
-DROP TABLE IF EXISTS DureeTravail;
+DROP TABLE DureeTravail;
 
-DROP TABLE IF EXISTS Contrat_Salaire;
+DROP TABLE Contrat_Salaire;
 
-DROP TABLE IF EXISTS Salaire;
+DROP TABLE Salaire;
 
-DROP TABLE IF EXISTS Contrat_Deplacement;
+DROP TABLE Contrat_Deplacement;
 
-DROP TABLE IF EXISTS Deplacements;
+DROP TABLE Deplacements;
 
