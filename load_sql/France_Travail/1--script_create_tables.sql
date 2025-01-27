@@ -2,8 +2,8 @@
 --
 --
 CREATE TABLE OffresEmploi (
-    id_offre VARCHAR(7) NOT NULL PRIMARY KEY
-    , intitule_offre VARCHAR(100) NOT NULL
+    id_offre VARCHAR(10) NOT NULL PRIMARY KEY
+    , intitule_offre VARCHAR(200) NOT NULL
     , description_offre VARCHAR(5000) NOT NULL
     , date_creation DATE
     , date_actualisation DATE
@@ -31,7 +31,7 @@ CREATE TABLE Offre_Entreprise (
 ----------------------------------------------------------------
 CREATE TABLE Secteurs (
     code_naf VARCHAR(6) PRIMARY KEY NOT NULL
-    , secteur_activite VARCHAR(50) NOT NULL
+    , secteur_activite VARCHAR(200) NOT NULL
 );
 
 -- table de liaison
@@ -46,7 +46,7 @@ CREATE TABLE Offre_Secteur (
 ----------------------------------------------------------------
 CREATE TABLE Metiers (
     code_rome VARCHAR(5) PRIMARY KEY NOT NULL
-    , appellation_rome VARCHAR(50) NOT NULL
+    , appellation_rome VARCHAR(100) NOT NULL
 );
 
 -- table de liaison
@@ -61,9 +61,10 @@ CREATE TABLE Offre_Metier (
 ----------------------------------------------------------------
 CREATE TABLE Experiences (
     id_experience SERIAL NOT NULL PRIMARY KEY
-    , libelle_experience VARCHAR(20) NOT NULL
+    , libelle_experience VARCHAR(100) NOT NULL
     , code_exigence_experience VARCHAR(1) NOT NULL
     , commentaire_experience VARCHAR(200)
+    , CONSTRAINT unique_experience UNIQUE (libelle_experience , code_exigence_experience)
 );
 
 -- table de liaison
