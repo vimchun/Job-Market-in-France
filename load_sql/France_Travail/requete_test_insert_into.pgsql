@@ -7,10 +7,12 @@ FROM
     -- Secteurs  -- OK
     -- Offre_Secteur  -- OK
     -- Metiers  -- OK
-    Experiences  -- OK
--- WHERE
---     entreprise_adaptee = TRUE
+    -- Experiences  -- OK
+    Offre_Experience  -- OK
+WHERE
+    id_experience = 148
+    -- entreprise_adaptee = TRUE
 -- ORDER BY
 --     code_naf DESC libelle_experience nom_entreprise
--- LIMIT 100;
+LIMIT 100;
 

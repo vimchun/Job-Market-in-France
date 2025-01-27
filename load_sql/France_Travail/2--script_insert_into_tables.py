@@ -5,7 +5,7 @@ import sys
 import psycopg2
 
 # Booléens pour remplir ou pas les tables associées
-fill_table_OffresEmploi = 0  # table "OffresEmploi"  ⛔ cette table doit être rempli pour pouvoir remplir les tables de liaison (dépendances)
+fill_table_OffresEmploi = 1  # table "OffresEmploi"  ⛔ cette table doit être rempli pour pouvoir remplir les tables de liaison (dépendances)
 fill_table_Entreprises = 0  # tables "Entreprises" + "Offre_Entreprise"
 fill_table_Secteurs = 0  # table "Secteurs" + "Offre_Secteur"
 fill_table_Metiers = 0  # table "Metiers" + "Offre_Metier"
@@ -70,6 +70,17 @@ def fill_db(db_name, attributes_tuple, on_conflict_string):
     cursor.execute(query, tuple(dict_.values()))
 
     conn.commit()  # Commit des changements
+
+
+def get_id_for_link_tables(id_name, table_name):
+    """
+    - Pour les tables de liaison entre une table 1 et une table 2, dans le cas où on a une table 2 avec un PK "serial",
+       il faut récupérer l'identifiant de cette PK pour pouvoir faire un "INSERT INTO" dans la table de liaison.
+       C'est le but de cette fonction.
+
+    Retourne l'identifiant en question.
+    """
+    pass  # todo : à faire plus tard
 
 
 conn = psycopg2.connect(database="francetravail", host="localhost", user="mhh", password="mhh", port=5432)
@@ -199,7 +210,16 @@ for offre in offres_data:
             ),
             on_conflict_string="libelle_experience | code_exigence_experience",
         )
-        fill_db(  # todo: reprendre ici
+
+        # Récupérer l'id pour pouvoir l'insérer en table
+        query = f"""
+            SELECT id_experience FROM Experiences
+            WHERE libelle_experience = %s AND code_exigence_experience = %s
+        """
+        cursor.execute(query, (libelle_experience, code_exigence_experience))
+        id_experience = cursor.fetchone()[0]
+
+        fill_db(
             db_name="Offre_Experience",
             attributes_tuple=(
                 "id_offre",
