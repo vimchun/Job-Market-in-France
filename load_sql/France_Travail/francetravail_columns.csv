@@ -1,64 +1,67 @@
-﻿ordre d'apparition dans le json; clé France Travail                            ; clé France Travail (nouveau nom);is_list ?;type;table;descriptions de la clé;exemple
-8;`romeLibelle`;-;;-;-;Libellé associé au code ROME;"""Data engineer"""
-23;`contact` > `nom`;-;;-;-;Informations sur les contacts;"""M. herman"""
-23;`contact` > `coordonnees1`;-;;-;-;Informations sur les contacts;"""Pour postuler..."""
-23;`contact` > `courriel`;-;;-;-;Informations sur les contacts;"""utiliser le lien..."""
-24;`agence`;-;;-;-;Agence France Travail;
-32;`secteurActivite`;-;;-;-;Division NAF (comprend les deux premiers chiffre du code NAF);
-35;`origineOffre` > `origine`;-;;-;-;Informations sur l'orgine de l'offre;"""1"""
-35;`origineOffre` > `urlOrigine`;-;;-;-;Informations sur l'orgine de l'offre;" ""https://candidat.francetravail.fr/offres/recherche/detail/0626202"""
-35;`origineOffre` > `partenaires`> `url`;-;;-;-;Informations sur l'orgine de l'offre;" ""https://www.directemploi.com/candidatOffre/49993134?utm_source=pole-emploi&utm_medium=referral&utm_campaign=Pôle-Emploi"""
-35;`origineOffre` > `partenaires`> `logo`;-;;-;-;Informations sur l'orgine de l'offre;" ""https://www.francetravail.fr/logos/img/partenaires/directemploi80.png"""
-35;`origineOffre` > `partenaires` (si origine:2);-;;-;-;Informations sur l'orgine de l'offre;
-18;`competences` >  `code`;`code_competence`;list;varchar(6);Competences;Informations sur les compétences;"""300067"""
-18;`competences` >  `libelle`;`libelle_competence`;list;varchar(100);Competences;Informations sur les compétences;"""Analyser, exploiter, structurer des données"""
-18;`competences` >  `exigence`;`code_exigence_competence`;list;varchar(1);Competences;Informations sur les compétences;"""S"" "
-22;`alternance`;`alternance`;;boolean;Contrats;Vrai si c’est une offre pour de l’alternance;"""false"""
-40;`conditionExercice`;`condition_specifique`;;varchar(50);Contrats;Conditions d'exercice;"""renouvelable une fois"" | ""Itinérant "" | ""Travail 1 week-end / 3, jours fériés"" | ""Nbre d heures hebdo a définir"" | ""Selon lieux indiqués dans l'offre"" | ""le week end samedi et dimanche "" | ""travail le samedi"" | ""Mardi au vendredi de 19h à 21h"" | ""en laboratoire"" | ""2 jours par semaine""..."
-11;`typeContrat`;`code_type_contrat`;;varchar(10);Contrats;Code du type de contrat proposé (CDD, CDI, …);"""CDD"" | ""CDI"" | ""MIS"""
-12;`typeContratLibelle`;`libelle_type_contrat`;;varchar(30);Contrats;Libellé du type de contrat proposé;"""CDD - 6 Mois"" | ""CDD - 12 mois"" | ""Mission intérimaire - 18 Mois"""
-13;`natureContrat`;`nature_contrat`;;varchar(30);Contrats;Nature du contrat (contrat d’apprentissage, ...);"""Contrat travail"""
-38;`complementExercice`;`temps_travail`;;varchar(100);Contrats;Complément exercice;"""Temps plein"" | ""Temps partiel"" | ""du lundi au vendredi"" | ""8/jour"" | ""6h-13 ou ""13h20h"""
-27;`deplacementCode`;`code_deplacement`;;varchar(1);Deplacements;Code de la fréquence des déplacements;"""1"" | ""2"" | ""3"" | ""4"""
-28;`deplacementLibelle`;`libelle_deplacement`;;varchar(30);Deplacements;Description des déplacements demandés;"""Jamais"" | ""Ponctuels Zone départementale"" ou ""Ponctuels Zone nationale"" |  ""Fréquents Zone départementale"" ou ""Fréquents Zone nationale"" | ""Quotidiens Zone régionale"""
-20;`dureeTravailLibelle`;`libelle_duree_travail`;;varchar(20);DureeTravail;Libellé de la durée de travail;"""36H Autre"""
-21;`dureeTravailLibelleConverti`;`libelle_duree_travail_converti`;;varchar(20);DureeTravail;Temps plein ou temps partiel;"""Temps plein"""
-10;`entreprise` > `nom`;`nom_entreprise`;;varchar(100);Entreprises;Informations sur l'entreprise;"""ARTIALYS"""
-10;`entreprise` > `entrepriseAdaptee`;`entreprise_adaptee`;;boolean;Entreprises;Informations sur l'entreprise;false
-39;`experienceCommentaire`;`commentaire_experience`;;varchar(200);Experiences;Commentaire sur l’expérience;"""de 1 à 3 ans"" | ""sur le même type de poste"" | …"
-14;`experienceExige`;`code_exigence_experience`;;varchar(1);Experiences;D : débutant accepté, E : expérience exigée, S : expérience souhaitée;"""E"""
-15;`experienceLibelle`;`libelle_experience`;;varchar(100);Experiences;Libellé de l’expérience;"si ""E"" par exemple, on peut avoir : ""Expérience exigée"" | ""Expérience exigée de 2 An(s)"""
-16;`formations` > `codeFormation`;`code_formation`;;varchar(30);Formations;Informations sur les formations;"""31006"""
-16;`formations` > `niveauLiBelle`;`libelle_niveau_formation`;;varchar(30);Formations;Informations sur les formations;"""Bac+3, Bac+4 ou équivalents"""
-16;`formations` > `domaineLibelle`;`libelle_domaine_formation`;;varchar(30);Formations;Informations sur les formations;"""sécurité informatique"""
-16;`formations` > `exigence`;`code_exigence_formation`;;varchar(1);Formations;Informations sur les formations;"""S"""
-17;`langues` > `libelle`;`libelle_langue`;;varchar(30);Langues;Informations sur les langues;"""Anglais"""
-17;`langues` > `exigence`;`code_exigence_langue`;;varchar(1);Langues;Informations sur les langues;"""E"""
-6;`lieuTravail` > `commune`;`code_commune`;;varchar(5);LieuxTravail;Lieu de travail;"""75108"""
-6;`lieuTravail` > `latitude`;`latitude`;;float;LieuxTravail;Lieu de travail;48.873635
-6;`lieuTravail` > `longitude`;`longitude`;;float;LieuxTravail;Lieu de travail;2.3116
-7;`romeCode`;`code_rome`;;varchar(5);Metiers;Code ROME de l’offre;"""M1811"""
-9;`appellationlibelle`;`appellation_rome`;;varchar(100);Metiers;Libellé de l’appellation ROME de l’offre;"""Data engineer"""
-1;`id`;`id_offre`;;varchar(7);OffresEmploi;Identifiant de l’offre d’emploi;"""184TRJB""  "
-2;`intitule`;`intitule_offre`;;varchar(200);OffresEmploi;Intitulé de l’offre;"""Data engineer""  "
-3;`description`;`description_offre`;;varchar(5000);OffresEmploi;Description de l’offre;"""Data Engineer (H/F) !\n\nVous êtes passionné(e) par la data... "
-4;`dateCreation`;`date_creation`;;date;OffresEmploi;Date de création de l’offre;"""2024-11-28T14:23:11.470Z"""
-5;`dateActualisation`;`date_actualisation`;;date;OffresEmploi;Date de dernière actualisation de l'offre;"""2024-11-28T14:23:11.957Z"""
-25;`nombrePostes`;`nombre_postes`;;integer;OffresEmploi;Nombre de postes disponibles pour cette offre;
-26;`accessibleTH`;`accessible_travailleurs_handicapes`;;boolean;OffresEmploi;Vrai si l’offre est accessible aux travailleurs handicapés;
-35;`origineOffre` > `partenaires`> `nom`;`nom_partenaire`;;varchar(30);OffresEmploi;Informations sur l'orgine de l'offre;"""DIRECTEMPLOI"""
-36;`offresManqueCandidats`;`difficile_a_pourvoir`;;boolean;OffresEmploi;Vrai si c'est une offre difficile à pourvoir;false
-37;`permis` > `libelle`;`libelle_permis`;;varchar(20);PermisConduire;Permis;"""B - Véhicule léger"""
-37;`permis` > `exigence`;`code_exigence_permis`;;varchar(1);PermisConduire;;"""E"""
-29;`qualificationCode`;`code_qualification`;;varchar(1);Qualifications;Qualification du poste : 1=manœuvre, ..., 8=agent de maitrise, 9=cadre;"""6"""
-30;`qualificationLibelle`;`libelle_qualification`;;varchar(20);Qualifications;Libellé de la qualification du poste;"""Employé qualifié"""
-34;`qualitesProfessionnelles` (liste) > `libelle`;`libelle_qualite_pro`;;varchar(100);QualitesProfessionnelles;Informations sur les qualités professionnelles;"""Faire preuve d'autonomie"""
-34;`qualitesProfessionnelles` (liste) > `description`;`description_qualite_pro`;;varchar(1000);QualitesProfessionnelles;Informations sur les qualités professionnelles;"""Capacité à prendre en charge son activité sans devoir être encadré de façon continue (le cas échéant, à solliciter les autres acteurs de l'entreprise)."""
-19;`salaire` > `libelle`;`libelle_salaire`;;varchar(50);Salaire;Informations sur les salaires;"""Mensuel de 40000 à 50000 Euros sur 12 mois"""
-19;`salaire` > `complement1`;`complement_au_salaire_1`;;varchar(30);Salaire;Informations sur les salaires;"""Chèque repas"" | ""Prime""..."
-19;`salaire` > `complement2`;`complement_au_salaire_2`;;varchar(30);Salaire;Informations sur les salaires;"""Mutuelle"" | ""Restauration""..."
-19;`salaire` > `commentaire`;`commentaire_salaire`;;varchar(30);Salaire;Informations sur les salaires;" ""selon profil"""
-31;`codeNAF`;`code_naf`;;varchar(6);Secteurs;Code NAF (Code APE);
-33;`secteurActiviteLibelle`;`secteur_activite`;;varchar(200);Secteurs;Secteur d’activité de l’offre;
-6;`lieuTravail` > `libelle`;`dpt_ville_arrdt`;;varchar(50);Villes;Lieu de travail;"""75 - PARIS 08"""
-6;`lieuTravail` > `codePostal`;`code_postal`;;varchar(5);Villes;Lieu de travail;"""75008"""
+﻿ordre d'apparition dans le json;mon ordre; clé France Travail                            ; clé France Travail (nouveau nom);Nom sur Power BI;Table modèle en *;is_list ?;type;table;descriptions de la clé;exemple
+1;1;`id`;`id_offre`;Offre ID;TABLE FAIT;;varchar(7);OffresEmploi;Identifiant de l’offre d’emploi;"""184TRJB""  "
+2;2;`intitule`;`intitule_offre`;Intitule Offre;;;varchar(200);OffresEmploi;Intitulé de l’offre;"""Data engineer""  "
+3;3;`description`;`description_offre`;Description Offre;;;varchar(5000);OffresEmploi;Description de l’offre;"""Data Engineer (H/F) !\n\nVous êtes passionné(e) par la data... "
+4;4;`dateCreation`;`date_creation`;Date Création;TABLE FAIT;;date;OffresEmploi;Date de création de l’offre;"""2024-11-28T14:23:11.470Z"""
+5;5;`dateActualisation`;`date_actualisation`;Date Actualisation;TABLE FAIT;;date;OffresEmploi;Date de dernière actualisation de l'offre;"""2024-11-28T14:23:11.957Z"""
+6;6;`lieuTravail` > `libelle`;`dpt_ville_arrdt`;Département Ville Arrondissement;Lieu Travail;;varchar(50);Villes;Lieu de travail;"""75 - PARIS 08"""
+6;7;`lieuTravail` > `latitude`;`latitude`;Latitude;Lieu Travail;;float;LieuxTravail;Lieu de travail;48.873635
+6;8;`lieuTravail` > `longitude`;`longitude`;Longitude;Lieu Travail;;float;LieuxTravail;Lieu de travail;2.3116
+6;9;`lieuTravail` > `codePostal`;`code_postal`;Code Postal;Lieu Travail;;varchar(5);Villes;Lieu de travail;"""75008"""
+6;10;`lieuTravail` > `commune`;`code_commune`;Code Commune;Lieu Travail;;varchar(5);LieuxTravail;Lieu de travail;"""75108"""
+7;11;`romeCode`;`code_rome`;ROME Code;ROME;;varchar(5);Metiers;Code ROME de l’offre;"""M1811"""
+8;12;`romeLibelle`;-;ROME Libellé;ROME;;-;-;Libellé associé au code ROME;"""Data engineer"""
+9;13;`appellationlibelle`;`appellation_rome`;Appellation ROME;ROME;;varchar(100);Metiers;Libellé de l’appellation ROME de l’offre;"""Data engineer"""
+10;14;`entreprise` > `nom`;`nom_entreprise`;Nom Entreprise;Entreprise;;varchar(100);Entreprises;Informations sur l'entreprise;"""ARTIALYS"""
+10;15;`entreprise` > `description`;`description_entreprise`;Description Entreprise;Entreprise;;;;;
+10;16;`entreprise` > `url`;-;-;-;;;;;
+10;17;`entreprise` > `logo`;-;-;-;;;;;
+10;18;`entreprise` > `entrepriseAdaptee`;`entreprise_adaptee`;Entreprise Adaptée;Entreprise;;boolean;Entreprises;Informations sur l'entreprise;false
+11;19;`typeContrat`;`code_type_contrat`;Type Contrat;Contrat;;varchar(10);Contrats;Code du type de contrat proposé (CDD, CDI, …);"""CDD"" | ""CDI"" | ""MIS"""
+12;20;`typeContratLibelle`;`libelle_type_contrat`;Type Contrat Libelle;Contrat;;varchar(30);Contrats;Libellé du type de contrat proposé;"""CDD - 6 Mois"" | ""CDD - 12 mois"" | ""Mission intérimaire - 18 Mois"""
+13;21;`natureContrat`;`nature_contrat`;Nature Contrat;Contrat;;varchar(30);Contrats;Nature du contrat (contrat d’apprentissage, ...);"""Contrat travail"""
+14;22;`experienceExige`;`code_exigence_experience`;Expérience Code Exigence;Expérience;;varchar(1);Experiences;D : débutant accepté, E : expérience exigée, S : expérience souhaitée;"""E"""
+15;23;`experienceLibelle`;`libelle_experience`;Expérience Libellé;Expérience;;varchar(100);Experiences;Libellé de l’expérience;"si ""E"" par exemple, on peut avoir : ""Expérience exigée"" | ""Expérience exigée de 2 An(s)"""
+39;24;`experienceCommentaire`;`commentaire_experience`;Expérience Commentaire;Expérience;;varchar(200);Experiences;Commentaire sur l’expérience;"""de 1 à 3 ans"" | ""sur le même type de poste"" | …"
+16;25;`formations` > `codeFormation`;`code_formation`;Formation Code;Formation;;varchar(30);Formations;Informations sur les formations;"""31006"""
+16;26;`formations` > `domaineLibelle`;`libelle_domaine_formation`;Formation Domaine Libellé;Formation;;varchar(30);Formations;Informations sur les formations;"""sécurité informatique"""
+16;27;`formations` > `niveauLiBelle`;`libelle_niveau_formation`;Formation Niveau Libellé;Formation;;varchar(30);Formations;Informations sur les formations;"""Bac+3, Bac+4 ou équivalents"""
+16;28;`formations` > `exigence`;`code_exigence_formation`;Formation Code Exigence;Formation;;varchar(1);Formations;Informations sur les formations;"""S"""
+18;29;`competences` >  `code`;`code_competence`;Compétence Code;Compétence;list;varchar(6);Competences;Informations sur les compétences;"""300067"""
+18;30;`competences` >  `libelle`;`libelle_competence`;Compétence Libellé;Compétence;list;varchar(100);Competences;Informations sur les compétences;"""Analyser, exploiter, structurer des données"""
+18;31;`competences` >  `exigence`;`code_exigence_competence`;Compétence Code Exigence;Compétence;list;varchar(1);Competences;Informations sur les compétences;"""S"" "
+19;32;`salaire` > `commentaire`;`commentaire_salaire`;Salaire Commentaire;Salaire;;varchar(30);Salaire;Informations sur les salaires;" ""selon profil"""
+19;33;`salaire` > `libelle`;`libelle_salaire`;Salaire Libellé;Salaire;;varchar(50);Salaire;Informations sur les salaires;"""Mensuel de 40000 à 50000 Euros sur 12 mois"""
+19;34;`salaire` > `complement1`;`complement_au_salaire_1`;Salaire Complément 1;Salaire;;varchar(30);Salaire;Informations sur les salaires;"""Chèque repas"" | ""Prime""..."
+19;35;`salaire` > `complement2`;`complement_au_salaire_2`;Salaire Complément 2;Salaire;;varchar(30);Salaire;Informations sur les salaires;"""Mutuelle"" | ""Restauration""..."
+20;36;`dureeTravailLibelle`;`libelle_duree_travail`;Durée Travail Libellé;Durée Travail;;varchar(20);DureeTravail;Libellé de la durée de travail;"""36H Autre"""
+21;37;`dureeTravailLibelleConverti`;`libelle_duree_travail_converti`;Durée Travail Libellé Converti;Durée Travail;;varchar(20);DureeTravail;Temps plein ou temps partiel;"""Temps plein"""
+22;38;`alternance`;`alternance`;Alternance;;;boolean;Contrats;Vrai si c’est une offre pour de l’alternance;"""false"""
+23;39;`contact` > `nom`;-;-;;;-;-;Informations sur les contacts;"""M. herman"""
+23;40;`contact` > `coordonnees1`;-;-;;;-;-;Informations sur les contacts;"""Pour postuler..."""
+23;41;`contact` > `courriel`;-;-;;;-;-;Informations sur les contacts;"""utiliser le lien..."""
+24;42;`agence`;-;-;;;-;-;Agence France Travail;
+25;43;`nombrePostes`;`nombre_postes`;Nombre Postes;;;integer;OffresEmploi;Nombre de postes disponibles pour cette offre;
+26;44;`accessibleTH`;`accessible_travailleurs_handicapes`;Accessible Travailleurs Handicapés;;;boolean;OffresEmploi;Vrai si l’offre est accessible aux travailleurs handicapés;
+29;45;`qualificationCode`;`code_qualification`;Qualification Code;Qualification;;varchar(1);Qualifications;Qualification du poste : 1=manœuvre, ..., 8=agent de maitrise, 9=cadre;"""6"""
+30;46;`qualificationLibelle`;`libelle_qualification`;Qualification Libellé;Qualification;;varchar(20);Qualifications;Libellé de la qualification du poste;"""Employé qualifié"""
+31;47;`codeNAF`;`code_naf`;Code NAF;Secteur Activité;;varchar(6);Secteurs;Code NAF (Code APE);
+32;48;`secteurActivite`;-;-;Secteur Activité;;-;-;Division NAF (comprend les deux premiers chiffre du code NAF);
+33;49;`secteurActiviteLibelle`;`secteur_activite`;Secteur Activité Libellé;Secteur Activité;;varchar(200);Secteurs;Secteur d’activité de l’offre;
+35;50;`origineOffre` > `origine`;-;-;;;-;-;Informations sur l'orgine de l'offre;"""1"""
+35;51;`origineOffre` > `urlOrigine`;-;-;;;-;-;Informations sur l'orgine de l'offre;" ""https://candidat.francetravail.fr/offres/recherche/detail/0626202"""
+35;52;`origineOffre` > `partenaires`> `nom`;`nom_partenaire`;Partenaire Nom;;;varchar(30);OffresEmploi;Informations sur l'orgine de l'offre;"""DIRECTEMPLOI"""
+35;53;`origineOffre` > `partenaires`> `url`;-;-;;;-;-;Informations sur l'orgine de l'offre;" ""https://www.directemploi.com/candidatOffre/49993134?utm_source=pole-emploi&utm_medium=referral&utm_campaign=Pôle-Emploi"""
+35;54;`origineOffre` > `partenaires`> `logo`;-;-;;;-;-;Informations sur l'orgine de l'offre;" ""https://www.francetravail.fr/logos/img/partenaires/directemploi80.png"""
+35;55;`origineOffre` > `partenaires` (si origine:2);-;-;;;-;-;Informations sur l'orgine de l'offre;
+36;56;`offresManqueCandidats`;`difficile_a_pourvoir`;Difficile A Pourvoir;;;boolean;OffresEmploi;Vrai si c'est une offre difficile à pourvoir;false
+27;57;`deplacementCode`;`code_deplacement`;Déplacement Code;Déplacement;;varchar(1);Deplacements;Code de la fréquence des déplacements;"""1"" | ""2"" | ""3"" | ""4"""
+28;58;`deplacementLibelle`;`libelle_deplacement`;Déplacement Libellé;Déplacement;;varchar(30);Deplacements;Description des déplacements demandés;"""Jamais"" | ""Ponctuels Zone départementale"" ou ""Ponctuels Zone nationale"" |  ""Fréquents Zone départementale"" ou ""Fréquents Zone nationale"" | ""Quotidiens Zone régionale"""
+34;59;`qualitesProfessionnelles` (liste) > `libelle`;`libelle_qualite_pro`;Qualité Professionnelle Libellé;;;varchar(100);QualitesProfessionnelles;Informations sur les qualités professionnelles;"""Faire preuve d'autonomie"""
+34;60;`qualitesProfessionnelles` (liste) > `description`;`description_qualite_pro`;Qualité Professionnelle Description;;;varchar(1000);QualitesProfessionnelles;Informations sur les qualités professionnelles;"""Capacité à prendre en charge son activité sans devoir être encadré de façon continue (le cas échéant, à solliciter les autres acteurs de l'entreprise)."""
+37;61;`permis` > `libelle`;`libelle_permis`;Permis Libellé;Permis;;varchar(20);PermisConduire;Permis;"""B - Véhicule léger"""
+37;62;`permis` > `exigence`;`code_exigence_permis`;Permis Code Exigence;Permis;;varchar(1);PermisConduire;;"""E"""
+17;63;`langues` > `libelle`;`libelle_langue`;Langue Libellé;Langue;;varchar(30);Langues;Informations sur les langues;"""Anglais"""
+17;64;`langues` > `exigence`;`code_exigence_langue`;Langue Code Exigence;Langue;;varchar(1);Langues;Informations sur les langues;"""E"""
+38;65;`complementExercice`;`temps_travail`;Temps Travail;Durée Travail;;varchar(100);Contrats;Complément exercice;"""Temps plein"" | ""Temps partiel"" | ""du lundi au vendredi"" | ""8/jour"" | ""6h-13 ou ""13h20h"""
+40;66;`conditionExercice`;`condition_specifique`;Condition Spécifique;Durée Travail;;varchar(50);Contrats;Conditions d'exercice;"""renouvelable une fois"" | ""Itinérant "" | ""Travail 1 week-end / 3, jours fériés"" | ""Nbre d heures hebdo a définir"" | ""Selon lieux indiqués dans l'offre"" | ""le week end samedi et dimanche "" | ""travail le samedi"" | ""Mardi au vendredi de 19h à 21h"" | ""en laboratoire"" | ""2 jours par semaine""..."

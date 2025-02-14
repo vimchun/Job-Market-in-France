@@ -18,3 +18,4 @@ api_extract__transform/France_Travail/outputs/offres/_offres_merged.json
 .venv/
 .env/
 credentials.yaml
+*.pbix
