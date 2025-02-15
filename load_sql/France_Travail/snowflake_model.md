@@ -57,9 +57,7 @@
   --
   - "Code Postal"
   - "Code Commune"
-  - "Département Ville Arrondissement"
-  - "Latitude"
-  - "Longitude"
+  - "Description Lieu"
 
 
 ## Compétence
