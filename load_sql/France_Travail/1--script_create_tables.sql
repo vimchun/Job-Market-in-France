@@ -1,260 +1,174 @@
--- Voir la diagramme UML
---
---
-CREATE TABLE OffresEmploi (
-    id_offre VARCHAR(10) NOT NULL PRIMARY KEY
-    , intitule_offre VARCHAR(200) NOT NULL
-    , description_offre VARCHAR(5000) NOT NULL
+-------------------
+-- table de fait --
+-------------------
+CREATE TABLE OffreEmploi (
+    offre_id VARCHAR(7) NOT NULL PRIMARY KEY
     , date_creation DATE
     , date_actualisation DATE
     , nombre_postes INTEGER
-    , nom_partenaire VARCHAR(30)
-    , accessible_travailleurs_handicapes BOOLEAN
-    , difficile_a_pourvoir BOOLEAN
 );
 
-----------------------------------------------------------------
-CREATE TABLE Entreprises (
-    nom_entreprise VARCHAR(100) PRIMARY KEY NOT NULL
-    , entreprise_adaptee BOOLEAN
-);
-
--- table de liaison
-CREATE TABLE Offre_Entreprise (
-    id_offre VARCHAR(7) NOT NULL
-    , nom_entreprise VARCHAR(100) NOT NULL
-    , PRIMARY KEY (id_offre , nom_entreprise)
-    , FOREIGN KEY (id_offre) REFERENCES OffresEmploi (id_offre)
-    , FOREIGN KEY (nom_entreprise) REFERENCES Entreprises (nom_entreprise)
-);
-
-----------------------------------------------------------------
-CREATE TABLE Secteurs (
-    code_naf VARCHAR(6) PRIMARY KEY NOT NULL
-    , secteur_activite VARCHAR(200) NOT NULL
-);
-
--- table de liaison
-CREATE TABLE Offre_Secteur (
-    id_offre VARCHAR(7) NOT NULL
-    , code_naf VARCHAR(6) NOT NULL
-    , PRIMARY KEY (id_offre , code_naf)
-    , FOREIGN KEY (id_offre) REFERENCES OffresEmploi (id_offre)
-    , FOREIGN KEY (code_naf) REFERENCES Secteurs (code_naf)
-);
-
-----------------------------------------------------------------
-CREATE TABLE Metiers (
-    code_rome VARCHAR(5) PRIMARY KEY NOT NULL
-    , appellation_rome VARCHAR(100) NOT NULL
-);
-
--- table de liaison
-CREATE TABLE Offre_Metier (
-    id_offre VARCHAR(7) NOT NULL
-    , code_rome VARCHAR(5) NOT NULL
-    , PRIMARY KEY (id_offre , code_rome)
-    , FOREIGN KEY (id_offre) REFERENCES OffresEmploi (id_offre)
-    , FOREIGN KEY (code_rome) REFERENCES Metiers (code_rome)
-);
-
-----------------------------------------------------------------
-CREATE TABLE Experiences (
-    id_experience SERIAL NOT NULL PRIMARY KEY
-    , libelle_experience VARCHAR(100) NOT NULL
-    , code_exigence_experience VARCHAR(1) NOT NULL
-    , commentaire_experience VARCHAR(200)
-    , CONSTRAINT unique_experience UNIQUE (libelle_experience , code_exigence_experience)
-);
-
--- table de liaison
-CREATE TABLE Offre_Experience (
-    id_offre VARCHAR(7) NOT NULL
-    , id_experience INTEGER NOT NULL
-    , PRIMARY KEY (id_offre , id_experience)
-    , FOREIGN KEY (id_offre) REFERENCES OffresEmploi (id_offre)
-    , FOREIGN KEY (id_experience) REFERENCES Experiences (id_experience)
-);
-
-----------------------------------------------------------------
-CREATE TABLE Qualifications (
-    code_qualification VARCHAR(1) PRIMARY KEY NOT NULL
-    , libelle_qualification VARCHAR(20) NOT NULL
-);
-
--- table de liaison
-CREATE TABLE Offre_Qualification (
-    id_offre VARCHAR(7) NOT NULL
-    , code_qualification VARCHAR(1) NOT NULL
-    , PRIMARY KEY (id_offre , code_qualification)
-    , FOREIGN KEY (id_offre) REFERENCES OffresEmploi (id_offre)
-    , FOREIGN KEY (code_qualification) REFERENCES Qualifications (code_qualification)
-);
-
-----------------------------------------------------------------
-CREATE TABLE Formations (
-    id_formation SERIAL NOT NULL PRIMARY KEY
-    , code_formation VARCHAR(5) NOT NULL
-    , libelle_niveau_formation VARCHAR(30) NOT NULL
-    , libelle_domaine_formation VARCHAR(30) NOT NULL
-    , code_exigence_formation VARCHAR(1) NOT NULL
-);
-
--- table de liaison
-CREATE TABLE Offre_Formation (
-    id_offre VARCHAR(7) NOT NULL
-    , id_formation INTEGER NOT NULL
-    , PRIMARY KEY (id_offre , id_formation)
-    , FOREIGN KEY (id_offre) REFERENCES OffresEmploi (id_offre)
-    , FOREIGN KEY (id_formation) REFERENCES Formations (id_formation)
-);
-
-----------------------------------------------------------------
-CREATE TABLE Competences (
-    id_competence SERIAL NOT NULL PRIMARY KEY
-    , code_competence VARCHAR(6) NOT NULL
-    , libelle_competence VARCHAR(100) NOT NULL
-    , code_exigence_competence VARCHAR(1) NOT NULL
-);
-
--- table de liaison
-CREATE TABLE Offre_Competence (
-    id_offre VARCHAR(7) NOT NULL
-    , id_competence INTEGER NOT NULL
-    , PRIMARY KEY (id_offre , id_competence)
-    , FOREIGN KEY (id_offre) REFERENCES OffresEmploi (id_offre)
-    , FOREIGN KEY (id_competence) REFERENCES Competences (id_competence)
-);
-
-----------------------------------------------------------------
-CREATE TABLE QualitesProfessionnelles (
-    libelle_qualite_pro VARCHAR(100) NOT NULL PRIMARY KEY
-    , description_qualite_pro VARCHAR(1000) NOT NULL
-);
-
--- table de liaison
-CREATE TABLE Offre_QualitePro (
-    id_offre VARCHAR(7) NOT NULL
-    , libelle_qualite_pro VARCHAR(100) NOT NULL
-    , PRIMARY KEY (id_offre , libelle_qualite_pro)
-    , FOREIGN KEY (id_offre) REFERENCES OffresEmploi (id_offre)
-    , FOREIGN KEY (libelle_qualite_pro) REFERENCES QualitesProfessionnelles (libelle_qualite_pro)
-);
-
-----------------------------------------------------------------
-CREATE TABLE Langues (
-    id_langue SERIAL NOT NULL PRIMARY KEY
-    , libelle_langue VARCHAR(30) NOT NULL
-    , code_exigence_langue VARCHAR(1) NOT NULL
-);
-
--- table de liaison
-CREATE TABLE Offre_Langue (
-    id_offre VARCHAR(7) NOT NULL
-    , id_langue INTEGER NOT NULL
-    , PRIMARY KEY (id_offre , id_langue)
-    , FOREIGN KEY (id_offre) REFERENCES OffresEmploi (id_offre)
-    , FOREIGN KEY (id_langue) REFERENCES Langues (id_langue)
-);
-
-----------------------------------------------------------------
-CREATE TABLE PermisConduire (
-    id_permis_conduire SERIAL NOT NULL PRIMARY KEY
-    , libelle_permis VARCHAR(20) NOT NULL
-    , code_exigence_permis VARCHAR(1) NOT NULL
-);
-
--- table de liaison
-CREATE TABLE Offre_PermisConduire (
-    id_offre VARCHAR(7) NOT NULL
-    , id_permis_conduire INTEGER NOT NULL
-    , PRIMARY KEY (id_offre , id_permis_conduire)
-    , FOREIGN KEY (id_offre) REFERENCES OffresEmploi (id_offre)
-    , FOREIGN KEY (id_permis_conduire) REFERENCES PermisConduire (id_permis_conduire)
-);
-
-----------------------------------------------------------------
-CREATE TABLE LieuxTravail (
-    id_lieu_travail SERIAL NOT NULL PRIMARY KEY
-    , libelle_lieu_travail VARCHAR(30) NOT NULL
-    , code_commune VARCHAR(5) NOT NULL
-    , latitude FLOAT
-    , longitude FLOAT
-);
-
-----------------------------------------------------------------
-CREATE TABLE Villes (
-    code_postal VARCHAR(5) NOT NULL PRIMARY KEY
-    , dpt_ville_arrdt VARCHAR(50) NOT NULL
-);
-
--- table de liaison
-CREATE TABLE LieuTravail_Ville (
-    id_offre VARCHAR(7) NOT NULL
-    , code_postal VARCHAR(5) NOT NULL
-    , PRIMARY KEY (id_offre , code_postal)
-    , FOREIGN KEY (id_offre) REFERENCES OffresEmploi (id_offre)
-    , FOREIGN KEY (code_postal) REFERENCES Villes (code_postal)
-);
-
-----------------------------------------------------------------
-CREATE TABLE Contrats (
-    id_contrat SERIAL NOT NULL PRIMARY KEY
-    , code_type_contrat VARCHAR(10) NOT NULL
-    , libelle_type_contrat VARCHAR(30)
+--------------------------
+-- tables de dimension  --
+--------------------------
+CREATE TABLE Contrat (
+    offre_id VARCHAR(7) NOT NULL PRIMARY KEY
+    , type_contrat VARCHAR(10)
+    , type_contrat_libelle VARCHAR(30)
+    , duree_travail_libelle VARCHAR(20)
+    , duree_travail_libelle_converti VARCHAR(20)
     , nature_contrat VARCHAR(30)
-    , temps_travail VARCHAR(100)
-    , condition_exercice VARCHAR(50)
+    , salaire_commentaire VARCHAR(30)
+    , salaire_libelle VARCHAR(50)
+    , salaire_complement_1 VARCHAR(30)
+    , salaire_complement_2 VARCHAR(30)
     , alternance BOOLEAN
+    , deplacement_code VARCHAR(1)
+    , deplacement_libelle VARCHAR(30)
+    , temps_travail VARCHAR(100)
+    , condition_specifique VARCHAR(50)
 );
 
-----------------------------------------------------------------
-CREATE TABLE DureeTravail (
-    id_duree_travail SERIAL NOT NULL PRIMARY KEY
-    , libelle_duree_travail VARCHAR(20) NOT NULL
-    , libelle_duree_travail_converti VARCHAR(20)
+CREATE TABLE Entreprise (
+    offre_id VARCHAR(7) NOT NULL PRIMARY KEY
+    , nom_entreprise VARCHAR(100)
+    , description_entreprise VARCHAR(100)
+    , entreprise_adaptee BOOLEAN
+    , code_naf VARCHAR(6)
+    , secteur_activite_libelle VARCHAR(200)
 );
 
--- table de liaison
-CREATE TABLE Contrat_DureeTravail (
-    id_offre VARCHAR(7) NOT NULL
-    , id_duree_travail INTEGER NOT NULL
-    , PRIMARY KEY (id_offre , id_duree_travail)
-    , FOREIGN KEY (id_offre) REFERENCES OffresEmploi (id_offre)
-    , FOREIGN KEY (id_duree_travail) REFERENCES DureeTravail (id_duree_travail)
+CREATE TABLE Localisation (
+    offre_id VARCHAR(7) NOT NULL PRIMARY KEY
+    , description_lieu VARCHAR(50)
+    , code_postal VARCHAR(5)
+    , code_commune VARCHAR(5)
 );
 
-----------------------------------------------------------------
-CREATE TABLE Salaire (
-    id_salaire SERIAL NOT NULL PRIMARY KEY
-    , libelle_salaire VARCHAR(50) NOT NULL
-    , complement_au_salaire_1 VARCHAR(30)
-    , complement_au_salaire_2 VARCHAR(30)
-    , commentaire_salaire VARCHAR(30)
+CREATE TABLE DescriptionOffre (
+    offre_id VARCHAR(7) NOT NULL PRIMARY KEY
+    , intitule_offre VARCHAR(200)
+    , description_offre VARCHAR(5000)
+    , nom_partenaire VARCHAR(30)
+    , rome_code VARCHAR(5)
+    , rome_libelle VARCHAR(50)
+    , appellation_rome VARCHAR(100)
+    , difficile_a_pourvoir BOOLEAN
+    , accessible_travailleurs_handicapes BOOLEAN
 );
 
--- table de liaison
-CREATE TABLE Contrat_Salaire (
-    id_offre VARCHAR(7) NOT NULL
-    , id_salaire INTEGER NOT NULL
-    , PRIMARY KEY (id_offre , id_salaire)
-    , FOREIGN KEY (id_offre) REFERENCES OffresEmploi (id_offre)
-    , FOREIGN KEY (id_salaire) REFERENCES Salaire (id_salaire)
+----------------------------------------------
+-- tables de dimension et tables de liaison --
+----------------------------------------------
+CREATE TABLE Competence (
+    competence_id SERIAL NOT NULL PRIMARY KEY
+    , competence_code VARCHAR(6) NOT NULL
+    , competence_libelle VARCHAR(100) NOT NULL
+    , competence_code_exigence VARCHAR(1) NOT NULL
 );
 
-----------------------------------------------------------------
-CREATE TABLE Deplacements (
-    id_deplacement SERIAL NOT NULL PRIMARY KEY
-    , code_deplacement VARCHAR(1) NOT NULL
-    , libelle_deplacement VARCHAR(30) NOT NULL
+CREATE TABLE Offre_Competence (
+    offre_id VARCHAR(7) NOT NULL
+    , competence_id INTEGER NOT NULL
+    , PRIMARY KEY (offre_id , competence_id)
+    , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id)
+    , FOREIGN KEY (competence_id) REFERENCES Competence (competence_id)
 );
 
--- table de liaison
-CREATE TABLE Contrat_Deplacement (
-    id_offre VARCHAR(7) NOT NULL
-    , id_deplacement INTEGER NOT NULL
-    , PRIMARY KEY (id_offre , id_deplacement)
-    , FOREIGN KEY (id_offre) REFERENCES OffresEmploi (id_offre)
-    , FOREIGN KEY (id_deplacement) REFERENCES Deplacements (id_deplacement)
+CREATE TABLE Experience (
+    experience_id SERIAL NOT NULL PRIMARY KEY
+    , experience_libelle VARCHAR(100) NOT NULL
+    , experience_code_exigence VARCHAR(1) NOT NULL
+    , experience_commentaire VARCHAR(200)
+    , CONSTRAINT unique_experience UNIQUE (experience_libelle , experience_code_exigence)
 );
 
+CREATE TABLE Offre_Experience (
+    offre_id VARCHAR(7) NOT NULL
+    , experience_id INTEGER NOT NULL
+    , PRIMARY KEY (offre_id , experience_id)
+    , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id)
+    , FOREIGN KEY (experience_id) REFERENCES Experience (experience_id)
+);
+
+CREATE TABLE NiveauFormation (
+    niveau_formation_id SERIAL NOT NULL PRIMARY KEY
+    , niveau_formation_libelle VARCHAR(30) NOT NULL
+    , niveau_formation_code_exigence VARCHAR(1) NOT NULL
+);
+
+CREATE TABLE Offre_NiveauFormation (
+    offre_id VARCHAR(7) NOT NULL
+    , niveau_formation_id INTEGER NOT NULL
+    , PRIMARY KEY (offre_id , niveau_formation_id)
+    , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id)
+    , FOREIGN KEY (niveau_formation_id) REFERENCES NiveauFormation (niveau_formation_id)
+);
+
+CREATE TABLE DomaineFormation (
+    domaine_formation_code INTEGER NOT NULL PRIMARY KEY
+    , domaine_formation_libelle VARCHAR(30) NOT NULL
+);
+
+CREATE TABLE Offre_DomaineFormation (
+    offre_id VARCHAR(7) NOT NULL
+    , domaine_formation_code INTEGER NOT NULL
+    , PRIMARY KEY (offre_id , domaine_formation_code)
+    , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id)
+    , FOREIGN KEY (domaine_formation_code) REFERENCES DomaineFormation (domaine_formation_code)
+);
+
+CREATE TABLE QualiteProfessionnelle (
+    qualite_professionnelle_id SERIAL NOT NULL PRIMARY KEY
+    , qualite_professionnelle_libelle VARCHAR(100) NOT NULL
+    , qualite_professionnelle_description VARCHAR(1000) NOT NULL
+);
+
+CREATE TABLE Offre_QualiteProfessionnelle (
+    offre_id VARCHAR(7) NOT NULL
+    , qualite_professionnelle_id INTEGER NOT NULL
+    , PRIMARY KEY (offre_id , qualite_professionnelle_id)
+    , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id)
+    , FOREIGN KEY (qualite_professionnelle_id) REFERENCES QualiteProfessionnelle (qualite_professionnelle_id)
+);
+
+CREATE TABLE Qualification (
+    qualification_code VARCHAR(1) PRIMARY KEY NOT NULL
+    , qualification_libelle VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE Offre_Qualification (
+    offre_id VARCHAR(7) NOT NULL
+    , qualification_code VARCHAR(1) NOT NULL
+    , PRIMARY KEY (offre_id , qualification_code)
+    , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id)
+    , FOREIGN KEY (qualification_code) REFERENCES Qualification (qualification_code)
+);
+
+CREATE TABLE Langue (
+    langue_id SERIAL NOT NULL PRIMARY KEY
+    , langue_libelle VARCHAR(30) NOT NULL
+    , langue_code_exigence VARCHAR(1) NOT NULL
+);
+
+CREATE TABLE Offre_Langue (
+    offre_id VARCHAR(7) NOT NULL
+    , langue_id INTEGER NOT NULL
+    , PRIMARY KEY (offre_id , langue_id)
+    , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id)
+    , FOREIGN KEY (langue_id) REFERENCES Langue (langue_id)
+);
+
+CREATE TABLE PermisConduire (
+    permis_id SERIAL NOT NULL PRIMARY KEY
+    , permis_libelle VARCHAR(20) NOT NULL
+    , permis_code_exigence VARCHAR(1) NOT NULL
+);
+
+CREATE TABLE Offre_PermisConduire (
+    offre_id VARCHAR(7) NOT NULL
+    , permis_id INTEGER NOT NULL
+    , PRIMARY KEY (offre_id , permis_id)
+    , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id)
+    , FOREIGN KEY (permis_id) REFERENCES PermisConduire (permis_id)
+);
