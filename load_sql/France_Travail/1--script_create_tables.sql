@@ -14,25 +14,25 @@ CREATE TABLE OffreEmploi (
 CREATE TABLE Contrat (
     offre_id VARCHAR(7) NOT NULL PRIMARY KEY
     , type_contrat VARCHAR(10)
-    , type_contrat_libelle VARCHAR(30)
-    , duree_travail_libelle VARCHAR(20)
-    , duree_travail_libelle_converti VARCHAR(20)
-    , nature_contrat VARCHAR(30)
-    , salaire_commentaire VARCHAR(30)
-    , salaire_libelle VARCHAR(50)
-    , salaire_complement_1 VARCHAR(30)
-    , salaire_complement_2 VARCHAR(30)
+    , type_contrat_libelle VARCHAR(100)
+    , duree_travail_libelle VARCHAR(100)
+    , duree_travail_libelle_converti VARCHAR(100)
+    , salaire_commentaire VARCHAR(100)
+    , salaire_libelle VARCHAR(100)
+    , salaire_complement_1 VARCHAR(100)
+    , salaire_complement_2 VARCHAR(100)
+    , nature_contrat VARCHAR(100)
     , alternance BOOLEAN
-    , deplacement_code VARCHAR(1)
-    , deplacement_libelle VARCHAR(30)
+    , deplacement_code INTEGER
+    , deplacement_libelle VARCHAR(100)
     , temps_travail VARCHAR(100)
-    , condition_specifique VARCHAR(50)
+    , condition_specifique VARCHAR(100)
 );
 
 CREATE TABLE Entreprise (
     offre_id VARCHAR(7) NOT NULL PRIMARY KEY
     , nom_entreprise VARCHAR(100)
-    , description_entreprise VARCHAR(100)
+    , description_entreprise VARCHAR(1000)
     , entreprise_adaptee BOOLEAN
     , code_naf VARCHAR(6)
     , secteur_activite_libelle VARCHAR(200)
@@ -51,7 +51,7 @@ CREATE TABLE DescriptionOffre (
     , description_offre VARCHAR(5000)
     , nom_partenaire VARCHAR(30)
     , rome_code VARCHAR(5)
-    , rome_libelle VARCHAR(50)
+    , rome_libelle VARCHAR(100)
     , appellation_rome VARCHAR(100)
     , difficile_a_pourvoir BOOLEAN
     , accessible_travailleurs_handicapes BOOLEAN
