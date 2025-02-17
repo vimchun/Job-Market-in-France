@@ -7,22 +7,32 @@ FROM
     -- Entreprise
     -- Localisation
     -- DescriptionOffre
+    -- Competence
+    -- Offre_Competence
 
     ----- todo
-    Competence
     -- Experience
-    -- NiveauFormation
-    -- DomaineFormation
-    -- QualiteProfessionnelle
-    -- Qualification
-    -- Langue
-    -- PermisConduire
-    -- Offre_Competence
     -- Offre_Experience
+
+    -- NiveauFormation
     -- Offre_NiveauFormation
+
+    -- DomaineFormation
     -- Offre_DomaineFormation
+
+    -- QualiteProfessionnelle
     -- Offre_QualiteProfessionnelle
+
+    -- Qualification
     -- Offre_Qualification
+
+    -- Langue
     -- Offre_Langue
+
+    -- PermisConduire
     -- Offre_PermisConduire
-LIMIT 50;
+
+-- ORDER BY competence_libelle
+-- ORDER BY competence_code, competence_libelle
+LIMIT 100;
+;

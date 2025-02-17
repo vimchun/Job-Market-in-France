@@ -15,28 +15,30 @@ fill_table_DescriptionOffre = 0
 
 
 #### en cours
+fill_table_Competence = 0
+fill_table_Offre_Competence = 1
 
 #### todo
-# fill_table_Entreprises = 0  # tables "Entreprises" + "Offre_Entreprise"
-# fill_table_Secteurs = 0  # table "Secteurs" + "Offre_Secteur"
-# fill_table_Metiers = 0  # table "Metiers" + "Offre_Metier"
-# fill_table_Experiences = 1  # table "Experiences" + "Offre_Experience"
 
-fill_table_Competence = 0
 fill_table_Experience = 0
-fill_table_NiveauFormation = 0
-fill_table_DomaineFormation = 0
-fill_table_QualiteProfessionnelle = 0
-fill_table_Qualification = 0
-fill_table_Langue = 0
-fill_table_PermisConduire = 0
-fill_table_Offre_Competence = 0
 fill_table_Offre_Experience = 0
+
+fill_table_NiveauFormation = 0
 fill_table_Offre_NiveauFormation = 0
+
+fill_table_DomaineFormation = 0
 fill_table_Offre_DomaineFormation = 0
+
+fill_table_QualiteProfessionnelle = 0
 fill_table_Offre_QualiteProfessionnelle = 0
+
+fill_table_Qualification = 0
 fill_table_Offre_Qualification = 0
+
+fill_table_Langue = 0
 fill_table_Offre_Langue = 0
+
+fill_table_PermisConduire = 0
 fill_table_Offre_PermisConduire = 0
 
 
@@ -314,7 +316,89 @@ for offre in offres_data:
             on_conflict_string=("offre_id"),
         )
 
-    ################### à nettoyer
+    #### table "Competence"
+    if 1:
+        # import pprint
+        # pprint.pprint(offre)
+        offre_id = offre.get("id")
+        competences = offre.get("competences")
+
+        if competences:
+            for item in competences:
+                # for item in offre.get("competences", []):  # liste de dictionnaires ("[]" si la clé n'existe pas pour une offre)
+                competence_code = item.get("code")
+                competence_libelle = item.get("libelle")
+                competence_code_exigence = item.get("exigence")
+                # print(
+                #     offre_id,
+                #     item,
+                #     competence_code,
+                #     competence_libelle,
+                #     competence_code_exigence,
+                #     sep="\n-> ",
+                #     end="\n\n",
+                # )
+
+                # Remplacer NULL par 0 (sinon risque d'écriture de doublon si "competence_code = null")
+                # "NULL != NULL selon la logique SQL"
+                if competence_code is None:
+                    competence_code = 0
+
+                if fill_table_Competence:
+                    fill_db(
+                        db_name="Competence",
+                        attributes_tuple=(
+                            "competence_code",
+                            "competence_libelle",
+                            "competence_code_exigence",
+                        ),
+                        # on_conflict_string=("competence_code" | "competence_libelle" | "competence_code_exigence"),
+                        on_conflict_string=("competence_code | competence_libelle | competence_code_exigence"),
+                    )
+
+                #### table "Offre_Competence"
+                if fill_table_Offre_Competence:
+                    # Récupérer l'id pour pouvoir l'insérer en table
+                    query = f"""
+                        SELECT competence_id FROM Competence
+                        WHERE competence_code = %s AND competence_libelle = %s AND competence_code_exigence = %s
+                    """
+                    cursor.execute(query, (competence_code, competence_libelle, competence_code_exigence))
+                    competence_id = cursor.fetchone()[0]
+
+                    # print(
+                    #     offre_id,
+                    #     competence_code,
+                    #     competence_libelle,
+                    #     competence_code_exigence,
+                    #     competence_id,
+                    #     sep="\n-> ",
+                    # )
+
+                    fill_db(
+                        db_name="Offre_Competence",
+                        attributes_tuple=(
+                            "offre_id",
+                            "competence_id",
+                        ),
+                        on_conflict_string="offre_id | competence_id",
+                        # on_conflict_string="",
+                    )
+
+    # fill_db(
+    #     db_name="Offre_Entreprise",
+    #     attributes_tuple=(
+    #         "offre_id",
+    #         "nom_entreprise",
+    #     ),
+    #     on_conflict_string="offre_id | nom_entreprise",
+    #     # on_conflict_string="",
+    # )
+
+    # conn.commit()  # Commit des changements
+    # break
+
+    ################### suite à nettoyer
     # table "Secteurs"
     # print(
     #     offre_id,
@@ -361,20 +445,6 @@ for offre in offres_data:
     #            on_conflict_string="offre_id | code_naf",
     #        )
     #
-
-    #### pas bon mais pour archive
-    #    fill_db(
-    #        db_name="Offre_Entreprise",
-    #        attributes_tuple=(
-    #            "offre_id",
-    #            "nom_entreprise",
-    #        ),
-    #        on_conflict_string="offre_id | nom_entreprise",
-    #        # on_conflict_string="",
-    #    )
-
-    # conn.commit()  # Commit des changements
-    # break
 
     #### reste des variables
     # intitule_offre = offre.get("intitule")
@@ -455,14 +525,6 @@ for offre in offres_data:
     #            formation_code_exigence = offre.get("formations", [{}])[0].get("exigence")
     #            # print(item, formation_code, niveau_formation_libelle, formation_domaine_libelle, formation_code_exigence, sep="\n-> ", end="\n\n")
     #
-    #    # table "Competences"
-    #    if offre.get("competences"):  # car on peut avoir dans le json "competences": null
-    #        for item in offre.get("competences", []):  # liste de dictionnaires ("[]" si la clé n'existe pas pour une offre)
-    #            codes_competences = item.get("code")
-    #            libelles_competences = item.get("libelle")
-    #            codes_exigences_competences = item.get("exigence")
-    #            # print(item, codes_competences, libelles_competences, codes_exigences_competences, sep="\n-> ", end="\n\n")
-    #
     #    # table "QualitesProfessionnelles"
     #    if offre.get("qualitesProfessionnelles"):  # car on peut avoir dans le json "qualitesProfessionnelles": null
     #        for item in offre.get("qualitesProfessionnelles", []):  # liste de dictionnaires ("[]" si la clé n'existe pas pour une offre)
@@ -486,67 +548,6 @@ for offre in offres_data:
     #
     #
     #
-
-    # intitule_offre,
-    # description_offre,
-    # nom_partenaire,
-    # accessible_travailleurs_handicapes,
-    # difficile_a_pourvoir,
-
-    # table "Metiers"
-    # print(
-    #     offre_id,
-    #     rome_code,
-    #     appellation_rome,
-    #     sep="\n-> ",
-    # )
-
-    # table "Experiences"
-    # print(
-    #     offre_id,
-    #     experience_libelle,
-    #     experience_code_exigence,
-    #     experience_commentaire,
-    #     sep="\n-> ",
-    # )
-
-    # table "Qualifications"
-    # print(
-    #     offre_id,
-    #     qualification_code,
-    #     qualification_libelle,
-    #     sep="\n-> ",
-    # )
-
-    # table "Formations" (voir au-dessus car liste...)
-
-    # table "Competences" (voir au-dessus car liste...)
-
-    # table "QualitesProfessionnelles" (voir au-dessus car liste...)
-
-    # table "Langues" (voir au-dessus car liste...)
-
-    # table "PermisConduire" (voir au-dessus car liste...)
-
-    # table "LieuxTravail"
-    # print(
-    #     offre_id,
-    #     offre.get("lieuTravail"),
-    #     code_commune,
-    #     latitude,
-    #     longitude,
-    #     sep="\n-> ",
-    # )
-
-    # table "LieuxTravail_Ville"
-    # print(
-    #     offre_id,
-    #     offre.get("lieuTravail"),
-    #     libelle_lieu_travail,
-    #     code_postal,
-    #     sep="\n-> ",
-    # )
-
 
 cursor.close()
 conn.close()

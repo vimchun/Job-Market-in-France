@@ -448,7 +448,7 @@
             <mxRectangle width="30" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="C7LOxqXwbHzqQDy3l2-N-439" value="competence_code&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&lt;b&gt;varchar(6&lt;/b&gt;&lt;b style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;)&lt;/b&gt;" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;rounded=0;fontFamily=Courier New;fontSize=16;strokeColor=#000000;" parent="C7LOxqXwbHzqQDy3l2-N-437" vertex="1">
+        <mxCell id="C7LOxqXwbHzqQDy3l2-N-439" value="competence_code&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&lt;b&gt;integer&lt;/b&gt;" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;rounded=0;fontFamily=Courier New;fontSize=16;strokeColor=#000000;" parent="C7LOxqXwbHzqQDy3l2-N-437" vertex="1">
           <mxGeometry x="30" width="373" height="30" as="geometry">
             <mxRectangle width="373" height="30" as="alternateBounds" />
           </mxGeometry>

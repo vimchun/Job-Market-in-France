@@ -62,18 +62,32 @@ CREATE TABLE DescriptionOffre (
 ----------------------------------------------
 CREATE TABLE Competence (
     competence_id SERIAL NOT NULL PRIMARY KEY
-    , competence_code VARCHAR(6) NOT NULL
-    , competence_libelle VARCHAR(100) NOT NULL
-    , competence_code_exigence VARCHAR(1) NOT NULL
+    , competence_code INTEGER
+    , competence_libelle VARCHAR(500)
+    , competence_code_exigence VARCHAR(1)
+    , CONSTRAINT competence_unique UNIQUE (competence_code , competence_libelle , competence_code_exigence)
 );
+
+-- CREATE TABLE Offre_Competence (
+--     offre_id VARCHAR(7) NOT NULL
+--     , competence_id INTEGER NOT NULL
+--     , PRIMARY KEY (offre_id , competence_id)
+--     , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id)
+--     , FOREIGN KEY (competence_id) REFERENCES Competence (competence_id)
+-- );
 
 CREATE TABLE Offre_Competence (
     offre_id VARCHAR(7) NOT NULL
     , competence_id INTEGER NOT NULL
     , PRIMARY KEY (offre_id , competence_id)
-    , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id)
-    , FOREIGN KEY (competence_id) REFERENCES Competence (competence_id)
+    , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id) ON DELETE CASCADE
+    , FOREIGN KEY (competence_id) REFERENCES Competence (competence_id) ON DELETE CASCADE
 );
+
+-- ON DELETE CASCADE pour maintenir l'intégrité des données :
+--  pour supprimer toutes les lignes associées dans Offre_Competence si une offre ou une compétence correspondante est supprimée
+
+
 
 CREATE TABLE Experience (
     experience_id SERIAL NOT NULL PRIMARY KEY
@@ -172,3 +186,4 @@ CREATE TABLE Offre_PermisConduire (
     , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id)
     , FOREIGN KEY (permis_id) REFERENCES PermisConduire (permis_id)
 );
+

@@ -14,7 +14,7 @@
 35;54;`origineOffre` > `partenaires`> `logo`;-;-;-;-;-;-;Informations sur l'orgine de l'offre;" ""https://www.francetravail.fr/logos/img/partenaires/directemploi80.png""";
 35;55;`origineOffre` > `partenaires` (si origine:2);-;-;-;-;-;-;Informations sur l'orgine de l'offre;;
 1;1;`id`;offre_id;Offre ID;(plusieurs);(plusieurs);varchar(7);OffresEmploi;Identifiant de l’offre d’emploi;"""184TRJB""  ";
-18;29;`competences` >  `code`;competence_code;Compétence Code;Competence;Compétence;varchar(6);Competences;Informations sur les compétences;"""300067""";
+18;29;`competences` >  `code`;competence_code;Compétence Code;Competence;Compétence;integer;Competences;Informations sur les compétences;"""300067""";
 18;30;`competences` >  `libelle`;competence_libelle;Compétence Libellé;Competence;Compétence;varchar(100);Competences;Informations sur les compétences;"""Analyser, exploiter, structurer des données""";
 18;31;`competences` >  `exigence`;competence_code_exigence;Compétence Code Exigence;Competence;Compétence;varchar(1);Competences;Informations sur les compétences;"""S"" ";
 11;19;`typeContrat`;type_contrat;Type Contrat;Contrat;Contrat;varchar(10);Contrats;Code du type de contrat proposé (CDD, CDI, …);"""CDD"" | ""CDI"" | ""MIS""";
