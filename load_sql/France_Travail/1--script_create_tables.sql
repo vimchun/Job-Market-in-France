@@ -68,14 +68,6 @@ CREATE TABLE Competence (
     , CONSTRAINT competence_unique UNIQUE (competence_code , competence_libelle , competence_code_exigence)
 );
 
--- CREATE TABLE Offre_Competence (
---     offre_id VARCHAR(7) NOT NULL
---     , competence_id INTEGER NOT NULL
---     , PRIMARY KEY (offre_id , competence_id)
---     , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id)
---     , FOREIGN KEY (competence_id) REFERENCES Competence (competence_id)
--- );
-
 CREATE TABLE Offre_Competence (
     offre_id VARCHAR(7) NOT NULL
     , competence_id INTEGER NOT NULL
@@ -101,36 +93,57 @@ CREATE TABLE Offre_Experience (
     offre_id VARCHAR(7) NOT NULL
     , experience_id INTEGER NOT NULL
     , PRIMARY KEY (offre_id , experience_id)
-    , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id)
-    , FOREIGN KEY (experience_id) REFERENCES Experience (experience_id)
+    , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id) ON DELETE CASCADE
+    , FOREIGN KEY (experience_id) REFERENCES Experience (experience_id) ON DELETE CASCADE
 );
 
-CREATE TABLE NiveauFormation (
-    niveau_formation_id SERIAL NOT NULL PRIMARY KEY
+
+CREATE TABLE Formation (
+    formation_id SERIAL NOT NULL PRIMARY KEY
     , niveau_formation_libelle VARCHAR(30) NOT NULL
-    , niveau_formation_code_exigence VARCHAR(1) NOT NULL
+    , formation_code_exigence VARCHAR(1) NOT NULL
+    , code_formation INTEGER NOT NULL
+    , domaine_formation_libelle VARCHAR(100) NOT NULL
+    , CONSTRAINT unique_formation UNIQUE (niveau_formation_libelle , formation_code_exigence, code_formation , domaine_formation_libelle)
 );
 
-CREATE TABLE Offre_NiveauFormation (
+CREATE TABLE Offre_Formation (
     offre_id VARCHAR(7) NOT NULL
-    , niveau_formation_id INTEGER NOT NULL
-    , PRIMARY KEY (offre_id , niveau_formation_id)
-    , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id)
-    , FOREIGN KEY (niveau_formation_id) REFERENCES NiveauFormation (niveau_formation_id)
+    , formation_id INTEGER NOT NULL
+    , PRIMARY KEY (offre_id , formation_id)
+    , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id) ON DELETE CASCADE
+    , FOREIGN KEY (formation_id) REFERENCES Formation (formation_id) ON DELETE CASCADE
 );
 
-CREATE TABLE DomaineFormation (
-    domaine_formation_code INTEGER NOT NULL PRIMARY KEY
-    , domaine_formation_libelle VARCHAR(30) NOT NULL
-);
 
-CREATE TABLE Offre_DomaineFormation (
-    offre_id VARCHAR(7) NOT NULL
-    , domaine_formation_code INTEGER NOT NULL
-    , PRIMARY KEY (offre_id , domaine_formation_code)
-    , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id)
-    , FOREIGN KEY (domaine_formation_code) REFERENCES DomaineFormation (domaine_formation_code)
-);
+-- CREATE TABLE NiveauFormation (
+--     formation_id SERIAL NOT NULL PRIMARY KEY
+--     , niveau_formation_libelle VARCHAR(30) NOT NULL
+--     , formation_code_exigence VARCHAR(1) NOT NULL
+--     , CONSTRAINT unique_niveau_formation UNIQUE (niveau_formation_libelle , formation_code_exigence)
+-- );
+
+-- CREATE TABLE Offre_NiveauFormation (
+--     offre_id VARCHAR(7) NOT NULL
+--     , formation_id INTEGER NOT NULL
+--     , PRIMARY KEY (offre_id , formation_id)
+--     , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id) ON DELETE CASCADE
+--     , FOREIGN KEY (formation_id) REFERENCES NiveauFormation (formation_id) ON DELETE CASCADE
+-- );
+
+-- CREATE TABLE DomaineFormation (
+--     code_formation INTEGER NOT NULL PRIMARY KEY
+--     , domaine_formation_libelle VARCHAR(100) NOT NULL
+--     , CONSTRAINT unique_domaine_formation UNIQUE (code_formation , domaine_formation_libelle)
+-- );
+
+-- CREATE TABLE Offre_DomaineFormation (
+--     offre_id VARCHAR(7) NOT NULL
+--     , code_formation INTEGER NOT NULL
+--     , PRIMARY KEY (offre_id , code_formation)
+--     , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id) ON DELETE CASCADE
+--     , FOREIGN KEY (code_formation) REFERENCES DomaineFormation (code_formation) ON DELETE CASCADE
+-- );
 
 CREATE TABLE QualiteProfessionnelle (
     qualite_professionnelle_id SERIAL NOT NULL PRIMARY KEY

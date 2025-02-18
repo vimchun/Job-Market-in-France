@@ -39,8 +39,8 @@
 26;44;`accessibleTH`;accessible_travailleurs_handicapes;Accessible Travailleurs Handicapés;Description Offre;Description Offre;boolean;OffresEmploi;Vrai si l’offre est accessible aux travailleurs handicapés;;
 35;52;`origineOffre` > `partenaires`> `nom`;nom_partenaire;Nom Partenaire;Description Offre;Description Offre;varchar(30);OffresEmploi;Informations sur l'orgine de l'offre;"""DIRECTEMPLOI""";
 36;56;`offresManqueCandidats`;difficile_a_pourvoir;Difficile A Pourvoir;Description Offre;Description Offre;boolean;OffresEmploi;Vrai si c'est une offre difficile à pourvoir;false;
-16;25;`formations` > `codeFormation`;domaine_formation_code;Formation Code;Domaine Formation;Domaine Formation;varchar(30);Formations;Informations sur les formations;"""31006""";
-16;26;`formations` > `domaineLibelle`;domaine_formation_libelle;Formation Domaine Libellé;Domaine Formation;Domaine Formation;varchar(30);Formations;Informations sur les formations;"""sécurité informatique""";
+16;25;`formations` > `codeFormation`;domaine_formation_code;Formation Code;Domaine Formation;Domaine Formation;integer;Domaine Formation;Informations sur les formations;"""31006""";
+16;26;`formations` > `domaineLibelle`;domaine_formation_libelle;Formation Domaine Libellé;Domaine Formation;Domaine Formation;varchar(30);Domaine Formation;Informations sur les formations;"""sécurité informatique""";
 10;14;`entreprise` > `nom`;nom_entreprise;Nom Entreprise;Entreprise;Entreprise;varchar(100);Entreprises;Informations sur l'entreprise;"""ARTIALYS""";
 10;15;`entreprise` > `description`;description_entreprise;Description Entreprise;Entreprise;Entreprise;;;;;
 10;18;`entreprise` > `entrepriseAdaptee`;entreprise_adaptee;Entreprise Adaptée;Entreprise;Entreprise;boolean;Entreprises;Informations sur l'entreprise;false;
@@ -54,8 +54,8 @@
 6;6;`lieuTravail` > `libelle`;description_lieu;Description Lieu;Localisation;Localisation;varchar(50);Villes;Lieu de travail;"""75 - PARIS 08""";
 6;9;`lieuTravail` > `codePostal`;code_postal;Code Postal;Localisation;Localisation;varchar(5);Villes;Lieu de travail;"""75008""";
 6;10;`lieuTravail` > `commune`;code_commune;Code Commune;Localisation;Localisation;varchar(5);LieuxTravail;Lieu de travail;"""75108""";
-16;27;`formations` > `niveauLiBelle`;formation_niveau_libelle;Formation Niveau Libellé;Niveau Formation;Niveau Formation;varchar(30);Formations;Informations sur les formations;"""Bac+3, Bac+4 ou équivalents""";
-16;28;`formations` > `exigence`;formation_code_exigence;Formation Code Exigence;Niveau Formation;Niveau Formation;varchar(1);Formations;Informations sur les formations;"""S""";
+16;27;`formations` > `niveauLiBelle`;formation_niveau_libelle;Formation Niveau Libellé;Niveau Formation;Niveau Formation;varchar(30);Niveau Formation;Informations sur les formations;"""Bac+3, Bac+4 ou équivalents""";
+16;28;`formations` > `exigence`;formation_code_exigence;Formation Code Exigence;Niveau Formation;Niveau Formation;varchar(1);Niveau Formation;Informations sur les formations;"""S""";
 4;4;`dateCreation`;date_creation;Date Création;Offre Emploi;Offre Emploi;date;OffresEmploi;Date de création de l’offre;"""2024-11-28T14:23:11.470Z""";
 5;5;`dateActualisation`;date_actualisation;Date Actualisation;Offre Emploi;Offre Emploi;date;OffresEmploi;Date de dernière actualisation de l'offre;"""2024-11-28T14:23:11.957Z""";
 25;43;`nombrePostes`;nombre_postes;Nombre Postes;Offre Emploi;Offre Emploi;integer;OffresEmploi;Nombre de postes disponibles pour cette offre;;
