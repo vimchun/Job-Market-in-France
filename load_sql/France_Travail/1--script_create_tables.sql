@@ -78,9 +78,6 @@ CREATE TABLE Offre_Competence (
 
 -- ON DELETE CASCADE pour maintenir l'intégrité des données :
 --  pour supprimer toutes les lignes associées dans Offre_Competence si une offre ou une compétence correspondante est supprimée
-
-
-
 CREATE TABLE Experience (
     experience_id SERIAL NOT NULL PRIMARY KEY
     , experience_libelle VARCHAR(100) NOT NULL
@@ -97,14 +94,14 @@ CREATE TABLE Offre_Experience (
     , FOREIGN KEY (experience_id) REFERENCES Experience (experience_id) ON DELETE CASCADE
 );
 
-
 CREATE TABLE Formation (
     formation_id SERIAL NOT NULL PRIMARY KEY
-    , niveau_formation_libelle VARCHAR(30) NOT NULL
-    , formation_code_exigence VARCHAR(1) NOT NULL
-    , code_formation INTEGER NOT NULL
-    , domaine_formation_libelle VARCHAR(100) NOT NULL
-    , CONSTRAINT unique_formation UNIQUE (niveau_formation_libelle , formation_code_exigence, code_formation , domaine_formation_libelle)
+    , formation_code INTEGER --NOT NULL
+    , formation_domaine_libelle VARCHAR(100) --NOT NULL
+    , formation_niveau_libelle VARCHAR(30) --NOT NULL
+    , formation_commentaire VARCHAR(100) --NOT NULL
+    , formation_code_exigence VARCHAR(1) --NOT NULL
+    , CONSTRAINT unique_formation UNIQUE (formation_code , formation_domaine_libelle , formation_niveau_libelle , formation_commentaire , formation_code_exigence)
 );
 
 CREATE TABLE Offre_Formation (
@@ -115,14 +112,12 @@ CREATE TABLE Offre_Formation (
     , FOREIGN KEY (formation_id) REFERENCES Formation (formation_id) ON DELETE CASCADE
 );
 
-
 -- CREATE TABLE NiveauFormation (
 --     formation_id SERIAL NOT NULL PRIMARY KEY
---     , niveau_formation_libelle VARCHAR(30) NOT NULL
+--     , formation_niveau_libelle VARCHAR(30) NOT NULL
 --     , formation_code_exigence VARCHAR(1) NOT NULL
---     , CONSTRAINT unique_niveau_formation UNIQUE (niveau_formation_libelle , formation_code_exigence)
+--     , CONSTRAINT unique_niveau_formation UNIQUE (formation_niveau_libelle , formation_code_exigence)
 -- );
-
 -- CREATE TABLE Offre_NiveauFormation (
 --     offre_id VARCHAR(7) NOT NULL
 --     , formation_id INTEGER NOT NULL
@@ -130,21 +125,18 @@ CREATE TABLE Offre_Formation (
 --     , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id) ON DELETE CASCADE
 --     , FOREIGN KEY (formation_id) REFERENCES NiveauFormation (formation_id) ON DELETE CASCADE
 -- );
-
 -- CREATE TABLE DomaineFormation (
---     code_formation INTEGER NOT NULL PRIMARY KEY
---     , domaine_formation_libelle VARCHAR(100) NOT NULL
---     , CONSTRAINT unique_domaine_formation UNIQUE (code_formation , domaine_formation_libelle)
+--     formation_code INTEGER NOT NULL PRIMARY KEY
+--     , formation_domaine_libelle VARCHAR(100) NOT NULL
+--     , CONSTRAINT unique_domaine_formation UNIQUE (formation_code , formation_domaine_libelle)
 -- );
-
 -- CREATE TABLE Offre_DomaineFormation (
 --     offre_id VARCHAR(7) NOT NULL
---     , code_formation INTEGER NOT NULL
---     , PRIMARY KEY (offre_id , code_formation)
+--     , formation_code INTEGER NOT NULL
+--     , PRIMARY KEY (offre_id , formation_code)
 --     , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id) ON DELETE CASCADE
---     , FOREIGN KEY (code_formation) REFERENCES DomaineFormation (code_formation) ON DELETE CASCADE
+--     , FOREIGN KEY (formation_code) REFERENCES DomaineFormation (formation_code) ON DELETE CASCADE
 -- );
-
 CREATE TABLE QualiteProfessionnelle (
     qualite_professionnelle_id SERIAL NOT NULL PRIMARY KEY
     , qualite_professionnelle_libelle VARCHAR(100) NOT NULL

@@ -1,6 +1,7 @@
 SELECT
-    *
-    -- COUNT(*)
+    -- *
+    COUNT(*)
+    -- formation_id
 FROM
     -----  OK
     -- OffreEmploi
@@ -10,15 +11,11 @@ FROM
     -- DescriptionOffre
     -- Competence
     -- Offre_Competence
-    -- Experience
-    -- Offre_Experience
+    -- Formation
+    -- Offre_Formation
     ----- todo
-    Formation
-    -- NiveauFormation
-    -- Offre_NiveauFormation
-    -- DomaineFormation
-    -- Offre_DomaineFormation
-
+    Experience
+    -- Offre_Experience
     -- QualiteProfessionnelle
     -- Offre_QualiteProfessionnelle
     -- Qualification
@@ -29,14 +26,11 @@ FROM
     -- Offre_PermisConduire
     -- ORDER BY competence_libelle
     -- ORDER BY competence_code, competence_libelle
-
--- where offre_id = '186NWKN'
--- ORDER BY
--- domaine_formation_code
---     offre_id
---     experience_libelle
-
--- LIMIT 100;
-
+    -- where offre_id = '186NWKN'
+    -- ORDER BY
+    -- domaine_formation_code
+    --     offre_id
+    --     experience_libelle
+    -- LIMIT 100;
 ;
 
