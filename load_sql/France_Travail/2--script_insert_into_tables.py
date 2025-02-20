@@ -4,19 +4,33 @@ import os
 import psycopg2
 
 # Booléens pour remplir ou pas les tables associées
-
 fill_table_OffreEmploi = 0
 fill_table_Contrat = 0
 fill_table_Entreprise = 0
 fill_table_Localisation = 0
 fill_table_DescriptionOffre = 0
 fill_table_Competence, fill_table_Offre_Competence = 0, 0
-fill_table_Formation, fill_table_Offre_Formation = 0, 0
 fill_table_Experience, fill_table_Offre_Experience = 0, 0
+fill_table_Formation, fill_table_Offre_Formation = 0, 0
 fill_table_QualiteProfessionnelle, fill_table_Offre_QualiteProfessionnelle = 0, 0
 fill_table_Qualification, fill_table_Offre_Qualification = 0, 0
 fill_table_Langue, fill_table_Offre_Langue = 0, 0
 fill_table_PermisConduire, fill_table_Offre_PermisConduire = 0, 0
+
+# Pour print qu'on écrit dans les tables associées qu'une seule fois
+print_write_to_table_OffreEmploi = True
+print_write_to_table_Contrat = True
+print_write_to_table_Entreprise = True
+print_write_to_table_Localisation = True
+print_write_to_table_DescriptionOffre = True
+print_write_to_table_Competence = True
+print_write_to_table_Formation = True
+print_write_to_table_Experience = True
+print_write_to_table_QualiteProfessionnelle = True
+print_write_to_table_Qualification = True
+print_write_to_table_Langue = True
+print_write_to_table_PermisConduire = True
+
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 
@@ -37,25 +51,25 @@ with open(
     "r",
 ) as file:
     offres_data = json.load(file)
-# print(offres_data)
 
 
 def fill_db(db_name, attributes_tuple, on_conflict_string):
     """
     Crée et exécute la requête pour insérer les données dans la table "db_name".
-    Evite de devoir construire la requête et écrire <nombre_de_tables> fois :
+    Evite de devoir construire la requête suivante et de l'écrire <nombre_de_tables> fois :
 
-        # cursor.execute(
+        # query = cursor.execute(
         #     '''--sql
-        #     INSERT INTO OffresEmploi (offre_id, intitule_offre, description_offre, date_creation, date_actualisation,
-        #         nombre_postes, nom_partenaire, accessible_travailleurs_handicapes, difficile_a_pourvoir)
-        #         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        #     INSERT INTO OffreEmploi (offre_id, date_creation, date_actualisation, nombre_postes)
+        #         VALUES (%s, %s, %s, %s)
         #     ON CONFLICT (offre_id)
         #         DO NOTHING
         #     ''',
-        #     (offre_id, intitule_offre, description_offre, date_creation, date_actualisation,
-        #     nombre_postes, nom_partenaire, accessible_travailleurs_handicapes, difficile_a_pourvoir)
+        #     (offre_id, date_creation, date_actualisation, nombre_postes)
         # )
+        #
+        # cursor.execute(query, (offre_id, date_creation, date_actualisation, nombre_postes))
+        # conn.commit()  # Commit des changements
 
     Ne retourne rien.
     """
@@ -86,25 +100,27 @@ cursor = conn.cursor()
 
 for offre in offres_data:
     # récupération de valeurs avec la méthode .get() au cas où il manquerait les clés dans certains documents jsons
+    """
+    Dans cette boucle, pour toutes les tables de dimension qui ont une table de liaison, on traite ces tables de dimension en remplaçant les null, sinon on risque d'écrire des doublons.
+        (null != null en sql)
+    On remplace ces valeurs par les null de départs par la suite.
+    """
 
     offre_id = offre.get("id")
 
     #### table "OffreEmploi"
 
     if fill_table_OffreEmploi:
-        offre_id = offre.get("id")
+        if print_write_to_table_OffreEmploi:
+            print("Écriture de la table OffreEmploi")
+            print_write_to_table_OffreEmploi = False
+
         date_creation = offre.get("dateCreation").split("T")[0]  # inutile de récupérer l'heure
         date_actualisation = offre.get("dateActualisation").split("T")[0]  # inutile de récupérer l'heure
         nombre_postes = offre.get("nombrePostes")
 
         # print pour investigation si besoin
-        print(
-            offre_id,
-            date_creation,
-            date_actualisation,
-            nombre_postes,
-            sep="\n-> ",
-        )
+        # print(offre_id, date_creation, date_actualisation, nombre_postes, sep="\n-> ")
 
         fill_db(
             db_name="OffreEmploi",
@@ -118,8 +134,12 @@ for offre in offres_data:
         )
 
     #### table "Contrat"
+
     if fill_table_Contrat:
-        offre_id = offre.get("id")
+        if print_write_to_table_Contrat:
+            print("Écriture de la table Contrat")
+            print_write_to_table_Contrat = False
+
         type_contrat = offre.get("typeContrat")
         type_contrat_libelle = offre.get("typeContratLibelle")
         duree_travail_libelle = offre.get("dureeTravailLibelle")
@@ -180,27 +200,17 @@ for offre in offres_data:
         )
 
     #### table "Entreprise"
+
     if fill_table_Entreprise:
-        offre_id = offre.get("id")
+        if print_write_to_table_Entreprise:
+            print("Écriture de la table Entreprise")
+            print_write_to_table_Entreprise = False
+
         nom_entreprise = offre.get("entreprise").get("nom")
         description_entreprise = offre.get("entreprise").get("description")
-        # cas où nom_entreprise est la PK (ce n'est plus le cas) :
-        #    if not nom_entreprise:  # certaines offres n'ont pas de nom d'entreprise (ex: 186JDCG)
-        #        nom_entreprise = "NOM NON RENSEIGNÉ"
         code_naf = offre.get("codeNAF")
         secteur_activite_libelle = offre.get("secteurActiviteLibelle")
         entreprise_adaptee = offre.get("entreprise").get("entrepriseAdaptee")
-
-        # print pour investigation si besoin
-        # print(
-        #     offre_id,
-        #     nom_entreprise,
-        #     description_entreprise,
-        #     code_naf,
-        #     secteur_activite_libelle,
-        #     entreprise_adaptee,
-        #     sep="\n-> ",
-        # )
 
         fill_db(
             db_name="Entreprise",
@@ -217,7 +227,10 @@ for offre in offres_data:
 
     #### table "Localisation"
     if fill_table_Localisation:
-        offre_id = offre.get("id")
+        if print_write_to_table_Localisation:
+            print("Écriture de la table Localisation")
+            print_write_to_table_Localisation = False
+
         description_lieu = offre.get("lieuTravail").get("libelle")
         code_commune = offre.get("lieuTravail").get("commune")
         code_postal = offre.get("lieuTravail").get("codePostal")
@@ -246,7 +259,11 @@ for offre in offres_data:
 
     #### table "DescriptionOffre"
     if fill_table_DescriptionOffre:
-        offre_id = offre.get("id")
+        if print_write_to_table_DescriptionOffre:
+            print("Écriture de la table DescriptionOffre")
+            print_write_to_table_DescriptionOffre = False
+
+        intitule_offre = offre.get("intitule")
         description_offre = offre.get("description")
         nom_partenaire = offre.get("origineOffre").get("partenaires", [{}])[0].get("nom")
         rome_code = offre.get("romeCode")
@@ -258,6 +275,7 @@ for offre in offres_data:
         # print pour investigation si besoin
         # print(
         #     offre_id,
+        #     intitule_offre,
         #     description_offre,
         #     nom_partenaire,
         #     rome_code,
@@ -272,6 +290,7 @@ for offre in offres_data:
             db_name="DescriptionOffre",
             attributes_tuple=(
                 "offre_id",
+                "intitule_offre",
                 "description_offre",
                 "nom_partenaire",
                 "rome_code",
@@ -283,109 +302,69 @@ for offre in offres_data:
             on_conflict_string=("offre_id"),
         )
 
-    #### tables "Competence" + "Offre_Competence"
+    #### table "Competence"
 
-    if fill_table_Competence or fill_table_Offre_Competence:
+    if fill_table_Competence:
+        if print_write_to_table_Competence:
+            print("Écriture de la table Competence")
+            print_write_to_table_Competence = False
+
         competences = offre.get("competences")  # ⛔ Attention on a une liste de compétences dans le json !!!
 
         if competences:
             for i in range(len(competences)):
                 # /!\ note : il faut remplacer NULL par quelque chose (cas "competence_code = null")
                 # /!\  (sinon risque d'écriture de doublon car "NULL != NULL selon la logique SQL")
+                # /!\ à la suite de la boucle, on remplacera ces nouvelles valeurs par les "null"
                 competence_code = competences[i].get("code", 0)
                 competence_libelle = competences[i].get("libelle", "-")
                 competence_code_exigence = competences[i].get("exigence", "-")
 
                 # print(offre_id, competences, competence_code, competence_libelle, competence_code_exigence, sep="\n-> ", end="\n\n")
 
-                #### table "Competence"
+                fill_db(
+                    db_name="Competence",
+                    attributes_tuple=(
+                        "competence_code",
+                        "competence_libelle",
+                        "competence_code_exigence",
+                    ),
+                    on_conflict_string=("competence_code | competence_libelle | competence_code_exigence"),
+                )
 
-                if fill_table_Competence:
-                    fill_db(
-                        db_name="Competence",
-                        attributes_tuple=(
-                            "competence_code",
-                            "competence_libelle",
-                            "competence_code_exigence",
-                        ),
-                        on_conflict_string=("competence_code | competence_libelle | competence_code_exigence"),
-                    )
+    #### table "Experience"
 
-                #### table "Offre_Competence"
+    if fill_table_Experience:
+        if print_write_to_table_Experience:
+            print("Écriture de la table Experience")
+            print_write_to_table_Experience = False
 
-                if fill_table_Offre_Competence:
-                    # Récupérer l'id pour pouvoir l'insérer en table
-                    query = f"""
-                        SELECT competence_id FROM Competence
-                        WHERE competence_code = %s AND competence_libelle = %s AND competence_code_exigence = %s
-                    """
-                    cursor.execute(query, (competence_code, competence_libelle, competence_code_exigence))
-                    competence_id = cursor.fetchone()[0]
-
-                    # print(offre_id, competence_code, competence_libelle, competence_code_exigence, competence_id, sep="\n-> ")
-
-                    fill_db(
-                        db_name="Offre_Competence",
-                        attributes_tuple=(
-                            "offre_id",
-                            "competence_id",
-                        ),
-                        on_conflict_string="offre_id | competence_id",
-                    )
-
-    #### tables "Experience" + "Offre_Experience"
-
-    if fill_table_Experience or fill_table_Offre_Experience:
-        experience_libelle = offre.get("experienceLibelle")
-        # if not experience_libelle:
-        #     experience_libelle = "-"
-
-        experience_code_exigence = offre.get("experienceExige")
-        # if not experience_code_exigence:
-        #     experience_code_exigence = "-"
-
-        # parfois experience_commentaire existe bien et a la "null" dans le json
-        experience_commentaire = offre.get("experienceCommentaire")
-        if not experience_commentaire:
-            experience_commentaire = "-"
+        experience_libelle = offre.get("experienceLibelle") or "-"
+        experience_code_exigence = offre.get("experienceExige") or "-"
+        experience_commentaire = offre.get("experienceCommentaire") or "-"  # parfois experience_commentaire existe bien et a la "null" dans le json
+        # if not experience_commentaire:
+        #     experience_commentaire = "-"
 
         # print(offre_id, experience_libelle, experience_code_exigence, experience_commentaire, sep="\n-> ", end="\n\n")
 
         if experience_libelle != "-" or experience_code_exigence != "-" or experience_commentaire != "-":
-            if fill_table_Experience:
-                fill_db(
-                    db_name="Experience",
-                    attributes_tuple=(
-                        "experience_libelle",
-                        "experience_code_exigence",
-                        "experience_commentaire",
-                    ),
-                    # on_conflict_string="experience_libelle | experience_code_exigence",
-                    on_conflict_string="experience_libelle | experience_code_exigence | experience_commentaire",
-                )
+            fill_db(
+                db_name="Experience",
+                attributes_tuple=(
+                    "experience_libelle",
+                    "experience_code_exigence",
+                    "experience_commentaire",
+                ),
+                on_conflict_string="experience_libelle | experience_code_exigence | experience_commentaire",
+            )
 
-            if fill_table_Offre_Experience:
-                # Requêter la table précédente pour récupérer l'id
-                query = f"""
-                    SELECT experience_id FROM Experience
-                    WHERE experience_libelle = %s AND experience_code_exigence = %s AND experience_commentaire = %s
-                """
-                # cursor.execute(query, (experience_libelle, experience_code_exigence))
-                cursor.execute(query, (experience_libelle, experience_code_exigence, experience_commentaire))
-                experience_id = cursor.fetchone()[0]
+    #### table "Formation"
 
-                fill_db(
-                    db_name="Offre_Experience",
-                    attributes_tuple=(
-                        "offre_id",
-                        "experience_id",
-                    ),
-                    on_conflict_string="offre_id | experience_id",
-                )
+    if fill_table_Formation:
+        if print_write_to_table_Formation:
+            print("Écriture de la table Formation")
+            print_write_to_table_Formation = False
 
-    #### tables "Formation" et "Offre_Formation"
-
-    if fill_table_Formation or fill_table_Offre_Formation:
         formations = offre.get("formations", [{}])  # ⛔ Attention on a une liste de formations dans le json !!!
 
         if formations:
@@ -398,46 +377,25 @@ for offre in offres_data:
 
                 # print(offre_id, formations[i], formation_code, formation_domaine_libelle, formation_niveau_libelle, formation_commentaire, formation_code_exigence, sep="\n-> ", end="\n\n")
 
-                #### table "Formation"
-                if fill_table_Formation:
-                    fill_db(
-                        db_name="Formation",
-                        attributes_tuple=(
-                            "formation_code",
-                            "formation_domaine_libelle",
-                            "formation_niveau_libelle",
-                            "formation_commentaire",
-                            "formation_code_exigence",
-                        ),
-                        on_conflict_string="formation_code | formation_domaine_libelle | formation_niveau_libelle | formation_commentaire | formation_code_exigence",
-                    )
+                fill_db(
+                    db_name="Formation",
+                    attributes_tuple=(
+                        "formation_code",
+                        "formation_domaine_libelle",
+                        "formation_niveau_libelle",
+                        "formation_commentaire",
+                        "formation_code_exigence",
+                    ),
+                    on_conflict_string="formation_code | formation_domaine_libelle | formation_niveau_libelle | formation_commentaire | formation_code_exigence",
+                )
 
-                #### table "Offre_Formation"
-                if fill_table_Offre_Formation:
-                    # Requêter la table précédente pour récupérer l'id
-                    query = f"""
-                        SELECT formation_id FROM Formation
-                        WHERE formation_code = %s AND formation_domaine_libelle = %s AND formation_niveau_libelle = %s AND formation_commentaire = %s AND formation_code_exigence = %s
-                    """
+    #### table "QualiteProfessionnelle"
 
-                    cursor.execute(query, (formation_code, formation_domaine_libelle, formation_niveau_libelle, formation_commentaire, formation_code_exigence))
+    if fill_table_QualiteProfessionnelle:
+        if print_write_to_table_QualiteProfessionnelle:
+            print("Écriture de la table QualiteProfessionnelle")
+            print_write_to_table_QualiteProfessionnelle = False
 
-                    formation_id = cursor.fetchone()[0]
-
-                    # print(offre_id, formation_code, formation_domaine_libelle, formation_niveau_libelle, formation_commentaire, formation_code_exigence, formation_id, sep="\n-> ", end="\n\n")
-
-                    fill_db(
-                        db_name="Offre_Formation",
-                        attributes_tuple=(
-                            "offre_id",
-                            "formation_id",
-                        ),
-                        on_conflict_string="offre_id | formation_id",
-                    )
-
-    #### tables "QualiteProfessionnelle" et "Offre_QualiteProfessionnelle"
-
-    if fill_table_QualiteProfessionnelle or fill_table_Offre_QualiteProfessionnelle:
         qualites = offre.get("qualitesProfessionnelles")  # ⛔ Attention on a une liste de qualités professionnelles dans le json !!!
 
         if qualites:  # car on peut avoir dans le json "qualitesProfessionnelles": null
@@ -447,82 +405,48 @@ for offre in offres_data:
 
                 # print(offre_id, qualites, qualite_professionnelle_libelle, qualite_professionnelle_description, sep="\n-> ", end="\n\n")
 
-                #### table "QualiteProfessionnelle"
-                if fill_table_QualiteProfessionnelle:
-                    fill_db(
-                        db_name="QualiteProfessionnelle",
-                        attributes_tuple=(
-                            "qualite_professionnelle_libelle",
-                            "qualite_professionnelle_description",
-                        ),
-                        on_conflict_string=("qualite_professionnelle_libelle | qualite_professionnelle_description"),
-                    )
+                fill_db(
+                    db_name="QualiteProfessionnelle",
+                    attributes_tuple=(
+                        "qualite_professionnelle_libelle",
+                        "qualite_professionnelle_description",
+                    ),
+                    on_conflict_string=("qualite_professionnelle_libelle | qualite_professionnelle_description"),
+                )
 
-                #### table "Offre_QualiteProfessionnelle"
-                if fill_table_Offre_QualiteProfessionnelle:
-                    # Récupérer l'id pour pouvoir l'insérer en table
-                    query = f"""
-                        SELECT qualite_professionnelle_id FROM QualiteProfessionnelle
-                        WHERE qualite_professionnelle_libelle = %s AND qualite_professionnelle_description = %s
-                    """
-                    cursor.execute(query, (qualite_professionnelle_libelle, qualite_professionnelle_description))
-                    qualite_professionnelle_id = cursor.fetchone()[0]
+    #### table "Qualification"
+    if fill_table_Qualification:
+        if print_write_to_table_Qualification:
+            print("Écriture de la table Qualification")
+            print_write_to_table_Qualification = False
 
-                    fill_db(
-                        db_name="Offre_QualiteProfessionnelle",
-                        attributes_tuple=(
-                            "offre_id",
-                            "qualite_professionnelle_id",
-                        ),
-                        on_conflict_string="offre_id | qualite_professionnelle_id",
-                    )
-
-    #### tables "Qualification" et "Offre_Qualification"
-    if fill_table_Qualification or fill_table_Offre_Qualification:
+        # qualification_code = offre.get("qualificationCode") or 0
+        # qualification_libelle = offre.get("qualificationLibelle") or "-"
         qualification_code = offre.get("qualificationCode")
-        if not qualification_code:
-            qualification_code = "-"
-
         qualification_libelle = offre.get("qualificationLibelle")
-        if not qualification_libelle:
-            qualification_libelle = "-"
 
         # print(offre_id, qualification_code, qualification_libelle, sep="\n-> ", end="\n\n")
 
-        if qualification_code != "-" or qualification_libelle != "-":
-            if fill_table_Qualification:
-                fill_db(
-                    db_name="Qualification",
-                    attributes_tuple=(
-                        "qualification_code",
-                        "qualification_libelle",
-                    ),
-                    on_conflict_string="qualification_code | qualification_libelle",
-                )
-
-            if fill_table_Offre_Qualification:
-                # Requêter la table précédente pour récupérer l'id
-                query = f"""
-                    SELECT qualification_code FROM Qualification
-                    WHERE qualification_code = %s AND qualification_libelle = %s
-                """
-                cursor.execute(query, (qualification_code, qualification_libelle))
-                qualification_code = cursor.fetchone()[0]
-
-                fill_db(
-                    db_name="Offre_Qualification",
-                    attributes_tuple=(
-                        "offre_id",
-                        "qualification_code",
-                    ),
-                    on_conflict_string="offre_id | qualification_code",
-                )
+        # if qualification_code != 0 or qualification_libelle != "-":
+        if (qualification_code is not None) or (qualification_libelle is not None):
+            fill_db(
+                db_name="Qualification",
+                attributes_tuple=(
+                    "qualification_code",
+                    "qualification_libelle",
+                ),
+                on_conflict_string="qualification_code | qualification_libelle",
+            )
 
     # if offre_id == "186MCDP":
     # if offre_id == "186KTRN":
     #     break
-    #### tables "Langue" et "Offre_Langue"
-    if fill_table_Langue or fill_table_Offre_Langue:
+    #### table "Langue"
+    if fill_table_Langue:
+        if print_write_to_table_Langue:
+            print("Écriture de la table Langue")
+            print_write_to_table_Langue = False
+
         langues = offre.get("langues")  # ⛔ Attention on a une liste de langues dans le json !!!
 
         # print(offre_id, langues, sep="\n-> ", end="\n\n")
@@ -534,39 +458,23 @@ for offre in offres_data:
 
                 # print(offre_id, langues[i], langue_libelle, langue_code_exigence, sep="\n-> ", end="\n\n")
 
-                #### table "Langue"
-                if fill_table_Langue:
-                    fill_db(
-                        db_name="Langue",
-                        attributes_tuple=(
-                            "langue_libelle",
-                            "langue_code_exigence",
-                        ),
-                        on_conflict_string=("langue_libelle | langue_code_exigence"),
-                    )
+                fill_db(
+                    db_name="Langue",
+                    attributes_tuple=(
+                        "langue_libelle",
+                        "langue_code_exigence",
+                    ),
+                    on_conflict_string=("langue_libelle | langue_code_exigence"),
+                )
 
-                #### table "Offre_Langue"
-                if fill_table_Offre_Langue:
-                    # Récupérer l'id pour pouvoir l'insérer en table
-                    query = f"""
-                        SELECT langue_id FROM Langue
-                        WHERE langue_libelle = %s AND langue_code_exigence = %s
-                    """
-                    cursor.execute(query, (langue_libelle, langue_code_exigence))
-                    langue_id = cursor.fetchone()[0]
+    #### table "PermisConduire"
 
-                    fill_db(
-                        db_name="Offre_Langue",
-                        attributes_tuple=(
-                            "offre_id",
-                            "langue_id",
-                        ),
-                        on_conflict_string="offre_id | langue_id",
-                    )
+    if fill_table_PermisConduire:
+        # if fill_table_Offre_PermisConduire:
+        if print_write_to_table_PermisConduire:
+            print("Écriture de la table PermisConduire")
+            print_write_to_table_PermisConduire = False
 
-    #### tables "PermisConduire" et "Offre_PermisConduire"
-
-    if fill_table_PermisConduire or fill_table_Offre_PermisConduire:
         permisconduires = offre.get("permis")  # ⛔ Attention on a une liste de permisconduires dans le json !!!
 
         # print(offre_id, permisconduires, sep="\n-> ", end="\n\n")
@@ -589,9 +497,354 @@ for offre in offres_data:
                         on_conflict_string=("permis_libelle | permis_code_exigence"),
                     )
 
-                #### table "Offre_PermisConduire"
-                if fill_table_Offre_PermisConduire:
+
+if 1:
+    """
+    Ici, on réécrit les tables où on a dû écrire en base les valeurs différentes de "null" (comme par exemple "-").
+    """
+
+    #### table "Competence"
+
+    if fill_table_Competence:
+        print("Mise à jour de la table Competence (on remet les NULL)")
+
+        update_query = """
+            UPDATE Competence
+            SET
+                competence_code = NULLIF(competence_code, 0),
+                competence_libelle = NULLIF(competence_libelle, '-'),
+                competence_code_exigence = NULLIF(competence_code_exigence, '-')
+            WHERE
+                competence_code = 0 OR
+                competence_libelle = '-' OR
+                competence_code_exigence = '-'
+        """
+        cursor.execute(update_query)
+        conn.commit()
+
+    #### table "Experience"
+
+    if fill_table_Experience:
+        print("Mise à jour de la table Experience (on remet les NULL)")
+
+        update_query = """
+            UPDATE Experience
+            SET
+                experience_libelle = NULLIF(experience_libelle, '-'),
+                experience_code_exigence = NULLIF(experience_code_exigence, '-'),
+                experience_commentaire = NULLIF(experience_commentaire, '-')
+            WHERE
+                experience_libelle = '-' OR
+                experience_code_exigence = '-' OR
+                experience_commentaire = '-'
+        """
+        cursor.execute(update_query)
+        conn.commit()
+
+    #### table "Formation"
+
+    if fill_table_Formation:
+        print("Mise à jour de la table Formation (on remet les NULL)")
+
+        update_query = """
+            UPDATE Formation
+            SET
+                formation_code = NULLIF(formation_code, 0),
+                formation_domaine_libelle = NULLIF(formation_domaine_libelle, '-'),
+                formation_niveau_libelle = NULLIF(formation_niveau_libelle, '-'),
+                formation_commentaire = NULLIF(formation_commentaire, '-'),
+                formation_code_exigence = NULLIF(formation_code_exigence, '-')
+            WHERE
+                formation_code = 0 OR
+                formation_domaine_libelle = '-' OR
+                formation_niveau_libelle = '-' OR
+                formation_commentaire = '-' OR
+                formation_code_exigence = '-'
+        """
+        cursor.execute(update_query)
+        conn.commit()
+
+    #### table "QualiteProfessionnelle"
+
+    if fill_table_QualiteProfessionnelle:
+        print("Mise à jour de la table Formation (on remet les NULL)")
+        pass  # pas besoin, on n'a pas de NULL
+
+    #### table "Qualification" : inutile de le faire car toutes les clés ont "NOT NULL" dans le CREATE TABLE
+    #### table "Langue" : inutile de le faire car toutes les clés ont "NOT NULL" dans le CREATE TABLE
+    #### table "PermisConduire" : inutile de le faire car toutes les clés ont "NOT NULL" dans le CREATE TABLE
+
+if 1:
+    """
+    Ici, on s'occupe des tables de liaison, une fois que les tables de dimension associées ont bien les valeurs remplacées par null.
+
+    Explication pour la suite de `(competence_code IS NULL AND %s IS NULL OR competence_code = %s)` :
+      - partie 1 :
+        - Si competence_code est NULL et la valeur passée en paramètre est aussi NULL, alors la condition est vraie.
+      - partie 2 :
+        - Si competence_code est égal à la valeur passée en paramètre (c'est-à-dire, non NULL et identique), la condition est vraie.
+      - Ainsi, cette condition permet de gérer le cas où la valeur NULL doit être traitée de manière spécifique.
+        (puisque NULL n'est jamais égal à NULL en SQL, il faut une vérification explicite)
+
+    """
+
+    #### table "Offre_Competence"
+
+    if fill_table_Offre_Competence:
+        print("Écriture de la table Offre_Competence")
+
+        for offre in offres_data:
+            offre_id = offre.get("id")
+
+            competences = offre.get("competences")  # ⛔ Attention on a une liste de compétences dans le json !!!
+
+            if competences:
+                for i in range(len(competences)):
+                    competence_code = competences[i].get("code")
+                    competence_libelle = competences[i].get("libelle")
+                    competence_code_exigence = competences[i].get("exigence")
+
+                    # print(offre_id, competence_code, competence_libelle, competence_code_exigence, sep="\n-> ")
+
+                    # Récupérer competence_id
+                    query = f"""
+                        SELECT competence_id
+                        FROM Competence
+                        WHERE
+                            (competence_code IS NULL AND %s IS NULL OR competence_code = %s)
+                            AND (competence_libelle IS NULL AND %s IS NULL OR competence_libelle = %s)
+                            AND (competence_code_exigence IS NULL AND %s IS NULL OR competence_code_exigence = %s)
+                    """
+                    cursor.execute(
+                        query,
+                        (competence_code, competence_code, competence_libelle, competence_libelle, competence_code_exigence, competence_code_exigence),
+                    )
+
+                    competence_id = cursor.fetchone()[0]
+
+                    # print(offre_id, competence_code, competence_libelle, competence_code_exigence, competence_id, sep="\n-> ")
+
+                    fill_db(
+                        db_name="Offre_Competence",
+                        attributes_tuple=(
+                            "offre_id",
+                            "competence_id",
+                        ),
+                        on_conflict_string="offre_id | competence_id",
+                    )
+
+    #### table "Offre_Experience"
+    if fill_table_Offre_Experience:
+        print("Écriture de la table Offre_Experience")
+
+        for offre in offres_data:
+            offre_id = offre.get("id")
+
+            experience_libelle = offre.get("experienceLibelle")
+            experience_code_exigence = offre.get("experienceExige")
+            experience_commentaire = offre.get("experienceCommentaire")
+
+            # Récupérer experience_id
+            query = f"""
+                SELECT experience_id
+                FROM Experience
+                WHERE
+                    (experience_libelle IS NULL AND %s IS NULL OR experience_libelle = %s)
+                    AND (experience_code_exigence IS NULL AND %s IS NULL OR experience_code_exigence = %s)
+                    AND (experience_commentaire IS NULL AND %s IS NULL OR experience_commentaire = %s)
+            """
+
+            # cursor.execute(query, (experience_libelle, experience_code_exigence))
+            cursor.execute(query, (experience_libelle, experience_libelle, experience_code_exigence, experience_code_exigence, experience_commentaire, experience_commentaire))
+            experience_id = cursor.fetchone()[0]
+
+            fill_db(
+                db_name="Offre_Experience",
+                attributes_tuple=(
+                    "offre_id",
+                    "experience_id",
+                ),
+                on_conflict_string="offre_id | experience_id",
+            )
+
+    #### table "Offre_Formation"
+    if fill_table_Offre_Formation:
+        print("Écriture de la table Offre_Formation")
+        # Requêter la table précédente pour récupérer l'id
+
+        for offre in offres_data:
+            offre_id = offre.get("id")
+
+            formations = offre.get("formations", [{}])  # ⛔ Attention on a une liste de formations dans le json !!!
+
+            if formations:
+                for i in range(len(formations)):
+                    formation_code = formations[i].get("codeFormation")
+                    formation_domaine_libelle = formations[i].get("domaineLibelle")
+                    formation_niveau_libelle = formations[i].get("niveauLibelle")
+                    formation_commentaire = formations[i].get("commentaire")
+                    formation_code_exigence = formations[i].get("exigence")
+
+                    # Récupérer formation_id
+                    query = f"""
+                        SELECT formation_id
+                        FROM Formation
+                        WHERE
+                            (formation_code IS NULL AND %s IS NULL OR formation_code = %s)
+                            AND (formation_domaine_libelle IS NULL AND %s IS NULL OR formation_domaine_libelle = %s)
+                            AND (formation_niveau_libelle IS NULL AND %s IS NULL OR formation_niveau_libelle = %s)
+                            AND (formation_commentaire IS NULL AND %s IS NULL OR formation_commentaire = %s)
+                            AND (formation_code_exigence IS NULL AND %s IS NULL OR formation_code_exigence = %s)
+                    """
+
+                    cursor.execute(
+                        query,
+                        (
+                            formation_code,
+                            formation_code,
+                            formation_domaine_libelle,
+                            formation_domaine_libelle,
+                            formation_niveau_libelle,
+                            formation_niveau_libelle,
+                            formation_commentaire,
+                            formation_commentaire,
+                            formation_code_exigence,
+                            formation_code_exigence,
+                        ),
+                    )
+
+                    formation_id = cursor.fetchone()[0]
+
+                    # print(offre_id, formation_code, formation_domaine_libelle, formation_niveau_libelle, formation_commentaire, formation_code_exigence, formation_id, sep="\n-> ", end="\n\n")
+
+                    fill_db(
+                        db_name="Offre_Formation",
+                        attributes_tuple=(
+                            "offre_id",
+                            "formation_id",
+                        ),
+                        on_conflict_string="offre_id | formation_id",
+                    )
+
+    #### table "Offre_QualiteProfessionnelle"
+    if fill_table_Offre_QualiteProfessionnelle:
+        print("Écriture de la table Offre_QualiteProfessionnelle")
+        for offre in offres_data:
+            offre_id = offre.get("id")
+
+            qualites = offre.get("qualitesProfessionnelles")  # ⛔ Attention on a une liste de qualités professionnelles dans le json !!!
+
+            if qualites:  # car on peut avoir dans le json "qualitesProfessionnelles": null
+                for i in range(len(qualites)):
+                    qualite_professionnelle_libelle = qualites[i].get("libelle")
+                    qualite_professionnelle_description = qualites[i].get("description")
+
+                    query = f"""
+                        WHERE qualite_professionnelle_libelle = %s AND qualite_professionnelle_description = %s
+                    """
+
+                    # Récupérer qualite_professionnelle_id
+                    query = f"""
+                        SELECT qualite_professionnelle_id
+                        FROM QualiteProfessionnelle
+                        WHERE
+                            (qualite_professionnelle_libelle IS NULL AND %s IS NULL OR qualite_professionnelle_libelle = %s)
+                            AND (qualite_professionnelle_description IS NULL AND %s IS NULL OR qualite_professionnelle_description = %s)
+                    """
+
+                    cursor.execute(query, (qualite_professionnelle_libelle, qualite_professionnelle_libelle, qualite_professionnelle_description, qualite_professionnelle_description))
+                    qualite_professionnelle_id = cursor.fetchone()[0]
+
+                    fill_db(
+                        db_name="Offre_QualiteProfessionnelle",
+                        attributes_tuple=(
+                            "offre_id",
+                            "qualite_professionnelle_id",
+                        ),
+                        on_conflict_string="offre_id | qualite_professionnelle_id",
+                    )
+
+    #### table "Offre_Qualification"
+    if fill_table_Offre_Qualification:
+        print("Écriture de la table Offre_Qualification")
+        for offre in offres_data:
+            offre_id = offre.get("id")
+
+            qualification_code = offre.get("qualificationCode")
+            qualification_libelle = offre.get("qualificationLibelle")
+
+            # print(offre_id, qualification_code, qualification_libelle, sep="\n-->", end="\n\n")
+
+            if (qualification_code is not None) and (qualification_libelle is not None):
+                # requêter qualification_code
+                query = f"""
+                    SELECT qualification_code
+                    FROM Qualification
+                    WHERE
+                        (qualification_code IS NULL AND %s IS NULL OR qualification_code = %s)
+                        AND (qualification_libelle IS NULL AND %s IS NULL OR qualification_libelle = %s)
+                """
+
+                cursor.execute(query, (qualification_code, qualification_code, qualification_libelle, qualification_libelle))
+                qualification_code = cursor.fetchone()[0]
+
+                # print(offre_id, qualification_code, qualification_libelle, sep="\n-->", end="\n\n")
+
+                fill_db(
+                    db_name="Offre_Qualification",
+                    attributes_tuple=(
+                        "offre_id",
+                        "qualification_code",
+                    ),
+                    on_conflict_string="offre_id | qualification_code",
+                )
+
+    #### table "Offre_Langue"
+    if fill_table_Offre_Langue:
+        print("Écriture de la table Offre_Langue")
+        for offre in offres_data:
+            offre_id = offre.get("id")
+
+            langues = offre.get("langues")  # ⛔ Attention on a une liste de langues dans le json !!!
+
+            # print(offre_id, langues, sep="\n-> ", end="\n\n")
+
+            if langues:
+                for i in range(len(langues)):
+                    langue_libelle = langues[i].get("libelle")
+                    langue_code_exigence = langues[i].get("exigence")
+
                     # Récupérer l'id pour pouvoir l'insérer en table
+                    query = f"""
+                        SELECT langue_id FROM Langue
+                        WHERE langue_libelle = %s AND langue_code_exigence = %s
+                    """
+                    cursor.execute(query, (langue_libelle, langue_code_exigence))
+                    langue_id = cursor.fetchone()[0]
+
+                    fill_db(
+                        db_name="Offre_Langue",
+                        attributes_tuple=(
+                            "offre_id",
+                            "langue_id",
+                        ),
+                        on_conflict_string="offre_id | langue_id",
+                    )
+
+    #### table "Offre_PermisConduire"
+    if fill_table_Offre_PermisConduire:
+        print("Écriture de la table Offre_PermisConduire")
+        for offre in offres_data:
+            offre_id = offre.get("id")
+
+            permisconduires = offre.get("permis")  # ⛔ Attention on a une liste de permisconduires dans le json !!!
+
+            if permisconduires:
+                for i in range(len(permisconduires)):
+                    permis_libelle = permisconduires[i].get("libelle")
+                    permis_code_exigence = permisconduires[i].get("exigence")
+
+                    # Récupérer permis_id
                     query = f"""
                         SELECT permis_id FROM permisconduire
                         WHERE permis_libelle = %s AND permis_code_exigence = %s

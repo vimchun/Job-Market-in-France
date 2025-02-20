@@ -3,14 +3,19 @@ SELECT
     -- COUNT(*)
     -- formation_id
 FROM
-    -----  OK
     -- OffreEmploi
     -- Contrat
     -- Entreprise
     -- Localisation
     -- DescriptionOffre
     -- Competence
+    -- where competence_libelle = 'Exploitation tramway et sécurité ferroviaire'
     -- Offre_Competence
+    -- where competence_code = 'null'
+    -- where competence_code is null
+    -- where competence_code = '300188'
+    -- order by competence_libelle
+    -- order by competence_code DESC
     -- Experience
     -- Offre_Experience
     -- Formation
@@ -21,7 +26,7 @@ FROM
     -- Offre_Qualification
     -- Langue
     -- Offre_Langue
-    ----- todo
+    ----
     -- PermisConduire
     Offre_PermisConduire
 
@@ -32,7 +37,7 @@ FROM
     -- domaine_formation_code
     --     offre_id
     --     experience_libelle
--- LIMIT 100;
+LIMIT 1000;
 
 ;
 

@@ -62,7 +62,7 @@
 25;43;`nombrePostes`;nombre_postes;Nombre Postes;Offre Emploi;Offre Emploi;integer;OffresEmploi;Nombre de postes disponibles pour cette offre;;
 37;61;`permis` > `libelle`;permis_libelle;Permis Libellé;Permis de Conduire;Permis de Conduire;varchar(100);PermisConduire;Permis;"""B - Véhicule léger""";
 37;62;`permis` > `exigence`;permis_code_exigence;Permis Code Exigence;Permis de Conduire;Permis de Conduire;varchar(1);PermisConduire;;"""E""";
-29;45;`qualificationCode`;qualification_code;Qualification Code;Qualification;Qualification;varchar(1);Qualifications;Qualification du poste : 1=manœuvre, ..., 8=agent de maitrise, 9=cadre;"""6""";
+29;45;`qualificationCode`;qualification_code;Qualification Code;Qualification;Qualification;integer;Qualifications;Qualification du poste : 1=manœuvre, ..., 8=agent de maitrise, 9=cadre;"""6""";
 30;46;`qualificationLibelle`;qualification_libelle;Qualification Libellé;Qualification;Qualification;varchar(100);Qualifications;Libellé de la qualification du poste;"""Employé qualifié""";
 34;59;`qualitesProfessionnelles` (liste) > `libelle`;qualite_professionnelle_libelle;Qualité Professionnelle Libellé;Qualité Professionnelle;Qualité Professionnelle;varchar(100);QualitesProfessionnelles;Informations sur les qualités professionnelles;"""Faire preuve d'autonomie""";
 34;60;`qualitesProfessionnelles` (liste) > `description`;qualite_professionnelle_description;Qualité Professionnelle Description;Qualité Professionnelle;Qualité Professionnelle;varchar(1000);QualitesProfessionnelles;Informations sur les qualités professionnelles;"""Capacité à prendre en charge son activité sans devoir être encadré de façon continue (le cas échéant, à solliciter les autres acteurs de l'entreprise).""";
