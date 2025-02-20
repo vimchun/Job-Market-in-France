@@ -18,7 +18,7 @@ FROM
     -- order by competence_code DESC
     -- Experience
     -- Offre_Experience
-    -- Formation
+    Formation
     -- Offre_Formation
     -- QualiteProfessionnelle
     -- Offre_QualiteProfessionnelle
@@ -28,7 +28,7 @@ FROM
     -- Offre_Langue
     ----
     -- PermisConduire
-    Offre_PermisConduire
+    -- Offre_PermisConduire
 
     -- ORDER BY competence_libelle
     -- ORDER BY competence_code, competence_libelle

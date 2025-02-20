@@ -149,8 +149,8 @@ CREATE TABLE Offre_QualiteProfessionnelle (
 
 -----------------------------------------------------------------------------------------------------------
 
-DROP TABLE Qualification CASCADE;
-DROP TABLE Offre_Qualification CASCADE;
+-- DROP TABLE Qualification CASCADE;
+-- DROP TABLE Offre_Qualification CASCADE;
 
 CREATE TABLE Qualification (
     qualification_code INTEGER PRIMARY KEY NOT NULL
@@ -188,8 +188,8 @@ CREATE TABLE Offre_Langue (
 
 -----------------------------------------------------------------------------------------------------------
 
-DROP TABLE PermisConduire CASCADE;
-DROP TABLE Offre_PermisConduire CASCADE;
+-- DROP TABLE PermisConduire CASCADE;
+-- DROP TABLE Offre_PermisConduire CASCADE;
 
 CREATE TABLE PermisConduire (
     permis_id SERIAL NOT NULL PRIMARY KEY

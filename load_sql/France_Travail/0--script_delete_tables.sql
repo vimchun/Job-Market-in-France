@@ -13,9 +13,7 @@ DROP TABLE Competence;
 
 DROP TABLE Experience;
 
-DROP TABLE NiveauFormation;
-
-DROP TABLE DomaineFormation;
+DROP TABLE Formation;
 
 DROP TABLE QualiteProfessionnelle;
 
@@ -29,9 +27,7 @@ DROP TABLE Offre_Competence;
 
 DROP TABLE Offre_Experience;
 
-DROP TABLE Offre_NiveauFormation;
-
-DROP TABLE Offre_DomaineFormation;
+DROP TABLE Offre_Formation;
 
 DROP TABLE Offre_QualiteProfessionnelle;
 

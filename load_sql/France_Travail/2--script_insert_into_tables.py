@@ -3,19 +3,23 @@ import os
 
 import psycopg2
 
+"""
+Notes : met environ 15 minutes pour remplir toutes les tables.
+"""
+
 # Booléens pour remplir ou pas les tables associées
-fill_table_OffreEmploi = 0
-fill_table_Contrat = 0
-fill_table_Entreprise = 0
-fill_table_Localisation = 0
-fill_table_DescriptionOffre = 0
-fill_table_Competence, fill_table_Offre_Competence = 0, 0
-fill_table_Experience, fill_table_Offre_Experience = 0, 0
-fill_table_Formation, fill_table_Offre_Formation = 0, 0
-fill_table_QualiteProfessionnelle, fill_table_Offre_QualiteProfessionnelle = 0, 0
-fill_table_Qualification, fill_table_Offre_Qualification = 0, 0
-fill_table_Langue, fill_table_Offre_Langue = 0, 0
-fill_table_PermisConduire, fill_table_Offre_PermisConduire = 0, 0
+fill_table_OffreEmploi = 1
+fill_table_Contrat = 1
+fill_table_Entreprise = 1
+fill_table_Localisation = 1
+fill_table_DescriptionOffre = 1
+fill_table_Competence, fill_table_Offre_Competence = 1, 1
+fill_table_Experience, fill_table_Offre_Experience = 1, 1
+fill_table_Formation, fill_table_Offre_Formation = 1, 1
+fill_table_QualiteProfessionnelle, fill_table_Offre_QualiteProfessionnelle = 1, 1
+fill_table_Qualification, fill_table_Offre_Qualification = 1, 1
+fill_table_Langue, fill_table_Offre_Langue = 1, 1
+fill_table_PermisConduire, fill_table_Offre_PermisConduire = 1, 1
 
 # Pour print qu'on écrit dans les tables associées qu'une seule fois
 print_write_to_table_OffreEmploi = True
@@ -99,13 +103,14 @@ cursor = conn.cursor()
 
 
 for offre in offres_data:
-    # récupération de valeurs avec la méthode .get() au cas où il manquerait les clés dans certains documents jsons
     """
-    Dans cette boucle, pour toutes les tables de dimension qui ont une table de liaison, on traite ces tables de dimension en remplaçant les null, sinon on risque d'écrire des doublons.
-        (null != null en sql)
-    On remplace ces valeurs par les null de départs par la suite.
+    Dans cette boucle for, pour toutes les tables de dimension qui ont une table de liaison, on traite les tables de dimension en remplaçant les null par une quelconque valeur
+        (sinon on risque d'écrire des doublons, car NULL != NULL en sql)
+
+    On remet ces valeurs à NULL dans la suite du script.
     """
 
+    # récupération de valeurs avec la méthode .get() au cas où il manquerait les clés dans certains documents jsons
     offre_id = offre.get("id")
 
     #### table "OffreEmploi"
@@ -226,6 +231,7 @@ for offre in offres_data:
         )
 
     #### table "Localisation"
+
     if fill_table_Localisation:
         if print_write_to_table_Localisation:
             print("Écriture de la table Localisation")
@@ -238,13 +244,7 @@ for offre in offres_data:
         # longitude = offre.get("lieuTravail").get("longitude")
 
         # print pour investigation si besoin
-        # print(
-        #     offre_id,
-        #     description_lieu,
-        #     code_commune,
-        #     code_postal,
-        #     sep="\n-> ",
-        # )
+        # print(offre_id, description_lieu, code_commune, code_postal, sep="\n-> ")
 
         fill_db(
             db_name="Localisation",
@@ -273,18 +273,7 @@ for offre in offres_data:
         accessible_travailleurs_handicapes = offre.get("accessibleTH")
 
         # print pour investigation si besoin
-        # print(
-        #     offre_id,
-        #     intitule_offre,
-        #     description_offre,
-        #     nom_partenaire,
-        #     rome_code,
-        #     rome_libelle,
-        #     appellation_rome,
-        #     difficile_a_pourvoir,
-        #     accessible_travailleurs_handicapes,
-        #     sep="\n-> ",
-        # )
+        # print(offre_id, intitule_offre, description_offre, nom_partenaire, rome_code, rome_libelle, appellation_rome, difficile_a_pourvoir, accessible_travailleurs_handicapes, sep="\n-> ")
 
         fill_db(
             db_name="DescriptionOffre",
@@ -415,13 +404,12 @@ for offre in offres_data:
                 )
 
     #### table "Qualification"
+
     if fill_table_Qualification:
         if print_write_to_table_Qualification:
             print("Écriture de la table Qualification")
             print_write_to_table_Qualification = False
 
-        # qualification_code = offre.get("qualificationCode") or 0
-        # qualification_libelle = offre.get("qualificationLibelle") or "-"
         qualification_code = offre.get("qualificationCode")
         qualification_libelle = offre.get("qualificationLibelle")
 
@@ -441,7 +429,9 @@ for offre in offres_data:
     # if offre_id == "186MCDP":
     # if offre_id == "186KTRN":
     #     break
+
     #### table "Langue"
+
     if fill_table_Langue:
         if print_write_to_table_Langue:
             print("Écriture de la table Langue")
@@ -470,7 +460,6 @@ for offre in offres_data:
     #### table "PermisConduire"
 
     if fill_table_PermisConduire:
-        # if fill_table_Offre_PermisConduire:
         if print_write_to_table_PermisConduire:
             print("Écriture de la table PermisConduire")
             print_write_to_table_PermisConduire = False
@@ -486,21 +475,19 @@ for offre in offres_data:
 
                 # print(offre_id, permisconduires[i], permis_libelle, permis_code_exigence, sep="\n-> ", end="\n\n")
 
-                #### table "PermisConduire"
-                if fill_table_PermisConduire:
-                    fill_db(
-                        db_name="PermisConduire",
-                        attributes_tuple=(
-                            "permis_libelle",
-                            "permis_code_exigence",
-                        ),
-                        on_conflict_string=("permis_libelle | permis_code_exigence"),
-                    )
+                fill_db(
+                    db_name="PermisConduire",
+                    attributes_tuple=(
+                        "permis_libelle",
+                        "permis_code_exigence",
+                    ),
+                    on_conflict_string=("permis_libelle | permis_code_exigence"),
+                )
 
 
 if 1:
     """
-    Ici, on réécrit les tables où on a dû écrire en base les valeurs différentes de "null" (comme par exemple "-").
+    Ici, on réécrit les tables où on a dû écrire en base les valeurs différentes de "null" pour éviter d'écrire des doublons (comme par exemple "-").
     """
 
     #### table "Competence"
@@ -579,10 +566,13 @@ if 1:
     Ici, on s'occupe des tables de liaison, une fois que les tables de dimension associées ont bien les valeurs remplacées par null.
 
     Explication pour la suite de `(competence_code IS NULL AND %s IS NULL OR competence_code = %s)` :
-      - partie 1 :
-        - Si competence_code est NULL et la valeur passée en paramètre est aussi NULL, alors la condition est vraie.
-      - partie 2 :
+
+      - Partie 1 : `competence_code IS NULL AND %s IS NULL`
+        - Si competence_code est NULL et si la valeur passée en paramètre est aussi NULL, alors la condition est vraie.
+
+      - Partie 2 : `competence_code = %s`
         - Si competence_code est égal à la valeur passée en paramètre (c'est-à-dire, non NULL et identique), la condition est vraie.
+
       - Ainsi, cette condition permet de gérer le cas où la valeur NULL doit être traitée de manière spécifique.
         (puisque NULL n'est jamais égal à NULL en SQL, il faut une vérification explicite)
 
@@ -634,6 +624,7 @@ if 1:
                     )
 
     #### table "Offre_Experience"
+
     if fill_table_Offre_Experience:
         print("Écriture de la table Offre_Experience")
 
@@ -654,7 +645,6 @@ if 1:
                     AND (experience_commentaire IS NULL AND %s IS NULL OR experience_commentaire = %s)
             """
 
-            # cursor.execute(query, (experience_libelle, experience_code_exigence))
             cursor.execute(query, (experience_libelle, experience_libelle, experience_code_exigence, experience_code_exigence, experience_commentaire, experience_commentaire))
             experience_id = cursor.fetchone()[0]
 
@@ -668,9 +658,9 @@ if 1:
             )
 
     #### table "Offre_Formation"
+
     if fill_table_Offre_Formation:
         print("Écriture de la table Offre_Formation")
-        # Requêter la table précédente pour récupérer l'id
 
         for offre in offres_data:
             offre_id = offre.get("id")
@@ -727,6 +717,7 @@ if 1:
                     )
 
     #### table "Offre_QualiteProfessionnelle"
+
     if fill_table_Offre_QualiteProfessionnelle:
         print("Écriture de la table Offre_QualiteProfessionnelle")
         for offre in offres_data:
@@ -765,6 +756,7 @@ if 1:
                     )
 
     #### table "Offre_Qualification"
+
     if fill_table_Offre_Qualification:
         print("Écriture de la table Offre_Qualification")
         for offre in offres_data:
@@ -776,7 +768,7 @@ if 1:
             # print(offre_id, qualification_code, qualification_libelle, sep="\n-->", end="\n\n")
 
             if (qualification_code is not None) and (qualification_libelle is not None):
-                # requêter qualification_code
+                # récupérer qualification_code
                 query = f"""
                     SELECT qualification_code
                     FROM Qualification
@@ -800,6 +792,7 @@ if 1:
                 )
 
     #### table "Offre_Langue"
+
     if fill_table_Offre_Langue:
         print("Écriture de la table Offre_Langue")
         for offre in offres_data:
@@ -814,7 +807,7 @@ if 1:
                     langue_libelle = langues[i].get("libelle")
                     langue_code_exigence = langues[i].get("exigence")
 
-                    # Récupérer l'id pour pouvoir l'insérer en table
+                    # Récupérer langue_id
                     query = f"""
                         SELECT langue_id FROM Langue
                         WHERE langue_libelle = %s AND langue_code_exigence = %s
@@ -832,8 +825,10 @@ if 1:
                     )
 
     #### table "Offre_PermisConduire"
+
     if fill_table_Offre_PermisConduire:
         print("Écriture de la table Offre_PermisConduire")
+
         for offre in offres_data:
             offre_id = offre.get("id")
 

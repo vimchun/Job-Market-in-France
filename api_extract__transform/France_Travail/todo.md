@@ -1,78 +1,20 @@
 todo (ou pas)
 
-# correspondance métier - compétences clés
-
-https://francetravail.io/produits-partages/catalogue/rome-4-0-metiers/documentation#/api-reference/operations/lireAppellation
-
-```json
-{
-  "obsolete": false,
-  "code": "404278",
-  "libelle": "Data engineer",
-  "libelleCourt": "Data engineer",
-  "transitionEcologique": false,
-  "transitionEcologiqueDetaillee": "EMPLOI_BLANC",
-  "classification": "PRINCIPALE",
-  "metier": {
-    "code": "M1811",
-    "libelle": "Data engineer",
-    "riasecMajeur": "I",
-    "riasecMineur": "C",
-    "transitionEcologique": false,
-    "transitionEcologiqueDetaillee": "EMPLOI_BLANC",
-    "transitionNumerique": true,
-    "domaineProfessionnel": {
-      "code": "M18",
-      "libelle": "Systèmes d'information et de télécommunication",
-      "grandDomaine": {
-        "libelle": "Support à l'entreprise",
-        "code": "M"
-      }
-    },
-    "emploiCadre": true
-  },
-  "competencesCles": [
-    {
-      "competence": {
-        "type": "MACRO-SAVOIR-FAIRE",
-        "code": "300067",
-        "libelle": "Analyser, exploiter, structurer des données",
-        "codeOgr": "300067",
-        "riasecMajeur": "I",
-        "riasecMineur": "C"
-      },
-      "frequence": 63
-    },
-    {
-      "competence": {
-        "type": "MACRO-SAVOIR-FAIRE",
-        "code": "300488",
-        "libelle": "Concevoir et gérer un projet",
-        "codeOgr": "300488",
-        "riasecMajeur": "C",
-        "riasecMineur": "E"
-      },
-      "frequence": 68
-    },
-    {
-      "competence": {
-        "type": "COMPETENCE-DETAILLEE",
-        "code": "120209",
-        "libelle": "Enrichir une base de données",
-        "codeOgr": "120209",
-        "riasecMajeur": "C"
-      },
-      "frequence": 55
-    }
-  ]
-}
+# 0/ Supprimer les offres DOMTOM et Corse
 
 
-```
+# 1/ Extraire la ville, la commune, le département, et la région
 
 
-# infos entreprise
-utile ?
-si oui, récupérer le SIRET
+Le faire depuis l'attribut "Description Lieu" ou depuis l'attribut "Intitule" quand l'information n'est pas présente dans les attributs "Code Postal" ou "Code Commune"
 
-https://francetravail.io/produits-partages/catalogue/pages-entreprises?tabgroup-api=documentation&doc-section=api-doc-section-consulter-une-page-entreprise
+(note : possible de récupérer l'information depuis les coordonnées GPS ? cf geopy ? sachant que certaines coordonnées gps sont erronées, comme vu avec power bi : Rouen en Allemagne, Annecy en Somalie)
+
+En effet, parfois :
+ - Une offre n'a ni le "Code Postal", ni le "Code Commune" renseigné mais "Description Lieu" renseigné
+   - Exemple : l'offre 0526013 a "Code Postal = null" et "Code Commune = null", mais elle a "Description Lieu = 95 - Val d'Oise"
+ - Une offre n'a ni le "Code Postal", ni le "Code Commune" renseigné et "Description Lieu = France", mais l'information peut être dans l'intitulé
+   - Exemple : l'offre 9598734 est en IDF ("Intitulé Offre : Data Engineer PySpark - Data Factory - Services Financiers - Ile de France (H/F)")
+
+
+# 2/ Ajouter un attribut pour savoir si l'offre est encore d'actualité ou pas
