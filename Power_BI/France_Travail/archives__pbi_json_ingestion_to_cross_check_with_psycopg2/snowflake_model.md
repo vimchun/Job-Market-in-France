@@ -76,16 +76,11 @@
   - "Commentaire"
 
 
-## Niveau Formation
-- clé : "Niveau ID"
+## Formation
+- clé : "Formation ID"
   --
   - "Libellé"
   - "Exigence"
-
-
-## Domaine Formation
-- clé : "Domaine ID"
-  --
   - "Code"
   - "Libellé"
 

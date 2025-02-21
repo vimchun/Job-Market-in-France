@@ -1,8 +1,8 @@
 ﻿ordre d'apparition dans le json;mon ordre; clé France Travail                            ;Nom sur PostGreSQL;Nom sur Power BI;Nom table sur PostGreSQL;Nom table sur Power BI;type;table;descriptions de la clé;exemple;commentaires
-6;7;`lieuTravail` > `latitude`;latitude;Latitude;-;-;float;LieuxTravail;Lieu de travail;48.873635;Les coordonnées GPS renseignées sont parfois incorrectes, je supprime donc cette colonne (voir exemples dans le dossier archives avec Rouen et Annecy).
-6;8;`lieuTravail` > `longitude`;longitude;Longitude;-;-;float;LieuxTravail;Lieu de travail;2.3116;Les coordonnées GPS renseignées sont parfois incorrectes, je supprime donc cette colonne (voir exemples dans le dossier archives avec Rouen et Annecy).
-10;16;`entreprise` > `url`;-;-;-;-;;;;;
-10;17;`entreprise` > `logo`;-;-;-;-;;;;;
+6;7;`lieuTravail` > `latitude`;latitude;Latitude;-;-;-;-;Lieu de travail;48.873635;Les coordonnées GPS renseignées sont parfois incorrectes, je supprime donc cette colonne (voir exemples dans le dossier archives avec Rouen et Annecy).
+6;8;`lieuTravail` > `longitude`;longitude;Longitude;-;-;-;-;Lieu de travail;2.3116;Les coordonnées GPS renseignées sont parfois incorrectes, je supprime donc cette colonne (voir exemples dans le dossier archives avec Rouen et Annecy).
+10;16;`entreprise` > `url`;-;-;-;-;-;-;;;
+10;17;`entreprise` > `logo`;-;-;-;-;-;-;;;
 23;39;`contact` > `nom`;-;-;-;-;-;-;Informations sur les contacts;"""M. herman""";
 23;40;`contact` > `coordonnees1`;-;-;-;-;-;-;Informations sur les contacts;"""Pour postuler...""";
 23;41;`contact` > `courriel`;-;-;-;-;-;-;Informations sur les contacts;"""utiliser le lien...""";
@@ -31,38 +31,38 @@
 28;58;`deplacementLibelle`;deplacement_libelle;Déplacement Libellé;Contrat;Contrat;varchar(100);Deplacements;Description des déplacements demandés;"""Jamais"" | ""Ponctuels Zone départementale"" ou ""Ponctuels Zone nationale"" |  ""Fréquents Zone départementale"" ou ""Fréquents Zone nationale"" | ""Quotidiens Zone régionale""";
 38;65;`complementExercice`;temps_travail;Temps Travail;Contrat;Contrat;varchar(100);Contrats;Complément exercice;"""Temps plein"" | ""Temps partiel"" | ""du lundi au vendredi"" | ""8/jour"" | ""6h-13 ou ""13h20h""";
 40;66;`conditionExercice`;condition_specifique;Condition Spécifique;Contrat;Contrat;varchar(100);Contrats;Conditions d'exercice;"""renouvelable une fois"" | ""Itinérant "" | ""Travail 1 week-end / 3, jours fériés"" | ""Nbre d heures hebdo a définir"" | ""Selon lieux indiqués dans l'offre"" | ""le week end samedi et dimanche "" | ""travail le samedi"" | ""Mardi au vendredi de 19h à 21h"" | ""en laboratoire"" | ""2 jours par semaine""...";
-2;2;`intitule`;intitule_offre;Intitule Offre;Description Offre;Description Offre;varchar(200);OffresEmploi;Intitulé de l’offre;"""Data engineer""  ";
-3;3;`description`;description_offre;Description Offre;Description Offre;Description Offre;varchar(5000);OffresEmploi;Description de l’offre;"""Data Engineer (H/F) !\n\nVous êtes passionné(e) par la data... ";
-7;11;`romeCode`;rome_code;ROME Code;Description Offre;Description Offre;varchar(5);Metiers;Code ROME de l’offre;"""M1811""";
-8;12;`romeLibelle`;rome_libelle;ROME Libellé;Description Offre;Description Offre;varchar(100);-;Libellé associé au code ROME;"""Data engineer""";
-9;13;`appellationlibelle`;appellation_rome;Appellation ROME;Description Offre;Description Offre;varchar(100);Metiers;Libellé de l’appellation ROME de l’offre;"""Data engineer""";
-26;44;`accessibleTH`;accessible_travailleurs_handicapes;Accessible Travailleurs Handicapés;Description Offre;Description Offre;boolean;OffresEmploi;Vrai si l’offre est accessible aux travailleurs handicapés;;
-35;52;`origineOffre` > `partenaires`> `nom`;nom_partenaire;Nom Partenaire;Description Offre;Description Offre;varchar(30);OffresEmploi;Informations sur l'orgine de l'offre;"""DIRECTEMPLOI""";
-36;56;`offresManqueCandidats`;difficile_a_pourvoir;Difficile A Pourvoir;Description Offre;Description Offre;boolean;OffresEmploi;Vrai si c'est une offre difficile à pourvoir;false;
-16;25;`formations` > `codeFormation`;formation_code;Formation Code;Domaine Formation;Domaine Formation;integer;Formation;Informations sur les formations;"""31006""";
-16;26;`formations` > `domaineLibelle`;formation_domaine_libelle;Formation Domaine Libellé;Domaine Formation;Domaine Formation;varchar(100);Formation;Informations sur les formations;"""sécurité informatique""";
+2;2;`intitule`;intitule_offre;Intitule Offre;DescriptionOffre;Description Offre;varchar(200);OffresEmploi;Intitulé de l’offre;"""Data engineer""  ";
+3;3;`description`;description_offre;Description Offre;DescriptionOffre;Description Offre;varchar(5000);OffresEmploi;Description de l’offre;"""Data Engineer (H/F) !\n\nVous êtes passionné(e) par la data... ";
+7;11;`romeCode`;rome_code;ROME Code;DescriptionOffre;Description Offre;varchar(5);Metiers;Code ROME de l’offre;"""M1811""";
+8;12;`romeLibelle`;rome_libelle;ROME Libellé;DescriptionOffre;Description Offre;varchar(100);-;Libellé associé au code ROME;"""Data engineer""";
+9;13;`appellationlibelle`;appellation_rome;Appellation ROME;DescriptionOffre;Description Offre;varchar(100);Metiers;Libellé de l’appellation ROME de l’offre;"""Data engineer""";
+26;44;`accessibleTH`;accessible_travailleurs_handicapes;Accessible Travailleurs Handicapés;DescriptionOffre;Description Offre;boolean;OffresEmploi;Vrai si l’offre est accessible aux travailleurs handicapés;;
+35;52;`origineOffre` > `partenaires`> `nom`;nom_partenaire;Nom Partenaire;DescriptionOffre;Description Offre;varchar(30);OffresEmploi;Informations sur l'orgine de l'offre;"""DIRECTEMPLOI""";
+36;56;`offresManqueCandidats`;difficile_a_pourvoir;Difficile A Pourvoir;DescriptionOffre;Description Offre;boolean;OffresEmploi;Vrai si c'est une offre difficile à pourvoir;false;
 10;14;`entreprise` > `nom`;nom_entreprise;Nom Entreprise;Entreprise;Entreprise;varchar(100);Entreprises;Informations sur l'entreprise;"""ARTIALYS""";
 10;15;`entreprise` > `description`;description_entreprise;Description Entreprise;Entreprise;Entreprise;;;;;
 10;18;`entreprise` > `entrepriseAdaptee`;entreprise_adaptee;Entreprise Adaptée;Entreprise;Entreprise;boolean;Entreprises;Informations sur l'entreprise;false;
 31;47;`codeNAF`;code_naf;Code NAF;Entreprise;Entreprise;varchar(6);Secteurs;Code NAF (Code APE);;
 33;49;`secteurActiviteLibelle`;secteur_activite_libelle;Secteur Activité Libellé;Entreprise;Entreprise;varchar(200);Secteurs;Secteur d’activité de l’offre;;
-14;22;`experienceExige`;experience_code_exigence;Expérience Code Exigence;Expérience;Expérience;varchar(1);Experiences;D : débutant accepté, E : expérience exigée, S : expérience souhaitée;"""E""";
-15;23;`experienceLibelle`;experience_libelle;Expérience Libellé;Expérience;Expérience;varchar(100);Experiences;Libellé de l’expérience;"si ""E"" par exemple, on peut avoir : ""Expérience exigée"" | ""Expérience exigée de 2 An(s)""";
-39;24;`experienceCommentaire`;experience_commentaire;Expérience Commentaire;Expérience;Expérience;varchar(200);Experiences;Commentaire sur l’expérience;"""de 1 à 3 ans"" | ""sur le même type de poste"" | …";
+14;22;`experienceExige`;experience_code_exigence;Expérience Code Exigence;Experience;Expérience;varchar(1);Experiences;D : débutant accepté, E : expérience exigée, S : expérience souhaitée;"""E""";
+15;23;`experienceLibelle`;experience_libelle;Expérience Libellé;Experience;Expérience;varchar(100);Experiences;Libellé de l’expérience;"si ""E"" par exemple, on peut avoir : ""Expérience exigée"" | ""Expérience exigée de 2 An(s)""";
+39;24;`experienceCommentaire`;experience_commentaire;Expérience Commentaire;Experience;Expérience;varchar(200);Experiences;Commentaire sur l’expérience;"""de 1 à 3 ans"" | ""sur le même type de poste"" | …";
+16;25;`formations` > `codeFormation`;formation_code;Formation Code;Formation;Formation;integer;Formation;Informations sur les formations;"""31006""";
+16;26;`formations` > `domaineLibelle`;formation_domaine_libelle;Formation Domaine Libellé;Formation;Formation;varchar(100);Formation;Informations sur les formations;"""sécurité informatique""";
+16;27;`formations` > `niveauLiBelle`;formation_niveau_libelle;Formation Niveau Libellé;Formation;Formation;varchar(30);Formation;Informations sur les formations;"""Bac+3, Bac+4 ou équivalents""";
+16;28;`formations` > `commentaire`;formation_commentaire;Formation Code Exigence;Formation;Formation;varchar(100);Formation;Informations sur les formations;"""S""";
+16;28;`formations` > `exigence`;formation_code_exigence;Formation Code Exigence;Formation;Formation;varchar(1);Formation;Informations sur les formations;"""S""";
 17;63;`langues` > `libelle`;langue_libelle;Langue Libellé;Langue;Langue;varchar(30);Langues;Informations sur les langues;"""Anglais""";
 17;64;`langues` > `exigence`;langue_code_exigence;Langue Code Exigence;Langue;Langue;varchar(1);Langues;Informations sur les langues;"""E""";
 6;6;`lieuTravail` > `libelle`;description_lieu;Description Lieu;Localisation;Localisation;varchar(50);Villes;Lieu de travail;"""75 - PARIS 08""";
 6;9;`lieuTravail` > `codePostal`;code_postal;Code Postal;Localisation;Localisation;varchar(5);Villes;Lieu de travail;"""75008""";
 6;10;`lieuTravail` > `commune`;code_commune;Code Commune;Localisation;Localisation;varchar(5);LieuxTravail;Lieu de travail;"""75108""";
-16;27;`formations` > `niveauLiBelle`;formation_niveau_libelle;Formation Niveau Libellé;Niveau Formation;Niveau Formation;varchar(30);Formation;Informations sur les formations;"""Bac+3, Bac+4 ou équivalents""";
-16;28;`formations` > `commentaire`;formation_commentaire;Formation Code Exigence;Niveau Formation;Niveau Formation;varchar(100);Formation;Informations sur les formations;"""S""";
-16;28;`formations` > `exigence`;formation_code_exigence;Formation Code Exigence;Niveau Formation;Niveau Formation;varchar(1);Formation;Informations sur les formations;"""S""";
-4;4;`dateCreation`;date_creation;Date Création;Offre Emploi;Offre Emploi;date;OffresEmploi;Date de création de l’offre;"""2024-11-28T14:23:11.470Z""";
-5;5;`dateActualisation`;date_actualisation;Date Actualisation;Offre Emploi;Offre Emploi;date;OffresEmploi;Date de dernière actualisation de l'offre;"""2024-11-28T14:23:11.957Z""";
-25;43;`nombrePostes`;nombre_postes;Nombre Postes;Offre Emploi;Offre Emploi;integer;OffresEmploi;Nombre de postes disponibles pour cette offre;;
-37;61;`permis` > `libelle`;permis_libelle;Permis Libellé;Permis de Conduire;Permis de Conduire;varchar(100);PermisConduire;Permis;"""B - Véhicule léger""";
-37;62;`permis` > `exigence`;permis_code_exigence;Permis Code Exigence;Permis de Conduire;Permis de Conduire;varchar(1);PermisConduire;;"""E""";
+4;4;`dateCreation`;date_creation;Date Création;OffreEmploi;Offre Emploi;date;OffresEmploi;Date de création de l’offre;"""2024-11-28T14:23:11.470Z""";
+5;5;`dateActualisation`;date_actualisation;Date Actualisation;OffreEmploi;Offre Emploi;date;OffresEmploi;Date de dernière actualisation de l'offre;"""2024-11-28T14:23:11.957Z""";
+25;43;`nombrePostes`;nombre_postes;Nombre Postes;OffreEmploi;Offre Emploi;integer;OffresEmploi;Nombre de postes disponibles pour cette offre;;
+37;61;`permis` > `libelle`;permis_libelle;Permis Libellé;Permis_Conduire;Permis de Conduire;varchar(100);PermisConduire;Permis;"""B - Véhicule léger""";
+37;62;`permis` > `exigence`;permis_code_exigence;Permis Code Exigence;Permis_Conduire;Permis de Conduire;varchar(1);PermisConduire;;"""E""";
 29;45;`qualificationCode`;qualification_code;Qualification Code;Qualification;Qualification;integer;Qualifications;Qualification du poste : 1=manœuvre, ..., 8=agent de maitrise, 9=cadre;"""6""";
 30;46;`qualificationLibelle`;qualification_libelle;Qualification Libellé;Qualification;Qualification;varchar(100);Qualifications;Libellé de la qualification du poste;"""Employé qualifié""";
-34;59;`qualitesProfessionnelles` (liste) > `libelle`;qualite_professionnelle_libelle;Qualité Professionnelle Libellé;Qualité Professionnelle;Qualité Professionnelle;varchar(100);QualitesProfessionnelles;Informations sur les qualités professionnelles;"""Faire preuve d'autonomie""";
-34;60;`qualitesProfessionnelles` (liste) > `description`;qualite_professionnelle_description;Qualité Professionnelle Description;Qualité Professionnelle;Qualité Professionnelle;varchar(1000);QualitesProfessionnelles;Informations sur les qualités professionnelles;"""Capacité à prendre en charge son activité sans devoir être encadré de façon continue (le cas échéant, à solliciter les autres acteurs de l'entreprise).""";
+34;59;`qualitesProfessionnelles` (liste) > `libelle`;qualite_professionnelle_libelle;Qualité Professionnelle Libellé;QualiteProfessionnelle;Qualité Professionnelle;varchar(100);QualitesProfessionnelles;Informations sur les qualités professionnelles;"""Faire preuve d'autonomie""";
+34;60;`qualitesProfessionnelles` (liste) > `description`;qualite_professionnelle_description;Qualité Professionnelle Description;QualiteProfessionnelle;Qualité Professionnelle;varchar(1000);QualitesProfessionnelles;Informations sur les qualités professionnelles;"""Capacité à prendre en charge son activité sans devoir être encadré de façon continue (le cas échéant, à solliciter les autres acteurs de l'entreprise).""";

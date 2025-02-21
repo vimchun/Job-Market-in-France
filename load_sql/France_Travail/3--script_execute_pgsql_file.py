@@ -4,7 +4,6 @@ import sys
 
 import psycopg2
 
-
 # proposition de dbt ?
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
@@ -16,7 +15,7 @@ def read(psql_file):
         return file.read()
 
 
-query = read("request.pgsql")
+query = read(os.path.join("requests", "check_creation_table.pgsql"))
 
 # print(query)
 conn = psycopg2.connect(database="francetravail", host="localhost", user="mhh", password="mhh", port=5432)
