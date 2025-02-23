@@ -6,7 +6,8 @@ FROM
     -- OffreEmploi
     -- Contrat
     -- Entreprise
-    -- Localisation
+    Localisation
+    -- where description_lieu = 'France'
     -- DescriptionOffre
     -- Competence
     -- where competence_libelle = 'Exploitation tramway et sécurité ferroviaire'
@@ -18,7 +19,7 @@ FROM
     -- order by competence_code DESC
     -- Experience
     -- Offre_Experience
-    Formation
+    -- Formation
     -- Offre_Formation
     -- QualiteProfessionnelle
     -- Offre_QualiteProfessionnelle

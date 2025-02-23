@@ -8,18 +8,18 @@ Notes : met environ 15 minutes pour remplir toutes les tables.
 """
 
 # Booléens pour remplir ou pas les tables associées
-fill_table_OffreEmploi = 1
-fill_table_Contrat = 1
-fill_table_Entreprise = 1
+fill_table_OffreEmploi = 0
+fill_table_Contrat = 0
+fill_table_Entreprise = 0
 fill_table_Localisation = 1
-fill_table_DescriptionOffre = 1
-fill_table_Competence, fill_table_Offre_Competence = 1, 1
-fill_table_Experience, fill_table_Offre_Experience = 1, 1
-fill_table_Formation, fill_table_Offre_Formation = 1, 1
-fill_table_QualiteProfessionnelle, fill_table_Offre_QualiteProfessionnelle = 1, 1
-fill_table_Qualification, fill_table_Offre_Qualification = 1, 1
-fill_table_Langue, fill_table_Offre_Langue = 1, 1
-fill_table_PermisConduire, fill_table_Offre_PermisConduire = 1, 1
+fill_table_DescriptionOffre = 0
+fill_table_Competence, fill_table_Offre_Competence = 0, 0
+fill_table_Experience, fill_table_Offre_Experience = 0, 0
+fill_table_Formation, fill_table_Offre_Formation = 0, 0
+fill_table_QualiteProfessionnelle, fill_table_Offre_QualiteProfessionnelle = 0, 0
+fill_table_Qualification, fill_table_Offre_Qualification = 0, 0
+fill_table_Langue, fill_table_Offre_Langue = 0, 0
+fill_table_PermisConduire, fill_table_Offre_PermisConduire = 0, 0
 
 # Pour print qu'on écrit dans les tables associées qu'une seule fois
 print_write_to_table_OffreEmploi = True
@@ -240,11 +240,11 @@ for offre in offres_data:
         description_lieu = offre.get("lieuTravail").get("libelle")
         code_commune = offre.get("lieuTravail").get("commune")
         code_postal = offre.get("lieuTravail").get("codePostal")
-        # latitude = offre.get("lieuTravail").get("latitude")
-        # longitude = offre.get("lieuTravail").get("longitude")
+        latitude = offre.get("lieuTravail").get("latitude")
+        longitude = offre.get("lieuTravail").get("longitude")
 
         # print pour investigation si besoin
-        # print(offre_id, description_lieu, code_commune, code_postal, sep="\n-> ")
+        print(offre_id, description_lieu, code_commune, code_postal, latitude, longitude, sep="\n-> ")
 
         fill_db(
             db_name="Localisation",
@@ -253,6 +253,8 @@ for offre in offres_data:
                 "description_lieu",
                 "code_commune",
                 "code_postal",
+                "latitude",
+                "longitude",
             ),
             on_conflict_string=("offre_id"),
         )

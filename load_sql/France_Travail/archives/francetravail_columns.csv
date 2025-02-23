@@ -1,6 +1,6 @@
 ﻿ordre d'apparition dans le json;mon ordre; clé France Travail                            ;Nom sur PostGreSQL;Nom sur Power BI;Nom table sur PostGreSQL;Nom table sur Power BI;type;table;descriptions de la clé;exemple;commentaires
-6;7;`lieuTravail` > `latitude`;latitude;Latitude;-;-;-;-;Lieu de travail;48.873635;Les coordonnées GPS renseignées sont parfois incorrectes, je supprime donc cette colonne (voir exemples dans le dossier archives avec Rouen et Annecy).
-6;8;`lieuTravail` > `longitude`;longitude;Longitude;-;-;-;-;Lieu de travail;2.3116;Les coordonnées GPS renseignées sont parfois incorrectes, je supprime donc cette colonne (voir exemples dans le dossier archives avec Rouen et Annecy).
+6;7;`lieuTravail` > `latitude`;latitude;Latitude;Localisation;-;float;-;Lieu de travail;48.873635;Les coordonnées GPS renseignées sont parfois incorrectes, je supprime donc cette colonne (voir exemples dans le dossier archives avec Rouen et Annecy).
+6;8;`lieuTravail` > `longitude`;longitude;Longitude;Localisation;-;float;-;Lieu de travail;2.3116;Les coordonnées GPS renseignées sont parfois incorrectes, je supprime donc cette colonne (voir exemples dans le dossier archives avec Rouen et Annecy).
 10;16;`entreprise` > `url`;-;-;-;-;-;-;;;
 10;17;`entreprise` > `logo`;-;-;-;-;-;-;;;
 23;39;`contact` > `nom`;-;-;-;-;-;-;Informations sur les contacts;"""M. herman""";

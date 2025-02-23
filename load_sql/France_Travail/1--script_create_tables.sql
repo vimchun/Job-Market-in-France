@@ -38,11 +38,15 @@ CREATE TABLE Entreprise (
     , secteur_activite_libelle VARCHAR(200)
 );
 
+-- DROP TABLE Localisation;
+
 CREATE TABLE Localisation (
     offre_id VARCHAR(7) NOT NULL PRIMARY KEY
     , description_lieu VARCHAR(50)
     , code_postal VARCHAR(5)
     , code_commune VARCHAR(5)
+    , latitude FLOAT
+    , longitude FLOAT
 );
 
 CREATE TABLE DescriptionOffre (
@@ -62,10 +66,8 @@ CREATE TABLE DescriptionOffre (
 ----------------------------------------------
 -- note: ON DELETE CASCADE pour maintenir l'intégrité des données :
 --  pour supprimer toutes les lignes associées dans Offre_Competence si une offre ou une compétence correspondante est supprimée
-
 -- DROP TABLE Competence CASCADE;
 -- DROP TABLE Offre_Competence CASCADE;
-
 CREATE TABLE Competence (
     competence_id SERIAL NOT NULL PRIMARY KEY
     , competence_code INTEGER
@@ -83,10 +85,8 @@ CREATE TABLE Offre_Competence (
 );
 
 -----------------------------------------------------------------------------------------------------------
-
 -- DROP TABLE Experience CASCADE;
 -- DROP TABLE Offre_Experience CASCADE;
-
 CREATE TABLE Experience (
     experience_id SERIAL NOT NULL PRIMARY KEY
     , experience_libelle VARCHAR(100)
@@ -104,10 +104,8 @@ CREATE TABLE Offre_Experience (
 );
 
 -----------------------------------------------------------------------------------------------------------
-
 -- DROP TABLE Formation CASCADE;
 -- DROP TABLE Offre_Formation CASCADE;
-
 CREATE TABLE Formation (
     formation_id SERIAL NOT NULL PRIMARY KEY
     , formation_code INTEGER
@@ -128,10 +126,8 @@ CREATE TABLE Offre_Formation (
 );
 
 -----------------------------------------------------------------------------------------------------------
-
 -- DROP TABLE QualiteProfessionnelle CASCADE;
 -- DROP TABLE Offre_QualiteProfessionnelle CASCADE;
-
 CREATE TABLE QualiteProfessionnelle (
     qualite_professionnelle_id SERIAL NOT NULL PRIMARY KEY
     , qualite_professionnelle_libelle VARCHAR(100)
@@ -148,10 +144,8 @@ CREATE TABLE Offre_QualiteProfessionnelle (
 );
 
 -----------------------------------------------------------------------------------------------------------
-
 -- DROP TABLE Qualification CASCADE;
 -- DROP TABLE Offre_Qualification CASCADE;
-
 CREATE TABLE Qualification (
     qualification_code INTEGER PRIMARY KEY NOT NULL
     , qualification_libelle VARCHAR(100) NOT NULL
@@ -167,10 +161,8 @@ CREATE TABLE Offre_Qualification (
 );
 
 -----------------------------------------------------------------------------------------------------------
-
 -- DROP TABLE Langue CASCADE;
 -- DROP TABLE Offre_Langue CASCADE;
-
 CREATE TABLE Langue (
     langue_id SERIAL NOT NULL PRIMARY KEY
     , langue_libelle VARCHAR(30) NOT NULL
@@ -187,10 +179,8 @@ CREATE TABLE Offre_Langue (
 );
 
 -----------------------------------------------------------------------------------------------------------
-
 -- DROP TABLE PermisConduire CASCADE;
 -- DROP TABLE Offre_PermisConduire CASCADE;
-
 CREATE TABLE PermisConduire (
     permis_id SERIAL NOT NULL PRIMARY KEY
     , permis_libelle VARCHAR(100) NOT NULL
