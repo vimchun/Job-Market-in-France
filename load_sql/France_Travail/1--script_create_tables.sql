@@ -39,7 +39,6 @@ CREATE TABLE Entreprise (
 );
 
 -- DROP TABLE Localisation;
-
 CREATE TABLE Localisation (
     offre_id VARCHAR(7) NOT NULL PRIMARY KEY
     , description_lieu VARCHAR(50)
@@ -113,7 +112,6 @@ CREATE TABLE Formation (
     , formation_niveau_libelle VARCHAR(30)
     , formation_commentaire VARCHAR(100)
     , formation_code_exigence VARCHAR(1)
-    -- , CONSTRAINT unique_formation UNIQUE (formation_code , formation_domaine_libelle , formation_niveau_libelle , formation_commentaire , formation_code_exigence)
     , CONSTRAINT formation_unique UNIQUE (formation_code , formation_domaine_libelle , formation_niveau_libelle , formation_commentaire , formation_code_exigence)
 );
 

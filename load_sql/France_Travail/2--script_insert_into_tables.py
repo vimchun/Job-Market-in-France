@@ -4,7 +4,7 @@ import os
 import psycopg2
 
 """
-Notes : met environ 15 minutes pour remplir toutes les tables.
+Notes : met environ 15 minutes pour remplir toutes les tables, pour ~14k offres et ~50 attributs
 """
 
 # Booléens pour remplir ou pas les tables associées
@@ -48,7 +48,7 @@ with open(
         "France_Travail",
         "outputs",
         "_archives",
-        "2025-01-13-exemples-jsons-et-json-merged",
+        "2025-01-13-exemples-jsons-et-json-merged",  # fichier avec 14k offres
         # "404278_Data_Engineer__5_offres.json",
         "_offres_merged.json",
     ),
@@ -101,13 +101,51 @@ conn = psycopg2.connect(database="francetravail", host="localhost", user="mhh", 
 
 cursor = conn.cursor()
 
+#### PARTIE 1
 
 for offre in offres_data:
     """
-    Dans cette boucle for, pour toutes les tables de dimension qui ont une table de liaison, on traite les tables de dimension en remplaçant les null par une quelconque valeur
-        (sinon on risque d'écrire des doublons, car NULL != NULL en sql)
+    Dans cette boucle for, pour toutes les tables de dimension qui ont une table de liaison, on traite les tables de dimension en remplaçant les null par une valeur quelconque.
+        (sinon on risque d'écrire des doublons, car NULL != NULL en SQL)
 
-    On remet ces valeurs à NULL dans la suite du script.
+        Par exemple, pour la table Formation, si on récupère pour une offre les valeurs suivantes :
+
+           "formation_code"            = 31026
+           "formation_domaine_libelle" = "data science"
+           "formation_niveau_libelle"  = "Bac+5 et plus ou équivalents"
+           "formation_commentaire"     = null
+           "formation_code_exigence"   = "S"
+
+           => alors on va écrire les données correspondantes en base, n'ayant pas de contrainte NOT NULL sur "formation commentaire".
+              (en effet, on a "formation_commentaire = null", cela serait dommage de rejeter l'information)
+
+                CREATE TABLE Formation (
+                    formation_id SERIAL NOT NULL PRIMARY KEY
+                    , formation_code INTEGER
+                    , formation_domaine_libelle VARCHAR(100)
+                    , formation_niveau_libelle VARCHAR(30)
+                    , formation_commentaire VARCHAR(100)    -- pas de contrainte NOT NULL
+                    , formation_code_exigence VARCHAR(1)
+                    , CONSTRAINT formation_unique UNIQUE (formation_code , formation_domaine_libelle , formation_niveau_libelle , formation_commentaire , formation_code_exigence)
+                );
+
+
+        Mais si une autre offre a exactement ces mêmes valeurs (avec "formation_commentaire = null"), on pourrait s'attendre à ce qu'on n'écrive pas cette ligne grâce à la contrainte d'unicité.
+        Or, cette nouvelle ligne sera quand même écrite, cela étant sûrement lié au fait que "null != null" sur SQL.
+
+        Donc pour contourner cela, pour toutes les offres, on va remplacer null par une valeur, par exemple :
+
+           "formation_code"            = 31026
+           "formation_domaine_libelle" = "data science"
+           "formation_niveau_libelle"  = "Bac+5 et plus ou équivalents"
+           "formation_commentaire"     = "-"  # précédemment null
+           "formation_code_exigence"   = "S"
+
+           => ainsi, si une autre offre a de nouveau exactement ces mêmes valeurs, alors cette nouvelle offre ne sera pas écrite en base, grâce à la contrainte d'unicité.
+
+
+    La seconde étape de ce script remet ces valeurs à null.
+
     """
 
     # récupération de valeurs avec la méthode .get() au cas où il manquerait les clés dans certains documents jsons
@@ -486,6 +524,7 @@ for offre in offres_data:
                     on_conflict_string=("permis_libelle | permis_code_exigence"),
                 )
 
+#### PARTIE 2
 
 if 1:
     """
@@ -562,6 +601,8 @@ if 1:
     #### table "Qualification" : inutile de le faire car toutes les clés ont "NOT NULL" dans le CREATE TABLE
     #### table "Langue" : inutile de le faire car toutes les clés ont "NOT NULL" dans le CREATE TABLE
     #### table "PermisConduire" : inutile de le faire car toutes les clés ont "NOT NULL" dans le CREATE TABLE
+
+#### PARTIE 3
 
 if 1:
     """
