@@ -139,7 +139,7 @@ def get_referentiel_pays(token):
     return None
 
 
-def remove_all_json_files_before_merging(json_files_directory):
+def remove_all_json_files(json_files_directory):
     """
     Supprime tous les fichiers json du dossier spécifié
     """
@@ -333,46 +333,3 @@ def merge_all_json_into_one(json_files_directory, merged_json_filename):
     )
 
     return None
-
-
-def get_partners_companies_and_urls_from_json_and_write_both_to_csv(merged_json_file, csv_files_path):
-    """
-    Récupère pour une offre d'emploi l'url "partenaire" ainsi que le nom de l'entreprise, si l'offre vient de celui-ci (si la colonne "origine" vaut 2).
-    Ecrit un csv pour les urls, et un autre csv pour les entreprises partenaires.
-
-    Ne retourne rien.
-    """
-    import numpy as np
-
-    df = pd.read_json(merged_json_file)
-
-    df_normalized = pd.json_normalize(df["origineOffre"])  # pour mettre le json "à plat" car il contient des colonnes avec des dictionnaires
-
-    # filtre sur "origine=2" (sur les offres venant de "partenaires")
-    df_normalized_partenaires = df_normalized[df_normalized["origine"] == "2"][["partenaires"]]
-
-    # Liste des entreprises
-    entreprises = df_normalized_partenaires.apply(lambda x: x[0][0]["nom"], axis=1).sort_values()
-    entreprises_uniques = entreprises.unique()
-
-    np.savetxt(
-        os.path.join(csv_files_path, "_partners_companies.csv"),
-        entreprises_uniques,
-        delimiter="\n",  # chaque valeur est écrite sur une ligne séparée
-        fmt="%s",  # écrire les éléments sous forme de chaînes de caractères
-    )
-
-    # Liste des urls partenaires
-    urls = df_normalized_partenaires.apply(lambda x: x[0][0]["url"], axis=1).sort_values()
-    urls.sort_values().to_csv(os.path.join(csv_files_path, "_partners_urls.csv"), index=False, header=False)
-
-    # Note : Warning non bloquant
-    #  -> FutureWarning: Series.__getitem__ treating keys as positions is deprecated.
-    #  -> In a future version, integer keys will always be treated as labels (consistent with DataFrame behavior).
-    #  -> To access a value by position, use `ser.iloc[pos]`
-
-    return None
-
-
-def get_partners_urls():
-    pass  # todo : créer la fonction comme fait dans le notebook
