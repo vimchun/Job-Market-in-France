@@ -3,10 +3,9 @@ import os
 import yaml
 
 from colorama import Fore, init
-from functions import get_bearer_token, get_offres, get_referentiel_appellations_rome, get_referentiel_pays, merge_all_json_into_one, remove_all_json_files
+from functions import concatenate_all_json_into_one, get_bearer_token, get_offres, get_referentiel_appellations_rome, get_referentiel_pays, remove_all_json_files
 
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
-
 
 # Récupération des credentials données sur le site de FT, depuis un fichier yaml
 SCOPES_OFFRES = "o2dsoffre api_offresdemploiv2"  # scopes définis dans https://francetravail.io/produits-partages/catalogue/offres-emploi/documentation#/
@@ -126,4 +125,4 @@ if launch_merge_all_json_into_one:
     merged_json_filename = "_offres_merged.json"
     merged_json_filename_path = os.path.join(json_files_directory, merged_json_filename)
 
-    merge_all_json_into_one(json_files_directory, merged_json_filename)
+    concatenate_all_json_into_one(json_files_directory, merged_json_filename)
