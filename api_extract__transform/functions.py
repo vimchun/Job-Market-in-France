@@ -222,7 +222,7 @@ def get_offres(token, code_appellation_libelle, filter_params):
     if response.status_code == 200:
         print(f"Status Code: {response.status_code}")
         # print(response.headers.get("Content-Range"))
-        print(f"  => {Fore.CYAN}[{max_offres}]{Style.RESET_ALL} offres au total {Fore.YELLOW}--> writing to file")
+        print(f"  => {Fore.CYAN}[{max_offres}]{Style.RESET_ALL} offres au total {Fore.YELLOW}--> écriture dans le fichier")
 
         document_id = 0
 
@@ -238,6 +238,13 @@ def get_offres(token, code_appellation_libelle, filter_params):
                 document_id += 1
 
             f.write("]")  # Clore le json en ajoutant un crochet fermant "]"
+
+        # Renommer les fichiers json en ajoutant le nombre d'offres dans le json
+        dir_path, file_name = os.path.split(output_file)  # Séparer le chemin et le nom du fichier
+        new_file_name = f"{file_name[:-5]}__{document_id}_offres.json"
+        # print(dir_path, file_name, new_file_name, sep="\n")  # utile si investigation
+        new_file_path = os.path.join(dir_path, new_file_name)  # Créer le chemin complet du nouveau fichier
+        os.rename(output_file, new_file_path)  # Renommer le fichier
 
     ###### réponse 206 : on doit faire plusieurs requêtes pour récupérer tous les documents (limité à 3150 documents)
     elif response.status_code == 206:
@@ -269,7 +276,7 @@ def get_offres(token, code_appellation_libelle, filter_params):
                         json.dump(obj, f, ensure_ascii=False)
                         f.write(",\n")  # Ajouter une virgule après chaque objet
                         document_id += 1
-                    print(f"{range_start}-{range_end}/{max_offres} {Fore.YELLOW}--> writing documents to file (total: {document_id})")
+                    print(f"{range_start}-{range_end}/{max_offres} {Fore.YELLOW}--> écriture dans le fichier (total: {document_id})")
                 else:
                     print(f"Status Code: {response.status_code}, {response.json()}")
                     break
@@ -346,6 +353,8 @@ def concatenate_all_json_into_one(json_files_directory, concat_json_filename):
     """
     Nous obtenons suite à l'exécution de get_offres() x fichiers json (x = nombre d'appellations présents dans "code_appellation_libelle.yml").
     Cette fonction écrira dans un json chaque ligne de tous les json précédents, en supprimant les doublons.
+
+    Renvoie le DateFrame qui concatène toutes les offres, sans doublon.
     """
 
     df_concat = pd.DataFrame()
@@ -374,6 +383,16 @@ def concatenate_all_json_into_one(json_files_directory, concat_json_filename):
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
         force_ascii=False,  # pour convertir les caractères spéciaux
         indent=4,  # pour formatter la sortie
-    )
+    )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs
 
-    return None
+    # On supprime les backslashs ajoutés par la méthode .to_json()
+    with open(os.path.join(json_files_directory, concat_json_filename), "r", encoding="utf-8") as f:
+        content = f.read()
+
+    content = content.replace("\\/", "/")
+
+    # On sauvegarde le fichier final sans les '\'
+    with open(os.path.join(json_files_directory, concat_json_filename), "w", encoding="utf-8") as f:
+        f.write(content)
+
+    return df_concat.drop_duplicates(["id"])
