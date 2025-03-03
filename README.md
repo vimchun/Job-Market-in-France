@@ -2,7 +2,7 @@
 
 Voici un schéma récapitulatif des différentes étapes du projet :
 
-![screenshot du workflow](./worklow_screenshot.png)
+![screenshot du workflow](./workflow_screenshot.png)
 
 
 # Projet Job Market (todo : à mettre à jour)
