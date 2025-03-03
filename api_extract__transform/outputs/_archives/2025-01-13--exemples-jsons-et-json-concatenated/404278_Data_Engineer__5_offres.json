@@ -1,0 +1,385 @@
+[
+    {
+        "id": "186MFHR",
+        "intitule": "Data engineer (H/F)",
+        "description": "Le poste proposé vise à accompagner techniquement les projets depuis la conception jusqu'à la mise en production en prenant en charge les aspects techniques permettant d'obtenir un processus industriel depuis l'apprentissage d'un modèle IA jusqu'à la mise en production du modèle enfin il doit supporter la mise à l'échelle pour la production.\n\nCet accompagnement consiste concrètement à mettre en œuvre les technologies Devops et Mlops pour construire les livrables de façon sécurisée et le plus automatique possible. Cela recouvre des aspects architecture lors de la conception, puis des connaissances devops, mlops, Data ing lors de la réalisation des chaines CICD et MLOPS.\n\nCela nécessite également de construire des tableaux de bord avec des KPI adaptés pour permettre le monitoring de la solution en production.\n\nEnfin il y a une composante rédaction pour capitaliser les connaissances et leur partage au sein du pôle.\n\nLe pôle Data ing est en forte croissance et les projets à venir sont nombreux, c'est aujourd'hui une petite équipe avec un fort esprit de collaboration qui est amener à une forte croissance.",
+        "dateCreation": "2025-01-10T17:14:45.875Z",
+        "dateActualisation": "2025-01-10T17:14:46.316Z",
+        "lieuTravail": { "libelle": "94 - VILLEJUIF", "latitude": 48.793468, "longitude": 2.360996, "codePostal": "94800", "commune": "94076" },
+        "romeCode": "M1811",
+        "romeLibelle": "Data engineer",
+        "appellationlibelle": "Data engineer",
+        "entreprise": { "nom": "LCL CREDIT LYONNAIS", "entrepriseAdaptee": false },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "CDI",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "E",
+        "experienceLibelle": "3 An(s)",
+        "competences": [
+            { "code": "300067", "libelle": "Analyser, exploiter, structurer des données", "exigence": "S" },
+            { "code": "300488", "libelle": "Concevoir et gérer un projet", "exigence": "S" },
+            { "code": "120209", "libelle": "Enrichir une base de données", "exigence": "S" }
+        ],
+        "salaire": { "libelle": "Annuel de 50000.0 Euros sur 12.0 mois", "complement1": "Primes", "complement2": "Participation/action" },
+        "dureeTravailLibelle": "39H Travail en journée",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "nom": "LCL CREDIT LYONNAIS - Mme NELLY  SETBON",
+            "coordonnees1": "https://offres-emploi.lcl.com/accueil.aspx?LCID=1036",
+            "urlPostulation": "https://offres-emploi.lcl.com/accueil.aspx?LCID=1036"
+        },
+        "agence": {},
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": "1",
+        "deplacementLibelle": "Jamais",
+        "qualificationCode": "9",
+        "qualificationLibelle": "Cadre",
+        "codeNAF": "64.19Z",
+        "secteurActivite": "64",
+        "secteurActiviteLibelle": "Autres intermédiations monétaires",
+        "qualitesProfessionnelles": [
+            {
+                "libelle": "Faire preuve d'autonomie",
+                "description": "Capacité à prendre en charge son activité sans devoir être encadré de façon continue (le cas échéant, à solliciter les autres acteurs de l'entreprise)."
+            },
+            {
+                "libelle": "Faire preuve de créativité, d'inventivité",
+                "description": "Capacité à créer, imaginer quelque chose de nouveau (nouveau produit, nouvelle solution, …)."
+            },
+            {
+                "libelle": "Faire preuve de rigueur et de précision",
+                "description": "Capacité à réaliser des tâches en suivant avec exactitude les règles, les procédures, les instructions qui ont été fournies, sans réaliser d'erreur et à transmettre clairement des informations. Se montrer ponctuel et respectueux des règles de savoir-vivre usuelles."
+            }
+        ],
+        "origineOffre": { "origine": "1", "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/186MFHR" },
+        "offresManqueCandidats": false
+    },
+    {
+        "id": "186LWRB",
+        "intitule": "Data ingénieur (H/F)",
+        "description": "La société WIZBII recherche pour PEAKS un Data Ingénieur H/F en CDI à temps plein. \n\nVos missions seront:\n\nConception et mise en place d'architectures de données :\n-Recueillir les besoins métiers et concevoir les infrastructures adaptées au stockage, traitement et analyse des données.\n-Optimiser les performances : optimiser les requêtes et les opérations de traitement des données pour assurer des performances élevées et une évolutivité de l'infrastructure.\n-Garantir la sécurité et la conformité des données : assurer que les données sont protégées et conformes aux réglementations en matière de confidentialité et de sécurité.\n-Parti per aux réflexions stratégiques de la gouvernance de la donnée.\n-Assurer une veille sur les outils et méthodes.\n\nOptimisation des flux de données :\n-Concevoir des pipelines de données pour automatiser le flux des données depuis les sources jusqu'aux utilisateurs finaux.\n-Développer des solutions de collecte de données efficaces et fiables.\n-Assurer les opérations de nettoyage, de transformation et de prétraitement des données pour garantir leur qualité et leur cohérence.\n-Industrialiser le traitement de données pour permettre l'analyse en temps réel en fonction des besoins de l'entreprise.\n\nParticipation et /ou contribution à différents projets de valorisation des données :\n-Coanimer la prise en main en interne et la valorisation du contenu de notre datalake.\n-Parti per ponctuellement à des projets de data-sciences. Être associé, selon vos compétences et votre intérêt, aux nombreux défis dans les domaines du machine learning, de l'IA, etc.\n\n\n\nLes entretiens pour le poste se dérouleront lors d'une session de recrutement privée à Marseille le mardi 21 janvier 2025 à partir de 17h30 à 20h30 lors de laquelle vous pourrez rencontrer les recruteurs de l'entreprise.",
+        "dateCreation": "2025-01-10T14:47:02.736Z",
+        "dateActualisation": "2025-01-13T10:29:37.003Z",
+        "lieuTravail": { "libelle": "13 - Aix-en-Provence", "latitude": 43.541369, "longitude": 5.406124, "codePostal": "13080", "commune": "13001" },
+        "romeCode": "M1811",
+        "romeLibelle": "Data engineer",
+        "appellationlibelle": "Data engineer",
+        "entreprise": { "nom": "WIZBII", "entrepriseAdaptee": false },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "CDI",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "E",
+        "experienceLibelle": "1 An(s)",
+        "formations": [{ "niveauLibelle": "Bac+5 et plus ou équivalents", "exigence": "E" }],
+        "competences": [
+            { "code": "109870", "libelle": "Java", "exigence": "S" },
+            { "code": "113798", "libelle": "Programmation en Python", "exigence": "S" },
+            { "code": "300067", "libelle": "Analyser, exploiter, structurer des données", "exigence": "S" },
+            { "code": "300488", "libelle": "Concevoir et gérer un projet", "exigence": "S" },
+            { "code": "120209", "libelle": "Enrichir une base de données", "exigence": "S" },
+            { "libelle": "cloud computing", "exigence": "S" },
+            { "libelle": "outils de gestion des données et de versioning", "exigence": "S" },
+            { "libelle": "sécurité des données et de conformité", "exigence": "S" },
+            { "libelle": "scala", "exigence": "S" },
+            { "libelle": "plateformes d'orchestration des workflows de donné", "exigence": "S" },
+            { "libelle": "conception d'architectures de données", "exigence": "S" },
+            { "libelle": "outils et les frameworks de big data", "exigence": "S" },
+            { "libelle": "base de données relationnelles/non relationnelles", "exigence": "S" }
+        ],
+        "salaire": { "libelle": "Annuel de 36000.0 Euros à 45000.0 Euros sur 12.0 mois" },
+        "dureeTravailLibelle": "36H Autre",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "nom": "WIZBII - Mme Cécile Challancin",
+            "coordonnees1": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/186LWRB",
+            "courriel": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/186LWRB"
+        },
+        "agence": {},
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "qualificationCode": "6",
+        "qualificationLibelle": "Employé qualifié",
+        "codeNAF": "62.01Z",
+        "secteurActivite": "62",
+        "secteurActiviteLibelle": "Programmation informatique",
+        "qualitesProfessionnelles": [
+            {
+                "libelle": "Faire preuve de rigueur et de précision",
+                "description": "Capacité à réaliser des tâches en suivant avec exactitude les règles, les procédures, les instructions qui ont été fournies, sans réaliser d'erreur et à transmettre clairement des informations. Se montrer ponctuel et respectueux des règles de savoir-vivre usuelles."
+            },
+            {
+                "libelle": "Organiser son travail selon les priorités et les objectifs",
+                "description": "Capacité à planifier, prioriser, anticiper des actions, en tenant compte des moyens, des ressources, des objectifs et du calendrier pour les réaliser."
+            },
+            {
+                "libelle": "Prendre des initiatives et être force de proposition",
+                "description": "Capacité à initier, imaginer des propositions nouvelles pour résoudre les problèmes identifiés ou améliorer une situation. Être proactif."
+            }
+        ],
+        "origineOffre": { "origine": "1", "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/186LWRB" },
+        "offresManqueCandidats": false
+    },
+    {
+        "id": "186LPCT",
+        "intitule": "Data engineer (H/F)",
+        "description": "Qui sommes-nous ?\n\nNous sommes passionnés par les nouvelles technologies, et vous ? \nRejoindre Amiltone, c'est intégrer des équipes dynamiques et soudées dans le cadre de projets novateurs et ambitieux. Nous relevons les challenges techniques de nos clients et les accompagnons dans leur transformation digitale.\n \nPourquoi choisir Amiltone ? \n\n Amiltone, plus qu'une entreprise, un état d'esprit !\nNotre objectif ? Votre épanouissement professionnel !\n\nNous avons à cœur de :\n- Vous accompagner au mieux au travers d'un suivi personnalisé\n- Vous faire monter en compétences en vous proposant des formations tout au long de votre carrière\n- Comprendre vos besoins et respecter nos engagements\n- Vous proposer des missions de qualité avec des technologies innovantes\n- Cultiver votre potentiel grâce à notre programme de développement personnel Addvise\nVotre bien-être passe aussi par des activités extraprofessionnelles, c'est pourquoi nous vous proposons des séances sportives animées par nos coachs, soirées pour se retrouver et animations (à l'agence ou en visio), Gaming nights...\n\nVos missions ? \n\nIntégré à nos équipes sur notre Factory ou chez nos clients, vous interviendrez sur des projets de gestion, de transformation et d'intégration de données.\nEn tant qu'Ingénieur Data, vous serez responsable de la conception, du développement et de la maintenance de solutions data au service des différents métiers de l'entreprise .\n\nAux côtés d'experts métiers, et d'un Leader Technique, vous devrez développer des traitements robustes, monitorés et résilients dans un écosystème Cloud avec des technologies d'industrialisation à l'état de l'art.\n\nVos traitements répondront à des besoins autour de problématiques complexes dans les domaines d'activité de l'entreprise (Réseau & système IOT, évolutions possibles sur comptage de l'eau, gestion des déchets, etc .)\n\nLa stack Technique :\n- Databricks , Power BI\n- Python, Airflow\n- Docker, Kubernetes\n- Keras\n\nPROFIL RECHERCHÉ\nAlors ? Prêt à devenir Amiltonien ? \nN'hésitez pas à postuler si vous vous reconnaissez :\n\n- Diplômé Bac+5 (Master ou école d'ingénieur), vous disposez de 2 ans d'expérience en gestion et traitement de données (data engineering, ETL, bases de données).\n- Vous aimez découvrir de nouveaux environnements techniques, relever des défis liés à la gestion des données et comprendre les enjeux business derrière les projets de données.\n- A l'aise dans une organisation agile, vous faites preuve de rigueur et appliquez les standards de qualité Amiltone durant toute la durée des projets, en veillant à la performance et à la fiabilité des systèmes de traitement des données.\nOutre vos compétences techniques, nous nous intéressons également à votre potentiel et votre motivation.\n\nNos postes sont ouverts aux personnes en situation de handicap.",
+        "dateCreation": "2025-01-10T12:00:19.376Z",
+        "dateActualisation": "2025-01-13T09:02:33.339Z",
+        "lieuTravail": { "libelle": "69 - VILLEURBANNE", "latitude": 45.768975, "longitude": 4.890035, "codePostal": "69100", "commune": "69266" },
+        "romeCode": "M1811",
+        "romeLibelle": "Data engineer",
+        "appellationlibelle": "Data engineer",
+        "entreprise": { "nom": "AMILTONE", "entrepriseAdaptee": false },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "CDI",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "E",
+        "experienceLibelle": "2 An(s)",
+        "competences": [
+            { "code": "300067", "libelle": "Analyser, exploiter, structurer des données", "exigence": "S" },
+            { "code": "300488", "libelle": "Concevoir et gérer un projet", "exigence": "S" },
+            { "code": "120209", "libelle": "Enrichir une base de données", "exigence": "S" }
+        ],
+        "salaire": { "libelle": "Mensuel de 28000.0 Euros à 40000.0 Euros sur 12.0 mois" },
+        "dureeTravailLibelle": "35H Autre",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "nom": "AMILTONE - Mme Clara Chomarat",
+            "coordonnees1": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/186LPCT",
+            "courriel": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/186LPCT"
+        },
+        "agence": {},
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": "1",
+        "deplacementLibelle": "Jamais",
+        "qualificationCode": "9",
+        "qualificationLibelle": "Cadre",
+        "codeNAF": "62.01Z",
+        "secteurActivite": "62",
+        "secteurActiviteLibelle": "Programmation informatique",
+        "qualitesProfessionnelles": [
+            {
+                "libelle": "Faire preuve d'autonomie",
+                "description": "Capacité à prendre en charge son activité sans devoir être encadré de façon continue (le cas échéant, à solliciter les autres acteurs de l'entreprise)."
+            },
+            {
+                "libelle": "Faire preuve de rigueur et de précision",
+                "description": "Capacité à réaliser des tâches en suivant avec exactitude les règles, les procédures, les instructions qui ont été fournies, sans réaliser d'erreur et à transmettre clairement des informations. Se montrer ponctuel et respectueux des règles de savoir-vivre usuelles."
+            },
+            {
+                "libelle": "Organiser son travail selon les priorités et les objectifs",
+                "description": "Capacité à planifier, prioriser, anticiper des actions, en tenant compte des moyens, des ressources, des objectifs et du calendrier pour les réaliser."
+            }
+        ],
+        "origineOffre": { "origine": "1", "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/186LPCT" },
+        "offresManqueCandidats": false
+    },
+    {
+        "id": "186JDCG",
+        "intitule": "Data Engineer / Platform Engineer (H/F)",
+        "description": "En tant qu'Ingénieur Data vous serez responsable de la création et de l'optimisation de l'infrastructure de données et des pipelines qui alimentent nos analyses, modèles d'apprentissage automatique et processus de prise de décision.\n\nLes responsabilités clés comprennent :\n- La conception de l'infrastructure de données : Concevoir, implémenter et gérer une plateforme de données évolutive en utilisant des outils tels qu'Apache Kafka, Redpanda et des services de données cloud.\n- Le développement de pipelines de données : Construire des pipelines robustes d'ingestion, de transformation et de traitement des données en utilisant des cadres ETL/ELT.\n- Le Data Warehousing : Concevoir et gérer des data warehouse qui soutiennent les analyses et les rapports, en garantissant l'intégrité, la précision et l'accessibilité des données. Avec des modèles de bases de données multiples tels que PostgreSQL, neo4j ou memgraph, ChromaDB.\n- La gouvernance des données : Mettre en œuvre les meilleures pratiques de gouvernance des données, de sécurité et de confidentialité sur la plateforme.\n- La scalabilité et performance : Assurer que l'infrastructure de données peut évoluer pour répondre aux besoins croissants de l'organisation et optimiser la performance pour de grands ensembles de données.\n- La collaboration : Travailler en étroite collaboration avec les data scientists, les analystes et les autres ingénieurs pour fournir des solutions de données répondant aux besoins de l'entreprise.\nLa surveillance et la maintenance : Surveiller les systèmes de données pour garantir une haute disponibilité et des performances optimales, résoudre les problèmes et garantir l'exactitude et la qualité des données.\n- L'automatisation : Automatiser les flux de travail de données et la fourniture d'infrastructure en utilisant IaC et des outils tels que Kuberntes d'orchestration tels que Kubernetes",
+        "dateCreation": "2025-01-08T15:41:38.614Z",
+        "dateActualisation": "2025-01-08T16:44:52.823Z",
+        "lieuTravail": { "libelle": "75 - PARIS 03", "latitude": 48.862489, "longitude": 2.359316, "codePostal": "75003", "commune": "75103" },
+        "romeCode": "M1811",
+        "romeLibelle": "Data engineer",
+        "appellationlibelle": "Data engineer",
+        "entreprise": { "entrepriseAdaptee": false },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "CDI",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "E",
+        "experienceLibelle": "6 Mois",
+        "formations": [{ "niveauLibelle": "Bac+5 et plus ou équivalents", "commentaire": "Maters en science des donnees", "exigence": "S" }],
+        "langues": [{ "libelle": "Anglais", "exigence": "E" }],
+        "competences": [
+            { "code": "404121", "libelle": "Data engineer", "exigence": "S" },
+            { "code": "116349", "libelle": "Déploiement de services cloud (cloud computing)", "exigence": "S" },
+            { "code": "404139", "libelle": "Mastère Spécialisé Expert Big Data engineer", "exigence": "S" },
+            { "code": "300067", "libelle": "Analyser, exploiter, structurer des données", "exigence": "S" },
+            { "code": "300488", "libelle": "Concevoir et gérer un projet", "exigence": "S" },
+            { "code": "120209", "libelle": "Enrichir une base de données", "exigence": "S" }
+        ],
+        "salaire": { "libelle": "Annuel de 40000.0 Euros à 45000.0 Euros sur 12.0 mois", "complement1": "Pc portable", "complement2": "Chèque repas" },
+        "dureeTravailLibelle": "35H Autre",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {},
+        "agence": {},
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": "2",
+        "deplacementLibelle": "Ponctuels Zone nationale",
+        "qualificationCode": "6",
+        "qualificationLibelle": "Employé qualifié",
+        "codeNAF": "62.01Z",
+        "secteurActivite": "62",
+        "secteurActiviteLibelle": "Programmation informatique",
+        "qualitesProfessionnelles": [
+            {
+                "libelle": "Faire preuve d'autonomie",
+                "description": "Capacité à prendre en charge son activité sans devoir être encadré de façon continue (le cas échéant, à solliciter les autres acteurs de l'entreprise)."
+            },
+            {
+                "libelle": "Faire preuve de rigueur et de précision",
+                "description": "Capacité à réaliser des tâches en suivant avec exactitude les règles, les procédures, les instructions qui ont été fournies, sans réaliser d'erreur et à transmettre clairement des informations. Se montrer ponctuel et respectueux des règles de savoir-vivre usuelles."
+            },
+            {
+                "libelle": "Organiser son travail selon les priorités et les objectifs",
+                "description": "Capacité à planifier, prioriser, anticiper des actions, en tenant compte des moyens, des ressources, des objectifs et du calendrier pour les réaliser."
+            }
+        ],
+        "origineOffre": { "origine": "1", "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/186JDCG" },
+        "offresManqueCandidats": false
+    },
+    {
+        "id": "0392897",
+        "intitule": "H/F Projeteur / Ingénieur Méthode en Bâtiment dans le 73",
+        "description": "Société incontournable sur le marché du recrutement français, LTD - IR Consulting est un Cabinet de Recrutement et une Agence de Travail Temporaire spécialisé dans les métiers l'Ingénierie Bâtiment et Génie Civil.\nDans le cadre de notre développement du département Ingénierie Bâtiment nous recherchons un Projeteur / Ingénieur Méthode en Bâtiment.  \n\nLe poste : \n\nConçoit, optimise et organise l'ensemble des solutions techniques (faisabilité, capacité, fiabilité, rentabilité) et des méthodes de production/fabrication de biens ou de produits, selon les impératifs de productivité et de qualité. Peut participer à la conception de nouveaux produits ou de leur industrialisation. Peut encadrer une équipe ou un service et en gérer le budget.\nVotre mission consiste à optimiser les moyens humains et matériels pour la réalisation des travaux, en respectant les exigences QSHE.\nVous interviendrez en phase d'avant-projet et en phase d'exécution pour élaborer les modes opératoires (planning?) et les méthodes d'exécution les plus appropriées.\nIl est en relation constante avec les partenaires internes (direction technique, équipes de production, service commercial) et externes.\n- Organiser et coordonner le projet de fabrication ou d'industrialisation \n- Concevoir et définir les procédés de fabrication et faire évoluer les projets et les dossiers de fabrication ou d'industrialisation \n- Contrôler l'application des procédures et analyser les données d'activité de la production (taux de retour, temps de fabrication, ...) \n- Identifier les dysfonctionnements, les besoins d'évolution et déterminer les actions correctives avec la production, la qualité, les bureaux d'études, ... \n- Réceptionner et préparer les outils de production et suivre la mise en fonction \n- Apporter un appui technique aux services production, qualité, maintenance, ...\nLogiciel : CFAO, de GMAO et de GPAO\n\nProfil recherché : \n\nVous justifiez d'un diplôme en Ecole d'Ingénieur ou d'un Master 2 Génie Civil / Travaux Publics / Bâtiment ?\nVous vous reconnaissez dans ce profil - Rejoignez-nous et apportez votre contribution à la réalisation de nos multiples projets dans une équipe dynamique et en pleine croissance !",
+        "dateCreation": "2025-01-08T12:34:16.000Z",
+        "dateActualisation": "2025-01-08T12:34:16.000Z",
+        "lieuTravail": { "libelle": "73 - CHAMBERY", "latitude": 45.583223, "longitude": 5.909299, "codePostal": "73000", "commune": "73065" },
+        "romeCode": "M1822",
+        "romeLibelle": "Ingénieur / Ingénieure systèmes et réseaux informatiques",
+        "appellationlibelle": "Ingénieur / Ingénieure système réseau informatique",
+        "entreprise": { "nom": "LTd", "description": "LTd", "entrepriseAdaptee": false },
+        "typeContrat": "MIS",
+        "typeContratLibelle": "Mission intérimaire - 18 Mois",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "S",
+        "experienceLibelle": "Expérience souhaitée de 1 An(s)",
+        "salaire": {},
+        "dureeTravailLibelle": "Temps plein",
+        "complementExercice": "Temps plein",
+        "alternance": false,
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "codeNAF": "78.20Z",
+        "secteurActivite": "78",
+        "secteurActiviteLibelle": "Activités des agences de travail temporaire",
+        "origineOffre": {
+            "origine": "2",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/0392897",
+            "partenaires": [
+                {
+                    "nom": "PMEJOB",
+                    "url": "https://www.jobposting.pro/emploi-2022996-120",
+                    "logo": "https://www.francetravail.fr/logos/img/partenaires/pmejob80.png"
+                }
+            ]
+        }
+    },
+    {
+        "id": "186MFHR",
+        "intitule": "Data engineer (H/F)",
+        "description": "Le poste proposé vise à accompagner techniquement les projets depuis la conception jusqu'à la mise en production en prenant en charge les aspects techniques permettant d'obtenir un processus industriel depuis l'apprentissage d'un modèle IA jusqu'à la mise en production du modèle enfin il doit supporter la mise à l'échelle pour la production.\n\nCet accompagnement consiste concrètement à mettre en œuvre les technologies Devops et Mlops pour construire les livrables de façon sécurisée et le plus automatique possible. Cela recouvre des aspects architecture lors de la conception, puis des connaissances devops, mlops, Data ing lors de la réalisation des chaines CICD et MLOPS.\n\nCela nécessite également de construire des tableaux de bord avec des KPI adaptés pour permettre le monitoring de la solution en production.\n\nEnfin il y a une composante rédaction pour capitaliser les connaissances et leur partage au sein du pôle.\n\nLe pôle Data ing est en forte croissance et les projets à venir sont nombreux, c'est aujourd'hui une petite équipe avec un fort esprit de collaboration qui est amener à une forte croissance.",
+        "dateCreation": "2025-01-10T17:14:45.875Z",
+        "dateActualisation": "2025-01-10T17:14:46.316Z",
+        "lieuTravail": { "libelle": "94 - VILLEJUIF", "latitude": 48.793468, "longitude": 2.360996, "codePostal": "94800", "commune": "94076" },
+        "romeCode": "M1811",
+        "romeLibelle": "Data engineer",
+        "appellationlibelle": "Data engineer",
+        "entreprise": { "nom": "LCL CREDIT LYONNAIS", "entrepriseAdaptee": false },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "CDI",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "E",
+        "experienceLibelle": "3 An(s)",
+        "competences": [
+            { "code": "300067", "libelle": "Analyser, exploiter, structurer des données", "exigence": "S" },
+            { "code": "300488", "libelle": "Concevoir et gérer un projet", "exigence": "S" },
+            { "code": "120209", "libelle": "Enrichir une base de données", "exigence": "S" }
+        ],
+        "salaire": { "libelle": "Annuel de 50000.0 Euros sur 12.0 mois", "complement1": "Primes", "complement2": "Participation/action" },
+        "dureeTravailLibelle": "39H Travail en journée",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "nom": "LCL CREDIT LYONNAIS - Mme NELLY  SETBON",
+            "coordonnees1": "https://offres-emploi.lcl.com/accueil.aspx?LCID=1036",
+            "urlPostulation": "https://offres-emploi.lcl.com/accueil.aspx?LCID=1036"
+        },
+        "agence": {},
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": "1",
+        "deplacementLibelle": "Jamais",
+        "qualificationCode": "9",
+        "qualificationLibelle": "Cadre",
+        "codeNAF": "64.19Z",
+        "secteurActivite": "64",
+        "secteurActiviteLibelle": "Autres intermédiations monétaires",
+        "qualitesProfessionnelles": [
+            {
+                "libelle": "Faire preuve d'autonomie",
+                "description": "Capacité à prendre en charge son activité sans devoir être encadré de façon continue (le cas échéant, à solliciter les autres acteurs de l'entreprise)."
+            },
+            {
+                "libelle": "Faire preuve de créativité, d'inventivité",
+                "description": "Capacité à créer, imaginer quelque chose de nouveau (nouveau produit, nouvelle solution, …)."
+            },
+            {
+                "libelle": "Faire preuve de rigueur et de précision",
+                "description": "Capacité à réaliser des tâches en suivant avec exactitude les règles, les procédures, les instructions qui ont été fournies, sans réaliser d'erreur et à transmettre clairement des informations. Se montrer ponctuel et respectueux des règles de savoir-vivre usuelles."
+            }
+        ],
+        "origineOffre": { "origine": "1", "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/186MFHR" },
+        "offresManqueCandidats": false
+    },
+    {
+        "id": "186NWKN",
+        "intitule": "Jobdating numérique: Consultant GRC (H/F)",
+        "description": "Pour répondre à la demande croissante de nos clients, nous renforçons les équipes de la division Cyberdéfense et de son pôle Audit, Conseil et Expertise.\nCHEOPS Technology recherche ainsi un Consultant(e) Cybersécurité GRC, en CDI, pour intervenir sur des projets de gouvernance, risque et conformités variées, à forte valeur ajoutée.\n\nEn tant que Consultant(e) Cybersécurité GRC au sein de CHEOPS Technology, vous participez à la croissance de la division Cyberdéfense et de son pôle Audit, Conseil et Expertise. A ce titre, vous accompagnez nos clients dans l'amélioration de leur maturité en Cybersécurité.\n\nA ce titre, vous aurez pour mission d'assurer :\nL'accompagnement RSSI ou RSI\nLa rédaction de PSSI\nLa conception de schémas directeurs Sécurité\nLa gestion des risques Métiers et IT, cartographies et analyses de risques (EBIOS RM)\nL'élaboration de tableau de bord SSI\nLa formalisation de plan de sensibilisation et sensibilisation des clients à la sécurité\nL'intégration de la sécurité dans les projets (ISP)\nLe pilotage de projets de sécurité\nLa mise en conformité aux règlements nationaux et européens (GDPR, NIS, LPM, PCI-DSS)\nLa réalisation d'audit organisationnel\nL'accompagnement au développement des offres de GRC (avant-vente, amélioration des méthodologies et de l'outillage)",
+        "dateCreation": "2025-01-13T17:00:06.401Z",
+        "dateActualisation": "2025-01-13T17:00:06.401Z",
+        "lieuTravail": { "libelle": "33 - CANEJAN", "latitude": 44.760587, "longitude": -0.654768, "codePostal": "33610", "commune": "33090" },
+        "romeCode": "M1856",
+        "romeLibelle": "Expert / Experte en cybersécurité",
+        "appellationlibelle": "Expert / Experte en cybersécurité",
+        "entreprise": {
+            "nom": "Stand Chéops Technology",
+            "description": "Vendredi 24 Janvier de 10h à 14h \nHôtel Bordeaux Métropole \nInscription via le lien du site entreprise",
+            "url": "https://mesevenementsemploi.francetravail.fr/mes-evenements-emploi/evenement/372394?at_medium=CMP&at_campaign=DSIMonstreuil&at_cmp_indicateur1=PromotionEvenementConseiller&at_cmp_indicateur2=Multicana",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "CDI",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "E",
+        "experienceLibelle": "3 An(s) - en GRC",
+        "experienceCommentaire": "en GRC",
+        "formations": [
+            { "codeFormation": "31006", "domaineLibelle": "sécurité informatique", "niveauLibelle": "Bac+3, Bac+4 ou équivalents", "exigence": "S" }
+        ],
+        "competences": [
+            { "code": "300195", "libelle": "Concevoir un logiciel, un système d'informations, une application", "exigence": "S" },
+            { "code": "300488", "libelle": "Concevoir et gérer un projet", "exigence": "S" },
+            { "code": "300495", "libelle": "Évaluer le résultat de ses actions", "exigence": "S" }
+        ],
+        "salaire": { "commentaire": "selon profil et compétences", "complement1": "Autre" },
+        "dureeTravailLibelle": "35H Autre",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "nom": "Stand Chéops Technology - M. . Cheops",
+            "coordonnees1": "Jobdating Numérique, 24/01 de 10h à 14h",
+            "coordonnees2": "ESP Charles De Gaulle ",
+            "coordonnees3": "33000 Bordeaux"
+        },
+        "agence": {},
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "qualificationCode": "9",
+        "qualificationLibelle": "Cadre",
+        "codeNAF": "62.02A",
+        "secteurActivite": "62",
+        "secteurActiviteLibelle": "Conseil en systèmes et logiciels informatiques",
+        "origineOffre": { "origine": "1", "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/186NWKN" },
+        "offresManqueCandidats": false
+    }
+]

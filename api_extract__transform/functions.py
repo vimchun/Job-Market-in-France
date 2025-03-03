@@ -164,11 +164,10 @@ def get_offres(token, code_appellation_libelle, filter_params):
 
     Ne retourne rien.
     """
-    # todo : vérifier que le json généré est bien valide
 
     appellation = filter_params["appellation"]
 
-    libelle = ""
+    # libelle = ""
 
     for item in code_appellation_libelle:
         if item["code"] == appellation:
@@ -210,18 +209,20 @@ def get_offres(token, code_appellation_libelle, filter_params):
             max_offres = int(content_range.split("/")[-1])
 
         if filter_params["appellation"] in codes_list:
-            output_file = os.path.join(current_directory, "outputs", "offres", f"{appellation}_{libelle}__{max_offres}_offres.json")
+            # output_file = os.path.join(current_directory, "outputs", "offres", f"{appellation}_{libelle}__{max_offres}_offres.json")
+            output_file = os.path.join(current_directory, "outputs", "offres", f"{appellation}_{libelle}.json")
         else:
-            output_file = os.path.join(current_directory, "outputs", "offres", f"{appellation}__{max_offres}_offres.json")
+            # output_file = os.path.join(current_directory, "outputs", "offres", f"{appellation}__{max_offres}_offres.json")
+            output_file = os.path.join(current_directory, "outputs", "offres", f"{appellation}.json")
 
         if os.path.exists(output_file):
             os.remove(output_file)
 
-    ###### réponse 200 : on peut récupérer déjà récupérer toutes les offres disponibles
+    ###### réponse 200 : on peut déjà récupérer toutes les offres disponibles
     if response.status_code == 200:
         print(f"Status Code: {response.status_code}")
         # print(response.headers.get("Content-Range"))
-        print(f"  => {Fore.CYAN}[{max_offres}]{Style.RESET_ALL} offres au total {Fore.YELLOW}--> writing to file")
+        print(f"  => {Fore.CYAN}[{max_offres}]{Style.RESET_ALL} offres au total {Fore.YELLOW}--> écriture dans le fichier")
 
         document_id = 0
 
@@ -237,6 +238,13 @@ def get_offres(token, code_appellation_libelle, filter_params):
                 document_id += 1
 
             f.write("]")  # Clore le json en ajoutant un crochet fermant "]"
+
+        # Renommer les fichiers json en ajoutant le nombre d'offres dans le json
+        dir_path, file_name = os.path.split(output_file)  # Séparer le chemin et le nom du fichier
+        new_file_name = f"{file_name[:-5]}__{document_id}_offres.json"
+        # print(dir_path, file_name, new_file_name, sep="\n")  # utile si investigation
+        new_file_path = os.path.join(dir_path, new_file_name)  # Créer le chemin complet du nouveau fichier
+        os.rename(output_file, new_file_path)  # Renommer le fichier
 
     ###### réponse 206 : on doit faire plusieurs requêtes pour récupérer tous les documents (limité à 3150 documents)
     elif response.status_code == 206:
@@ -266,16 +274,9 @@ def get_offres(token, code_appellation_libelle, filter_params):
                     # Boucle for pour écrire uniquement les documents
                     for obj in response.json()["resultats"]:
                         json.dump(obj, f, ensure_ascii=False)
-                        # Si on écrit le dernier document possible (le 3150e), on ne met pas de virgule à la fin, sinon le json n'est pas valide
-                        if document_id == 3149:
-                            f.write("\n")  # Pour le dernier document, on ne met pas de virgule, sinon le json n'est pas valide
-                        else:
-                            if document_id < max_offres - 1:
-                                f.write(",\n")  # Ajouter une virgule après chaque objet
-                            else:
-                                f.write("\n")  # Pour le dernier document, on ne met pas de virgule, sinon le json n'est pas valide
+                        f.write(",\n")  # Ajouter une virgule après chaque objet
                         document_id += 1
-                    print(f"{range_start}-{range_end}/{max_offres} {Fore.YELLOW}--> writing to file")
+                    print(f"{range_start}-{range_end}/{max_offres} {Fore.YELLOW}--> écriture dans le fichier (total: {document_id})")
                 else:
                     print(f"Status Code: {response.status_code}, {response.json()}")
                     break
@@ -285,7 +286,57 @@ def get_offres(token, code_appellation_libelle, filter_params):
                 filter_params["range"] = f"{range_start}-{range_end}"
                 request_id += 1
 
-            f.write("]")  # Clore le json en ajoutant un crochet fermant "]"
+                # if request_id == 2:  # utile si besoin investigation
+                #     break
+
+        """
+        A partir d'ici, on applique le principe du script "fix_invalid_json.py" :
+            - On a un json invalide jusqu'ici, de la forme suivante (simplifiée ici) :
+
+                ```
+                [
+                {"id": "188VMGQ", "intitule": "Data Engineer (H/F)"},
+                {"id": "188RQRZ", "intitule": "Responsable Data Studio F/H (H/F)"},
+                {"id": "188PNVQ", "intitule": "Maître du Jeu des ETL recherché pour notre Next Game"},
+                    // ligne vide
+                ```
+
+            - Et on va rendre ce json valide, et ainsi avoir
+
+                ```
+                [
+                {"id": "188VMGQ", "intitule": "Data Engineer (H/F)"},
+                {"id": "188RQRZ", "intitule": "Responsable Data Studio F/H (H/F)"},
+                {"id": "188PNVQ", "intitule": "Maître du Jeu des ETL recherché pour notre Next Game"}
+                ]
+                ```
+
+        """
+        # Ecrire le contenu de "invalid_json.json" dans "invalid_content"
+        with open(output_file, "r") as invalid:
+            invalid_content = invalid.read()
+            # print(invalid_content)
+
+        # Ecrire le json valide dans "valid_content"
+        with open(output_file, "w") as valid:
+            valid_content = invalid_content[:-2] + "\n]"
+            valid.write(valid_content)
+
+        # Ouvrir le fichier json valide pour vérifier qu'il est bien valide
+        with open(output_file, "r") as valid:
+            valid_content = valid.read()
+            try:
+                json.loads(valid_content)
+                print("Le json est bien valide.")
+            except json.JSONDecodeError as e:
+                print(f"Le json n'est pas valide :\n==> {e}")
+
+        # Renommer les fichiers json en ajoutant le nombre d'offres dans le json
+        dir_path, file_name = os.path.split(output_file)  # Séparer le chemin et le nom du fichier
+        new_file_name = f"{file_name[:-5]}__{document_id}_offres.json"
+        # print(dir_path, file_name, new_file_name, sep="\n")  # utile si investigation
+        new_file_path = os.path.join(dir_path, new_file_name)  # Créer le chemin complet du nouveau fichier
+        os.rename(output_file, new_file_path)  # Renommer le fichier
 
     ###### autres cas
     elif response.status_code == 204:
@@ -298,23 +349,25 @@ def get_offres(token, code_appellation_libelle, filter_params):
     return None
 
 
-def merge_all_json_into_one(json_files_directory, merged_json_filename):
+def concatenate_all_json_into_one(json_files_directory, concat_json_filename):
     """
     Nous obtenons suite à l'exécution de get_offres() x fichiers json (x = nombre d'appellations présents dans "code_appellation_libelle.yml").
     Cette fonction écrira dans un json chaque ligne de tous les json précédents, en supprimant les doublons.
+
+    Renvoie le DateFrame qui concatène toutes les offres, sans doublon.
     """
 
-    df_merged = pd.DataFrame()
+    df_concat = pd.DataFrame()
 
     for filename in os.listdir(json_files_directory):
-        if filename.endswith(".json") and filename != merged_json_filename:  # traite aussi le cas du fichier sans extension
+        if filename.endswith(".json") and filename != concat_json_filename:  # traite aussi le cas du fichier sans extension
             print(filename)
             try:
                 # si le json est bien valide
                 with open(os.path.join(json_files_directory, filename), "r", encoding="utf-8") as file:
                     data = json.load(file)
                 df = pd.DataFrame(data)
-                df_merged = pd.concat([df, df_merged], ignore_index=True)
+                df_concat = pd.concat([df, df_concat], ignore_index=True)
 
             except json.JSONDecodeError as e:
                 print(f"{Fore.RED}Erreur 1 lors du chargement du fichier JSON {filename} : {e}")
@@ -323,13 +376,23 @@ def merge_all_json_into_one(json_files_directory, merged_json_filename):
             except Exception as e:
                 print(f"{Fore.RED}Une erreur inattendue s'est produite : {e}")
 
-    print(f"\n --> df_merged : {df_merged.shape[0]} offres, df_merged_drop_duplicates : {df_merged.drop_duplicates(["id"]).shape[0]} offres")
+    print(f"\n --> df_concat : {df_concat.shape[0]} offres, df_concat_drop_duplicates : {df_concat.drop_duplicates(["id"]).shape[0]} offres")
 
-    df_merged.drop_duplicates(["id"]).to_json(
-        os.path.join(json_files_directory, merged_json_filename),
+    df_concat.drop_duplicates(["id"]).to_json(
+        os.path.join(json_files_directory, concat_json_filename),
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
         force_ascii=False,  # pour convertir les caractères spéciaux
         indent=4,  # pour formatter la sortie
-    )
+    )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs
 
-    return None
+    # On supprime les backslashs ajoutés par la méthode .to_json()
+    with open(os.path.join(json_files_directory, concat_json_filename), "r", encoding="utf-8") as f:
+        content = f.read()
+
+    content = content.replace("\\/", "/")
+
+    # On sauvegarde le fichier final sans les '\'
+    with open(os.path.join(json_files_directory, concat_json_filename), "w", encoding="utf-8") as f:
+        f.write(content)
+
+    return df_concat.drop_duplicates(["id"])

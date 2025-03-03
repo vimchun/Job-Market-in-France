@@ -3,14 +3,9 @@ _notes_perso/
 .venv/
 api_credentials_minh.yml
 api_extract__transform/outputs/*.json
-api_extract__transform/outputs/_archives/2024-12-11/
-api_extract__transform/outputs/appellations/*.json
 api_extract__transform/outputs/offres/*.json
-api_extract__transform/outputs/offres/archives_pb_ecriture_json
-api_extract__transform/outputs/offres/_offres_merged.json
 node_modules
 package-lock.json
 package.json
-todel.py
 
 # fichier > 100MB
