@@ -1,6 +1,6 @@
 [Retour à la page principale](../README.md)
 
-# Étape 1 : Récolte des données par API
+# Étape 1 : Récupération des données par API
 
 - France Travail (https://francetravail.io/data/api) met à disposition plusieurs APIs, dont "Offres d'emploi v2" (`GET https://api.francetravail.io/partenaire/offresdemploi`).
 
@@ -45,3 +45,10 @@
   - Ces 61 fichiers json seront concaténés dans un seul fichier json, où les doublons seront supprimés.
 
 - A noter que les offres d"emploi retournées peuvent provenir soit de France Travail, soit des "partenaires", par exemple ("CADREMPLOI', "DIRECTEMPLOI", "INDEED", etc...)
+
+<!--
+todo : compléter avec :
+0/ Supprimer les offres DOMTOM et Corse
+1/ Extraire la ville, la commune, le département, et la région
+2/ Ajouter un attribut pour savoir si l'offre est encore d'actualité ou pas
+ -->

@@ -1,11 +1,4 @@
-# Workflow du projet
-
-Voici un schéma récapitulatif des différentes étapes du projet :
-
-![screenshot du workflow](./workflow_screenshot.png)
-
-
-# Projet Job Market (todo : à mettre à jour)
+# Présentation du projet (todo : section à mettre à jour)
 
 - On va regrouper des informations sur les offres d’emplois récupérées par API, et les compagnies qui les proposent.
 
@@ -18,8 +11,16 @@ Voici un schéma récapitulatif des différentes étapes du projet :
   - etc... (à compléter)
 
 
-# Étapes du projet
+# <u>Workflow du projet</u>
 
-<!-- - [Étape 1 : Récolte des données par API](#étape-1--récolte-des-données-par-API) -->
+Voici un schéma récapitulatif des différentes étapes du projet :
 
-- [Étape 1 : Récolte des données par API](readme_pages/step_1__get_data.md)
+![screenshot du workflow](readme_pages/screenshots/workflow.png)
+
+
+
+# <u> Étapes du projet </u>
+
+- [Étape 1 : Récupération des données par API](readme_pages/step_1__get_data.md)
+- [Étape 2 : Écriture des données dans une base de données relationnelle](readme_pages/step_2__write_to_db.md)
+
