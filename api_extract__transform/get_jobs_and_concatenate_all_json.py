@@ -1,12 +1,14 @@
 import os
 
+from datetime import datetime
+
 import yaml
 
-from colorama import Fore, init
-from functions import get_bearer_token, get_offres, get_referentiel_appellations_rome, get_referentiel_pays, merge_all_json_into_one, remove_all_json_files
 
-init(autoreset=True)  # pour colorama, inutile de reset si on colorie
+# from colorama import init
+from functions import concatenate_all_json_into_one, get_bearer_token, get_offres, get_referentiel_appellations_rome, get_referentiel_pays, remove_all_json_files
 
+# init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
 # Récupération des credentials données sur le site de FT, depuis un fichier yaml
 SCOPES_OFFRES = "o2dsoffre api_offresdemploiv2"  # scopes définis dans https://francetravail.io/produits-partages/catalogue/offres-emploi/documentation#/
@@ -26,11 +28,11 @@ token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE
 
 # Lancer les fonctions plus simplement ("= 1" pour lancer la fonction)
 #  note : il faut tout mettre à 1 pour le script de bout en bout
-launch_get_referentiel_appellations_rome = 0
-launch_get_referentiel_pays = 0
+launch_get_referentiel_appellations_rome = 1
+launch_get_referentiel_pays = 1
 launch_remove_all_json_files = 1
 launch_get_offres = 1
-launch_merge_all_json_into_one = 0
+launch_concatenate_all_json_into_one = 1
 
 
 if launch_get_referentiel_appellations_rome:
@@ -115,15 +117,25 @@ if launch_get_offres:
             },
         )
 
-# notes :
-# pour filtrer qu'en France métropolitaine :
-#   - on ne peut pas filtrer sur les 13 régions en une fois (une seule région possible dans la requête)
-#   - on ne peut mettre que 5 départements d'un coup
+# Notes :
+# Pour filtrer qu'en France métropolitaine :
+#   - On ne peut pas filtrer sur les 13 régions en une fois (une seule région possible dans la requête)
+#   - On ne peut mettre que 5 départements d'un coup
 
 #################################################################################################################################
 
-if launch_merge_all_json_into_one:
-    merged_json_filename = "_offres_merged.json"
-    merged_json_filename_path = os.path.join(json_files_directory, merged_json_filename)
+if launch_concatenate_all_json_into_one:
+    today = datetime.now()
+    date_now = today.strftime("%Y-%m-%d--%Hh%M")
+    concatenated_json_filename = f"_offres_concatenated.json"
+    concatenated_json_filename_path = os.path.join(json_files_directory, concatenated_json_filename)
 
-    merge_all_json_into_one(json_files_directory, merged_json_filename)
+    df_concat = concatenate_all_json_into_one(json_files_directory, concatenated_json_filename)
+
+    # On renomme le fichier avec le nombre d'offres et la date/heure au lancement de la fonction
+    new_filename = f"{concatenated_json_filename[:-5]}_{df_concat.shape[0]}_offres__{date_now}.json"
+
+    os.rename(
+        concatenated_json_filename_path,
+        os.path.join(json_files_directory, new_filename),
+    )
