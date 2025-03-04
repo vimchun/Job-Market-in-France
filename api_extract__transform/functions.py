@@ -426,9 +426,9 @@ def keep_only_offres_from_metropole(json_files_directory, json_filename):
     # lieuTravail est une colonne avec un dictionnaire, donc on utilise .json_normalize() pour avoir x colonnes pour chaque clé du dictionnaire.
     lieuTravail_normalized = pd.json_normalize(df["lieuTravail"])
 
-    df = df.join(lieuTravail_normalized)
+    df_join = df.join(lieuTravail_normalized)
 
-    df_lieu_norm = df[["id", "intitule"] + list(lieuTravail_normalized.columns)]
+    df_lieu_norm = df_join[["id", "intitule"] + list(lieuTravail_normalized.columns)]
 
     # On exclut les offres où le libelle du lieu matche la regex suivante :
     df_lieu_norm_metropole = df_lieu_norm[~df_lieu_norm.libelle.str.match(r"^(\d{3}|2(A|B))\s-\s")]
@@ -454,8 +454,8 @@ def keep_only_offres_from_metropole(json_files_directory, json_filename):
 
     df_lieu_norm_metropole = df_lieu_norm_metropole[~df_lieu_norm_metropole["libelle"].isin(list_departements)]  # .value_counts(subset="libelle")
 
-    # On réécrit le json avec uniquement les offres en métropole (en supprimant les colonnes précédemment créées)
-    df[df["id"].isin(df_lieu_norm_metropole["id"])].drop(["libelle", "latitude", "longitude", "codePostal", "commune"], axis=1).to_json(
+    # On réécrit le json initial avec uniquement les offres en métropole
+    df[df["id"].isin(df_lieu_norm_metropole["id"])].to_json(
         # df_concat.drop_duplicates(["id"]).to_json(
         os.path.join(json_files_directory, json_filename),
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
