@@ -25,7 +25,8 @@ def get_bearer_token(client_id, client_secret, scope):
     Return :
     - str : Le Bearer Token pour l'authentification des requêtes, ou None en cas d'erreur.
     """
-    print(f"{Fore.GREEN}== Récupération du bearer token :")
+
+    print(f'{Fore.GREEN}\n==> Fonction "get_bearer_token()"\n')
 
     # paramètres décrits ici https://francetravail.io/produits-partages/documentation/utilisation-api-france-travail/generer-access-token
     url = "https://entreprise.francetravail.fr/connexion/oauth2/access_token"
@@ -58,7 +59,7 @@ def get_referentiel_appellations_rome(token):
     Ne retourne rien.
     Un "code" correspond à un "libelle", par exemple { "code": "404278", "libelle": "Data engineer" }
     """
-    print(f"{Fore.GREEN}== Récupération du référentiel des appellations ROME:")
+    print(f'{Fore.GREEN}\n==> Fonction "get_referentiel_appellations_rome()" :\n')
 
     url = "https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/appellations"
 
@@ -102,7 +103,7 @@ def get_referentiel_pays(token):
     Ne retourne rien.
     Un "code" correspond à un "libelle", par exemple  { "code": "01", "libelle": "France" }
     """
-    print(f"{Fore.GREEN}== Récupération du référentiel des pays :")
+    print(f'{Fore.GREEN}\n==> Fonction "get_referentiel_pays()"\n')
 
     url = "https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/pays"
 
@@ -143,6 +144,9 @@ def remove_all_json_files(json_files_directory):
     """
     Supprime tous les fichiers json du dossier spécifié
     """
+
+    print(f'{Fore.GREEN}\n==> Fonction "remove_all_json_files()"\n')
+
     for file in os.listdir(json_files_directory):
         json_to_delete = os.path.join(json_files_directory, file)
 
@@ -165,9 +169,9 @@ def get_offres(token, code_appellation_libelle, filter_params):
     Ne retourne rien.
     """
 
-    appellation = filter_params["appellation"]
+    print(f'{Fore.GREEN}\n==> Fonction "get_offres()"\n')
 
-    # libelle = ""
+    appellation = filter_params["appellation"]
 
     for item in code_appellation_libelle:
         if item["code"] == appellation:
@@ -357,6 +361,8 @@ def concatenate_all_json_into_one(json_files_directory, concat_json_filename):
     Renvoie le DateFrame qui concatène toutes les offres, sans doublon.
     """
 
+    print(f'{Fore.GREEN}\n==> Fonction "concatenate_all_into_one()"\n')
+
     df_concat = pd.DataFrame()
 
     for filename in os.listdir(json_files_directory):
@@ -367,7 +373,8 @@ def concatenate_all_json_into_one(json_files_directory, concat_json_filename):
                 with open(os.path.join(json_files_directory, filename), "r", encoding="utf-8") as file:
                     data = json.load(file)
                 df = pd.DataFrame(data)
-                df_concat = pd.concat([df, df_concat], ignore_index=True)
+                # df_concat = pd.concat([df, df_concat], ignore_index=True)
+                df_concat = pd.concat([df_concat, df], ignore_index=True)
 
             except json.JSONDecodeError as e:
                 print(f"{Fore.RED}Erreur 1 lors du chargement du fichier JSON {filename} : {e}")
@@ -391,6 +398,9 @@ def concatenate_all_json_into_one(json_files_directory, concat_json_filename):
 
     content = content.replace("\\/", "/")
 
+    # On remplace les deux-points sans espace par des deux-points avec espace
+    content = content.replace('":', '": ')
+
     # On sauvegarde le fichier final sans les '\'
     with open(os.path.join(json_files_directory, concat_json_filename), "w", encoding="utf-8") as f:
         f.write(content)
@@ -406,7 +416,12 @@ def keep_only_offres_from_metropole(json_files_directory, json_filename):
     Ne retourne rien.
     """
 
-    df = pd.read_json(os.path.join(json_files_directory, json_filename))
+    print(f'{Fore.GREEN}\n==> Fonction "keep_only_offres_from_metropole()"\n')
+
+    df = pd.read_json(
+        os.path.join(json_files_directory, json_filename),
+        dtype=False,  # pour ne pas inférer les dtypes
+    )
 
     # lieuTravail est une colonne avec un dictionnaire, donc on utilise .json_normalize() pour avoir x colonnes pour chaque clé du dictionnaire.
     lieuTravail_normalized = pd.json_normalize(df["lieuTravail"])
@@ -453,6 +468,9 @@ def keep_only_offres_from_metropole(json_files_directory, json_filename):
         content = f.read()
 
     content = content.replace("\\/", "/")
+
+    # On remplace les deux-points sans espace par des deux-points avec espace
+    content = content.replace('":', '": ')
 
     # On sauvegarde le fichier final sans les '\'
     with open(os.path.join(json_files_directory, json_filename), "w", encoding="utf-8") as f:

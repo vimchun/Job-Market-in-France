@@ -63,24 +63,21 @@ if launch_get_offres:
             token,
             code_appellation_libelle,
             filter_params={
-                #### codes
+                #### table DescriptionOffre
                 "appellation": code,  # Code appellation ROME de l’offre
-                # "codeNAF": "",  # Code NAF de l’offre, (format 99.99X)
+                # "theme": "",  # Thème ROME du métier
+                # "accesTravailleurHandicape": True,  # Offres pour lesquelles l’employeur est handi friendly
+                # "origineOffre": "",  # Origine de l'offre
+                # "partenaires": "",  # Chaine de caractères - Liste des codes partenaires dont les offres sont à inclure ou exclure en fonction du mode de sélection associé et du filtre de l’origine de l’offre # noqa
+                # "offresManqueCandidats": "",  # Filtre sur les offres difficiles à pouvoir
                 # "codeROME": "",  # Code ROME de l’offre, voir le référentiel des métiers ci-dessous
-                #### localisation
-                "paysContinent": "01",  # Pays ou continent de l’offre, 01 pour la France (non restreint à la métropôle)
-                # "paysContinent": "02",  # pour l'Allemagne (presque pas d'offre)
-                # "paysContinent": "04",  # pour la Belgique (presque pas d'offre)
-                # "paysContinent": "07",  # pour l'Espagne (presque pas d'offre)
-                # "paysContinent": "23",  # pour la Suisse (presque pas d'offre)
-                # "paysContinent": "61",  # pour le US (presque pas d'offre)
-                # "paysContinent": "83",  # pour le Japon (presque pas d'offre)
-                # "commune": "",  # Code INSEE de la commune
-                # "departement": "",  # Département de l’offre (Jusqu'à 5 valeurs possibles, séparées par une virgule)
-                # "distance": "",  # Distance à la commune (pris en compte uniquement si une commune est renseignée
-                # "inclureLimitrophes": "",  # Inclure les départements limitrophes dans la recherche
-                # "region": "",  # Région de l’offre
-                #### contrat
+                # "domaine": "",  # Domaine de l’offre
+                #### table OffreEmploi
+                # date de création (ne permet de pas récupérer les offres anciennes)
+                # "minCreationDate": "2015-01-01T00:00:00Z",  # Date minimale pour laquelle rechercher des offres (format yyyy-MM-dd'T'hh:mm:ss'Z')
+                # "maxCreationDate": "2025-01-12T00:00:00Z",  # Date maximale pour laquelle rechercher des offres (format yyyy-MM-dd'T'hh:mm:ss'Z')
+                # "publieeDepuis": "31",  # Recherche les offres publiées depuis maximum « X » jours (1, 3, 7, 14 ou 31 attendu.)
+                #### table Contrat
                 # "dureeContratMax": "",  # Recherche les offres avec une durée de contrat maximale (format double de 0 à 99 bornes incluses)
                 # "dureeContratMin": "",  # Recherche les offres avec une durée de contrat minimale (format double de 0 à 99 bornes incluses)
                 # "dureeHebdo": "",  # Type de durée du contrat de l'offre
@@ -91,29 +88,33 @@ if launch_get_offres:
                 # "typeContrat": "",  # Code du type de contrat
                 # "periodeSalaire": "",  # Période pour le calcul du salaire minimum (M Mensuel, A Annuel, H Horaire, C Cachet). Si cette donnée est renseignée, le salaire minimum est obligatoire. # noqa
                 # "salaireMin": "",  # Salaire minimum recherché. Si cette donnée est renseignée, le code du type de salaire minimum est obligatoire.
-                #### experience
+                #### table Entreprise
+                # "modeSelectionPartenaires": "",  # Énumération (INCLUS ou EXCLU) - Mode de sélection des partenaires.
+                # "codeNAF": "",  # Code NAF de l’offre, (format 99.99X)
+                # "secteurActivite": "",  # Division NAF de l’offre (2 premiers chiffres)
+                # "entreprisesAdaptees": "",  # Filtre sur les offres dont les entreprises sont adaptées
+                #### table Localisation
+                "paysContinent": "01",  # Pays ou continent de l’offre, 01 pour la France (non restreint à la métropôle)
+                # "paysContinent": "02",  # pour l'Allemagne (presque pas d'offre)
+                # "paysContinent": "04",  # pour la Belgique (presque pas d'offre)
+                # "commune": "",  # Code INSEE de la commune
+                # "departement": "",  # Département de l’offre (Jusqu'à 5 valeurs possibles, séparées par une virgule)
+                # "distance": "",  # Distance à la commune (pris en compte uniquement si une commune est renseignée
+                # "inclureLimitrophes": "",  # Inclure les départements limitrophes dans la recherche
+                # "region": "",  # Région de l’offre
+                #### table Experience
                 # "experience": "",  # Niveau d’expérience demandé, (1 moins d'un an, 2 de 1 à 3 ans, 3 plus de 3 ans)
                 # "experienceExigence": "D",  # Exigence d'expérience (D débutant accepté, S expérience souhaitée, E expérience exigée)
-                #### date de création # ne permet de pas récupérer les offres anciennes
-                # "minCreationDate": "2015-01-01T00:00:00Z",  # Date minimale pour laquelle rechercher des offres (format yyyy-MM-dd'T'hh:mm:ss'Z')
-                # "maxCreationDate": "2025-01-12T00:00:00Z",  # Date maximale pour laquelle rechercher des offres (format yyyy-MM-dd'T'hh:mm:ss'Z')
-                # "publieeDepuis": "31",  # Recherche les offres publiées depuis maximum « X » jours (1, 3, 7, 14 ou 31 attendu.)
+                #### table Formation
+                # "niveauFormation": "",  # Niveau de formation demandé
+                #### table Qualification
+                # "qualification": "",  # Qualification du poste (0 non-cadre, 9 cadre)
+                #### table PermisConduire
+                # "permis": "",  # Permis demandé
                 #### misc.
                 # "sort": "",  # Tri selon 3 façons différentes
-                # "accesTravailleurHandicape": True,  # Offres pour lesquelles l’employeur est handi friendly
-                # "modeSelectionPartenaires": "",  # Énumération (INCLUS ou EXCLU) - Mode de sélection des partenaires.
                 # "motsCles": "data",  # Recherche de mots clés dans l’offre  # note: on n'utilise pas ce paramètre pour avoir le plus d'offres possible
-                # "niveauFormation": "",  # Niveau de formation demandé
                 # "offresMRS": "",  # Uniquement les offres d'emplois avec méthode de recrutement par simulation proposée
-                # "offresManqueCandidats": "",  # Filtre sur les offres difficiles à pouvoir
-                # "origineOffre": "",  # Origine de l'offres
-                # "partenaires": "",  # Chaine de caractères - Liste des codes partenaires dont les offres sont à inclure ou exclure en fonction du mode de sélection associé et du filtre de l’origine de l’offre # noqa
-                # "permis": "",  # Permis demandé
-                # "qualification": "",  # Qualification du poste (0 non-cadre, 9 cadre)
-                # "secteurActivite": "",  # Division NAF de l’offre (2 premiers chiffres)
-                # "theme": "",  # Thème ROME du métier
-                # "domaine": "",  # Domaine de l’offre
-                # "entreprisesAdaptees": "",  # Filtre sur les offres dont les entreprises sont adaptées
             },
         )
 
@@ -142,5 +143,5 @@ if launch_concatenate_all_json_into_one:
 
 
 if launch_keep_only_offres_from_metropole:
-    json_final_name = "_offres_concatenated_13639_offres__2025-03-02--23h46.json"  # à décommenter si besoin de hardcoder
+    # json_final_name = "_offres_concatenated_13639_offres__2025-03-02--23h46.json"  # à décommenter si besoin de hardcoder
     keep_only_offres_from_metropole(json_files_directory, json_final_name)
