@@ -1,6 +1,6 @@
 [Retour à la page principale](../README.md)
 
-# Étape 1 : Récupération des données par API
+# Étape 1 : Extraction et transformation des données par API
 
 - France Travail (https://francetravail.io/data/api) met à disposition plusieurs APIs, dont "Offres d'emploi v2" (`GET https://api.francetravail.io/partenaire/offresdemploi`).
 
@@ -52,3 +52,62 @@ todo : compléter avec :
 1/ Extraire la ville, la commune, le département, et la région
 2/ Ajouter un attribut pour savoir si l'offre est encore d'actualité ou pas
  -->
+
+
+## Conservation des offres en France Métropolitaine uniquement
+
+Pour une offre qui n'est pas en France Métropolitaine, l'attribut "libelle" donne l'information avec le "<département> - <nom_du_département>", par exemple :
+
+  - "971 - Guadeloupe"
+  - "974 - Réunion"
+  - "2A - Corse du Sud"
+  - "2B - BASTIA"
+
+Les départements en France Métropolitaine ont 2 numéros, ceux en DOM-TOM ont 3 numéros, et ceux en Corse sont "2A" ou "2B".
+
+Il est donc simple d'éliminer les offres en DOM-TOM et en Corse avec une regex "^(\d{3}|2(A|B))\s-\s", lorsque l'attribut "libelle" donne l'information avec le "<département> - <nom_du_département>".
+
+On supprimera les offres lorsque l'attribut "libelle" donne l'information juste avec le nom du département si en dehors de la métropole, par exemple "Guadeloupe".
+
+
+## Ajout d'attributs
+
+### Ajout de la ville, du département et de la région
+
+Dans le cas idéal, une offre est renseignée avec ses coordonnées GPS (latitude, longitude), le code postal et le code commune.
+
+Toutefois, de nombreuses offres n'ont pas tous ces attributs renseignés, mais pour certaines d'entre-elles, il est possible de retrouver l'information.
+
+En effet, l'attribut "libelle" peut parfois donner l'information, il peut prendre plusieurs formes :
+
+  1. "69 - Lyon 3e Arrondissement" ou "69 - LYON 03"
+    - (département - nom_commune)
+    - A noter que le nom de la commune n'est pas toujours harmonisé ("Lyon 3e Arrondissement" vs "LYON 03"), ce qui complique la récupération du nom de la ville.
+
+  1. "69" (juste le département)
+
+  1. "Ile-de-France" (juste la région)
+
+  1. "France" ou "France entière"
+    - Inutile dans notre cas, puisqu'on filtre déjà les offres en France Métropolitaine.
+
+
+#### Cas 1 : quand code postal et/ou code commune sont renseignés
+
+On peut retrouver la ville, le département et la région à partir du fichier csv.
+
+
+#### Cas 2 : quand code postal et code commune ne sont pas renseignés, mais que les (bonnes) coordonnées GPS sont renseignées
+
+On peut retrouver la ville
+
+
+#### Cas 3 : quand code postal et code commune ne sont pas renseignés, mais que les (mauvaises) coordonnées GPS sont renseignées
+
+Parfois, on peut avoir des coordonnées GPS renseignées, mais elles sont inversées.
+
+
+#### Cas 4 : quand latitude = longitude = code postal = code commune = NAN
+
+
+

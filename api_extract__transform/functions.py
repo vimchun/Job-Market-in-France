@@ -25,7 +25,8 @@ def get_bearer_token(client_id, client_secret, scope):
     Return :
     - str : Le Bearer Token pour l'authentification des requêtes, ou None en cas d'erreur.
     """
-    print(f"{Fore.GREEN}== Récupération du bearer token :")
+
+    print(f'{Fore.GREEN}\n==> Fonction "get_bearer_token()"\n')
 
     # paramètres décrits ici https://francetravail.io/produits-partages/documentation/utilisation-api-france-travail/generer-access-token
     url = "https://entreprise.francetravail.fr/connexion/oauth2/access_token"
@@ -58,7 +59,7 @@ def get_referentiel_appellations_rome(token):
     Ne retourne rien.
     Un "code" correspond à un "libelle", par exemple { "code": "404278", "libelle": "Data engineer" }
     """
-    print(f"{Fore.GREEN}== Récupération du référentiel des appellations ROME:")
+    print(f'{Fore.GREEN}\n==> Fonction "get_referentiel_appellations_rome()" :\n')
 
     url = "https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/appellations"
 
@@ -102,7 +103,7 @@ def get_referentiel_pays(token):
     Ne retourne rien.
     Un "code" correspond à un "libelle", par exemple  { "code": "01", "libelle": "France" }
     """
-    print(f"{Fore.GREEN}== Récupération du référentiel des pays :")
+    print(f'{Fore.GREEN}\n==> Fonction "get_referentiel_pays()"\n')
 
     url = "https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/pays"
 
@@ -143,6 +144,9 @@ def remove_all_json_files(json_files_directory):
     """
     Supprime tous les fichiers json du dossier spécifié
     """
+
+    print(f'{Fore.GREEN}\n==> Fonction "remove_all_json_files()"\n')
+
     for file in os.listdir(json_files_directory):
         json_to_delete = os.path.join(json_files_directory, file)
 
@@ -165,9 +169,9 @@ def get_offres(token, code_appellation_libelle, filter_params):
     Ne retourne rien.
     """
 
-    appellation = filter_params["appellation"]
+    print(f'{Fore.GREEN}\n==> Fonction "get_offres()"\n')
 
-    # libelle = ""
+    appellation = filter_params["appellation"]
 
     for item in code_appellation_libelle:
         if item["code"] == appellation:
@@ -357,6 +361,8 @@ def concatenate_all_json_into_one(json_files_directory, concat_json_filename):
     Renvoie le DateFrame qui concatène toutes les offres, sans doublon.
     """
 
+    print(f'{Fore.GREEN}\n==> Fonction "concatenate_all_into_one()"\n')
+
     df_concat = pd.DataFrame()
 
     for filename in os.listdir(json_files_directory):
@@ -367,7 +373,8 @@ def concatenate_all_json_into_one(json_files_directory, concat_json_filename):
                 with open(os.path.join(json_files_directory, filename), "r", encoding="utf-8") as file:
                     data = json.load(file)
                 df = pd.DataFrame(data)
-                df_concat = pd.concat([df, df_concat], ignore_index=True)
+                # df_concat = pd.concat([df, df_concat], ignore_index=True)
+                df_concat = pd.concat([df_concat, df], ignore_index=True)
 
             except json.JSONDecodeError as e:
                 print(f"{Fore.RED}Erreur 1 lors du chargement du fichier JSON {filename} : {e}")
@@ -391,8 +398,82 @@ def concatenate_all_json_into_one(json_files_directory, concat_json_filename):
 
     content = content.replace("\\/", "/")
 
+    # On remplace les deux-points sans espace par des deux-points avec espace
+    content = content.replace('":', '": ')
+
     # On sauvegarde le fichier final sans les '\'
     with open(os.path.join(json_files_directory, concat_json_filename), "w", encoding="utf-8") as f:
         f.write(content)
 
     return df_concat.drop_duplicates(["id"])
+
+
+def keep_only_offres_from_metropole(json_files_directory, json_filename):
+    """
+    Cette fonction écrase le json entré en paramètre, en ne conservant que les offres d'emploi de la France Métropolitaine.
+    Elle ne conserve pas les offres de la Corse ni des DOMTOM.
+
+    Ne retourne rien.
+    """
+
+    print(f'{Fore.GREEN}\n==> Fonction "keep_only_offres_from_metropole()"\n')
+
+    df = pd.read_json(
+        os.path.join(json_files_directory, json_filename),
+        dtype=False,  # pour ne pas inférer les dtypes
+    )
+
+    # lieuTravail est une colonne avec un dictionnaire, donc on utilise .json_normalize() pour avoir x colonnes pour chaque clé du dictionnaire.
+    lieuTravail_normalized = pd.json_normalize(df["lieuTravail"])
+
+    df = df.join(lieuTravail_normalized)
+
+    df_lieu_norm = df[["id", "intitule"] + list(lieuTravail_normalized.columns)]
+
+    # On exclut les offres où le libelle du lieu matche la regex suivante :
+    df_lieu_norm_metropole = df_lieu_norm[~df_lieu_norm.libelle.str.match(r"^(\d{3}|2(A|B))\s-\s")]
+
+    # On exclut les offres où le libelle du lieu matche un des départements suivants
+    list_departements = [
+        "Guadeloupe",
+        "Martinique",
+        "Guyane",
+        "La Réunion",
+        "Mayotte",
+        "Collectivités d'Outre-Mer",
+        "Saint-Pierre-et-Miquelon",
+        "Saint-Barthélemy",
+        "Saint-Martin",
+        "Wallis-et-Futuna",
+        "Polynésie française",
+        "Nouvelle-Calédonie",
+        "Haute-Corse",
+        "Corse-du-Sud",
+        # "Nouvelle-Aquitaine",  # pour tester
+    ]
+
+    df_lieu_norm_metropole = df_lieu_norm_metropole[~df_lieu_norm_metropole["libelle"].isin(list_departements)]  # .value_counts(subset="libelle")
+
+    # On réécrit le json avec uniquement les offres en métropole
+    df[df["id"].isin(df_lieu_norm_metropole["id"])].to_json(
+        # df_concat.drop_duplicates(["id"]).to_json(
+        os.path.join(json_files_directory, json_filename),
+        orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
+        force_ascii=False,  # pour convertir les caractères spéciaux
+        indent=4,  # pour formatter la sortie
+    )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs
+
+    # On supprime les backslashs ajoutés par la méthode .to_json()
+    with open(os.path.join(json_files_directory, json_filename), "r", encoding="utf-8") as f:
+        content = f.read()
+
+    content = content.replace("\\/", "/")
+
+    # On remplace les deux-points sans espace par des deux-points avec espace
+    content = content.replace('":', '": ')
+
+    # On sauvegarde le fichier final sans les '\'
+    with open(os.path.join(json_files_directory, json_filename), "w", encoding="utf-8") as f:
+        f.write(content)
+
+    return None
