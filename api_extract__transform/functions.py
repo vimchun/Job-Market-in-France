@@ -396,3 +396,66 @@ def concatenate_all_json_into_one(json_files_directory, concat_json_filename):
         f.write(content)
 
     return df_concat.drop_duplicates(["id"])
+
+
+def keep_only_offres_from_metropole(json_files_directory, json_filename):
+    """
+    Cette fonction écrase le json entré en paramètre, en ne conservant que les offres d'emploi de la France Métropolitaine.
+    Elle ne conserve pas les offres de la Corse ni des DOMTOM.
+
+    Ne retourne rien.
+    """
+
+    df = pd.read_json(os.path.join(json_files_directory, json_filename))
+
+    # lieuTravail est une colonne avec un dictionnaire, donc on utilise .json_normalize() pour avoir x colonnes pour chaque clé du dictionnaire.
+    lieuTravail_normalized = pd.json_normalize(df["lieuTravail"])
+
+    df = df.join(lieuTravail_normalized)
+
+    df_lieu_norm = df[["id", "intitule"] + list(lieuTravail_normalized.columns)]
+
+    # On exclut les offres où le libelle du lieu matche la regex suivante :
+    df_lieu_norm_metropole = df_lieu_norm[~df_lieu_norm.libelle.str.match(r"^(\d{3}|2(A|B))\s-\s")]
+
+    # On exclut les offres où le libelle du lieu matche un des départements suivants
+    list_departements = [
+        "Guadeloupe",
+        "Martinique",
+        "Guyane",
+        "La Réunion",
+        "Mayotte",
+        "Collectivités d'Outre-Mer",
+        "Saint-Pierre-et-Miquelon",
+        "Saint-Barthélemy",
+        "Saint-Martin",
+        "Wallis-et-Futuna",
+        "Polynésie française",
+        "Nouvelle-Calédonie",
+        "Haute-Corse",
+        "Corse-du-Sud",
+        # "Nouvelle-Aquitaine",  # pour tester
+    ]
+
+    df_lieu_norm_metropole = df_lieu_norm_metropole[~df_lieu_norm_metropole["libelle"].isin(list_departements)]  # .value_counts(subset="libelle")
+
+    # On réécrit le json avec uniquement les offres en métropole
+    df[df["id"].isin(df_lieu_norm_metropole["id"])].to_json(
+        # df_concat.drop_duplicates(["id"]).to_json(
+        os.path.join(json_files_directory, json_filename),
+        orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
+        force_ascii=False,  # pour convertir les caractères spéciaux
+        indent=4,  # pour formatter la sortie
+    )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs
+
+    # On supprime les backslashs ajoutés par la méthode .to_json()
+    with open(os.path.join(json_files_directory, json_filename), "r", encoding="utf-8") as f:
+        content = f.read()
+
+    content = content.replace("\\/", "/")
+
+    # On sauvegarde le fichier final sans les '\'
+    with open(os.path.join(json_files_directory, json_filename), "w", encoding="utf-8") as f:
+        f.write(content)
+
+    return None
