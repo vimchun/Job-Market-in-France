@@ -454,8 +454,8 @@ def keep_only_offres_from_metropole(json_files_directory, json_filename):
 
     df_lieu_norm_metropole = df_lieu_norm_metropole[~df_lieu_norm_metropole["libelle"].isin(list_departements)]  # .value_counts(subset="libelle")
 
-    # On réécrit le json avec uniquement les offres en métropole
-    df[df["id"].isin(df_lieu_norm_metropole["id"])].to_json(
+    # On réécrit le json avec uniquement les offres en métropole (en supprimant les colonnes précédemment créées)
+    df[df["id"].isin(df_lieu_norm_metropole["id"])].drop(["libelle", "latitude", "longitude", "codePostal", "commune"], axis=1).to_json(
         # df_concat.drop_duplicates(["id"]).to_json(
         os.path.join(json_files_directory, json_filename),
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
