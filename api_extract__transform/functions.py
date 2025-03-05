@@ -383,7 +383,7 @@ def concatenate_all_json_into_one(json_files_directory, concat_json_filename):
             except Exception as e:
                 print(f"{Fore.RED}Une erreur inattendue s'est produite : {e}")
 
-    print(f"\n --> df_concat : {df_concat.shape[0]} offres, df_concat_drop_duplicates : {df_concat.drop_duplicates(["id"]).shape[0]} offres")
+    print(f"\n --> df_concat : {df_concat.shape[0]} offres, df_concat_drop_duplicates : {df_concat.drop_duplicates(['id']).shape[0]} offres")
 
     df_concat.drop_duplicates(["id"]).to_json(
         os.path.join(json_files_directory, concat_json_filename),
