@@ -103,29 +103,28 @@ Pour "marquer" les offres, on va écrire pour chacune des offres si elle est dan
 
 Malheureusement, on ne peut tirer aucune information pour les offres qui sont dans ce cas.
 
-Sur le json archivé, c'est le cas pour 252 offres sur 13 639, soit 1.85%.
+Sur le json archivé, c'est le cas pour 252 offres sur 13 639, soit 1.85% des offres.
 
 
 #### Cas 02 : quand libelle = ("FRANCE"|"France"|"France entière") (dans ce cas code postal = code commune = NAN), et latitude/longitude sont renseignés
 
+Sur le json archivé, c'est le cas pour 109 offres sur 13 639, soit 0.79% des offres.
 
-----------------------
-
-quand code postal et/ou code commune sont renseignés
-
-On peut retrouver la ville, le département et la région à partir du fichier csv.
+Pour ces cas là, on peut retrouver les données grâces aux coordonnées GPS (todo).
 
 
-#### Cas 2 : quand code postal et code commune ne sont pas renseignés, mais que les (bonnes) coordonnées GPS sont renseignées
-
-On peut retrouver la ville
+#### Cas 03 : quand libelle = numéro_département (dans ce cas le code commune est renseigné, concerne les arrondissements municipaux : Paris, Lyon, Marseille)
 
 
-#### Cas 3 : quand code postal et code commune ne sont pas renseignés, mais que les (mauvaises) coordonnées GPS sont renseignées
+Sur le json archivé, c'est le cas pour 383 offres sur 13 639, soit 2.80% des offres.
 
-Parfois, on peut avoir des coordonnées GPS renseignées, mais elles sont inversées.
+On peut retrouver la ville en se basant sur le code commune (todo), grâce au fichier annexe (son nom ?).
 
 
+#### Cas 04 : quand libelle = "numéro_département - nom_département" et que code_postal = code_commune = latitude = longitude = NAN
 
+Sur le json archivé, c'est le cas pour 804 offres sur 13 639, soit 5.89% des offres.
+
+Dans ce cas, on peut retrouver que le département, et par conséquent la région.
 
 
