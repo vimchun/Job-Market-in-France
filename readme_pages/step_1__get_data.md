@@ -88,11 +88,30 @@ En effet, l'attribut "libelle" peut parfois donner l'information, il peut prendr
 
   1. "Ile-de-France" (juste la région)
 
-  1. "France" ou "France entière"
+  1. "France" ou "FRANCE" ou "France entière"
     - Inutile dans notre cas, puisqu'on filtre déjà les offres en France Métropolitaine.
 
+Dans les cas décrits par la suite, on part du cas le plus défavorable au cas le plus favorable :
 
-#### Cas 1 : quand code postal et/ou code commune sont renseignés
+Pour exemple, les cas suivants donneront une idée de pourcentage d'offres pour chacun des cas, à partir du notebook disponible en archive "_offres_concatenated_13639_offres__2025-03-05--22h09.json".
+
+On part donc de 13 639 offres.
+
+Pour "marquer" les offres, on va écrire pour chacune des offres si elle est dans le cas_01, dans le cas_02, etc... dans une colonne dédiée ("lieu_cas").
+
+#### Cas 01 : quand libelle = ("FRANCE"|"France"|"France entière") (dans ce cas code postal = code commune = NAN), et latitude = longitude = NAN
+
+Malheureusement, on ne peut tirer aucune information pour les offres qui sont dans ce cas.
+
+Sur le json archivé, c'est le cas pour 252 offres sur 13 639, soit 1.85%.
+
+
+#### Cas 02 : quand libelle = ("FRANCE"|"France"|"France entière") (dans ce cas code postal = code commune = NAN), et latitude/longitude sont renseignés
+
+
+----------------------
+
+quand code postal et/ou code commune sont renseignés
 
 On peut retrouver la ville, le département et la région à partir du fichier csv.
 
@@ -107,7 +126,6 @@ On peut retrouver la ville
 Parfois, on peut avoir des coordonnées GPS renseignées, mais elles sont inversées.
 
 
-#### Cas 4 : quand latitude = longitude = code postal = code commune = NAN
 
 
 
