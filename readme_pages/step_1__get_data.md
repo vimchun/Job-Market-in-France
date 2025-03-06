@@ -6,31 +6,31 @@
 
 - Le endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/offres/search` permet de récupérer les offres d'emploi actuelles selon plusieurs paramètres dont :
 
-  - le code des appellations ROME pour filtrer par métier (codes récupérés à partir du endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/appellations`) :
+    - le code des appellations ROME pour filtrer par métier (codes récupérés à partir du endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/appellations`) :
 
-    ```json
-    { "code": "38971",  "libelle": "Data analyst" },
-    { "code": "38972",  "libelle": "Data scientist" },
-    { "code": "404278", "libelle": "Data engineer" },
-    ...
-    ```
+        ```json
+        { "code": "38971",  "libelle": "Data analyst" },
+        { "code": "38972",  "libelle": "Data scientist" },
+        { "code": "404278", "libelle": "Data engineer" },
+        ...
+        ```
 
-  - le code des pays (codes récupérés à partir du endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/pays`) :
+    - le code des pays (codes récupérés à partir du endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/pays`) :
 
-    ```json
-    { "code": "01", "libelle": "France" },    // inclut les offres en France d'outre-mer et en Corse
-    { "code": "02", "libelle": "Allemagne" }, // les pays étrangers ne retournent malheureusement pas d'offres sur les métiers à analyser
-    ...
-    ```
+        ```json
+        { "code": "01", "libelle": "France" },    // inclut les offres en France d'outre-mer et en Corse
+        { "code": "02", "libelle": "Allemagne" }, // les pays étrangers ne retournent malheureusement pas d'offres sur les métiers à analyser
+        ...
+        ```
 
-  - le paramètre `range` qui limite les résultats à 150 offres par requête (avec un status code à `206` si une requête renvoie plus de 150 offres), sachant que le nombre d'offres maximum récupérables est de 3150 offres.
-    - Ainsi, si une requête peut renvoyer 351 offres, il faut enchainer 3 requêtes pour obtenir toutes les offres :
-      - une première requête pour les offres `0-149` (status code 206),
-      - une deuxième requête pour les offres `150-299` (status code 206),
-      - une troisième requête pour les offres `300-350` (status code 200)
+    - le paramètre `range` qui limite les résultats à 150 offres par requête (avec un status code à `206` si une requête renvoie plus de 150 offres), sachant que le nombre d'offres maximum récupérables est de 3150 offres.
 
-  - note : les paramètres liés aux dates (`minCreationDate`, `maxCreationDate`, `publieeDepuis`) ne permettent pas d'obtenir des offres expirées (celles qui ont permis de recruter quelqu'un).
+        - Ainsi, si une requête peut renvoyer 351 offres, il faut enchainer 3 requêtes pour obtenir toutes les offres :
+            - une première requête pour les offres `0-149` (status code 206),
+            - une deuxième requête pour les offres `150-299` (status code 206),
+            - une troisième requête pour les offres `300-350` (status code 200)
 
+    - note : les paramètres liés aux dates (`minCreationDate`, `maxCreationDate`, `publieeDepuis`) ne permettent pas d'obtenir des offres expirées (celles qui ont permis de recruter quelqu'un).
 
 - Cet API nous retourne des offres sous forme de documents json avec énormément d'attributs dont l'identifiant de l'offre, son intitulé, sa description, le lieu de travail, des informations sur l'entreprise et sur le contrat, les compétences demandées et l'expérience nécessaires, etc...
 
@@ -38,11 +38,11 @@
 
 - Je requête ainsi un large panel de métiers, dont 29 ayant un lien avec la data, et 32 ayant un lien avec les métiers de la tech (dev, sécurité, devops...), pour maximiser les chances d'obtenir le plus d'offres d'emploi ayant un lien avec les métiers DE, DA et DS.
 
-  - En effet, des offres de "Data Engineer" peuvent être présentes en requêtant l'appellation "Data_Manager" par exemple.
+    - En effet, des offres de "Data Engineer" peuvent être présentes en requêtant l'appellation "Data_Manager" par exemple.
 
 - Nous obtenons finalement 61 fichiers json contenant toutes les offres d'emploi liés ou pas à la data, pour la France et DOM-TOM uniquement car France Travail ne renvoie quasiment pas d'offre d'emploi pour les autres pays.
 
-  - Ces 61 fichiers json seront concaténés dans un seul fichier json, où les doublons seront supprimés.
+    - Ces 61 fichiers json seront concaténés dans un seul fichier json, où les doublons seront supprimés.
 
 - A noter que les offres d"emploi retournées peuvent provenir soit de France Travail, soit des "partenaires", par exemple ("CADREMPLOI', "DIRECTEMPLOI", "INDEED", etc...)
 
@@ -53,22 +53,20 @@ todo : compléter avec :
 2/ Ajouter un attribut pour savoir si l'offre est encore d'actualité ou pas
  -->
 
-
 ## Conservation des offres en France Métropolitaine uniquement
 
 Pour une offre qui n'est pas en France Métropolitaine, l'attribut "libelle" donne l'information avec le "<département> - <nom_du_département>", par exemple :
 
-  - "971 - Guadeloupe"
-  - "974 - Réunion"
-  - "2A - Corse du Sud"
-  - "2B - BASTIA"
+- "971 - Guadeloupe"
+- "974 - Réunion"
+- "2A - Corse du Sud"
+- "2B - BASTIA"
 
 Les départements en France Métropolitaine ont 2 numéros, ceux en DOM-TOM ont 3 numéros, et ceux en Corse sont "2A" ou "2B".
 
 Il est donc simple d'éliminer les offres en DOM-TOM et en Corse avec une regex "^(\d{3}|2(A|B))\s-\s", lorsque l'attribut "libelle" donne l'information avec le "<département> - <nom_du_département>".
 
 On supprimera les offres lorsque l'attribut "libelle" donne l'information juste avec le nom du département si en dehors de la métropole, par exemple "Guadeloupe".
-
 
 ## Ajout d'attributs
 
@@ -80,24 +78,78 @@ Toutefois, de nombreuses offres n'ont pas tous ces attributs renseignés, mais p
 
 En effet, l'attribut "libelle" peut parfois donner l'information, il peut prendre plusieurs formes :
 
-  1. "69 - Lyon 3e Arrondissement" ou "69 - LYON 03"
+1. "69 - Lyon 3e Arrondissement" ou "69 - LYON 03"
+
+
     - (département - nom_commune)
     - A noter que le nom de la commune n'est pas toujours harmonisé ("Lyon 3e Arrondissement" vs "LYON 03"), ce qui complique la récupération du nom de la ville.
 
-  1. "69" (juste le département)
+1. "69" (juste le département)
 
-  1. "Ile-de-France" (juste la région)
+1. "Ile-de-France" (juste la région)
 
-  1. "France" ou "FRANCE" ou "France entière"
+1. "France" ou "FRANCE" ou "France entière"
+
+
     - Inutile dans notre cas, puisqu'on filtre déjà les offres en France Métropolitaine.
 
-Dans les cas décrits par la suite, on part du cas le plus défavorable au cas le plus favorable :
+Dans les cas décrits par la suite, on part du cas le plus favorable au cas le plus défavorable :
 
-Pour exemple, les cas suivants donneront une idée de pourcentage d'offres pour chacun des cas, à partir du notebook disponible en archive "_offres_concatenated_13639_offres__2025-03-05--22h09.json".
+Pour exemple, les cas suivants donneront une idée de pourcentage d'offres pour chacun des cas, à partir du notebook disponible en archive "\_offres_concatenated_13639_offres\_\_2025-03-05--22h09.json".
 
 On part donc de 13 639 offres.
 
 Pour "marquer" les offres, on va écrire pour chacune des offres si elle est dans le cas_01, dans le cas_02, etc... dans une colonne dédiée ("lieu_cas").
+
+#### Cas_01 : quand code_commune est renseigné
+
+Dans ce cas, on peut récupérer la ville, le département, et la région.
+
+Sur le json archivé, c'est le cas pour 12 118 offres sur 13 639, soit 88.85% des offres.
+
+todo
+
+Note : si code_commune = NAN, alors code_postal = NAN aussi (donc la colonne code_postal n'est pas utile pour retrouver la ville)
+
+#### Cas_02 : quand code_commune = NAN (dans ce cas code_postal = NAN), et les coordonnées GPS sont renseignées
+
+Sur le json archivé, c'est le cas pour 191 offres sur 13 639, soit 1.40% des offres.
+
+Dans ce cas, on peut récupérer la ville, le département, et la région.
+
+
+	id	intitule	libelle	latitude	longitude	codePostal	commune	lieu_cas
+128	2562212	Administrateur / Administratrice système et ré...	53 - Mayenne	48.084490	-0.752160	NaN	NaN	NaN
+149	2457112	Administrateur / Administratrice système infor...	31 - Garonne (Haute)	43.622232	1.493516	NaN	NaN	NaN
+5140	2696051	DÉVELOPPEUR JAVA / SPRING BOOT - H/F	Auvergne-Rhône-Alpes	4.660480	45.296811	NaN	NaN	NaN
+5207	2622229	Développeur / Développeuse front-end (H/F)	31 - Garonne (Haute)	43.587185	1.429885	NaN	NaN	NaN
+
+
+
+
+
+
+Ici, il y a 2 sous-cas : soit les coordonnées GPS sont corrects, soit la valeur de la latitude et la valeur de la longitude sont inversées.
+
+On va se baser sur https://fr.wikipedia.org/wiki/Liste_de_points_extr%C3%AAmes_de_la_France pour trouver les variations des coordonnées GPS en France Métropolitaine.
+
+En effet : - le point le plus au nord : (51° 05′ 21″ N, 2° 32′ 43″ E) - le point le plus au sud : (42° 19′ 58″ N, 2° 31′ 58″ E) - le point le plus à l'est : (48° 58′ 02″ N, 8° 13′ 50″ E) - le point le plus à l'ouest : (48° 24′ 46″ N, 4° 47′ 44″ O)
+
+En convertissant ces coordonnées en valeur décimale, on trouve les fourchettes suivantes pour la latitude et la longitude de la France Métropolitaine :
+
+    - Latitude : 42,3328 (Sud) -> 51,0892 (Nord)
+    - Longitude : -4,7956 (Ouest) -> 8,2306 (Est)
+
+On va donc vérifier si la latitude renseignée est bien comprise entre 42.3328 et 51.0892.
+Si ce n'est pas le cas, on vérifie que la valeur renseignée pour la longitude l'est bien : si oui, on inversera la valeur de la latitude avec la valeur de la longitude.
+
+# ===================
+
+# ===================
+
+# ===================
+
+# ===================
 
 #### Cas 01 : quand libelle = ("FRANCE"|"France"|"France entière") (dans ce cas code postal = code commune = NAN), et latitude = longitude = NAN
 
@@ -105,26 +157,20 @@ Malheureusement, on ne peut tirer aucune information pour les offres qui sont da
 
 Sur le json archivé, c'est le cas pour 252 offres sur 13 639, soit 1.85% des offres.
 
-
 #### Cas 02 : quand libelle = ("FRANCE"|"France"|"France entière") (dans ce cas code postal = code commune = NAN), et latitude/longitude sont renseignés
 
 Sur le json archivé, c'est le cas pour 109 offres sur 13 639, soit 0.79% des offres.
 
 Pour ces cas là, on peut retrouver les données grâces aux coordonnées GPS (todo).
 
-
 #### Cas 03 : quand libelle = numéro_département (dans ce cas le code commune est renseigné, concerne les arrondissements municipaux : Paris, Lyon, Marseille)
-
 
 Sur le json archivé, c'est le cas pour 383 offres sur 13 639, soit 2.80% des offres.
 
 On peut retrouver la ville en se basant sur le code commune (todo), grâce au fichier annexe (son nom ?).
 
-
 #### Cas 04 : quand libelle = "numéro_département - nom_département" et que code_postal = code_commune = latitude = longitude = NAN
 
 Sur le json archivé, c'est le cas pour 804 offres sur 13 639, soit 5.89% des offres.
 
-Dans ce cas, on peut retrouver que le département, et par conséquent la région.
-
-
+Dans ce cas, on ne peut pas retrouver la ville, mais on peut retrouver le département, et par conséquent la région.
