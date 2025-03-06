@@ -68,66 +68,40 @@ Il est donc simple d'éliminer les offres en DOM-TOM et en Corse avec une regex 
 
 On supprimera les offres lorsque l'attribut "libelle" donne l'information juste avec le nom du département si en dehors de la métropole, par exemple "Guadeloupe".
 
+
 ## Ajout d'attributs
 
 ### Ajout de la ville, du département et de la région
 
-Dans le cas idéal, une offre est renseignée avec ses coordonnées GPS (latitude, longitude), le code postal et le code commune.
+Les attributs "latitude", "longitude", "code_postal" et "code_commune" sont parfois renseignés.
 
-Toutefois, de nombreuses offres n'ont pas tous ces attributs renseignés, mais pour certaines d'entre-elles, il est possible de retrouver l'information.
-
-En effet, l'attribut "libelle" peut parfois donner l'information, il peut prendre plusieurs formes :
-
-1. "69 - Lyon 3e Arrondissement" ou "69 - LYON 03"
-
-
-    - (département - nom_commune)
-    - A noter que le nom de la commune n'est pas toujours harmonisé ("Lyon 3e Arrondissement" vs "LYON 03"), ce qui complique la récupération du nom de la ville.
-
-1. "69" (juste le département)
-
-1. "Ile-de-France" (juste la région)
-
-1. "France" ou "FRANCE" ou "France entière"
-
-
-    - Inutile dans notre cas, puisqu'on filtre déjà les offres en France Métropolitaine.
+Ils peuvent permettre de retrouver la ville, le département et/ou la région d'une offre d'emploi.
 
 Dans les cas décrits par la suite, on part du cas le plus favorable au cas le plus défavorable :
 
-Pour exemple, les cas suivants donneront une idée de pourcentage d'offres pour chacun des cas, à partir du notebook disponible en archive "\_offres_concatenated_13639_offres\_\_2025-03-05--22h09.json".
+Pour exemple, les cas suivants donneront une idée de pourcentage d'offres pour chacun des cas, à partir du notebook disponible en archive "_offres_concatenated_13639_offres__2025-03-05--22h09.json".
 
-On part donc de 13 639 offres.
+Ce json contient 13 639 offres.
 
-Pour "marquer" les offres, on va écrire pour chacune des offres si elle est dans le cas_01, dans le cas_02, etc... dans une colonne dédiée ("lieu_cas").
+Pour "marquer" les offres, on va écrire pour chacune des offres si elle est dans le cas_1, dans le cas_2, etc... dans une colonne dédiée ("lieu_cas").
 
-#### Cas_01 : quand code_commune est renseigné
+
+#### Cas_1 : "code_commune" renseigné
 
 Dans ce cas, on peut récupérer la ville, le département, et la région.
 
 Sur le json archivé, c'est le cas pour 12 118 offres sur 13 639, soit 88.85% des offres.
 
-todo
+todo : retrouver la ville, département, région
 
 Note : si code_commune = NAN, alors code_postal = NAN aussi (donc la colonne code_postal n'est pas utile pour retrouver la ville)
 
-#### Cas_02 : quand code_commune = NAN (dans ce cas code_postal = NAN), et les coordonnées GPS sont renseignées
+
+#### Cas_2 : "code_commune = NAN" (dans ce cas "code_postal = NAN"), mais coordonnées GPS renseignées
 
 Sur le json archivé, c'est le cas pour 191 offres sur 13 639, soit 1.40% des offres.
 
 Dans ce cas, on peut récupérer la ville, le département, et la région.
-
-
-	id	intitule	libelle	latitude	longitude	codePostal	commune	lieu_cas
-128	2562212	Administrateur / Administratrice système et ré...	53 - Mayenne	48.084490	-0.752160	NaN	NaN	NaN
-149	2457112	Administrateur / Administratrice système infor...	31 - Garonne (Haute)	43.622232	1.493516	NaN	NaN	NaN
-5140	2696051	DÉVELOPPEUR JAVA / SPRING BOOT - H/F	Auvergne-Rhône-Alpes	4.660480	45.296811	NaN	NaN	NaN
-5207	2622229	Développeur / Développeuse front-end (H/F)	31 - Garonne (Haute)	43.587185	1.429885	NaN	NaN	NaN
-
-
-
-
-
 
 Ici, il y a 2 sous-cas : soit les coordonnées GPS sont corrects, soit la valeur de la latitude et la valeur de la longitude sont inversées.
 
@@ -140,37 +114,39 @@ En convertissant ces coordonnées en valeur décimale, on trouve les fourchettes
     - Latitude : 42,3328 (Sud) -> 51,0892 (Nord)
     - Longitude : -4,7956 (Ouest) -> 8,2306 (Est)
 
-On va donc vérifier si la latitude renseignée est bien comprise entre 42.3328 et 51.0892.
-Si ce n'est pas le cas, on vérifie que la valeur renseignée pour la longitude l'est bien : si oui, on inversera la valeur de la latitude avec la valeur de la longitude.
+Pour vérifier si la latitude a été inversée avec la longitude :
+  - on vérifie si la latitude renseignée est bien comprise entre 42.3328 et 51.0892,
+    - si oui, ça correspond à une latitude de la France Métropolitaine,
+    - si non, on vérifie que la valeur renseignée pour la longitude l'est bien
+      - si oui, on inversera la valeur de la latitude avec la valeur de la longitude.
 
-# ===================
+todo : retrouver la ville, département, région
 
-# ===================
 
-# ===================
-
-# ===================
-
-#### Cas 01 : quand libelle = ("FRANCE"|"France"|"France entière") (dans ce cas code postal = code commune = NAN), et latitude = longitude = NAN
-
-Malheureusement, on ne peut tirer aucune information pour les offres qui sont dans ce cas.
-
-Sur le json archivé, c'est le cas pour 252 offres sur 13 639, soit 1.85% des offres.
-
-#### Cas 02 : quand libelle = ("FRANCE"|"France"|"France entière") (dans ce cas code postal = code commune = NAN), et latitude/longitude sont renseignés
-
-Sur le json archivé, c'est le cas pour 109 offres sur 13 639, soit 0.79% des offres.
-
-Pour ces cas là, on peut retrouver les données grâces aux coordonnées GPS (todo).
-
-#### Cas 03 : quand libelle = numéro_département (dans ce cas le code commune est renseigné, concerne les arrondissements municipaux : Paris, Lyon, Marseille)
-
-Sur le json archivé, c'est le cas pour 383 offres sur 13 639, soit 2.80% des offres.
-
-On peut retrouver la ville en se basant sur le code commune (todo), grâce au fichier annexe (son nom ?).
-
-#### Cas 04 : quand libelle = "numéro_département - nom_département" et que code_postal = code_commune = latitude = longitude = NAN
+#### Cas_3 : "code_postal = code_commune = latitude = longitude = NAN", mais "libelle = 'numéro_département - nom_département'"
 
 Sur le json archivé, c'est le cas pour 804 offres sur 13 639, soit 5.89% des offres.
 
 Dans ce cas, on ne peut pas retrouver la ville, mais on peut retrouver le département, et par conséquent la région.
+
+todo : retrouver le département, région
+
+
+
+#### Cas_4 : "code_postal = code_commune = latitude = longitude = NAN", mais "libelle = nom_région"
+
+Sur le json archivé, c'est le cas pour 54 offres sur 13 639, soit 0.39% des offres.
+
+Ici, on a que la région, et on ne peut donc pas avoir la ville ni le département.
+
+
+todo : écrire la région dans la colonne dédiée
+
+
+#### Cas_5 : "code_postal = code_commune = latitude = longitude = NAN", et "libelle = ("FRANCE"|"France"|"France entière")"
+
+Sur le json archivé, c'est le cas pour 252 offres sur 13 639, soit 1.85% des offres.
+
+C'est le cas le plus défavorable qui ne permet pas de retrouver la ville, le département ni la région.
+
+On pourrait aller plus loin, et tenter de retrouver l'information dans l'intitulé ou la description de l'offre d'emploi, mais on ne le fera pas ici.
