@@ -94,7 +94,16 @@ Sur le json archivé, c'est le cas pour 12 118 offres sur 13 639, soit 88.85% de
 
 todo : retrouver la ville, département, région
 
-Note : si code_commune = NAN, alors code_postal = NAN aussi (donc la colonne code_postal n'est pas utile pour retrouver la ville)
+Notes :
+
+- dans ce cas, il se peut que "code_postal" ne soit pas renseigné
+- si code_commune = NAN, alors code_postal = NAN aussi (donc la colonne code_postal n'est pas utile pour retrouver la ville)
+
+
+##### todo
+
+On a donc le code commune.
+A partir du fichier "ville_departement_region_names.csv", on va ajouter la ville, le département, et la région.
 
 
 #### Cas_2 : "code_commune = NAN" (dans ce cas "code_postal = NAN"), mais coordonnées GPS renseignées
