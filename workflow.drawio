@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36" version="26.0.16">
   <diagram name="Page-1" id="PEG4fmZPOcqcN3tmb9fP">
-    <mxGraphModel dx="5940" dy="720" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="4681" pageHeight="3300" background="#99CCFF" math="0" shadow="0">
+    <mxGraphModel dx="5068" dy="225" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="4681" pageHeight="3300" background="#99CCFF" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -20,7 +20,7 @@
           <mxGeometry x="-3935" y="1138" width="341" height="166" as="geometry" />
         </mxCell>
         <mxCell id="ZqSi49jVPxYIq9pt5e5S-21" value="&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;Extract&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
-          <mxGeometry x="-3852" y="992" width="254" height="107" as="geometry" />
+          <mxGeometry x="-3853" y="992" width="255" height="107" as="geometry" />
         </mxCell>
         <mxCell id="eYIj9YyXecUdHDmmm4ep-2" value="&lt;b&gt;&amp;nbsp; PYTHON&lt;/b&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;rounded=0;align=left;swimlaneLine=1;glass=0;shadow=0;swimlaneHead=1;swimlaneBody=1;connectable=1;allowArrows=1;container=1;verticalAlign=middle;fontFamily=Helvetica;fontSize=10;fontColor=default;" parent="1" vertex="1">
           <mxGeometry x="-3834" y="1021" width="217" height="55" as="geometry">
@@ -112,7 +112,7 @@
         <mxCell id="BL1sSyGnwAxIdbxrwCoB-1" value="site insee :&lt;div&gt;téléchargement codes géographiques&amp;nbsp;&lt;/div&gt;&lt;div&gt;des&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;communes départements régions&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
           <mxGeometry x="-3994" y="889" width="185" height="42" as="geometry" />
         </mxCell>
-        <mxCell id="BL1sSyGnwAxIdbxrwCoB-5" value="1 fichier .csv avec :&lt;div&gt;&lt;div&gt;&amp;nbsp; - nom_commune&lt;/div&gt;&lt;div&gt;&amp;nbsp; - nom_departement&lt;/div&gt;&lt;div&gt;&amp;nbsp; - nom_region&lt;/div&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+        <mxCell id="BL1sSyGnwAxIdbxrwCoB-5" value="1 fichier .csv avec :&lt;div&gt;&lt;div&gt;&amp;nbsp; - code_commune&lt;/div&gt;&lt;div&gt;&amp;nbsp; - nom_ville&lt;/div&gt;&lt;div&gt;&amp;nbsp; - nom_departement&lt;/div&gt;&lt;div&gt;&amp;nbsp; - nom_region&lt;/div&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
           <mxGeometry x="-4067" y="1179" width="100" height="58" as="geometry" />
         </mxCell>
         <mxCell id="BL1sSyGnwAxIdbxrwCoB-6" value="&lt;b&gt;&amp;nbsp; PYTHON&lt;/b&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;rounded=0;align=left;swimlaneLine=1;glass=0;shadow=0;swimlaneHead=1;swimlaneBody=1;connectable=1;allowArrows=1;container=1;verticalAlign=middle;fontFamily=Helvetica;fontSize=10;fontColor=default;" vertex="1" parent="1">
