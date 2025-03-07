@@ -129,6 +129,10 @@ Pour vérifier si la latitude a été inversée avec la longitude :
 
 ##### ajout des attributs de localisation
 
+La lib geopy permet de retrouver plusieurs informations, mais ce ne sont pas toujours les mêmes qui sont disponibles... Celle qui semble toujours être retourné est le code postal.
+
+On récupère ensuite le code commune ensuite pour avoir la ville, le département et la région.
+
 todo : retrouver la ville, département, région
 
 
