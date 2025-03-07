@@ -1,30 +1,25 @@
 # lien_1
 
-Avait servi pour Power BI
+A servi pour Power BI (le projet archivé avec les transformations manuelles)
 
 
-# lien_2
+# liens 2 et 3
 
-Le fichier "ville_departement_region_names.xlsx" a été créé à partir des fichiers :
+Les fichiers suivants du lien 2 (https://www.insee.fr/fr/information/7766585)
 
   - "v_commune_2024.csv"
   - "v_departement_2024.csv"
   - "v_region_2024.csv"
 
+et le fichier suivant du lien 3 (https://www.data.gouv.fr/fr/datasets/villes-de-france/)
 
-qui ont été téléchargés sur https://www.insee.fr/fr/information/7766585
+  - "cities.csv"
 
-Le fichier donne un mapping entre :
+permettent la génération du fichier "codes__city_department_region.csv" qui donne le mapping entre :
 
-  - code_commune
+  - code_insee
+  - code_postal
   - nom_commune
   - nom_ville
   - nom_departement
   - nom_region
-
-
-# lien_3
-
-Le fichier téléchargé "cities.csv" donnera le lien entre le code postal et le code commune.
-
-https://www.data.gouv.fr/fr/datasets/villes-de-france/
