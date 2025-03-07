@@ -71,6 +71,20 @@ On supprimera les offres lorsque l'attribut "libelle" donne l'information juste 
 
 ## Ajout d'attributs
 
+Pour ce qui suit, le fichier "codes__city_department_region.csv" a dû être généré pour pouvoir récupérer selon les cas décrits ci-après la ville, le département et/ou la région.
+
+Ce fichier a été généré à partir de 4 fichiers téléchargés sur https://www.insee.fr/fr/information/7766585 et https://www.data.gouv.fr/fr/datasets/villes-de-france/.
+
+Il donne le mapping entre :
+
+  - code_insee
+  - code_postal
+  - nom_commune
+  - nom_ville
+  - nom_departement
+  - nom_region
+
+
 ### Ajout de la ville, du département et de la région
 
 Les attributs "latitude", "longitude", "code_postal" et "code_commune" sont parfois renseignés.
@@ -129,9 +143,11 @@ Pour vérifier si la latitude a été inversée avec la longitude :
 
 ##### ajout des attributs de localisation
 
-La lib geopy permet de retrouver plusieurs informations, mais ce ne sont pas toujours les mêmes qui sont disponibles... Celle qui semble toujours être retourné est le code postal.
+La lib geopy permet de retrouver plusieurs informations ("city", "city_district", "postcode", "suburb", "municipality", "state", "town"...), mais celles-ci ne sont pas toujours disponibles... L'information qui semble toujours être retourné est le code postal.
 
-On récupère ensuite le code commune ensuite pour avoir la ville, le département et la région.
+C'est assez long (~5 minutes pour 191 offres) car geolocator.reverse() fait une requête http...
+
+A partir du code postal, on peut retrouver la ville, le département et la région.
 
 todo : retrouver la ville, département, région
 
