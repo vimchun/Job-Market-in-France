@@ -92,18 +92,16 @@ Dans ce cas, on peut récupérer la ville, le département, et la région.
 
 Sur le json archivé, c'est le cas pour 12 118 offres sur 13 639, soit 88.85% des offres.
 
-todo : retrouver la ville, département, région
-
 Notes :
 
 - dans ce cas, il se peut que "code_postal" ne soit pas renseigné
 - si code_commune = NAN, alors code_postal = NAN aussi (donc la colonne code_postal n'est pas utile pour retrouver la ville)
 
 
-##### todo
+##### ajout des attributs de localisation
 
 On a donc le code commune.
-A partir du fichier "ville_departement_region_names.csv", on va ajouter la ville, le département, et la région.
+A partir du fichier "ville_departement_region_names.csv", on ajoute la ville, le département, et la région.
 
 
 #### Cas_2 : "code_commune = NAN" (dans ce cas "code_postal = NAN"), mais coordonnées GPS renseignées
@@ -129,6 +127,8 @@ Pour vérifier si la latitude a été inversée avec la longitude :
     - si non, on vérifie que la valeur renseignée pour la longitude l'est bien
       - si oui, on inversera la valeur de la latitude avec la valeur de la longitude.
 
+##### ajout des attributs de localisation
+
 todo : retrouver la ville, département, région
 
 
@@ -140,6 +140,7 @@ Dans ce cas, on ne peut pas retrouver la ville, mais on peut retrouver le dépar
 
 todo : retrouver le département, région
 
+##### ajout des attributs de localisation
 
 
 #### Cas_4 : "code_postal = code_commune = latitude = longitude = NAN", mais "libelle = nom_région"
@@ -150,6 +151,9 @@ Ici, on a que la région, et on ne peut donc pas avoir la ville ni le départeme
 
 
 todo : écrire la région dans la colonne dédiée
+
+##### ajout des attributs de localisation
+
 
 
 #### Cas_5 : "code_postal = code_commune = latitude = longitude = NAN", et "libelle = ("FRANCE"|"France"|"France entière")"
