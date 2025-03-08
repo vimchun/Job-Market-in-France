@@ -154,7 +154,12 @@ A noter que geopy retourne un code postal, mais que ce code postal peut être as
 
 
 todo :
-Parfois le code postal retourné par geopy n'est pas présent dans le fichier "codes__city_department_region.csv" (par exemple, pour les codes postaux "34009", "06205", "57045", "13030")
+Parfois le code postal retourné par geopy n'est pas présent dans le fichier "codes__city_department_region.csv" (et donc non présent dans https://www.data.gouv.fr/fr/datasets/villes-de-france/).
+
+
+Par exemple, sur le json archivé, c'est le cas pour 4 offres où geopy renvoit les codes postaux "34009", "06205", "57045", "13030".
+Les codes postaux ne sont pas disponibles non plus sur https://www.data.gouv.fr/fr/datasets/base-officielle-des-codes-postaux/.
+
 
 Dans ce cas, on va prendre les 2 premiers digits du code postal pour avoir le département, et récupérer la région.
 
