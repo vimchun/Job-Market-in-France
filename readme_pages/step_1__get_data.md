@@ -87,7 +87,7 @@ Il donne le mapping entre :
 
 ### Ajout de la ville, du département et de la région
 
-Les attributs "latitude", "longitude", "code_postal" et "code_commune" sont parfois renseignés.
+Les attributs "latitude", "longitude", "code_postal" et "code_insee" sont parfois renseignés.
 
 Ils peuvent permettre de retrouver la ville, le département et/ou la région d'une offre d'emploi.
 
@@ -100,7 +100,7 @@ Ce json contient 13 639 offres.
 Pour "marquer" les offres, on va écrire pour chacune des offres si elle est dans le cas_1, dans le cas_2, etc... dans une colonne dédiée ("lieu_cas").
 
 
-#### Cas_1 : "code_commune" renseigné
+#### Cas_1 : "code_insee" renseigné
 
 Dans ce cas, on peut récupérer la ville, le département, et la région.
 
@@ -109,16 +109,16 @@ Sur le json archivé, c'est le cas pour 12 118 offres sur 13 639, soit 88.85% de
 Notes :
 
 - dans ce cas, il se peut que "code_postal" ne soit pas renseigné
-- si code_commune = NAN, alors code_postal = NAN aussi (donc la colonne code_postal n'est pas utile pour retrouver la ville)
+- si code_insee = NAN, alors code_postal = NAN aussi (donc la colonne code_postal n'est pas utile pour retrouver la ville)
 
 
 ##### ajout des attributs de localisation
 
 On a donc le code commune.
-A partir du fichier "ville_departement_region_names.csv", on ajoute la ville, le département, et la région.
+A partir du fichier "codes_city_department_region_names.csv", on ajoute la ville, le département, et la région.
 
 
-#### Cas_2 : "code_commune = NAN" (dans ce cas "code_postal = NAN"), mais coordonnées GPS renseignées
+#### Cas_2 : "code_insee = NAN" (dans ce cas "code_postal = NAN"), mais coordonnées GPS renseignées
 
 Sur le json archivé, c'est le cas pour 191 offres sur 13 639, soit 1.40% des offres.
 
@@ -141,18 +141,25 @@ Pour vérifier si la latitude a été inversée avec la longitude :
     - si non, on vérifie que la valeur renseignée pour la longitude l'est bien
       - si oui, on inversera la valeur de la latitude avec la valeur de la longitude.
 
+
 ##### ajout des attributs de localisation
 
 La lib geopy permet de retrouver plusieurs informations ("city", "city_district", "postcode", "suburb", "municipality", "state", "town"...), mais celles-ci ne sont pas toujours disponibles... L'information qui semble toujours être retourné est le code postal.
 
-C'est assez long (~5 minutes pour 191 offres) car geolocator.reverse() fait une requête http...
+C'est assez long (~5 minutes pour 191 offres) car geolocator.reverse() fait une requête http pour chaque offre.
 
-A partir du code postal, on peut retrouver la ville, le département et la région.
+A partir du code postal, on ajoute la ville, le département et la région.
 
-todo : retrouver la ville, département, région
+A noter que geopy retourne un code postal, mais que ce code postal peut être associé à plusieurs villes. Par conséquent, si une offre renseigne le code postal 78310, elle peut être soit à Coignières soit à Maurepas, qui partagent le même code postal, ce qu'on ne peut pas deviner. Mais ce n'est pas essentiel, étant donné qu'en général plusieurs villes qui ont le même code postal sont relativement proches, voire voisines.
 
 
-#### Cas_3 : "code_postal = code_commune = latitude = longitude = NAN", mais "libelle = 'numéro_département - nom_département'"
+todo :
+Parfois le code postal retourné par geopy n'est pas présent dans le fichier "codes__city_department_region.csv" (par exemple, pour les codes postaux "34009", "06205", "57045", "13030")
+
+Dans ce cas, on va prendre les 2 premiers digits du code postal pour avoir le département, et récupérer la région.
+
+
+#### Cas_3 : "code_postal = code_insee = latitude = longitude = NAN", mais "libelle = 'numéro_département - nom_département'"
 
 Sur le json archivé, c'est le cas pour 804 offres sur 13 639, soit 5.89% des offres.
 
@@ -163,7 +170,7 @@ todo : retrouver le département, région
 ##### ajout des attributs de localisation
 
 
-#### Cas_4 : "code_postal = code_commune = latitude = longitude = NAN", mais "libelle = nom_région"
+#### Cas_4 : "code_postal = code_insee = latitude = longitude = NAN", mais "libelle = nom_région"
 
 Sur le json archivé, c'est le cas pour 54 offres sur 13 639, soit 0.39% des offres.
 
@@ -176,7 +183,7 @@ todo : écrire la région dans la colonne dédiée
 
 
 
-#### Cas_5 : "code_postal = code_commune = latitude = longitude = NAN", et "libelle = ("FRANCE"|"France"|"France entière")"
+#### Cas_5 : "code_postal = code_insee = latitude = longitude = NAN", et "libelle = ("FRANCE"|"France"|"France entière")"
 
 Sur le json archivé, c'est le cas pour 252 offres sur 13 639, soit 1.85% des offres.
 
