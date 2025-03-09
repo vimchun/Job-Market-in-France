@@ -4388,6 +4388,7 @@ code_insee,nom_commune,code_postal,nom_ville,code_departement,nom_departement,co
 13052,Maillane,13910,Maillane,13,Bouches-du-Rhône,93,Provence-Alpes-Côte d'Azur
 13053,Mallemort,13370,Mallemort,13,Bouches-du-Rhône,93,Provence-Alpes-Côte d'Azur
 13054,Marignane,13700,Marignane,13,Bouches-du-Rhône,93,Provence-Alpes-Côte d'Azur
+13055,Marseille,,Marseille,13,Bouches-du-Rhône,93,Provence-Alpes-Côte d'Azur
 13056,Martigues,13500,Martigues,13,Bouches-du-Rhône,93,Provence-Alpes-Côte d'Azur
 13056,Martigues,13117,Martigues,13,Bouches-du-Rhône,93,Provence-Alpes-Côte d'Azur
 13057,Mas-Blanc-des-Alpilles,13103,Mas-Blanc-des-Alpilles,13,Bouches-du-Rhône,93,Provence-Alpes-Côte d'Azur
@@ -10001,6 +10002,7 @@ code_insee,nom_commune,code_postal,nom_ville,code_departement,nom_departement,co
 27672,Vascœuil,27910,Vascœuil,27,Eure,28,Normandie
 27673,Vatteville,27430,Vatteville,27,Eure,28,Normandie
 27674,Vaux-sur-Eure,27120,Vaux-sur-Eure,27,Eure,28,Normandie
+27676,Les Trois Lacs,,Les Trois Lacs,27,Eure,28,Normandie
 27677,Venon,27110,Venon,27,Eure,28,Normandie
 27678,Les Ventes,27180,Les Ventes,27,Eure,28,Normandie
 27679,Verneuil d'Avre et d'Iton,27160,Verneuil d'Avre et d'Iton,27,Eure,28,Normandie
@@ -23424,6 +23426,7 @@ code_insee,nom_commune,code_postal,nom_ville,code_departement,nom_departement,co
 60691,Villers-Vermont,60380,Villers-Vermont,60,Oise,32,Hauts-de-France
 60692,Villers-Vicomte,60120,Villers-Vicomte,60,Oise,32,Hauts-de-France
 60693,Villeselve,60640,Villeselve,60,Oise,32,Hauts-de-France
+60694,Les Hauts-Talican,,Les Hauts-Talican,60,Oise,32,Hauts-de-France
 60695,Vineuil-Saint-Firmin,60500,Vineuil-Saint-Firmin,60,Oise,32,Hauts-de-France
 60697,Vrocourt,60112,Vrocourt,60,Oise,32,Hauts-de-France
 60698,Wacquemoulin,60420,Wacquemoulin,60,Oise,32,Hauts-de-France
@@ -27439,6 +27442,7 @@ code_insee,nom_commune,code_postal,nom_ville,code_departement,nom_departement,co
 69120,Longessaigne,69770,Longessaigne,69,Rhône,84,Auvergne-Rhône-Alpes
 69121,Lozanne,69380,Lozanne,69,Rhône,84,Auvergne-Rhône-Alpes
 69122,Lucenay,69480,Lucenay,69,Rhône,84,Auvergne-Rhône-Alpes
+69123,Lyon,,Lyon,69,Rhône,84,Auvergne-Rhône-Alpes
 69124,Marchampt,69430,Marchampt,69,Rhône,84,Auvergne-Rhône-Alpes
 69125,Marcilly-d'Azergues,69380,Marcilly-d'Azergues,69,Rhône,84,Auvergne-Rhône-Alpes
 69126,Marcy,69480,Marcy,69,Rhône,84,Auvergne-Rhône-Alpes
@@ -29626,6 +29630,7 @@ code_insee,nom_commune,code_postal,nom_ville,code_departement,nom_departement,co
 74313,Vovray-en-Bornes,74350,Vovray-en-Bornes,74,Haute-Savoie,84,Auvergne-Rhône-Alpes
 74314,Vulbens,74520,Vulbens,74,Haute-Savoie,84,Auvergne-Rhône-Alpes
 74315,Yvoire,74140,Yvoire,74,Haute-Savoie,84,Auvergne-Rhône-Alpes
+75056,Paris,,Paris,75,Paris,11,Île-de-France
 75101,Paris 1er Arrondissement,75001,Paris,75,Paris,11,Île-de-France
 75102,Paris 2e Arrondissement,75002,Paris,75,Paris,11,Île-de-France
 75103,Paris 3e Arrondissement,75003,Paris,75,Paris,11,Île-de-France
@@ -33132,6 +33137,7 @@ code_insee,nom_commune,code_postal,nom_ville,code_departement,nom_departement,co
 85162,Rives-d'Autise,85420,Rives-d'Autise,85,Vendée,52,Pays de la Loire
 85163,Noirmoutier-en-l'Île,85330,Noirmoutier-en-l'Île,85,Vendée,52,Pays de la Loire
 85164,Notre-Dame-de-Monts,85690,Notre-Dame-de-Monts,85,Vendée,52,Pays de la Loire
+85165,L'Oie,,L'Oie,85,Vendée,52,Pays de la Loire
 85167,L'Orbrie,85200,L'Orbrie,85,Vendée,52,Pays de la Loire
 85169,Palluau,85670,Palluau,85,Vendée,52,Pays de la Loire
 85171,Péault,85320,Péault,85,Vendée,52,Pays de la Loire
@@ -33172,6 +33178,7 @@ code_insee,nom_commune,code_postal,nom_ville,code_departement,nom_departement,co
 85209,Saint-Étienne-de-Brillouet,85210,Saint-Étienne-de-Brillouet,85,Vendée,52,Pays de la Loire
 85210,Saint-Étienne-du-Bois,85670,Saint-Étienne-du-Bois,85,Vendée,52,Pays de la Loire
 85211,Sainte-Flaive-des-Loups,85150,Sainte-Flaive-des-Loups,85,Vendée,52,Pays de la Loire
+85212,Sainte-Florence,,Sainte-Florence,85,Vendée,52,Pays de la Loire
 85213,Rives de l'Yon,85310,Rives de l'Yon,85,Vendée,52,Pays de la Loire
 85214,Sainte-Foy,85150,Sainte-Foy,85,Vendée,52,Pays de la Loire
 85215,Saint-Fulgent,85250,Saint-Fulgent,85,Vendée,52,Pays de la Loire
