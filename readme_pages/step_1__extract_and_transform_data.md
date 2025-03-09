@@ -153,7 +153,6 @@ A partir du code postal, on ajoute la ville, le département et la région.
 A noter que geopy retourne un code postal, mais que ce code postal peut être associé à plusieurs villes. Par conséquent, si une offre renseigne le code postal 78310, elle peut être soit à Coignières soit à Maurepas, qui partagent le même code postal, ce qu'on ne peut pas deviner. Mais ce n'est pas essentiel, étant donné qu'en général plusieurs villes qui ont le même code postal sont relativement proches, voire voisines.
 
 
-todo :
 Parfois le code postal retourné par geopy n'est pas présent dans le fichier "codes__city_department_region.csv" (et donc non présent dans https://www.data.gouv.fr/fr/datasets/villes-de-france/).
 
 
@@ -170,9 +169,11 @@ Sur le json archivé, c'est le cas pour 804 offres sur 13 639, soit 5.89% des of
 
 Dans ce cas, on ne peut pas retrouver la ville, mais on peut retrouver le département, et par conséquent la région.
 
-todo : retrouver le département, région
 
 ##### ajout des attributs de localisation
+
+Dans ce cas, on a par exemple "libelle = 75 - Paris (Dept.)", donc on va extraire le code du département dans la colonne "code_departement", et récupérer "nom_departement", "code_region" et "nom_region" à partir du fichier "codes__city_department_region.csv".
+
 
 
 #### Cas_4 : "code_postal = code_insee = latitude = longitude = NAN", mais "libelle = nom_région"
