@@ -18,8 +18,10 @@ et le fichier suivant du lien 3 (https://www.data.gouv.fr/fr/datasets/villes-de-
 permettent la génération du fichier "codes__city_department_region.csv" qui donne le mapping entre :
 
   - code_insee
-  - code_postal
   - nom_commune
+  - code_postal
   - nom_ville
+  - code_departement
   - nom_departement
+  - code_region
   - nom_region

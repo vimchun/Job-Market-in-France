@@ -1,6 +1,8 @@
 [Retour à la page principale](../README.md)
 
-# Étape 1 : Extraction et transformation des données par API
+# Étape 1 : Extraction et Transformation des données par API
+
+## Extraction des données par API
 
 - France Travail (https://francetravail.io/data/api) met à disposition plusieurs APIs, dont "Offres d'emploi v2" (`GET https://api.francetravail.io/partenaire/offresdemploi`).
 
@@ -46,16 +48,12 @@
 
 - A noter que les offres d"emploi retournées peuvent provenir soit de France Travail, soit des "partenaires", par exemple ("CADREMPLOI', "DIRECTEMPLOI", "INDEED", etc...)
 
-<!--
-todo : compléter avec :
-0/ Supprimer les offres DOMTOM et Corse
-1/ Extraire la ville, la commune, le département, et la région
-2/ Ajouter un attribut pour savoir si l'offre est encore d'actualité ou pas
- -->
 
-## Conservation des offres en France Métropolitaine uniquement
+## Transformation des données
 
-Pour une offre qui n'est pas en France Métropolitaine, l'attribut "libelle" donne l'information avec le "<département> - <nom_du_département>", par exemple :
+### Conservation des offres en France Métropolitaine uniquement
+
+Pour une offre qui n'est pas en France Métropolitaine, l'attribut "libelle" donne l'information lorsque qu'une offre se retrouve dans le cas_3 (voir partie ci-dessous), c'est-à-dire lorsque "libelle" est de la forme "<département> - <nom_du_département>", par exemple :
 
 - "971 - Guadeloupe"
 - "974 - Réunion"
@@ -64,38 +62,39 @@ Pour une offre qui n'est pas en France Métropolitaine, l'attribut "libelle" don
 
 Les départements en France Métropolitaine ont 2 numéros, ceux en DOM-TOM ont 3 numéros, et ceux en Corse sont "2A" ou "2B".
 
-Il est donc simple d'éliminer les offres en DOM-TOM et en Corse avec une regex "^(\d{3}|2(A|B))\s-\s", lorsque l'attribut "libelle" donne l'information avec le "<département> - <nom_du_département>".
-
-On supprimera les offres lorsque l'attribut "libelle" donne l'information juste avec le nom du département si en dehors de la métropole, par exemple "Guadeloupe".
+Dans ce cas, on supprimera les offres en DOM-TOM et en Corse avec la regex `^(\d{3}|2(A|B))\s-\s`.
 
 
-## Ajout d'attributs
+### Ajout des attributs "nom_ville", "nom_commune", "code_departement", "nom_departement", "code_region", "nom_region"
 
-Pour ce qui suit, le fichier "codes__city_department_region.csv" a dû être généré pour pouvoir récupérer selon les cas décrits ci-après la ville, le département et/ou la région.
+Pour ce qui suit, on a dû générer le fichier "codes__city_department_region.csv" pour pouvoir récupérer selon les cas décrits ci-après les attributs "nom_ville", "nom_commune", "code_departement", "nom_departement", "code_region", "nom_region" (todo: écrire le .py + préciser le nom du script).
 
-Ce fichier a été généré à partir de 4 fichiers téléchargés sur https://www.insee.fr/fr/information/7766585 et https://www.data.gouv.fr/fr/datasets/villes-de-france/.
+"codes__city_department_region.csv" a été généré à partir de 4 fichiers :
 
-Il donne le mapping entre :
+  - "v_commune_2024.csv" (https://www.insee.fr/fr/information/7766585)
+  - "v_departement_2024.csv" (https://www.insee.fr/fr/information/7766585)
+  - "v_region_2024.csv" (https://www.insee.fr/fr/information/7766585)
+  - "cities.csv" (https://www.data.gouv.fr/fr/datasets/villes-de-france/)
+
+et donne le mapping entre :
 
   - code_insee
-  - code_postal
   - nom_commune
+  - code_postal
   - nom_ville
+  - code_departement
   - nom_departement
+  - code_region
   - nom_region
 
 
-### Ajout de la ville, du département et de la région
+Pour les offres récupérées, l'attribut "lieuTravail" peut renseigner les champs suivants "libelle", "latitude", "longitude", "code_postal" et "code_insee".
 
-Les attributs "latitude", "longitude", "code_postal" et "code_insee" sont parfois renseignés.
+Ces champs peuvent permettre de retrouver la ville, le département et/ou la région d'une offre d'emploi.
 
-Ils peuvent permettre de retrouver la ville, le département et/ou la région d'une offre d'emploi.
+Dans les cas décrits par la suite, on part du cas le plus favorable au cas le plus défavorable.
 
-Dans les cas décrits par la suite, on part du cas le plus favorable au cas le plus défavorable :
-
-Pour exemple, les cas suivants donneront une idée de pourcentage d'offres pour chacun des cas, à partir du notebook disponible en archive "_offres_concatenated_13639_offres__2025-03-05--22h09.json".
-
-Ce json contient 13 639 offres.
+Pour exemple, les cas suivants donneront une idée de pourcentage d'offres pour chacun des cas, à partir du json disponible en archive : "api_extract__transform/outputs/_archives/2025-03-02--exemples-jsons-et-json-concatenated/_offres_concatenated_13639_offres__2025-03-05--22h09.json", qui contient 13 639 offres.
 
 Pour "marquer" les offres, on va écrire pour chacune des offres si elle est dans le cas_1, dans le cas_2, etc... dans une colonne dédiée ("lieu_cas").
 
@@ -112,7 +111,7 @@ Notes :
 - si code_insee = NAN, alors code_postal = NAN aussi (donc la colonne code_postal n'est pas utile pour retrouver la ville)
 
 
-##### ajout des attributs de localisation
+##### Ajout des attributs de localisation
 
 On a donc le code commune.
 A partir du fichier "codes_city_department_region_names.csv", on ajoute la ville, le département, et la région.
@@ -142,7 +141,7 @@ Pour vérifier si la latitude a été inversée avec la longitude :
       - si oui, on inversera la valeur de la latitude avec la valeur de la longitude.
 
 
-##### ajout des attributs de localisation
+##### Ajout des attributs de localisation
 
 La lib geopy permet de retrouver plusieurs informations ("city", "city_district", "postcode", "suburb", "municipality", "state", "town"...), mais celles-ci ne sont pas toujours disponibles... L'information qui semble toujours être retourné est le code postal.
 
@@ -170,7 +169,7 @@ Sur le json archivé, c'est le cas pour 804 offres sur 13 639, soit 5.89% des of
 Dans ce cas, on ne peut pas retrouver la ville, mais on peut retrouver le département, et par conséquent la région.
 
 
-##### ajout des attributs de localisation
+##### Ajout des attributs de localisation
 
 Dans ce cas, on a par exemple "libelle = 75 - Paris (Dept.)", donc on va extraire le code du département dans la colonne "code_departement", et récupérer "nom_departement", "code_region" et "nom_region" à partir du fichier "codes__city_department_region.csv".
 
@@ -185,7 +184,7 @@ Ici, on a que la région, et on ne peut donc pas avoir la ville ni le départeme
 A noter que le nom de la région n'est pas toujours homogène, par exemple, on peut avoir "Ile-de-France" et "Île-de-France" (i avec ou sans accent circonflexe).
 
 
-##### ajout des attributs de localisation
+##### Ajout des attributs de localisation
 
 Dans ce cas, on écrira "code_region" et "nom_region" à partir du fichier "codes__city_department_region.csv".
 

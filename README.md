@@ -11,7 +11,7 @@
   - etc... (à compléter)
 
 
-# <u>Workflow du projet</u>
+# Workflow du projet
 
 Voici un schéma récapitulatif des différentes étapes du projet :
 
@@ -19,8 +19,8 @@ Voici un schéma récapitulatif des différentes étapes du projet :
 
 
 
-# <u> Étapes du projet </u>
+# Étapes du projet
 
-- [Étape 1 : Extraction des données par API et transformation](readme_pages/step_1__extract_and_transform_data.md)
+- [Étape 1 : Extraction des données par API et Transformation](readme_pages/step_1__extract_and_transform_data.md)
 - [Étape 2 : Chargement des données dans une base de données relationnelle](readme_pages/step_2__load_data_to_database.md)
 
