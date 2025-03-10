@@ -182,11 +182,12 @@ Sur le json archivé, c'est le cas pour 54 offres sur 13 639, soit 0.39% des off
 
 Ici, on a que la région, et on ne peut donc pas avoir la ville ni le département.
 
+A noter que le nom de la région n'est pas toujours homogène, par exemple, on peut avoir "Ile-de-France" et "Île-de-France" (i avec ou sans accent circonflexe).
 
-todo : écrire la région dans la colonne dédiée
 
 ##### ajout des attributs de localisation
 
+Dans ce cas, on écrira "code_region" et "nom_region" à partir du fichier "codes__city_department_region.csv".
 
 
 #### Cas_5 : "code_postal = code_insee = latitude = longitude = NAN", et "libelle = ("FRANCE"|"France"|"France entière")"
