@@ -6,7 +6,16 @@ import yaml
 
 
 # from colorama import init
-from functions import concatenate_all_json_into_one, get_bearer_token, get_offres, get_referentiel_appellations_rome, get_referentiel_pays, keep_only_offres_from_metropole, remove_all_json_files
+from functions import (
+    concatenate_all_json_into_one,
+    create_csv__code_name__city_departement_region,
+    get_bearer_token,
+    get_offres,
+    get_referentiel_appellations_rome,
+    get_referentiel_pays,
+    keep_only_offres_from_metropole,
+    remove_all_json_files,
+)
 
 # init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
@@ -27,13 +36,17 @@ token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE
 
 
 # Lancer les fonctions plus simplement ("= 1" pour lancer la fonction)
-#  note : il faut tout mettre à 1 pour le script de bout en bout
+#  Notes :
+#    - Il faut tout mettre à 1 pour le script de bout en bout.
+#    - S'il n'y a pas de commentaire, la fonction met quelques secondes d'exécution.
 launch_get_referentiel_appellations_rome = 0
 launch_get_referentiel_pays = 0
 launch_remove_all_json_files = 0
-launch_get_offres = 0
-launch_concatenate_all_json_into_one = 1
-launch_keep_only_offres_from_metropole = 1
+launch_get_offres = 0  # long
+launch_concatenate_all_json_into_one = 0
+launch_keep_only_offres_from_metropole = 0
+launch_create_csv__code_name__city_departement_region = 0
+
 
 if launch_get_referentiel_appellations_rome:
     get_referentiel_appellations_rome(token)
@@ -145,3 +158,7 @@ if launch_concatenate_all_json_into_one:
 if launch_keep_only_offres_from_metropole:
     # json_final_name = "_offres_concatenated_13639_offres__2025-03-02--23h46.json"  # à décommenter si besoin de hardcoder
     keep_only_offres_from_metropole(json_files_directory, json_final_name)
+
+
+if launch_create_csv__code_name__city_departement_region:
+    create_csv__code_name__city_departement_region()
