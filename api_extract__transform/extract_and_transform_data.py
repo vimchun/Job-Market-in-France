@@ -1,7 +1,6 @@
 import os
 
-from datetime import datetime
-
+# from datetime import datetime
 import yaml
 
 
@@ -44,11 +43,12 @@ token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE
 launch_get_referentiel_appellations_rome = 0
 launch_get_referentiel_pays = 0
 launch_remove_all_json_files = 0
+launch_create_csv__code_name__city_department_region = 0
+#
 launch_get_offres = 0  # ~ 20 minutes
 launch_concatenate_all_json_into_one = 1
 launch_keep_only_offres_from_metropole = 1
-launch_create_csv__code_name__city_department_region = 0
-launch_add_location_attributes = 0  # ~ 5 minutes
+launch_add_location_attributes = 1  # ~ 5 minutes
 
 if launch_get_referentiel_appellations_rome:
     get_referentiel_appellations_rome(token)
@@ -62,6 +62,11 @@ if launch_get_referentiel_pays:
 
 if launch_remove_all_json_files:
     remove_all_json_files(json_files_original_from_api_directory)
+
+#################################################################################################################################
+
+if launch_create_csv__code_name__city_department_region:
+    create_csv__code_name__city_department_region()
 
 #################################################################################################################################
 
@@ -142,39 +147,31 @@ if launch_get_offres:
 """
 Noms de fichiers à écrire dans le dossier "api_extract__transform/outputs/offres" :
 
-  - concatenate_all_json_into_one()    ==> "2025-03-05--22h09__0__all__13639_offres.json"
-  - keep_only_offres_from_metropole()  ==> "2025-03-05--22h09__1__only_metropole__13419_offres.json"
-  - add_location_attributes()          ==> "2025-03-05--22h09__2__with_location_attrs.json"
+  - concatenate_all_json_into_one()    ==> json_generated_filename_0 = "2025-03-05--22h09__0__all__13639_offres.json"
+  - keep_only_offres_from_metropole()  ==> json_generated_filename_1 = "2025-03-05--22h09__1__only_metropole__13419_offres.json"
+  - add_location_attributes()          ==> json_generated_filename_2 = "2025-03-05--22h09__2__with_location_attributes.json"
 """
 
 if launch_concatenate_all_json_into_one:
     json_generated_filename_0 = concatenate_all_json_into_one(json_files_original_from_api_directory, json_files_generated_directory)
-    print(f"====> Fichier généré : {json_generated_filename_0}")
+    print(f"  ====> Fichier généré : {json_generated_filename_0}")
 
 #################################################################################################################################
 
 if launch_keep_only_offres_from_metropole:
-    # json_generated_filename_0 = "2025-03-12--10h21__0__all--13639_offres.json"  # à décommenter si besoin de hardcoder (si concatenate_all_json_into_one() n'est pas lancé)
+    # Décommenter la ligne suivante si besoin de hardcoder (si concatenate_all_json_into_one() n'est pas exécutée)
+    # json_generated_filename_0 = "2025-03-12--10h21__0__all--13639_offres.json"
+
     json_generated_filename_1 = keep_only_offres_from_metropole(json_files_generated_directory, json_generated_filename_0)
-    print(f"====> Fichier généré : {json_generated_filename_1}")
 
-#################################################################################################################################
-
-if launch_create_csv__code_name__city_department_region:
-    create_csv__code_name__city_department_region()
+    print(f"  ====> Fichier généré : {json_generated_filename_1}")
 
 #################################################################################################################################
 
 if launch_add_location_attributes:
-    json_path = os.path.join(
-        current_directory,
-        "outputs",
-        "_archives",
-        "2025-03-02--exemples-jsons-et-json-concatenated",
-    )
+    # Décommenter la ligne suivante si besoin de hardcoder (si keep_only_offres_from_metropole() n'est pas exécutée)
+    # json_generated_filename_1 = "2025-03-12--14h27__1__only_metropole__13419_offres.json"
 
-    json_original_file = "_offres_concatenated_13639_offres__2025-03-05--22h09.json"
+    json_generated_filename_2 = add_location_attributes(json_files_generated_directory, json_generated_filename_1)
 
-    json_generated_file = json_original_file[:-5] + "_locations_attrs.json"  # sert à la fin du fichier après merge final
-
-    add_location_attributes(json_path, json_original_file, json_generated_file)
+    print(f"  ====> Fichier généré : {json_generated_filename_2}")
