@@ -356,27 +356,28 @@ def get_offres(token, code_appellation_libelle, filter_params):
     return None
 
 
-def concatenate_all_json_into_one(json_files_directory, concat_json_filename):
+def concatenate_all_json_into_one(json_files_from_api_directory, generated_json_file_directory):
     """
-    Nous obtenons suite à l'exécution de get_offres() x fichiers json (x = nombre d'appellations présents dans "code_appellation_libelle.yml").
+    On obtient suite à l'exécution de get_offres() x fichiers json (x = nombre d'appellations présents dans "code_appellation_libelle.yml").
     Cette fonction écrira dans un json chaque ligne de tous les json précédents, en supprimant les doublons.
 
-    Renvoie le DateFrame qui concatène toutes les offres, sans doublon.
+    Renvoie le nom du json généré qui servira à la fonction suivante "keep_only_offres_from_metropole()"
     """
+
+    from datetime import datetime
 
     print(f'{Fore.GREEN}\n==> Fonction "concatenate_all_into_one()"\n')
 
     df_concat = pd.DataFrame()
 
-    for filename in os.listdir(json_files_directory):
-        if filename.endswith(".json") and filename != concat_json_filename:  # traite aussi le cas du fichier sans extension
+    for filename in os.listdir(json_files_from_api_directory):
+        if filename.endswith(".json"):  # and filename != concat_json_filename:  # traite aussi le cas du fichier sans extension
             print(filename)
             try:
                 # si le json est bien valide
-                with open(os.path.join(json_files_directory, filename), "r", encoding="utf-8") as file:
+                with open(os.path.join(json_files_from_api_directory, filename), "r", encoding="utf-8") as file:
                     data = json.load(file)
                 df = pd.DataFrame(data)
-                # df_concat = pd.concat([df, df_concat], ignore_index=True)
                 df_concat = pd.concat([df_concat, df], ignore_index=True)
 
             except json.JSONDecodeError as e:
@@ -386,29 +387,32 @@ def concatenate_all_json_into_one(json_files_directory, concat_json_filename):
             except Exception as e:
                 print(f"{Fore.RED}Une erreur inattendue s'est produite : {e}")
 
-    print(f"\n --> df_concat : {df_concat.shape[0]} offres, df_concat_drop_duplicates : {df_concat.drop_duplicates(['id']).shape[0]} offres")
+    num_offres_without_duplicates = len(df_concat.drop_duplicates(["id"]))
+    print(f"\n --> df_concat : {df_concat.shape[0]} offres, df_concat_drop_duplicates : {num_offres_without_duplicates} offres\n\n")
+
+    today = datetime.now()
+    date_now = today.strftime("%Y-%m-%d--%Hh%M")
+    json_file_name_renamed = f"{date_now}__0__all__{num_offres_without_duplicates}_offres.json"
 
     df_concat.drop_duplicates(["id"]).to_json(
-        os.path.join(json_files_directory, concat_json_filename),
+        os.path.join(generated_json_file_directory, json_file_name_renamed),
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
         force_ascii=False,  # pour convertir les caractères spéciaux
         indent=4,  # pour formatter la sortie
     )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs
 
     # On supprime les backslashs ajoutés par la méthode .to_json()
-    with open(os.path.join(json_files_directory, concat_json_filename), "r", encoding="utf-8") as f:
+    with open(os.path.join(generated_json_file_directory, json_file_name_renamed), "r", encoding="utf-8") as f:
         content = f.read()
 
-    content = content.replace("\\/", "/")
+        content = content.replace("\\/", "/")  # On remplace "\/" par "/"
+        content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
 
-    # On remplace les deux-points sans espace par des deux-points avec espace
-    content = content.replace('":', '": ')
+        # On sauvegarde le fichier final sans les '\'
+        with open(os.path.join(generated_json_file_directory, json_file_name_renamed), "w", encoding="utf-8") as f:
+            f.write(content)
 
-    # On sauvegarde le fichier final sans les '\'
-    with open(os.path.join(json_files_directory, concat_json_filename), "w", encoding="utf-8") as f:
-        f.write(content)
-
-    return df_concat.drop_duplicates(["id"])
+    return json_file_name_renamed
 
 
 def keep_only_offres_from_metropole(json_files_directory, json_filename):
@@ -416,7 +420,7 @@ def keep_only_offres_from_metropole(json_files_directory, json_filename):
     Cette fonction écrase le json entré en paramètre, en ne conservant que les offres d'emploi de la France Métropolitaine.
     Elle ne conserve pas les offres de la Corse ni des DOMTOM.
 
-    Ne retourne rien.
+    Renvoie le nom du json généré qui servira à la fonction suivante "add_location_attributes()"
     """
 
     print(f'{Fore.GREEN}\n==> Fonction "keep_only_offres_from_metropole()"\n')
@@ -428,9 +432,7 @@ def keep_only_offres_from_metropole(json_files_directory, json_filename):
 
     # lieuTravail est une colonne avec un dictionnaire, donc on utilise .json_normalize() pour avoir x colonnes pour chaque clé du dictionnaire.
     lieuTravail_normalized = pd.json_normalize(df["lieuTravail"])
-
     df_join = df.join(lieuTravail_normalized)
-
     df_lieu_norm = df_join[["id", "intitule"] + list(lieuTravail_normalized.columns)]
 
     # On exclut les offres où le libelle du lieu matche la regex suivante :
@@ -457,58 +459,31 @@ def keep_only_offres_from_metropole(json_files_directory, json_filename):
 
     df_lieu_norm_metropole = df_lieu_norm_metropole[~df_lieu_norm_metropole["libelle"].isin(list_departements)]  # .value_counts(subset="libelle")
 
-    ## On réécrit le json initial avec uniquement les offres en métropole
     # On réécrit un nouveau json avec uniquement les offres en métropole
+    df_only_metropole = df[df["id"].isin(df_lieu_norm_metropole["id"])]
 
-    new_json = f"{json_filename.split("__0__all")[0]}.json"  # pour avoir seulement "2025-03-12--10h21.json"
+    # json_file_name = f"{json_filename.split("__0__all")[0]}.json"  # pour avoir seulement "2025-03-12--10h21.json"
+    json_file_name_renamed = f'{json_filename.split("__0__all")[0]}__1__only_metropole__{len(df_only_metropole)}_offres.json'
 
-    df[df["id"].isin(df_lieu_norm_metropole["id"])].to_json(
-        # os.path.join(json_files_directory, json_filename),
-        os.path.join(json_files_directory, new_json),
+    df_only_metropole.to_json(
+        os.path.join(json_files_directory, json_file_name_renamed),
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
         force_ascii=False,  # pour convertir les caractères spéciaux
         indent=4,  # pour formatter la sortie
     )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs
 
     # On supprime les backslashs ajoutés par la méthode .to_json()
-    with open(os.path.join(json_files_directory, new_json), "r", encoding="utf-8") as f:
+    with open(os.path.join(json_files_directory, json_file_name_renamed), "r", encoding="utf-8") as f:
         content = f.read()
 
-        content = content.replace("\\/", "/")
-
-        # On remplace les deux-points sans espace par des deux-points avec espace
-        content = content.replace('":', '": ')
-
-        # Récupération le nombre de documents pour l'écrire dans le nom du nouveau fichier
-        json_data = json.loads(content)
-        num_json_documents = len(json_data)
-        # print(num_json_documents)
+        content = content.replace("\\/", "/")  # On remplace les "\/" par "/"
+        content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
 
         # On sauvegarde le fichier final sans les '\'
-        with open(os.path.join(json_files_directory, new_json), "w", encoding="utf-8") as f:
+        with open(os.path.join(json_files_directory, json_file_name_renamed), "w", encoding="utf-8") as f:
             f.write(content)
 
-    # On renomme le fichier de sortie pour avoir par exemple : "2025-03-05--22h09__1__only_metropole_13419_offres.json"
-    os.rename(
-        os.path.join(json_files_directory, new_json),
-        os.path.join(json_files_directory, f"{new_json[:-5]}__1__only_metropole_{num_json_documents}_offres.json"),
-    )
-
-    # Définir le chemin du nouveau fichier
-    # new_json_filename = "nouveau_fichier.json"  # Remplacez par le nom du fichier que vous souhaitez créer
-
-    # Ouvrir le nouveau fichier en mode écriture
-    # with open(os.path.join(json_files_directory, f"{json_filename.split('__')[0]}.json"), "w", encoding="utf-8") as f:
-    #     f.write(content)
-
-    #    # Définir le chemin du nouveau fichier
-    #    new_json_filename = "nouveau_fichier.json"  # Remplacez par le nom du fichier que vous souhaitez créer
-    #
-    #    # Ouvrir le nouveau fichier en mode écriture
-    #    with open(os.path.join(json_files_directory, new_json_filename), "w", encoding="utf-8") as f:
-    #        f.write(content)
-
-    return None
+    return json_file_name_renamed
 
 
 def create_csv__code_name__city_department_region():

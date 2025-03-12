@@ -45,7 +45,7 @@ launch_get_referentiel_appellations_rome = 0
 launch_get_referentiel_pays = 0
 launch_remove_all_json_files = 0
 launch_get_offres = 0  # ~ 20 minutes
-launch_concatenate_all_json_into_one = 0
+launch_concatenate_all_json_into_one = 1
 launch_keep_only_offres_from_metropole = 1
 launch_create_csv__code_name__city_department_region = 0
 launch_add_location_attributes = 0  # ~ 5 minutes
@@ -133,49 +133,37 @@ if launch_get_offres:
             },
         )
 
-# Notes :
-# Pour filtrer qu'en France métropolitaine :
-#   - On ne peut pas filtrer sur les 13 régions en une fois (une seule région possible dans la requête)
-#   - On ne peut mettre que 5 départements d'un coup
+    # Notes :
+    # Pour filtrer qu'en France métropolitaine :
+    #   - On ne peut pas filtrer sur les 13 régions en une fois (une seule région possible dans la requête)
+    #   - On ne peut mettre que 5 départements d'un coup
+
+#################################################################################################################################
+"""
+Noms de fichiers à écrire dans le dossier "api_extract__transform/outputs/offres" :
+
+  - concatenate_all_json_into_one()    ==> "2025-03-05--22h09__0__all__13639_offres.json"
+  - keep_only_offres_from_metropole()  ==> "2025-03-05--22h09__1__only_metropole__13419_offres.json"
+  - add_location_attributes()          ==> "2025-03-05--22h09__2__with_location_attrs.json"
+"""
+
+if launch_concatenate_all_json_into_one:
+    json_generated_filename_0 = concatenate_all_json_into_one(json_files_original_from_api_directory, json_files_generated_directory)
+    print(f"====> Fichier généré : {json_generated_filename_0}")
 
 #################################################################################################################################
 
-if launch_concatenate_all_json_into_one:
-    today = datetime.now()
-    date_now = today.strftime("%Y-%m-%d--%Hh%M")
-    # concatenated_json_filename = f"_offres_concatenated.json"
-    concatenated_json_filename = f"{date_now}__0__all.json"
-    concatenated_json_filename_path = os.path.join(json_files_original_from_api_directory, concatenated_json_filename)
-
-    df_concat = concatenate_all_json_into_one(json_files_original_from_api_directory, concatenated_json_filename)
-
-    # On renomme le fichier en écrivant le nombre d'offres
-    json_generated_filename_0 = f"{concatenated_json_filename[:-5]}--{df_concat.shape[0]}_offres.json"
-
-    os.rename(
-        concatenated_json_filename_path,
-        os.path.join(json_files_generated_directory, json_generated_filename_0),
-    )
-
-    """
-    Noms de fichiers à écrire dans le dossier "api_extract__transform/outputs/offres" :
-
-      - concatenate_all_json_into_one()    ==> "2025-03-05--22h09__0__all_13639_offres.json"
-      - keep_only_offres_from_metropole()  ==> "2025-03-05--22h09__1__only_metropole_13419_offres.json"
-      - add_location_attributes()          ==> "2025-03-05--22h09__2__with_location_attrs.json"
-
-    """
-
-
 if launch_keep_only_offres_from_metropole:
-    json_generated_filename_0 = "2025-03-12--10h21__0__all--13639_offres.json"  # à décommenter si besoin de hardcoder
-    res = keep_only_offres_from_metropole(json_files_generated_directory, json_generated_filename_0)
-    # print(res)
+    # json_generated_filename_0 = "2025-03-12--10h21__0__all--13639_offres.json"  # à décommenter si besoin de hardcoder (si concatenate_all_json_into_one() n'est pas lancé)
+    json_generated_filename_1 = keep_only_offres_from_metropole(json_files_generated_directory, json_generated_filename_0)
+    print(f"====> Fichier généré : {json_generated_filename_1}")
 
+#################################################################################################################################
 
 if launch_create_csv__code_name__city_department_region:
     create_csv__code_name__city_department_region()
 
+#################################################################################################################################
 
 if launch_add_location_attributes:
     json_path = os.path.join(
