@@ -160,6 +160,187 @@ def remove_all_json_files(json_files_directory):
     return None
 
 
+def create_csv__code_name__city_department_region():
+    """
+    Créé à partir du notebook "1--create_csv_codes__city_departement_region.ipynb".
+    Génère le fichier "Job_Market/additional_files/code_name__city_department_region" qui sert à récupérer les informations suivantes :
+
+        - code_insee
+        - nom_commune
+        - code_postal
+        - nom_ville
+        - code_departement
+        - nom_departement
+        - code_region
+        - nom_region
+
+    Ne retourne rien.
+    """
+
+    import os
+
+    import pandas as pd
+
+    print(f'{Fore.GREEN}\n==> Fonction "create_csv__code_name__city_department_region()"\n')
+
+    # todo : ajouter la partie download / unzip des fichiers (pas urgent)
+
+    # Fichiers du lien_2
+    # ==================
+
+    current_directory = os.path.dirname(os.path.abspath(__file__))
+
+    files_directory = os.path.join(
+        current_directory,
+        "..",
+        "additional_files",
+        "archives",
+    )
+    file_commune = "v_commune_2024.csv"
+    file_departement = "v_departement_2024.csv"
+    file_region = "v_region_2024.csv"
+
+    # df_commune
+    # ==========
+
+    df_commune = pd.read_csv(
+        os.path.join(files_directory, "lien_2", file_commune),
+        usecols=[
+            "COM",
+            "REG",
+            "DEP",
+            "LIBELLE",
+        ],
+    )
+
+    df_commune.rename(
+        {
+            "COM": "code_insee",
+            "REG": "code_region",
+            "DEP": "code_departement",
+            "LIBELLE": "nom_commune",
+        },
+        axis=1,
+        inplace=True,
+    )
+
+    # On ajoute une colonne nom_ville (idem que nom_commune sans les arrondissements pour Paris, Marseille et Lyon)
+    #  car on va préférer "Lyon" à "Lyon 1er Arrondissement" ou "Lyon 2e Arrondissement"...
+
+    df_commune["nom_ville"] = df_commune.apply(
+        lambda x: x.nom_commune.split(" ")[0] if "Arrondissement" in x.nom_commune else x.nom_commune,
+        axis=1,
+    )
+
+    df_departement = pd.read_csv(
+        os.path.join(files_directory, "lien_2", file_departement),
+        usecols=["DEP", "LIBELLE"],
+    )
+
+    df_departement.rename(
+        {"DEP": "code_departement", "LIBELLE": "nom_departement"},
+        axis=1,
+        inplace=True,
+    )
+
+    df_region = pd.read_csv(
+        os.path.join(files_directory, "lien_2", file_region),
+        usecols=["REG", "LIBELLE"],
+    )
+
+    df_region.rename(
+        {"REG": "code_region", "LIBELLE": "nom_region"},
+        axis=1,
+        inplace=True,
+    )
+
+    # merging
+
+    df_lien_2 = df_commune.merge(df_departement, on="code_departement").merge(df_region, on="code_region")
+
+    # pour avoir code_region = 84 au lieu de 84.0 par exemple
+    df_lien_2.code_region = df_lien_2.code_region.astype(int).astype(str)
+
+    df_lien_2 = df_lien_2[
+        [
+            "code_insee",
+            "nom_commune",
+            "nom_ville",
+            "code_departement",
+            "nom_departement",
+            "code_region",
+            "nom_region",
+        ]
+    ]
+
+    # Fichier du lien_3
+    # =================
+
+    # Mapping code insee <> code postal
+
+    df_lien_3 = pd.read_csv(
+        os.path.join(files_directory, "lien_3", "cities.csv"),
+        usecols=["insee_code", "zip_code"],
+    )
+
+    df_lien_3.rename(
+        {"insee_code": "code_insee", "zip_code": "code_postal"},
+        axis=1,
+        inplace=True,
+    )
+
+    df_lien_3[df_lien_3.code_insee == "75056"]  # non disponible dans ce fichier, donc attention au merge
+
+    df_lien_3["code_postal"] = df_lien_3["code_postal"].astype(str)
+
+    # Merge des df des liens 2 et 3
+    # =============================
+
+    df = pd.merge(left=df_lien_2, right=df_lien_3, on="code_insee", how="left")
+    # left car tous les code_insee ne sont pas disponibles dans df_lien_3
+
+    df = df[
+        [
+            "code_insee",
+            "nom_commune",
+            "code_postal",
+            "nom_ville",
+            "code_departement",
+            "nom_departement",
+            "code_region",
+            "nom_region",
+        ]
+    ]
+
+    df["code_postal"] = df["code_postal"].str.zfill(5)
+
+    df = df.drop_duplicates(["code_insee", "code_postal"])
+
+    # Ecriture dans un fichier .csv
+    # =============================
+
+    df.to_csv(
+        os.path.join(
+            current_directory,
+            "..",
+            "additional_files",
+            # "code_name__city_department_region",
+            "code_name__city_department_region.csv",
+        ),
+        index=False,  # pour ne pas écrire les index
+    )
+
+    # pd.read_csv(
+    #     os.path.join(
+    #         current_directory,
+    #         "..",
+    #         "additional_files",
+    #         "code_name__city_department_region",
+    #     ),
+    #     dtype=str,
+    # )
+
+
 def get_offres(token, code_appellation_libelle, filter_params):
     """
     A partir des appellations ROME décrites dans "code_appellation_libelle.yml", récupérer les offres de chaque appellation et les écrit dans un fichier json.
@@ -486,188 +667,7 @@ def keep_only_offres_from_metropole(json_files_directory, json_filename):
     return json_file_name_renamed
 
 
-def create_csv__code_name__city_department_region():
-    """
-    Créé à partir du notebook "1--create_csv_codes__city_departement_region.ipynb".
-    Génère le fichier "Job_Market/additional_files/code_name__city_department_region" qui sert à récupérer les informations suivantes :
-
-        - code_insee
-        - nom_commune
-        - code_postal
-        - nom_ville
-        - code_departement
-        - nom_departement
-        - code_region
-        - nom_region
-
-    Ne retourne rien.
-    """
-
-    import os
-
-    import pandas as pd
-
-    print(f'{Fore.GREEN}\n==> Fonction "create_csv__code_name__city_department_region()"\n')
-
-    # todo : ajouter la partie download / unzip des fichiers (pas urgent)
-
-    # Fichiers du lien_2
-    # ==================
-
-    current_directory = os.path.dirname(os.path.abspath(__file__))
-
-    files_directory = os.path.join(
-        current_directory,
-        "..",
-        "additional_files",
-        "archives",
-    )
-    file_commune = "v_commune_2024.csv"
-    file_departement = "v_departement_2024.csv"
-    file_region = "v_region_2024.csv"
-
-    # df_commune
-    # ==========
-
-    df_commune = pd.read_csv(
-        os.path.join(files_directory, "lien_2", file_commune),
-        usecols=[
-            "COM",
-            "REG",
-            "DEP",
-            "LIBELLE",
-        ],
-    )
-
-    df_commune.rename(
-        {
-            "COM": "code_insee",
-            "REG": "code_region",
-            "DEP": "code_departement",
-            "LIBELLE": "nom_commune",
-        },
-        axis=1,
-        inplace=True,
-    )
-
-    # On ajoute une colonne nom_ville (idem que nom_commune sans les arrondissements pour Paris, Marseille et Lyon)
-    #  car on va préférer "Lyon" à "Lyon 1er Arrondissement" ou "Lyon 2e Arrondissement"...
-
-    df_commune["nom_ville"] = df_commune.apply(
-        lambda x: x.nom_commune.split(" ")[0] if "Arrondissement" in x.nom_commune else x.nom_commune,
-        axis=1,
-    )
-
-    df_departement = pd.read_csv(
-        os.path.join(files_directory, "lien_2", file_departement),
-        usecols=["DEP", "LIBELLE"],
-    )
-
-    df_departement.rename(
-        {"DEP": "code_departement", "LIBELLE": "nom_departement"},
-        axis=1,
-        inplace=True,
-    )
-
-    df_region = pd.read_csv(
-        os.path.join(files_directory, "lien_2", file_region),
-        usecols=["REG", "LIBELLE"],
-    )
-
-    df_region.rename(
-        {"REG": "code_region", "LIBELLE": "nom_region"},
-        axis=1,
-        inplace=True,
-    )
-
-    # merging
-
-    df_lien_2 = df_commune.merge(df_departement, on="code_departement").merge(df_region, on="code_region")
-
-    # pour avoir code_region = 84 au lieu de 84.0 par exemple
-    df_lien_2.code_region = df_lien_2.code_region.astype(int).astype(str)
-
-    df_lien_2 = df_lien_2[
-        [
-            "code_insee",
-            "nom_commune",
-            "nom_ville",
-            "code_departement",
-            "nom_departement",
-            "code_region",
-            "nom_region",
-        ]
-    ]
-
-    # Fichier du lien_3
-    # =================
-
-    # Mapping code insee <> code postal
-
-    df_lien_3 = pd.read_csv(
-        os.path.join(files_directory, "lien_3", "cities.csv"),
-        usecols=["insee_code", "zip_code"],
-    )
-
-    df_lien_3.rename(
-        {"insee_code": "code_insee", "zip_code": "code_postal"},
-        axis=1,
-        inplace=True,
-    )
-
-    df_lien_3[df_lien_3.code_insee == "75056"]  # non disponible dans ce fichier, donc attention au merge
-
-    df_lien_3["code_postal"] = df_lien_3["code_postal"].astype(str)
-
-    # Merge des df des liens 2 et 3
-    # =============================
-
-    df = pd.merge(left=df_lien_2, right=df_lien_3, on="code_insee", how="left")
-    # left car tous les code_insee ne sont pas disponibles dans df_lien_3
-
-    df = df[
-        [
-            "code_insee",
-            "nom_commune",
-            "code_postal",
-            "nom_ville",
-            "code_departement",
-            "nom_departement",
-            "code_region",
-            "nom_region",
-        ]
-    ]
-
-    df["code_postal"] = df["code_postal"].str.zfill(5)
-
-    df = df.drop_duplicates(["code_insee", "code_postal"])
-
-    # Ecriture dans un fichier .csv
-    # =============================
-
-    df.to_csv(
-        os.path.join(
-            current_directory,
-            "..",
-            "additional_files",
-            # "code_name__city_department_region",
-            "code_name__city_department_region.csv",
-        ),
-        index=False,  # pour ne pas écrire les index
-    )
-
-    # pd.read_csv(
-    #     os.path.join(
-    #         current_directory,
-    #         "..",
-    #         "additional_files",
-    #         "code_name__city_department_region",
-    #     ),
-    #     dtype=str,
-    # )
-
-
-def add_location_attributes(json_path, json_original_file, json_generated_file):
+def add_location_attributes(json_files_directory, json_filename):
     """
     Prend en entrée un fichier json généré avec les fonctions précédentes.
     Génère en sortie un fichier json avec en plus les nouveaux attributs suivants :
@@ -681,7 +681,7 @@ def add_location_attributes(json_path, json_original_file, json_generated_file):
         - code_region
         - nom_region
 
-    Ne retourne rien.
+    Renvoie le nom du json généré qui servira à la fonction suivante si besoin.
     """
     import os
     import time
@@ -696,39 +696,45 @@ def add_location_attributes(json_path, json_original_file, json_generated_file):
 
     # Chargement des fichiers
     # =======================
+    current_directory = os.path.dirname(os.path.abspath(__file__))
 
-    print(f'\n====> Chargement des fichiers"\n')
+    print(f"\n====> Chargement des fichiers\n")
 
     df = pd.read_json(
-        os.path.join(json_path, json_original_file),
+        os.path.join(json_files_directory, json_filename),
         dtype=False,  # désactiver l'inférence des types
     )
 
     df_insee = pd.read_csv(
         os.path.join(
-            os.path.join("..", "additional_files"),
+            os.path.join(current_directory, "..", "additional_files"),
             "code_name__city_department_region.csv",
         ),
         dtype=str,
     )
 
     lieuTravail_normalized = pd.json_normalize(df["lieuTravail"])
-
     df = df.join(lieuTravail_normalized)
-
     df_lieu = df[["id", "intitule"] + list(lieuTravail_normalized.columns)]
 
-    df_lieu.rename(
+    df_lieu = df_lieu.rename(
         {
             "codePostal": "code_postal",
             "commune": "code_insee",
         },
         axis=1,
-        inplace=True,
     )
+    # df_lieu.rename(
+    #     {
+    #         "codePostal": "code_postal",
+    #         "commune": "code_insee",
+    #     },
+    #     axis=1,
+    #     inplace=True,
+    # )
 
-    # Cas_1 : "code_insee" renseigné
-    # ==============================
+    #### Cas_1 : "code_insee" renseigné
+    # =================================
     # note : si commune = NAN, alors code_postal = NAN
 
     print(f'\n====> Cas_1 : "code_insee" renseigné\n')
@@ -751,33 +757,19 @@ def add_location_attributes(json_path, json_original_file, json_generated_file):
     ### Vérification
 
     # On vérifie que parmi les offres "cas_1", il n'y a pas de nom_ville à Nan.
-    print(len(df_lieu[(df_lieu.lieu_cas == "cas_1") & (df_lieu.nom_ville.isna())]) == 0)
+    print(f"      Vérification cas_1 ? {len(df_lieu[(df_lieu.lieu_cas == "cas_1") & (df_lieu.nom_ville.isna())]) == 0}")
+
     assert len(df_lieu[(df_lieu.lieu_cas == "cas_1") & (df_lieu.nom_ville.isna())]) == 0
 
-    import sys
-
-    sys.exit()
-
-    ###################################################################################################################
-
-    # Cas_2 : "code_insee = NAN" (dans ce cas "code_postal = NAN"), mais coordonnées GPS renseignées
-    # ==============================================================================================
+    #### Cas_2 : "code_insee = NAN" (dans ce cas "code_postal = NAN"), mais coordonnées GPS renseignées
+    # =================================================================================================
 
     print(f'\n====> Cas_2 : "code_insee = NAN" (dans ce cas "code_postal = NAN"), mais coordonnées GPS renseignées\n')
 
-    # %% [markdown]
-    # ### <u> Récupération code_postal avec geopy </u>
-
-    # %%
-    # df_lieu[~df_lieu.lieu_cas.isin(["cas_1"])  # != cas_1
-    #     & ~df_lieu.latitude.isna()
-    #         ]  # fmt: off
-
-    # %%
+    # Récupération code_postal avec geopy
 
     geolocator = Nominatim(user_agent="my_geopy_app")
 
-    # %%
     latitude_min = 42.3328  # Sud
     latitude_max = 51.0892  # Nord
     longitude_min = -4.7956  # Ouest
@@ -813,7 +805,12 @@ def add_location_attributes(json_path, json_original_file, json_generated_file):
 
             except Exception as e:
                 retries += 1
-                print(f"Erreur pour ({row['latitude']}, {row['longitude']}), tentative {retries}/{max_retries}: {e}")
+                print(f"Erreur pour ({row['latitude']}, {row['longitude']}), tentative {retries}/{max_retries}: {e}\n")
+                # exemple de print :
+                #  Erreur pour (48.896069, 2.206713), tentative 1/3: HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443):
+                #  Max retries exceeded with url: /reverse?lat=48.896069&lon=2.206713&format=json&accept-language=fr&addressdetails=1
+                #  (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7fa961db0410>:
+                #   Failed to establish a new connection: [Errno 101] Network is unreachable'))
                 if retries < max_retries:
                     time.sleep(retry_delay)
                 else:
@@ -821,114 +818,37 @@ def add_location_attributes(json_path, json_original_file, json_generated_file):
 
         return row
 
-    # %%
-    # df_lieu
-
-    # %%
-    # cas_2 sans .apply() -> pas de code postal
-    # df_lieu[
-    #     ~df_lieu.lieu_cas.isin(["cas_1"])  # != cas_1
-    #     & ~df_lieu.latitude.isna()
-    # ].head(2)
-
-    # %%
     # /!\ temps d'exécution de plusieurs minutes
     cas_2 = df_lieu[
         ~df_lieu.lieu_cas.isin(["cas_1"])  # != cas_1
         & ~df_lieu.latitude.isna()
     ].apply(check_and_swap, axis=1)
 
-    # %%
-    cas_2  # .head(2)  # code_postal retourné par geopy
-    # cas_2.shape
+    # Merge df_geopy et df_insee
 
-    # %%
-    cas_2[cas_2.id == "2347948"]
-
-    # %% [markdown]
-    # ### <u> suite geopy </u>
-
-    # %% [markdown]
-    # #### <u> Merge df_geopy et df_insee </u>
-
-    # %%
     cas_2_geopy = cas_2.copy()
 
-    # %%
-    # cas_2_geopy.shape
-
-    # %%
     # avant de merger avec df_insee, on supprime les colonnes qui n'ont que des NAN
     cas_2_geopy = cas_2_geopy.drop(["code_insee", "nom_commune", "nom_ville", "code_departement", "nom_departement", "code_region", "nom_region"], axis=1)
 
-    # %%
-    # cas_2_geopy.head(2)
-    # cas_2_geopy.shape
-
-    # %%
-    # df_insee.head(2)
-
-    # %%
     cas_2_geopy_merge = cas_2_geopy.merge(df_insee, on="code_postal", how="left").drop_duplicates("id")
 
-    # %%
-    # cas_2_geopy_merge  # .head(2)
+    # Gestion des cas où code_postal non reconnu
 
-    # %%
-    # cas_2_geopy_merge.shape
-
-    # %% [markdown]
-    # #### <u> Gestion des cas où code_postal non reconnu </u>
-
-    # %% [markdown]
     # Parfois le code postal retourné par geopy n'est pas présent dans le fichier "code_name__city_department_region"
-    #
     # Dans ce cas, on va prendre les 2 premiers digits du code postal pour avoir le département, et récupérer la région.
-    #
 
-    # %%
     cas_2_geopy_merge_unknown_CP = cas_2_geopy_merge[cas_2_geopy_merge.code_insee.isna()]
 
-    # %%
-    # cas_2_geopy_merge_unknown_CP
-
-    # %%
     # Les 2 premiers digits du CP pour le code_departement.
-    # cas_2_geopy_merge_unknown_CP.code_departement = cas_2_geopy_merge_unknown_CP.apply(lambda x: x.code_postal[:2], axis=1)
     cas_2_geopy_merge_unknown_CP.loc[:, "code_departement"] = cas_2_geopy_merge_unknown_CP["code_postal"].apply(lambda x: x[:2])
 
-    # %%
     cas_2_geopy_merge_unknown_CP = cas_2_geopy_merge_unknown_CP.drop(["code_insee", "nom_commune", "nom_ville", "nom_departement", "code_region", "nom_region"], axis=1)  # avec le code_departement
 
-    # %%
-    # cas_2_geopy_merge_unknown_CP
-
-    # %%
-    # df_insee[["code_departement", "nom_departement", "code_region", "nom_region"]].head(2)
-
-    # %%
     cas_2_geopy_merge_unknown_CP = cas_2_geopy_merge_unknown_CP.merge(df_insee[["code_departement", "nom_departement", "code_region", "nom_region"]], on="code_departement").drop_duplicates("id")
 
-    # %%
-    # cas_2_geopy_merge_unknown_CP
+    # Update df
 
-    # %% [markdown]
-    # #### <u> Update df </u>
-
-    # %% [markdown]
-    # On peut updater le df précédent
-
-    # %%
-    # cas_2_geopy_merge.head(6)
-
-    # %%
-    # cas_2_geopy_merge_unknown_CP
-
-    # %%
-    # Pour vérifier : ici, "code_departement = nom_departement = code_region = nom_region = NAN"
-    # cas_2_geopy_merge[cas_2_geopy_merge.code_insee.isna()]
-
-    # %%
     # Modification pour avoir id en tant qu'index, nécessaire pour que .update() fonctionne (car .update() ne fonctionne que sur l'index du df)
     cas_2_geopy_merge.set_index("id", inplace=True)
     cas_2_geopy_merge_unknown_CP.set_index("id", inplace=True)
@@ -936,170 +856,64 @@ def add_location_attributes(json_path, json_original_file, json_generated_file):
     cas_2_geopy_merge.update(cas_2_geopy_merge_unknown_CP)
     cas_2_geopy_merge.reset_index(inplace=True)
 
-    # %%
-    # Pour vérifier : ici, "code_departement = nom_departement = code_region = nom_region" sont bien mise à jour
-    # cas_2_geopy_merge[cas_2_geopy_merge.code_insee.isna()]
+    # Update de df_lieu avec cas_2_geopy_merge
 
-    # %%
-    cas_2_geopy_merge_unknown_CP
-
-    # %%
-    # cas_2_geopy_merge.shape
-
-    # %%
-    # cas_2_geopy_merge.head(2)
-
-    # %%
-    cas_2_geopy_merge
-
-    # %% [markdown]
-    # #### <u> Update de df_lieu avec cas_2_geopy_merge </u>
-
-    # %%
-    # df_lieu.head(2)
-
-    # %%
-    # Vérification avant update : pas de cas_2
-    df_lieu[df_lieu.lieu_cas == "cas_2"]
-
-    # %%
     # Modification pour avoir id en tant qu'index, nécessaire pour que .update() fonctionne (car .update() ne fonctionne que sur l'index du df)
     cas_2_geopy_merge.set_index("id", inplace=True)
     df_lieu.set_index("id", inplace=True)
-
     df_lieu.update(cas_2_geopy_merge)
-
     df_lieu.reset_index(inplace=True)
 
-    # %%
-    # Vérification avant update : cas_2 avec les colonnes de localisation mises à jour
-    df_lieu[df_lieu.lieu_cas == "cas_2"]
+    # Vérification
 
-    # %%
-    # df_lieu[df_lieu.lieu_cas == "cas_2"].shape
+    print(f'      Vérification cas_2 OK ? {len(df_lieu[(df_lieu.lieu_cas == "cas_2") & (df_lieu.nom_departement.isna())]) == 0}')
 
-    # %%
-    # df_lieu.shape
+    assert len(df_lieu[(df_lieu.lieu_cas == "cas_2") & (df_lieu.nom_departement.isna())]) == 0
 
-    # %%
-    # df_lieu[df_lieu.lieu_cas == "cas_1"].shape
-
-    # %%
-    # df_lieu[df_lieu.lieu_cas == "cas_2"].shape
-
-    # %% [markdown]
-    # -----------------------
-
-    # %% [markdown]
-    # ### <u> Problèmes ? </u>
-    ### Vérification
-
-    # %%
-    # df_lieu[(df_lieu.lieu_cas == "cas_2") & (df_lieu.nom_departement.isna())]
-
-    # %% [markdown]
-    # => pas de problème
-
-    # %% [markdown]
-
-    ###################################################################################################################
-
-    # ## <u> Cas_3 : "code_postal = code_insee = latitude = longitude = NAN", mais "libelle = 'numéro_département - nom_département'" </u>
+    #### Cas_3 : "code_postal = code_insee = latitude = longitude = NAN", mais "libelle = 'numéro_département - nom_département'" </u>
+    # ================================================================================================================================
 
     print(f'\n====> Cas_3 : "code_postal = code_insee = latitude = longitude = NAN", mais "libelle = numéro_département - nom_département"\n')
 
-    # %%
-    cas_3 = df_lieu[~df_lieu.lieu_cas.isin(["cas_1", "cas_2"])  # != cas_1/2
-                & df_lieu.libelle.str.match(r"^\d{2}\s-\s")
-                    ]  # fmt: off
+    cas_3 = df_lieu[
+        ~df_lieu.lieu_cas.isin(["cas_1", "cas_2"])  # != cas_1/2
+        & df_lieu.libelle.str.match(r"^\d{2}\s-\s")
+    ]
 
-    # %%
-    # cas_3
-
-    # %%
-    # cas_3.shape
-
-    # %%
     # On écrit le numéro du cas dans "lieu_cas"
     df_lieu.loc[df_lieu.id.isin(cas_3.id), "lieu_cas"] = "cas_3"
 
-    # %%
-    # df_lieu.value_counts("lieu_cas")
+    # Ajout attributs ville/département/région
 
-    # %%
-    # df_lieu[df_lieu.lieu_cas == "cas_3"].head(2)
-
-    # %% [markdown]
-    ### Ajout attributs ville/département/région
-
-    # %%
-    # df_lieu[df_lieu.lieu_cas == "cas_3"].code_departement = df_lieu[df_lieu.lieu_cas == "cas_3"].apply(lambda x: x.libelle.split(" - ")[0], axis=1)
     df_lieu.loc[df_lieu.lieu_cas == "cas_3", "code_departement"] = df_lieu.loc[df_lieu.lieu_cas == "cas_3", "libelle"].apply(lambda x: x.split(" - ")[0])
 
-    # %%
-    # df_lieu[df_lieu.lieu_cas == "cas_3"].head(2)
+    # Update de df_lieu
 
-    # %% [markdown]
-    # ### <u> Update de df_lieu </u>
-
-    # %%
-    # df_insee.head(2)
-
-    # %%
     df_insee_cas_3 = df_insee[["code_departement", "nom_departement", "code_region", "nom_region"]].drop_duplicates()
 
-    # %%
-    # df_insee_cas_3.head(2)
-
-    # %%
     # récupération des noms de colonnes de df_lieu pour restaurer l'ordre des colonnes après .reset_index()
     columns_order = df_lieu.columns
 
-    # %%
     df_lieu.set_index("code_departement", inplace=True)
     df_insee_cas_3.set_index("code_departement", inplace=True)
 
-    # %%
-    # df_lieu[df_lieu.lieu_cas == "cas_3"].head(2)
-
-    # %%
-    # df_insee_cas_3.head(2)
-
-    # %%
     df_lieu.update(df_insee_cas_3)
 
-    # %%
     df_lieu.reset_index(inplace=True)
 
-    # %%
     df_lieu = df_lieu[columns_order]
 
-    # %%
-    # df_lieu[df_lieu.lieu_cas == "cas_3"]
+    # Vérification
 
-    # %%
-    # df_lieu
+    print(f'      Vérification cas_3 OK ? {len(df_lieu[(df_lieu.lieu_cas == "cas_3") & (df_lieu.nom_departement.isna())]) == 0}')
 
-    # %% [markdown]
-    # ### <u> Problèmes ? </u>
-    ### Vérification
+    assert len(df_lieu[(df_lieu.lieu_cas == "cas_3") & (df_lieu.nom_departement.isna())]) == 0
 
-    # %%
-    df_lieu[(df_lieu.lieu_cas == "cas_3") & (df_lieu.nom_departement.isna())]
-
-    # %% [markdown]
-    # ==> pas de problème
-
-    # %% [markdown]
-
-    ###################################################################################################################
-
-    # Cas_4 : "code_postal = code_insee = latitude = longitude = NAN", mais "libelle = nom_région"
-    # ============================================================================================
+    #### Cas_4 : "code_postal = code_insee = latitude = longitude = NAN", mais "libelle = nom_région"
+    # ===============================================================================================
 
     print(f'\n====> Cas_4 : "code_postal = code_insee = latitude = longitude = NAN", mais "libelle = nom_région"\n')
 
-    # %%
     cas_4 = df_lieu[
         ~df_lieu.lieu_cas.isin(["cas_1", "cas_2", "cas_3"])  # != cas_1/2/3
         & ~df_lieu.libelle.isin(["FRANCE", "France", "France entière"])
@@ -1111,176 +925,84 @@ def add_location_attributes(json_path, json_original_file, json_generated_file):
     # Île-de-France                  4   <=== i accent circonflexe
     # =>
 
-    # %%
     # On écrit le numéro du cas dans "lieu_cas"
     df_lieu.loc[df_lieu.id.isin(cas_4.id), "lieu_cas"] = "cas_4"
 
-    # %%
-    # df_lieu.lieu_cas.value_counts()
+    # Ajout attributs ville/département/région
 
-    # %% [markdown]
-    ### Ajout attributs ville/département/région
-
-    # %%
-    # df_lieu[df_lieu.lieu_cas == "cas_4"].head(2)
-
-    # %% [markdown]
     # Avant d'appliquer .update() :
     #
     # - On met le nom des régions de la colonne "libelle" en minuscule.
     # - On remplace les tirets par des espaces.
     # - On enlève les accents avec la lib unidecode
-    #
 
-    # %%
     df_lieu.loc[:, "libelle_traite"] = df_lieu["libelle"]
-
-    # %%
-    # df_lieu.head(2)
-
-    # %%
 
     df_lieu.loc[df_lieu.lieu_cas == "cas_4", "libelle_traite"] = df_lieu.loc[df_lieu.lieu_cas == "cas_4", "libelle"].apply(lambda x: unidecode.unidecode(x).lower().replace("-", " "))  # , axis=1)
 
-    # %%
     df_lieu[df_lieu.lieu_cas == "cas_4"]
 
-    # %%
     df_insee_cas_4_update_1 = df_insee.copy()
 
-    # %%
     df_insee_cas_4_update_1.nom_region = df_insee.nom_region.apply(lambda x: unidecode.unidecode(x).lower().replace("-", " "))
 
-    # %%
     df_insee_cas_4_update_1 = df_insee_cas_4_update_1[["code_region", "nom_region"]].drop_duplicates()
 
-    # %%
     df_insee_cas_4_update_1.rename({"nom_region": "libelle_traite"}, axis=1, inplace=True)  # pour pouvoir faire le .update()
 
-    # %%
-    df_insee_cas_4_update_1
+    # Update 1
 
-    # %% [markdown]
-    # ### <u> Update 1 </u>
-
-    # %%
-    # df_lieu[df_lieu.lieu_cas == "cas_4"].head(2)
-
-    # %%
-    # df_insee_cas_4_update_1.head(2)
-
-    # %%
     df_lieu.set_index("libelle_traite", inplace=True)
 
-    # %%
     df_insee_cas_4_update_1.set_index("libelle_traite", inplace=True)
 
-    # %%
-    # df_lieu[df_lieu.lieu_cas == "cas_4"].head(2)
-
-    # %%
-    # df_insee_cas_4_update_1
-
-    # %%
     df_lieu.update(df_insee_cas_4_update_1)
 
-    # %%
-    # df_lieu[df_lieu.lieu_cas == "cas_4"].head()
+    # Update 2
 
-    # %% [markdown]
-    # ### <u> Update 2 </u>
-
-    # %%
     df_lieu.set_index("code_region", inplace=True)
 
-    # %%
-    # df_lieu[df_lieu.lieu_cas == "cas_4"].head()
-
-    # %%
     df_insee_cas_4_update_2 = df_insee.copy()
 
-    # %%
     df_insee_cas_4_update_2 = df_insee_cas_4_update_2[["code_region", "nom_region"]].drop_duplicates()
 
-    # %%
-    # df_insee_cas_4_update_2
-
-    # %%
     df_insee_cas_4_update_2.set_index("code_region", inplace=True)
 
-    # %%
-    # df_insee_cas_4_update_2
-
-    # %%
     df_lieu.update(df_insee_cas_4_update_2)
 
-    # %%
     df_lieu.reset_index(inplace=True)
 
-    # %%
-    # columns_order
-
-    # %%
     df_lieu = df_lieu[columns_order]
 
-    # %%
-    df_lieu[(df_lieu.lieu_cas == "cas_4")].head(100)
+    # Vérification
 
-    # %% [markdown]
-    # ### <u> Problèmes ? </u>
-    ### Vérification
+    print(f'      Vérification cas_4 OK ? {len(df_lieu[(df_lieu.lieu_cas == "cas_3") & (df_lieu.nom_region.isna())]) == 0}')
 
-    # %% [markdown]
-    # ==> pas de problème
+    assert len(df_lieu[(df_lieu.lieu_cas == "cas_4") & (df_lieu.nom_region.isna())]) == 0
 
-    # %% [markdown]
-    ###################################################################################################################
-
-    # Cas_5 : "code_postal = code_insee = latitude = longitude = NAN", et "libelle = ("FRANCE"|"France"|"France entière")"
-    # ====================================================================================================================
+    #### Cas_5 : "code_postal = code_insee = latitude = longitude = NAN", et "libelle = ("FRANCE"|"France"|"France entière")"
+    # =======================================================================================================================
 
     print(f'\n====> Cas_5 : "code_postal = code_insee = latitude = longitude = NAN", et "libelle = ("FRANCE"|"France"|"France entière")"\n')
 
-    # %%
     cas_5 = df_lieu[
         ~df_lieu.lieu_cas.isin(["cas_1", "cas_2", "cas_3", "cas_4"])  # != cas_1/2/3/4
         & df_lieu.libelle.isin(["FRANCE", "France", "France entière"])
     ]
 
-    # %%
-    cas_5
-
-    # %%
     # On écrit le numéro du cas dans "lieu_cas"
     df_lieu.loc[df_lieu.id.isin(cas_5.id), "lieu_cas"] = "cas_5"
 
-    # %%
-    # df_lieu.lieu_cas.value_counts()
-
-    # %%
-
     df_lieu.loc[df_lieu.lieu_cas == "cas_5", "libelle"] = np.nan
 
-    # %%
-    # df_lieu[df_lieu.lieu_cas == "cas_5"].value_counts("libelle")
+    # Vérification qu'il n'y a pas d'autres cas que les cas 1, 2, 3, 4 et 5.
 
-    # %%
-    # df_lieu[df_lieu.lieu_cas == "cas_5"]
+    print(f'      Vérification cas_5 OK ? {len(df_lieu[~df_lieu.lieu_cas.isin(["cas_1", "cas_2", "cas_3", "cas_4", "cas_5"])]) == 0}\n\n')
 
-    # %% [markdown]
-    # ## <u> Vérification qu'il n'y a pas d'autres cas </u>
-
-    # %%
-    # On vérifie qu'il n'y a aucune autre cas que les cas 1, 2, 3, 4 et 5.
     assert len(df_lieu[~df_lieu.lieu_cas.isin(["cas_1", "cas_2", "cas_3", "cas_4", "cas_5"])]) == 0  # != cas_1/2/3/4/5
 
-    # %%
-    # df_lieu.value_counts("lieu_cas")
-
-    # %% [markdown]
-
-    # Update du df initial avec df_lieu
-    # =================================
+    #### Update du df initial avec df_lieu
+    # ====================================
 
     # A la base, avec "df", on a pour l'attribut "lieuTravail"	les attributs suivants :
     # - libelle
@@ -1300,13 +1022,7 @@ def add_location_attributes(json_path, json_original_file, json_generated_file):
     # - nom_departement
     # - code_region
     # - nom_region
-    #
-    #
 
-    # %%
-    df_lieu[df_lieu.lieu_cas == "cas_1"].head()
-
-    # %%
     # On supprime "intitule" car il est déjà dans le Dataframe "df", et "libelle"/"latitude"/"longitude" qui ne nous intéressent plus
     df_lieu = df_lieu.drop(
         [
@@ -1318,7 +1034,6 @@ def add_location_attributes(json_path, json_original_file, json_generated_file):
         axis=1,
     )
 
-    # %%
     # On ordonne les colonnes pour avoir un ordre plus logique (du plus spécifique au moins spécifique)
     df_lieu = df_lieu[
         [
@@ -1335,7 +1050,6 @@ def add_location_attributes(json_path, json_original_file, json_generated_file):
         ]
     ]
 
-    # %%
     # On supprime la colonne "lieuTravail" qui ne nous intéresse plus dorénavant, et les attributs de cette colonne
     df = df.drop(
         [
@@ -1349,42 +1063,29 @@ def add_location_attributes(json_path, json_original_file, json_generated_file):
         axis=1,
     )
 
-    # %%
-    # display(
-    #     df.shape,
-    #     df_lieu.shape,
-    # )
-
-    # %%
     df_final = pd.merge(left=df, right=df_lieu, on="id")
 
-    # %%
-    # df_final
-
-    # %% [markdown]
     # Ecriture dans un fichier .json
     # ==============================
 
-    # %%
+    json_generated_file = f'{json_filename.split("__1__only_metropole")[0]}__2__with_location_attributes.json'
+
     df_final.to_json(
-        os.path.join(json_path, json_generated_file),
+        os.path.join(json_files_directory, json_generated_file),
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
         force_ascii=False,  # pour convertir les caractères spéciaux
         indent=4,  # pour formatter la sortie
     )
 
     # On supprime les backslashs ajoutés par la méthode .to_json()
-    with open(os.path.join(json_path, json_generated_file), "r", encoding="utf-8") as f:
+    with open(os.path.join(json_files_directory, json_generated_file), "r", encoding="utf-8") as f:
         content = f.read()
 
-    content = content.replace("\\/", "/")
+        content = content.replace("\\/", "/")  # On remplace "\/" par "/"
+        content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
 
-    # On remplace les deux-points sans espace par des deux-points avec espace
-    content = content.replace('":', '": ')
+        # On sauvegarde le fichier final sans les '\'
+        with open(os.path.join(json_files_directory, json_generated_file), "w", encoding="utf-8") as f:
+            f.write(content)
 
-    # On sauvegarde le fichier final sans les '\'
-    with open(os.path.join(json_path, json_generated_file), "w", encoding="utf-8") as f:
-        f.write(content)
-
-    # %%
-    # df_final.shape
+    return json_generated_file
