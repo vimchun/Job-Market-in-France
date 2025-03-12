@@ -993,6 +993,7 @@ def add_location_attributes(json_files_directory, json_filename):
     # On écrit le numéro du cas dans "lieu_cas"
     df_lieu.loc[df_lieu.id.isin(cas_5.id), "lieu_cas"] = "cas_5"
 
+    # On remplace ["FRANCE", "France", "France entière"] par NaN
     df_lieu.loc[df_lieu.lieu_cas == "cas_5", "libelle"] = np.nan
 
     # Vérification qu'il n'y a pas d'autres cas que les cas 1, 2, 3, 4 et 5.

@@ -67,7 +67,12 @@ Dans ce cas, on supprimera les offres en DOM-TOM et en Corse avec la regex `^(\d
 
 ### Ajout des attributs "nom_ville", "nom_commune", "code_departement", "nom_departement", "code_region", "nom_region"
 
-Pour ce qui suit, on a dû générer le fichier "code_name__city_department_region" pour pouvoir récupérer selon les cas décrits ci-après les attributs "nom_ville", "nom_commune", "code_departement", "nom_departement", "code_region", "nom_region" (todo: écrire le .py + préciser le nom du script).
+Le fichier "step_1__location_cases.xlsx" résume ce qui suit, en voici un screenshot :
+
+![screenshot des cas avec les attributs de localisation](screenshots/location_attributes_cases.png)
+
+
+On a dû générer le fichier "code_name__city_department_region" pour pouvoir récupérer selon les cas décrits ci-après les attributs "nom_ville", "nom_commune", "code_departement", "nom_departement", "code_region", "nom_region" (todo: écrire le .py + préciser le nom du script).
 
 "code_name__city_department_region" a été généré à partir de 4 fichiers :
 
