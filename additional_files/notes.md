@@ -15,7 +15,7 @@ et le fichier suivant du lien 3 (https://www.data.gouv.fr/fr/datasets/villes-de-
 
   - "cities.csv"
 
-permettent la génération du fichier "codes__city_department_region.csv" qui donne le mapping entre :
+permettent la génération du fichier "code_name__city_department_region" qui donne le mapping entre :
 
   - code_insee
   - nom_commune

@@ -67,9 +67,9 @@ Dans ce cas, on supprimera les offres en DOM-TOM et en Corse avec la regex `^(\d
 
 ### Ajout des attributs "nom_ville", "nom_commune", "code_departement", "nom_departement", "code_region", "nom_region"
 
-Pour ce qui suit, on a dû générer le fichier "codes__city_department_region.csv" pour pouvoir récupérer selon les cas décrits ci-après les attributs "nom_ville", "nom_commune", "code_departement", "nom_departement", "code_region", "nom_region" (todo: écrire le .py + préciser le nom du script).
+Pour ce qui suit, on a dû générer le fichier "code_name__city_department_region" pour pouvoir récupérer selon les cas décrits ci-après les attributs "nom_ville", "nom_commune", "code_departement", "nom_departement", "code_region", "nom_region" (todo: écrire le .py + préciser le nom du script).
 
-"codes__city_department_region.csv" a été généré à partir de 4 fichiers :
+"code_name__city_department_region" a été généré à partir de 4 fichiers :
 
   - "v_commune_2024.csv" (https://www.insee.fr/fr/information/7766585)
   - "v_departement_2024.csv" (https://www.insee.fr/fr/information/7766585)
@@ -152,7 +152,7 @@ A partir du code postal, on ajoute la ville, le département et la région.
 A noter que geopy retourne un code postal, mais que ce code postal peut être associé à plusieurs villes. Par conséquent, si une offre renseigne le code postal 78310, elle peut être soit à Coignières soit à Maurepas, qui partagent le même code postal, ce qu'on ne peut pas deviner. Mais ce n'est pas essentiel, étant donné qu'en général plusieurs villes qui ont le même code postal sont relativement proches, voire voisines.
 
 
-Parfois le code postal retourné par geopy n'est pas présent dans le fichier "codes__city_department_region.csv" (et donc non présent dans https://www.data.gouv.fr/fr/datasets/villes-de-france/).
+Parfois le code postal retourné par geopy n'est pas présent dans le fichier "code_name__city_department_region" (et donc non présent dans https://www.data.gouv.fr/fr/datasets/villes-de-france/).
 
 
 Par exemple, sur le json archivé, c'est le cas pour 4 offres où geopy renvoit les codes postaux "34009", "06205", "57045", "13030".
@@ -171,7 +171,7 @@ Dans ce cas, on ne peut pas retrouver la ville, mais on peut retrouver le dépar
 
 ##### Ajout des attributs de localisation
 
-Dans ce cas, on a par exemple "libelle = 75 - Paris (Dept.)", donc on va extraire le code du département dans la colonne "code_departement", et récupérer "nom_departement", "code_region" et "nom_region" à partir du fichier "codes__city_department_region.csv".
+Dans ce cas, on a par exemple "libelle = 75 - Paris (Dept.)", donc on va extraire le code du département dans la colonne "code_departement", et récupérer "nom_departement", "code_region" et "nom_region" à partir du fichier "code_name__city_department_region".
 
 
 
@@ -186,7 +186,7 @@ A noter que le nom de la région n'est pas toujours homogène, par exemple, on p
 
 ##### Ajout des attributs de localisation
 
-Dans ce cas, on écrira "code_region" et "nom_region" à partir du fichier "codes__city_department_region.csv".
+Dans ce cas, on écrira "code_region" et "nom_region" à partir du fichier "code_name__city_department_region".
 
 
 #### Cas_5 : "code_postal = code_insee = latitude = longitude = NAN", et "libelle = ("FRANCE"|"France"|"France entière")"
