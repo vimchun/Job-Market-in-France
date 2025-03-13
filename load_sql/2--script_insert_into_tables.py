@@ -22,18 +22,18 @@ fill_table_Langue, fill_table_Offre_Langue = 0, 0
 fill_table_PermisConduire, fill_table_Offre_PermisConduire = 0, 0
 
 # Pour print qu'on écrit dans les tables associées qu'une seule fois
-print_write_to_table_OffreEmploi = True
-print_write_to_table_Contrat = True
-print_write_to_table_Entreprise = True
-print_write_to_table_Localisation = True
-print_write_to_table_DescriptionOffre = True
-print_write_to_table_Competence = True
-print_write_to_table_Formation = True
-print_write_to_table_Experience = True
-print_write_to_table_QualiteProfessionnelle = True
-print_write_to_table_Qualification = True
-print_write_to_table_Langue = True
-print_write_to_table_PermisConduire = True
+print_write_to_table_OffreEmploi = 1
+print_write_to_table_Contrat = 1
+print_write_to_table_Entreprise = 1
+print_write_to_table_Localisation = 1
+print_write_to_table_DescriptionOffre = 1
+print_write_to_table_Competence = 1
+print_write_to_table_Formation = 1
+print_write_to_table_Experience = 1
+print_write_to_table_QualiteProfessionnelle = 1
+print_write_to_table_Qualification = 1
+print_write_to_table_Langue = 1
+print_write_to_table_PermisConduire = 1
 
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
@@ -43,14 +43,12 @@ with open(
     os.path.join(
         current_directory,
         "..",
-        "..",
         "api_extract__transform",
-        "France_Travail",
         "outputs",
-        "_archives",
-        "2025-01-13-exemples-jsons-et-json-merged",  # fichier avec 14k offres
+        "offres",
+        "1--generated_json_files",
+        "2025-03-12--21h13__2__with_location_attributes.json",
         # "404278_Data_Engineer__5_offres.json",
-        "_offres_merged.json",
     ),
     "r",
 ) as file:
@@ -273,29 +271,59 @@ for offre in offres_data:
     if fill_table_Localisation:
         if print_write_to_table_Localisation:
             print("Écriture de la table Localisation")
-            print_write_to_table_Localisation = False
+            print_write_to_table_Localisation = 0
 
-        description_lieu = offre.get("lieuTravail").get("libelle")
-        code_commune = offre.get("lieuTravail").get("commune")
-        code_postal = offre.get("lieuTravail").get("codePostal")
-        latitude = offre.get("lieuTravail").get("latitude")
-        longitude = offre.get("lieuTravail").get("longitude")
+        code_insee = offre.get("code_insee")
+        nom_commune = offre.get("nom_commune")
+        code_postal = offre.get("code_postal")
+        nom_ville = offre.get("nom_ville")
+        code_departement = offre.get("code_departement")
+        nom_departement = offre.get("nom_departement")
+        code_region = offre.get("code_region")
+        nom_region = offre.get("nom_region")
 
         # print pour investigation si besoin
-        print(offre_id, description_lieu, code_commune, code_postal, latitude, longitude, sep="\n-> ")
+        # print(offre_id, code_insee, nom_commune, code_postal, nom_ville, code_departement, nom_departement, code_region, nom_region, sep="\n-> ")
 
         fill_db(
             db_name="Localisation",
             attributes_tuple=(
                 "offre_id",
-                "description_lieu",
-                "code_commune",
+                "code_insee",
+                "nom_commune",
                 "code_postal",
-                "latitude",
-                "longitude",
+                "nom_ville",
+                "code_departement",
+                "nom_departement",
+                "code_region",
+                "nom_region",
             ),
             on_conflict_string=("offre_id"),
         )
+
+        # ================
+
+        # description_lieu = offre.get("lieuTravail").get("libelle")
+        # code_commune = offre.get("lieuTravail").get("commune")
+        # code_postal = offre.get("lieuTravail").get("codePostal")
+        # latitude = offre.get("lieuTravail").get("latitude")
+        # longitude = offre.get("lieuTravail").get("longitude")
+
+        # # print pour investigation si besoin
+        # print(offre_id, description_lieu, code_commune, code_postal, latitude, longitude, sep="\n-> ")
+
+        # fill_db(
+        #     db_name="Localisation",
+        #     attributes_tuple=(
+        #         "offre_id",
+        #         "description_lieu",
+        #         "code_commune",
+        #         "code_postal",
+        #         "latitude",
+        #         "longitude",
+        #     ),
+        #     on_conflict_string=("offre_id"),
+        # )
 
     #### table "DescriptionOffre"
     if fill_table_DescriptionOffre:
