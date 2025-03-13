@@ -42,13 +42,13 @@ CREATE TABLE Entreprise (
 CREATE TABLE Localisation (
     offre_id VARCHAR(7) NOT NULL PRIMARY KEY
     , code_insee VARCHAR(5)
-    , nom_commune VARCHAR(100)
+    , nom_commune VARCHAR(200)
     , code_postal VARCHAR(5)
-    , nom_ville VARCHAR(100)
-    , code_departement VARCHAR(5)
-    , nom_departement VARCHAR(100)
-    , code_region VARCHAR(5)
-    , nom_region VARCHAR(100)
+    , nom_ville VARCHAR(200)
+    , code_departement VARCHAR(3)
+    , nom_departement VARCHAR(200)
+    , code_region VARCHAR(2)
+    , nom_region VARCHAR(200)
 );
 
 CREATE TABLE DescriptionOffre (
