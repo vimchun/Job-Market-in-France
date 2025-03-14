@@ -6,10 +6,10 @@ FROM
     -- OffreEmploi
     -- Contrat
     -- Entreprise
-    Localisation
+    -- Localisation
     -- where description_lieu = 'France'
     -- DescriptionOffre
-    -- Competence
+    Competence
     -- where competence_libelle = 'Exploitation tramway et sécurité ferroviaire'
     -- Offre_Competence
     -- where competence_code = 'null'
