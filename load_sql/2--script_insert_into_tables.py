@@ -4,41 +4,34 @@ import os
 import psycopg2
 
 """
-Notes : met environ 15 minutes pour remplir toutes les tables, pour ~14k offres et ~60 attributs
+Notes : met environ 11 minutes pour remplir toutes les tables, pour ~14k offres et ~60 attributs
 """
 
 
 # Booléens pour remplir ou pas les tables associées
 fill_table_OffreEmploi = 1
-fill_table_Contrat = 0
-fill_table_Entreprise = 0
-fill_table_Localisation = 0
-fill_table_DescriptionOffre = 0
-fill_table_Competence, fill_table_Offre_Competence = 0, 0
+fill_table_Contrat = 1
+fill_table_Entreprise = 1
+fill_table_Localisation = 1
+fill_table_DescriptionOffre = 1
+fill_table_Competence, fill_table_Offre_Competence = 1, 1
 fill_table_Experience, fill_table_Offre_Experience = 1, 1
-fill_table_Formation, fill_table_Offre_Formation = 0, 0
-fill_table_QualiteProfessionnelle, fill_table_Offre_QualiteProfessionnelle = 0, 0
-fill_table_Qualification, fill_table_Offre_Qualification = 0, 0
-fill_table_Langue, fill_table_Offre_Langue = 0, 0
-fill_table_PermisConduire, fill_table_Offre_PermisConduire = 0, 0
+fill_table_Formation, fill_table_Offre_Formation = 1, 1
+fill_table_QualiteProfessionnelle, fill_table_Offre_QualiteProfessionnelle = 1, 1
+fill_table_Qualification, fill_table_Offre_Qualification = 1, 1
+fill_table_Langue, fill_table_Offre_Langue = 1, 1
+fill_table_PermisConduire, fill_table_Offre_PermisConduire = 1, 1
 
 # Pour print qu'on écrit dans les tables associées qu'une seule fois
-print_write_to_table_OffreEmploi = 1
-print_write_to_table_Contrat = 1
-print_write_to_table_Entreprise = 1
-print_write_to_table_Localisation = 1
-print_write_to_table_DescriptionOffre = 1
-print_write_to_table_Competence = 1
-print_write_to_table_Formation = 1
-print_write_to_table_Experience = 1
-print_write_to_table_QualiteProfessionnelle = 1
-print_write_to_table_Qualification = 1
-print_write_to_table_Langue = 1
+print_write_to_table_OffreEmploi = print_write_to_table_Contrat = print_write_to_table_Entreprise = print_write_to_table_Localisation = 1
+print_write_to_table_DescriptionOffre = print_write_to_table_Competence = print_write_to_table_Formation = print_write_to_table_Experience = 1
+print_write_to_table_QualiteProfessionnelle = print_write_to_table_Qualification = print_write_to_table_Langue = 1
 print_write_to_table_PermisConduire = 1
 
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 
+sql_safe_null = "Ceci est un string qui figure nulle part dans le json pour pouvoir écrire les NULL sans doublon"  # ne peut pas être "-" car cette valeur peut exister
 
 with open(
     os.path.join(
@@ -48,8 +41,8 @@ with open(
         "outputs",
         "offres",
         "1--generated_json_files",
-        "2025-03-12--21h13__2__with_location_attributes.json",
-        # "2025-03-12--21h13__2__with_location_attributes____only_10_offres.json",
+        # "2025-03-12--21h13__2__with_location_attributes.json",
+        "2025-03-12--21h13__2__with_location_attributes____only_10_offres.json",
     ),
     "r",
 ) as file:
@@ -139,7 +132,7 @@ for offre in offres_data:
            "formation_code"            = 31026
            "formation_domaine_libelle" = "data science"
            "formation_niveau_libelle"  = "Bac+5 et plus ou équivalents"
-           "formation_commentaire"     = "-"  # précédemment null
+           "formation_commentaire"     = value_not_existing_in_json  # précédemment null
            "formation_code_exigence"   = "S"
 
            => ainsi, si une autre offre a de nouveau exactement ces mêmes valeurs, alors cette nouvelle offre ne sera pas écrite en base, grâce à la contrainte d'unicité.
@@ -213,9 +206,7 @@ for offre in offres_data:
         fill_db(
             db_name="Contrat",
             attributes_tuple=(
-                "offre_id",
-                "type_contrat", "type_contrat_libelle",
-                "duree_travail_libelle", "duree_travail_libelle_converti",
+                "offre_id", "type_contrat", "type_contrat_libelle", "duree_travail_libelle", "duree_travail_libelle_converti",
                 "salaire_commentaire", "salaire_libelle", "salaire_complement_1", "salaire_complement_2",
                 "nature_contrat", "alternance", "deplacement_code", "deplacement_libelle", "temps_travail", "condition_specifique",
             ),
@@ -309,8 +300,8 @@ for offre in offres_data:
                 # /!\  (sinon risque d'écriture de doublon car "NULL != NULL selon la logique SQL")
                 # /!\ à la suite de la boucle, on remplacera ces nouvelles valeurs par les "null"
                 competence_code = competences[i].get("code", 0)
-                competence_libelle = competences[i].get("libelle", "-")
-                competence_code_exigence = competences[i].get("exigence", "-")
+                competence_libelle = competences[i].get("libelle", sql_safe_null)
+                competence_code_exigence = competences[i].get("exigence", sql_safe_null)
 
                 # print pour investigation si besoin :
                 # print(offre_id, competences, competence_code, competence_libelle, competence_code_exigence, sep="\n-> ", end="\n\n")
@@ -328,14 +319,14 @@ for offre in offres_data:
             print("Écriture de la table Experience")
             print_write_to_table_Experience = 0
 
-        experience_libelle = offre.get("experienceLibelle") or "-"
-        experience_code_exigence = offre.get("experienceExige") or "-"
-        experience_commentaire = offre.get("experienceCommentaire") or "-"  # parfois experience_commentaire existe bien et a la "null" dans le json
+        experience_libelle = offre.get("experienceLibelle") or sql_safe_null
+        experience_code_exigence = offre.get("experienceExige") or sql_safe_null
+        experience_commentaire = offre.get("experienceCommentaire") or sql_safe_null  # parfois experience_commentaire existe bien et a la valeur "null" dans le json
 
         # print pour investigation si besoin :
         # print(offre_id, experience_libelle, experience_code_exigence, experience_commentaire, sep="\n-> ", end="\n\n")
 
-        if experience_libelle != "-" or experience_code_exigence != "-" or experience_commentaire != "-":
+        if any([i != sql_safe_null for i in [experience_libelle, experience_code_exigence, experience_commentaire]]):
             fill_db(
                 db_name="Experience",
                 attributes_tuple=("experience_libelle", "experience_code_exigence", "experience_commentaire"),
@@ -354,10 +345,10 @@ for offre in offres_data:
         if formations:
             for i in range(len(formations)):
                 formation_code = formations[i].get("codeFormation", 0)
-                formation_domaine_libelle = formations[i].get("domaineLibelle", "-")
-                formation_niveau_libelle = formations[i].get("niveauLibelle", "-")
-                formation_commentaire = formations[i].get("commentaire", "-")
-                formation_code_exigence = formations[i].get("exigence", "-")
+                formation_domaine_libelle = formations[i].get("domaineLibelle", sql_safe_null)
+                formation_niveau_libelle = formations[i].get("niveauLibelle", sql_safe_null)
+                formation_commentaire = formations[i].get("commentaire", sql_safe_null)
+                formation_code_exigence = formations[i].get("exigence", sql_safe_null)
 
                 # print pour investigation si besoin :
                 # print(offre_id, formations[i], formation_code, formation_domaine_libelle, formation_niveau_libelle, formation_commentaire, formation_code_exigence, sep="\n-> ", end="\n\n")
@@ -470,7 +461,8 @@ for offre in offres_data:
 
 if 1:
     """
-    Ici, on réécrit les tables où on a dû écrire en base les valeurs différentes de "null" pour éviter d'écrire des doublons (comme par exemple "-").
+    Ici, on réécrit les tables où on a dû écrire en base les valeurs différentes de "null" pour éviter d'écrire des doublons.
+    (avec la variable "value_not_existing_in_json")
     """
 
     #### table "Competence"
@@ -478,16 +470,16 @@ if 1:
     if fill_table_Competence:
         print("Mise à jour de la table Competence (on remet les NULL)")
 
-        update_query = """
+        update_query = f"""
             UPDATE Competence
             SET
                 competence_code = NULLIF(competence_code, 0),
-                competence_libelle = NULLIF(competence_libelle, '-'),
-                competence_code_exigence = NULLIF(competence_code_exigence, '-')
+                competence_libelle = NULLIF(competence_libelle, '{sql_safe_null}'),
+                competence_code_exigence = NULLIF(competence_code_exigence, '{sql_safe_null}')
             WHERE
                 competence_code = 0 OR
-                competence_libelle = '-' OR
-                competence_code_exigence = '-'
+                competence_libelle = '{sql_safe_null}' OR
+                competence_code_exigence = '{sql_safe_null}'
         """
         cursor.execute(update_query)
         conn.commit()
@@ -497,17 +489,18 @@ if 1:
     if fill_table_Experience:
         print("Mise à jour de la table Experience (on remet les NULL)")
 
-        update_query = """
+        update_query = f"""
             UPDATE Experience
             SET
-                experience_libelle = NULLIF(experience_libelle, '-'),
-                experience_code_exigence = NULLIF(experience_code_exigence, '-'),
-                experience_commentaire = NULLIF(experience_commentaire, '-')
+                experience_libelle = NULLIF(experience_libelle, '{sql_safe_null}'),
+                experience_code_exigence = NULLIF(experience_code_exigence, '{sql_safe_null}'),
+                experience_commentaire = NULLIF(experience_commentaire, '{sql_safe_null}')
             WHERE
-                experience_libelle = '-' OR
-                experience_code_exigence = '-' OR
-                experience_commentaire = '-'
+                experience_libelle = '{sql_safe_null}' OR
+                experience_code_exigence = '{sql_safe_null}' OR
+                experience_commentaire = '{sql_safe_null}'
         """
+
         cursor.execute(update_query)
         conn.commit()
 
@@ -516,21 +509,22 @@ if 1:
     if fill_table_Formation:
         print("Mise à jour de la table Formation (on remet les NULL)")
 
-        update_query = """
+        update_query = f"""
             UPDATE Formation
             SET
                 formation_code = NULLIF(formation_code, 0),
-                formation_domaine_libelle = NULLIF(formation_domaine_libelle, '-'),
-                formation_niveau_libelle = NULLIF(formation_niveau_libelle, '-'),
-                formation_commentaire = NULLIF(formation_commentaire, '-'),
-                formation_code_exigence = NULLIF(formation_code_exigence, '-')
+                formation_domaine_libelle = NULLIF(formation_domaine_libelle, '{sql_safe_null}'),
+                formation_niveau_libelle = NULLIF(formation_niveau_libelle, '{sql_safe_null}'),
+                formation_commentaire = NULLIF(formation_commentaire, '{sql_safe_null}'),
+                formation_code_exigence = NULLIF(formation_code_exigence, '{sql_safe_null}')
             WHERE
                 formation_code = 0 OR
-                formation_domaine_libelle = '-' OR
-                formation_niveau_libelle = '-' OR
-                formation_commentaire = '-' OR
-                formation_code_exigence = '-'
+                formation_domaine_libelle = '{sql_safe_null}' OR
+                formation_niveau_libelle = '{sql_safe_null}' OR
+                formation_commentaire = '{sql_safe_null}' OR
+                formation_code_exigence = '{sql_safe_null}'
         """
+
         cursor.execute(update_query)
         conn.commit()
 
@@ -620,7 +614,7 @@ if 1:
             experience_commentaire = offre.get("experienceCommentaire")
 
             # Récupérer experience_id
-            query = f"""
+            query = """
                 SELECT experience_id
                 FROM Experience
                 WHERE
@@ -630,23 +624,14 @@ if 1:
             """
 
             # print pour investigation si besoin :
-            print(
-                offre_id,
-                experience_libelle,
-                experience_code_exigence,
-                experience_commentaire,
-                sep="\n-> ",
-            )
+            # print(offre_id, experience_libelle, experience_code_exigence, experience_commentaire, sep="\n-> ")
 
             cursor.execute(query, (experience_libelle, experience_libelle, experience_code_exigence, experience_code_exigence, experience_commentaire, experience_commentaire))
             experience_id = cursor.fetchone()[0]
 
             fill_db(
                 db_name="Offre_Experience",
-                attributes_tuple=(
-                    "offre_id",
-                    "experience_id",
-                ),
+                attributes_tuple=("offre_id", "experience_id"),
                 on_conflict_string="offre_id | experience_id",
             )
 
