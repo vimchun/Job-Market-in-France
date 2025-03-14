@@ -41,11 +41,14 @@ CREATE TABLE Entreprise (
 -- DROP TABLE Localisation;
 CREATE TABLE Localisation (
     offre_id VARCHAR(7) NOT NULL PRIMARY KEY
-    , description_lieu VARCHAR(50)
+    , code_insee VARCHAR(5)
+    , nom_commune VARCHAR(200)
     , code_postal VARCHAR(5)
-    , code_commune VARCHAR(5)
-    , latitude FLOAT
-    , longitude FLOAT
+    , nom_ville VARCHAR(200)
+    , code_departement VARCHAR(3)
+    , nom_departement VARCHAR(200)
+    , code_region VARCHAR(2)
+    , nom_region VARCHAR(200)
 );
 
 CREATE TABLE DescriptionOffre (
