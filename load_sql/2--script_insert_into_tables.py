@@ -682,7 +682,8 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                             formation_id = cursor.fetchone()[0]
 
                             # print pour investigation si besoin :
-                            # print(offre_id, formation_code, formation_domaine_libelle, formation_niveau_libelle, formation_commentaire, formation_code_exigence, formation_id, sep="\n-> ", end="\n\n")
+                            # print(offre_id, formation_code, formation_domaine_libelle, formation_niveau_libelle,
+                            #     formation_commentaire, formation_code_exigence, formation_id, sep="\n-> ", end="\n\n")  # fmt: off
 
                             fill_db(
                                 db_name="Offre_Formation",
