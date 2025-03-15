@@ -1,0 +1,2 @@
+Ce projet temporaire a été utilisé pour vérifier la base de données avec le script python avec psycopg2 (et aussi pour tester des choses avec Power BI).
+Ce dossier n'est pas utile au projet, mais on le gardera en archive pour toute fin utile.
