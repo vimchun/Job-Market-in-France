@@ -6,10 +6,12 @@ FROM
     -- OffreEmploi
     -- Contrat
     -- Entreprise
-    -- Localisation
+    Localisation
     -- where description_lieu = 'France'
     -- DescriptionOffre
-    Competence
+    WHERE offre_id = '2083056'
+    -- WHERE offre_id = '2757953'
+    -- Competence
     -- where competence_libelle = 'Exploitation tramway et sécurité ferroviaire'
     -- Offre_Competence
     -- where competence_code = 'null'
@@ -32,6 +34,7 @@ FROM
     -- Offre_PermisConduire
 
     -- ORDER BY competence_libelle
+    -- ORDER BY condition_specifique
     -- ORDER BY competence_code, competence_libelle
     -- where offre_id = '186NWKN'
     -- ORDER BY
