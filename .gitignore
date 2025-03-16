@@ -3,9 +3,9 @@ _notes_perso/
 .venv/
 api_credentials_minh.yml
 api_extract__transform/outputs/*.json
-# api_extract__transform/outputs/offres/*.json
 api_extract__transform/outputs/offres/0--original_json_files_from_api/*.json
 api_extract__transform/outputs/offres/1--generated_json_files/*.json
+power_bi/archives_pbi
 node_modules
 package-lock.json
 package.json

@@ -1,6 +1,6 @@
 Ce document retrace ce qui a été fait depuis Power BI :
 
-# Quelques notes pour comprendre comment créer le projet from scratch :
+# Premières étapes du projet
 
 - cf https://learn.microsoft.com/fr-fr/power-query/connectors/postgresql
 
@@ -51,13 +51,25 @@ Ce document retrace ce qui a été fait depuis Power BI :
   - On procède comme le diagramme UML qu'on a défini (voir "load_sql/UML.drawio")
 
 
+- On masque les colonnes non utilisées.
+
+todo : ajouté une table de date
+
+
 # Transformations sur Power BI
 
 
-## todo : renommer les colonnes façon Power BI
+## Renommage de toutes les colonnes
+
+C'est juste pour Power BI.
+
+On renommera les colonnes avoir des noms plus facile à lire dans les rapports comme :
+
+- "Offre ID" (au lieu de "offre_id")
+- "Durée Travail Libellé" (au lieu de "duree_travail_libelle")
 
 
-## Ajout d'une variable "nom_ville, France"
+## Ajout d'une variable "Nom Ville Modifié"
 
 Dans le "report view" / carte mondiale, on a des villes françaises qui sont situés dans d'autres pays, par exemple :
 
@@ -71,10 +83,10 @@ Dans le "report view" / carte mondiale, on a des villes françaises qui sont sit
     ![Cologne en France](screenshots/Cologne_in_France.png)
 
 
-Comme vu dans le dernier screenshot, pour avoir les villes placées en France, on définit une colonne "nom_ville__France" avec le nom de la ville suffixé avec `, France` (par exemple "Cologne, France").
+Comme vu dans le dernier screenshot, pour avoir les villes placées en France, on définit une colonne "Nom Ville Modifié" avec le nom de la ville suffixé avec `, France` (par exemple "Cologne, France").
 
 
-## Ajout d'une variable "Région de nom_region"
+## Ajout d'une variable "Nom Région Modifié"
 
 Quand on affiche la carte du monde avec les régions de la France, on constate que 2 régions (la Bretagne et l'Occitanie) ne sont pas complètement coloriées comme les autres régions :
 
