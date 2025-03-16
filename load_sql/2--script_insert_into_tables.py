@@ -4,7 +4,7 @@ import os
 import psycopg2
 
 """
-Notes : met environ 11 minutes pour remplir toutes les tables, pour ~14k offres et ~60 attributs
+Notes : met environ 11 minutes pour remplir les 19 tables, pour ~14k offres et ~60 attributs
 """
 
 
@@ -83,10 +83,6 @@ def fill_db(db_name, attributes_tuple, on_conflict_string):
 
     return None
 
-
-# conn = psycopg2.connect(database="francetravail", host="localhost", user="mhh", password="mhh", port=5432)
-
-# cursor = conn.cursor()
 
 with psycopg2.connect(database="francetravail", host="localhost", user="mhh", password="mhh", port=5432) as conn:
     with conn.cursor() as cursor:
@@ -822,6 +818,3 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                                 attributes_tuple=("offre_id", "permis_id"),
                                 on_conflict_string="offre_id | permis_id",
                             )
-
-        # cursor.close()
-        # conn.close()
