@@ -53,7 +53,11 @@ Ce document retrace ce qui a été fait depuis Power BI :
 
 # Transformations sur Power BI
 
-## Avoir une variable "nom_ville, France"
+
+## todo : renommer les colonnes façon Power BI
+
+
+## Ajout d'une variable "nom_ville, France"
 
 Dans le "report view" / carte mondiale, on a des villes françaises qui sont situés dans d'autres pays, par exemple :
 
@@ -70,4 +74,41 @@ Dans le "report view" / carte mondiale, on a des villes françaises qui sont sit
 Comme vu dans le dernier screenshot, pour avoir les villes placées en France, on définit une colonne "nom_ville__France" avec le nom de la ville suffixé avec `, France` (par exemple "Cologne, France").
 
 
-# pb avec certaines régions non reconnues ?
+## Ajout d'une variable "Région de nom_region"
+
+Quand on affiche la carte du monde avec les régions de la France, on constate que 2 régions (la Bretagne et l'Occitanie) ne sont pas complètement coloriées comme les autres régions :
+
+  - pour la Bretagne :
+
+    ![Bretagne non colorié entièrement](screenshots/region_bretagne_KO.png)
+
+
+  - pour l'Occitanie :
+
+    ![Occitanie non colorié entièrement](screenshots/region_occitanie_KO.png)
+
+
+Changer le "Data category" (à "County" ou "State or Province") résout le problème pour l'Occitanie mais pas la Bretagne.
+
+Le contournement est d'ajouter une colonne, où on préfixera le nom de la région de `Région d('|de|du|des)` en fonction des régions, par exemple :
+
+  - "Région d'Île-de-France"
+  - "Région de Normandie"
+  - "Région des Hauts-de-France"
+  - "Région du Grand Est"
+
+A noter qu'il y a une exception pour "Région Bourgogne-Franche-Comté" (pas de `de`).
+
+Cela résout bien le problème de colorisation :
+
+
+  - pour la Bretagne :
+
+    ![Bretagne colorié entièrement](screenshots/region_bretagne_OK.png)
+
+
+  - pour l'Occitanie :
+
+    ![Occitanie colorié entièrement](screenshots/region_occitanie_OK.png)
+
+
