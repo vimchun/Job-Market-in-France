@@ -205,12 +205,7 @@ def create_csv__code_name__city_department_region():
 
     df_commune = pd.read_csv(
         os.path.join(files_directory, "lien_2", file_commune),
-        usecols=[
-            "COM",
-            "REG",
-            "DEP",
-            "LIBELLE",
-        ],
+        usecols=["COM", "REG", "DEP", "LIBELLE"],
     )
 
     df_commune.rename(
@@ -324,21 +319,10 @@ def create_csv__code_name__city_department_region():
             current_directory,
             "..",
             "additional_files",
-            # "code_name__city_department_region",
             "code_name__city_department_region.csv",
         ),
         index=False,  # pour ne pas écrire les index
     )
-
-    # pd.read_csv(
-    #     os.path.join(
-    #         current_directory,
-    #         "..",
-    #         "additional_files",
-    #         "code_name__city_department_region",
-    #     ),
-    #     dtype=str,
-    # )
 
 
 def get_offres(token, code_appellation_libelle, filter_params):
@@ -394,13 +378,9 @@ def get_offres(token, code_appellation_libelle, filter_params):
             max_offres = int(content_range.split("/")[-1])
 
         if filter_params["appellation"] in codes_list:
-            # output_file = os.path.join(current_directory, "outputs", "offres", f"{appellation}_{libelle}__{max_offres}_offres.json")
-            # output_file = os.path.join(current_directory, "outputs", "offres", f"{appellation}_{libelle}.json")
             output_file = os.path.join(current_directory, "outputs", "offres", "original_json_files_from_api", f"{appellation}_{libelle}.json")
 
         else:
-            # output_file = os.path.join(current_directory, "outputs", "offres", f"{appellation}__{max_offres}_offres.json")
-            # output_file = os.path.join(current_directory, "outputs", "offres", f"{appellation}.json")
             output_file = os.path.join(current_directory, "outputs", "offres", "original_json_files_from_api", f"{appellation}.json")
 
         if os.path.exists(output_file):
@@ -724,14 +704,6 @@ def add_location_attributes(json_files_directory, json_filename):
         },
         axis=1,
     )
-    # df_lieu.rename(
-    #     {
-    #         "codePostal": "code_postal",
-    #         "commune": "code_insee",
-    #     },
-    #     axis=1,
-    #     inplace=True,
-    # )
 
     #### Cas_1 : "code_insee" renseigné
     # =================================
@@ -1026,12 +998,7 @@ def add_location_attributes(json_files_directory, json_filename):
 
     # On supprime "intitule" car il est déjà dans le Dataframe "df", et "libelle"/"latitude"/"longitude" qui ne nous intéressent plus
     df_lieu = df_lieu.drop(
-        [
-            "intitule",
-            "libelle",
-            "latitude",
-            "longitude",
-        ],
+        ["intitule", "libelle", "latitude", "longitude"],
         axis=1,
     )
 
@@ -1053,14 +1020,7 @@ def add_location_attributes(json_files_directory, json_filename):
 
     # On supprime la colonne "lieuTravail" qui ne nous intéresse plus dorénavant, et les attributs de cette colonne
     df = df.drop(
-        [
-            "lieuTravail",
-            "libelle",
-            "latitude",
-            "longitude",
-            "codePostal",
-            "commune",
-        ],
+        ["lieuTravail", "libelle", "latitude", "longitude", "codePostal", "commune"],
         axis=1,
     )
 
