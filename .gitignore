@@ -11,3 +11,8 @@ package-lock.json
 package.json
 
 # fichier > 100MB
+
+# DBT
+logs/
+dbt_project/
+target/
