@@ -9,3 +9,10 @@
 
 
   1. déplacer "additional_files" dans "api_extract__transform"
+
+
+  1. ajouter la date dans power bi (+ 1 attribut : date d'extraction des données)
+
+  1. dictionnaire avec les outils (python, sql, pyspark...)
+
+  1. script bash pour lancer les transformations (dans sql_requests/transformations/)
