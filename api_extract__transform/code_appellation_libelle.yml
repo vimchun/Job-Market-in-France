@@ -1,198 +1,126 @@
 code_appellation_libelle: # "libelle" associé au code en commentaire (spécifique à l'API France Travail)
-  #### métiers DE/DA/DS
-  - code: '404278'
-    libelle: 'Data_Engineer'
-  - code: '404284'
-    libelle: 'Ingenieur_Donnees'
-  - code: '38971'
-    libelle: 'Data_Analyst'
-  - code: '38972'
-    libelle: 'Data_Scientist'
-  - code: '404274'
-    libelle: 'Ingenieur_Data_Scientist'
-  #### autres métiers de la data
-  - code: '38970'
-    libelle: 'Data_Miner'
-  - code: '38975'
-    libelle: 'Data_Manager'
-  - code: '38977'
-    libelle: 'Developpeur_Big_Data'
-  - code: '38095'
-    libelle: 'Analyste_Decisionnel_Business_Intelligence'
-  - code: '404276'
-    libelle: 'Architecte_Big_Data'
-  - code: '404277'
-    libelle: 'Big_Data_Engineer'
-  - code: '404279'
-    libelle: 'Docteur_Big_Data'
-  - code: '404280'
-    libelle: 'Expert_Big_Data'
-  - code: '404281'
-    libelle: 'Expert_Technique_Big_Data'
-  - code: '404282'
-    libelle: 'Ingenieur_Big_Data'
-  - code: '404283'
-    libelle: 'Ingenieur_Dataviz'
-  - code: '404285'
-    libelle: 'Ingenieur_En_Developpement_Big_Data'
-  - code: '404286'
-    libelle: 'Responsable_Architecture_Conception_Data'
-  - code: '404287'
-    libelle: 'Responsable_Big_Data'
-  - code: '404288'
-    libelle: 'Developpeur_Data'
-  - code: '404291'
-    libelle: 'Data_Protection_Officer'
-  - code: '404939'
-    libelle: 'Biostatisticien_Data_Manager'
-  - code: '405222'
-    libelle: 'Data_Analyst_De_La_Performance'
-  - code: '489091'
-    libelle: 'Database_Administrator'
-  - code: '404275'
-    libelle: 'Analyste_Qualite_Des_Donnees'
-  - code: '404289'
-    libelle: 'Analyste_Scientifique_Des_Donnees'
-  - code: '404271'
-    libelle: 'Expert_En_Sciences_Des_Donnees'
-  - code: '404273'
-    libelle: 'Explorateur_De_Donnees'
-  - code: '38661'
-    libelle: 'Développeur_Decisionnel_BI'
-  #### élargissement avec d'autres métiers de la tech
-  - code: '10944'
-    libelle: 'Analyste_Developpeur'
-  - code: '14148'
-    libelle: 'Developpeur_Application'
-  - code: '14153'
-    libelle: 'Developpeur_Informatique'
-  - code: '14155'
-    libelle: 'Developpeur_Multimedia'
-  - code: '14156'
-    libelle: 'Developpeur_Web'
-  - code: '489255'
-    libelle: 'Developpeur_Logiciel_Ou_Application'
-  - code: '200151'
-    libelle: 'Developpeur_Back_End'
-  - code: '140953'
-    libelle: 'Developpeur_Logiciel_Realite_Augmentee'
-  - code: '38976'
-    libelle: 'Developpeur_FullStack'
-  - code: '200150'
-    libelle: 'Developpeur_Front_End'
-  - code: '20728'
-    libelle: 'Webmaster_Developpeur'
-  - code: '38717'
-    libelle: 'Developpeur_Jeux_Video'
-  - code: '38745'
-    libelle: 'Developpeur_Web_Mobile'
-  - code: '10315'
-    libelle: 'Administrateur_SI'
-  - code: '14943'
-    libelle: 'Expert_Securite_Systemes_Exploitation'
-  - code: '14959'
-    libelle: 'Expert_Securite_Informatique'
-  - code: '15885'
-    libelle: 'Ingenieur_Securite_Informatique'
-  - code: '19178'
-    libelle: 'Responsable_Securite_SI'
-  - code: '19180'
-    libelle: 'Responsable_Securite_Informatique'
-  - code: '489121'
-    libelle: 'Expert_Securite_Informatique'
-  - code: '489123'
-    libelle: 'Ingenieur_Cybersecurite_Datacenter'
-  - code: '38834'
-    libelle: 'Expert_Cybersecurite'
-  - code: '404297'
-    libelle: 'Responsable_Securite_Informatique'
-  - code: '38913'
-    libelle: 'Expert_Tests_Intrusion_Securite_SI'
-  - code: '38916'
-    libelle: 'Developpeur_Securite_SI'
-  - code: '489998'
-    libelle: 'Expert_Securite_IT'
-  - code: '38833'
-    libelle: 'Ingenieur_Securite_Web'
-  - code: '38910'
-    libelle: 'Architecte_Securite_SI'
-  - code: '38912'
-    libelle: 'Expert_Securite_SI'
-  - code: '38915'
-    libelle: 'Analyste_Cybersecurite'
-  - code: '488824'
-    libelle: 'Devops'
-  - code: '488822'
-    libelle: 'Ingenieur_DevOps'
-# mhh : la suite ne sera normalement pas utilisé, je la laisse en commentaire provisoirement au cas où
-
-# filtre_offres_DE:
-#   - a_inclure:
-#       - (Ing|Eng) (Data|Donnée)
-#       # le code récupérera par exemple :
-#       #  - "Ingénieur Data", "Ingenieur(e) Data", "Ingenieur / Ingénieure Data", "Data Ingénieur(e)"...
-#       #  - "Ingénieur Donnée", "Ingenieur De Données", "Ingenieur - Ingenieure Donnée"...
-#       #  - "Data Engineer", "Data Ingénieur"...
-#       - Big\s?Data # le code récupérera "BigData" et "Big Data"
-#       - Data Pipeline # le code récupérera "Data xxx Pipeline" ou "Pipeline xxx Data"
-#       - Data Expert # le code récupérera "Data xxx Expert" ou "Expert xxx Data"
-
-#   - a_exclure: # chaque clé ne doit avoir qu'un mot (restriction liée à l'API d'Adzuna)
-#       - Visuali(s|z)ation # exclut "Data Visualisation" et "Data Visualization"
-#       - Viz # exclut "Data Viz"
-#       - Scientist # exclut "Ingénieur Data Scientist"
-#       - Center # exclut "Ingénieur Data Center"
-#       - Développeur # exclut "Développeur Big Data"
-#       - Architect # exclut "Architecte Data"
-#       - Base # exclut "Ingénieur Base de Données"
-#       - Réseau # exclut "Ingénieur Système, réseaux, données"
-#       - Observabilité # exclut "Ingénieur Observabilité (Dynatrace/Datadog)"
-#       - Logiciel # exclut "Ingénieur Logiciel"
-#       - Analyst # exclut "Data Analyst"
-#       - Analytics # exclut "Data Analytics"
-#       - Chef # exclut "Chef De Projet Data Engineer"
-#       - Manager
-#       - Responsable
-#       - Directeur
-#       - Formation
-#       - Certification
-
-# filtre_offres_DA:
-#   - a_inclure:
-#       - Analyste Décisionnel
-#       - Data Analyst # le code récupérera par exemple : "Data-Analyst", "Analyste Data", "Analystes Data"...
-#       - Analys Donnée # le code récupérera par exemple : "Analyse De Données", "Analyste De Données"...
-#       - Data Vi(s|z) # le code récupérera par exemple : "DataViz", "DataVis", "Data Visualisation", "Data Vizualisation", "DataVisualisation"...
-#       - Business Intelligence
-#       - Power BI
-
-#   - a_exclure: # chaque clé ne doit avoir qu'un mot (restriction liée à l'API d'Adzuna)
-#       - Fonctionnel # exclut "Analyste Fonctionnel"
-#       - Développeur # exclut "Analyste Développeur"
-#       - Programmeur # exclut "Analyste Programmeur"
-#       - SOC # exclut "Analyste SOC"
-#       - Trésorerie # exclut "Analyste trésorerie"
-#       - Cybersécurité # exclut "Analyste cybersécurité"
-#       - Advisory # exclut Data Advisory
-#       - Informaticien
-#       - Chef
-#       - Manager
-#       - Responsable
-#       - Directeur
-#       - Formation
-#       - Certification
-
-# filtre_offres_DS:
-#   - a_inclure:
-#       - Data Scientist # le code récupérera par exemple : "Data-Scientist", "Datascientist"
-#       - Data Science # le code récupérera par exemple : "Data-Science"
-#       - Scientifique Donnée # le code récupérera par exemple : "Scientifique des données"
-
-#   - a_exclure: # chaque clé ne doit avoir qu'un mot (restriction liée à l'API d'Adzuna)
-#       - Analyst
-#       - Chef
-#       - Manager
-#       - Responsable
-#       - Directeur
-#       - Formation
-#       - Certification
+    #### métiers DE/DA/DS
+    - code: '404278'
+      libelle: 'Data_Engineer'
+    - code: '404284'
+      libelle: 'Ingenieur_Donnees'
+    - code: '38971'
+      libelle: 'Data_Analyst'
+    - code: '38972'
+      libelle: 'Data_Scientist'
+    - code: '404274'
+      libelle: 'Ingenieur_Data_Scientist'
+    #### autres métiers de la data
+    - code: '38970'
+      libelle: 'Data_Miner'
+    - code: '38975'
+      libelle: 'Data_Manager'
+    - code: '38977'
+      libelle: 'Developpeur_Big_Data'
+    - code: '38095'
+      libelle: 'Analyste_Decisionnel_Business_Intelligence'
+    - code: '404276'
+      libelle: 'Architecte_Big_Data'
+    - code: '404277'
+      libelle: 'Big_Data_Engineer'
+    - code: '404279'
+      libelle: 'Docteur_Big_Data'
+    - code: '404280'
+      libelle: 'Expert_Big_Data'
+    - code: '404281'
+      libelle: 'Expert_Technique_Big_Data'
+    - code: '404282'
+      libelle: 'Ingenieur_Big_Data'
+    - code: '404283'
+      libelle: 'Ingenieur_Dataviz'
+    - code: '404285'
+      libelle: 'Ingenieur_En_Developpement_Big_Data'
+    - code: '404286'
+      libelle: 'Responsable_Architecture_Conception_Data'
+    - code: '404287'
+      libelle: 'Responsable_Big_Data'
+    - code: '404288'
+      libelle: 'Developpeur_Data'
+    - code: '404291'
+      libelle: 'Data_Protection_Officer'
+    - code: '404939'
+      libelle: 'Biostatisticien_Data_Manager'
+    - code: '405222'
+      libelle: 'Data_Analyst_De_La_Performance'
+    - code: '489091'
+      libelle: 'Database_Administrator'
+    - code: '404275'
+      libelle: 'Analyste_Qualite_Des_Donnees'
+    - code: '404289'
+      libelle: 'Analyste_Scientifique_Des_Donnees'
+    - code: '404271'
+      libelle: 'Expert_En_Sciences_Des_Donnees'
+    - code: '404273'
+      libelle: 'Explorateur_De_Donnees'
+    - code: '38661'
+      libelle: 'Développeur_Decisionnel_BI'
+    #### élargissement avec d'autres métiers de la tech
+    - code: '10944'
+      libelle: 'Analyste_Developpeur'
+    - code: '14148'
+      libelle: 'Developpeur_Application'
+    - code: '14153'
+      libelle: 'Developpeur_Informatique'
+    - code: '14155'
+      libelle: 'Developpeur_Multimedia'
+    - code: '14156'
+      libelle: 'Developpeur_Web'
+    - code: '489255'
+      libelle: 'Developpeur_Logiciel_Ou_Application'
+    - code: '200151'
+      libelle: 'Developpeur_Back_End'
+    - code: '140953'
+      libelle: 'Developpeur_Logiciel_Realite_Augmentee'
+    - code: '38976'
+      libelle: 'Developpeur_FullStack'
+    - code: '200150'
+      libelle: 'Developpeur_Front_End'
+    - code: '20728'
+      libelle: 'Webmaster_Developpeur'
+    - code: '38717'
+      libelle: 'Developpeur_Jeux_Video'
+    - code: '38745'
+      libelle: 'Developpeur_Web_Mobile'
+    - code: '10315'
+      libelle: 'Administrateur_SI'
+    - code: '14943'
+      libelle: 'Expert_Securite_Systemes_Exploitation'
+    - code: '14959'
+      libelle: 'Expert_Securite_Informatique'
+    - code: '15885'
+      libelle: 'Ingenieur_Securite_Informatique'
+    - code: '19178'
+      libelle: 'Responsable_Securite_SI'
+    - code: '19180'
+      libelle: 'Responsable_Securite_Informatique'
+    - code: '489121'
+      libelle: 'Expert_Securite_Informatique'
+    - code: '489123'
+      libelle: 'Ingenieur_Cybersecurite_Datacenter'
+    - code: '38834'
+      libelle: 'Expert_Cybersecurite'
+    - code: '404297'
+      libelle: 'Responsable_Securite_Informatique'
+    - code: '38913'
+      libelle: 'Expert_Tests_Intrusion_Securite_SI'
+    - code: '38916'
+      libelle: 'Developpeur_Securite_SI'
+    - code: '489998'
+      libelle: 'Expert_Securite_IT'
+    - code: '38833'
+      libelle: 'Ingenieur_Securite_Web'
+    - code: '38910'
+      libelle: 'Architecte_Securite_SI'
+    - code: '38912'
+      libelle: 'Expert_Securite_SI'
+    - code: '38915'
+      libelle: 'Analyste_Cybersecurite'
+    - code: '488824'
+      libelle: 'Devops'
+    - code: '488822'
+      libelle: 'Ingenieur_DevOps'
