@@ -17,7 +17,7 @@ WHERE
         OR intitule_offre ILIKE '%eng%') -- engineer
     AND (intitule_offre ILIKE '%data%'
         OR intitule_offre ILIKE '%données%')
-    -- -- exlusion
+    -- exlusion
     AND intitule_offre NOT ILIKE '%visuali%' -- "data visualisation" ou "data visualization"
     AND intitule_offre NOT ILIKE '%viz%' -- "data viz"
     AND intitule_offre NOT ILIKE '%scien%' -- "data scientist" ou "data science"
