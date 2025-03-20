@@ -1,4 +1,3 @@
--- Expériences les plus demandées
 SELECT
     COUNT(e.experience_libelle) AS nombre_occurences
     , e.experience_libelle
@@ -9,8 +8,7 @@ FROM
     JOIN offre_experience oe ON dof.offre_id = oe.offre_id
     JOIN experience e ON oe.experience_id = e.experience_id
 WHERE
-    -- choisir le métier data ici :
-    metier_data = 'DS' -- 'DE', 'DA' or 'DS'
+    metier_data = 'DE' -- choisir entre 'DE', 'DA' or 'DS'
 GROUP BY
     e.experience_libelle
     , e.experience_code_exigence
@@ -25,6 +23,5 @@ ORDER BY
     WHEN 'E' THEN
         3
     END
-    -- tri par experience_libelle
+    -- puis tri par experience_libelle
     , experience_libelle ASC;
-
