@@ -1,5 +1,5 @@
 SELECT
-    nom_departement
+    nom_region
     , COUNT(*) AS total_offres
     , CONCAT(ROUND((COUNT(*) * 100.0) / (
             SELECT
@@ -8,10 +8,9 @@ SELECT
 FROM
     localisation
 GROUP BY
-    nom_departement
-HAVING
-    nom_departement IS NOT NULL
+    nom_region
+-- HAVING
+--     nom_region IS NOT NULL
 ORDER BY
-    total_offres DESC
-LIMIT 100;
+    total_offres DESC;
 
