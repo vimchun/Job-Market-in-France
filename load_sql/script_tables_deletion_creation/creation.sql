@@ -17,10 +17,10 @@ CREATE TABLE Contrat (
     , type_contrat_libelle VARCHAR(100)
     , duree_travail_libelle VARCHAR(100)
     , duree_travail_libelle_converti VARCHAR(100)
-    , salaire_commentaire VARCHAR(100)
     , salaire_libelle VARCHAR(100)
     , salaire_complement_1 VARCHAR(100)
     , salaire_complement_2 VARCHAR(100)
+    , salaire_commentaire VARCHAR(100)
     , nature_contrat VARCHAR(100)
     , alternance BOOLEAN
     , deplacement_code INTEGER
