@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36" version="26.1.1">
   <diagram name="Page-1" id="PEG4fmZPOcqcN3tmb9fP">
-    <mxGraphModel dx="5659" dy="392" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="4681" pageHeight="3300" background="#99CCFF" math="0" shadow="0">
+    <mxGraphModel dx="5549" dy="473" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="4681" pageHeight="3300" background="#99CCFF" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -31,20 +31,20 @@
           <mxGeometry y="20" width="186" height="35" as="geometry" />
         </mxCell>
         <mxCell id="eYIj9YyXecUdHDmmm4ep-9" value="&lt;b&gt;&amp;nbsp; PYTHON&lt;/b&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;rounded=0;shadow=0;glass=0;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=10;fontColor=default;" parent="1" vertex="1">
-          <mxGeometry x="-3470" y="1224" width="150" height="45" as="geometry">
+          <mxGeometry x="-3470" y="1224" width="150" height="55" as="geometry">
             <mxRectangle x="-3715" y="1075" width="54" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="eYIj9YyXecUdHDmmm4ep-10" value="•&amp;nbsp;&amp;nbsp;Ecriture en base de données" style="text;strokeColor=none;fillColor=#f5f5f5;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=10;fontColor=#333333;fontStyle=0;" parent="eYIj9YyXecUdHDmmm4ep-9" vertex="1">
-          <mxGeometry y="20" width="150" height="25" as="geometry" />
+        <mxCell id="eYIj9YyXecUdHDmmm4ep-10" value="•&amp;nbsp; Récupération de valeurs et&amp;nbsp;&lt;div&gt;&amp;nbsp; &amp;nbsp; écriture en base de données&lt;/div&gt;" style="text;strokeColor=none;fillColor=#f5f5f5;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=10;fontColor=#333333;fontStyle=0;" parent="eYIj9YyXecUdHDmmm4ep-9" vertex="1">
+          <mxGeometry y="20" width="150" height="35" as="geometry" />
         </mxCell>
         <mxCell id="eYIj9YyXecUdHDmmm4ep-14" value="&lt;b&gt;&amp;nbsp; MODELISATION&lt;/b&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#D79B00;rounded=0;shadow=0;glass=0;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=10;fontColor=default;swimlaneLine=0;gradientColor=none;" parent="1" vertex="1">
-          <mxGeometry x="-3522" y="1006" width="189" height="55" as="geometry">
+          <mxGeometry x="-3522" y="1006" width="189" height="65" as="geometry">
             <mxRectangle x="-3715" y="1075" width="54" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="eYIj9YyXecUdHDmmm4ep-15" value="•&amp;nbsp;&amp;nbsp;Diagramme UML (modèle snowflake)&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;avec 19 tables, 50 attributs&amp;nbsp;&lt;/div&gt;" style="text;strokeColor=none;fillColor=#f5f5f5;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=10;fontColor=#333333;fontStyle=0;" parent="eYIj9YyXecUdHDmmm4ep-14" vertex="1">
-          <mxGeometry y="20" width="189" height="35" as="geometry" />
+        <mxCell id="eYIj9YyXecUdHDmmm4ep-15" value="•&amp;nbsp;&amp;nbsp;Diagramme UML (modèle snowflake)&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;avec 19 tables, xx attributs (dont x&amp;nbsp;&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;nouveaux)&lt;/div&gt;" style="text;strokeColor=none;fillColor=#f5f5f5;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=10;fontColor=#333333;fontStyle=0;" parent="eYIj9YyXecUdHDmmm4ep-14" vertex="1">
+          <mxGeometry y="20" width="189" height="45" as="geometry" />
         </mxCell>
         <mxCell id="eYIj9YyXecUdHDmmm4ep-16" value="&lt;b&gt;&amp;nbsp; PostgreSQL&lt;/b&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;rounded=0;shadow=0;glass=0;align=left;verticalAlign=middle;fontFamily=Helvetica;fontSize=10;fontColor=default;" parent="1" vertex="1">
           <mxGeometry x="-3452" y="1146" width="108" height="45" as="geometry">
@@ -151,9 +151,6 @@
         <mxCell id="BL1sSyGnwAxIdbxrwCoB-21" value="geopy" style="ellipse;whiteSpace=wrap;html=1;fontSize=8;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
           <mxGeometry x="-3712" y="1164" width="44" height="18" as="geometry" />
         </mxCell>
-        <mxCell id="BL1sSyGnwAxIdbxrwCoB-5" value="1 fichier .csv :&lt;div&gt;&lt;div&gt;&amp;nbsp; - code_insee&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; - nom_commune&lt;/div&gt;&lt;div&gt;&amp;nbsp; - code_postal&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; - nom_ville&lt;/div&gt;&lt;div&gt;&amp;nbsp; - code_departement&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; - nom_departement&lt;/div&gt;&lt;div&gt;&amp;nbsp; - code_region&lt;/div&gt;&lt;div&gt;&amp;nbsp; &amp;nbsp; - nom_region&lt;/div&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" parent="1" vertex="1">
-          <mxGeometry x="-4035" y="1206" width="103" height="131" as="geometry" />
-        </mxCell>
         <mxCell id="GoGkWiDGdS2pF1R7IaA1-2" value="&lt;div&gt;&quot;noms / codes&quot;&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;des&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&quot;villes&quot;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;container=0;enumerate=0;" parent="1" vertex="1">
           <mxGeometry x="-4028" y="908" width="98" height="35" as="geometry" />
         </mxCell>
@@ -177,7 +174,7 @@
         <mxCell id="-rZxHQYXAFOoNfdk5uPC-5" value="&lt;span style=&quot;color: rgb(255, 0, 0);&quot;&gt;•&amp;nbsp;&amp;nbsp;Ajout d&#39;un attribut pour savoir si une offre est&amp;nbsp;&lt;/span&gt;&lt;div&gt;&lt;span style=&quot;color: rgb(255, 0, 0);&quot;&gt;&amp;nbsp; &amp;nbsp; toujours d&#39;actualité&lt;/span&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=#f5f5f5;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=10;fontColor=#000000;fontStyle=0;" parent="-rZxHQYXAFOoNfdk5uPC-4" vertex="1">
           <mxGeometry y="20" width="292" height="35" as="geometry" />
         </mxCell>
-        <mxCell id="Nkz8KNjNWd7tfIoJqmHA-6" value="•&amp;nbsp; Ajout d&#39;un attribut pour savoir si une offre est pour&amp;nbsp;&lt;div&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;&amp;nbsp; &amp;nbsp; un &quot;Data Engineer&quot;, un &quot;Data Analyst&quot; ou un &quot;Data Scientist&quot;&lt;/span&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=#f5f5f5;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=10;fontColor=#000000;fontStyle=0;" vertex="1" parent="-rZxHQYXAFOoNfdk5uPC-4">
+        <mxCell id="Nkz8KNjNWd7tfIoJqmHA-6" value="•&amp;nbsp; Ajout d&#39;un attribut pour savoir si une offre est pour&amp;nbsp;&lt;div&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;&amp;nbsp; &amp;nbsp; un &quot;Data Engineer&quot;, un &quot;Data Analyst&quot; ou un &quot;Data Scientist&quot;&lt;/span&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=#f5f5f5;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=10;fontColor=#000000;fontStyle=0;" parent="-rZxHQYXAFOoNfdk5uPC-4" vertex="1">
           <mxGeometry y="55" width="292" height="35" as="geometry" />
         </mxCell>
         <mxCell id="-rZxHQYXAFOoNfdk5uPC-9" value="&lt;b&gt;&amp;nbsp; SQL&lt;/b&gt;" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=20;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;rounded=0;align=left;swimlaneLine=1;glass=0;shadow=0;swimlaneHead=1;swimlaneBody=1;connectable=1;allowArrows=1;container=1;verticalAlign=middle;fontFamily=Helvetica;fontSize=10;fontColor=default;" parent="1" vertex="1">
@@ -194,17 +191,20 @@
             <mxPoint x="-3155" y="1248" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Nkz8KNjNWd7tfIoJqmHA-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;curved=1;" edge="1" parent="1" target="ZqSi49jVPxYIq9pt5e5S-31">
+        <mxCell id="Nkz8KNjNWd7tfIoJqmHA-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;curved=1;" parent="1" target="ZqSi49jVPxYIq9pt5e5S-31" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="-3037" y="1117" as="sourcePoint" />
             <mxPoint x="-2869.3" y="1220.51" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Nkz8KNjNWd7tfIoJqmHA-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;curved=1;" edge="1" parent="1" target="-rZxHQYXAFOoNfdk5uPC-9">
+        <mxCell id="Nkz8KNjNWd7tfIoJqmHA-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;curved=1;" parent="1" target="-rZxHQYXAFOoNfdk5uPC-9" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="-3120" y="1117" as="sourcePoint" />
             <mxPoint x="-2978" y="1218" as="targetPoint" />
           </mxGeometry>
+        </mxCell>
+        <mxCell id="QcCtQgSL87m4hG3FGIs5-1" value="1 fichier .csv avec le code et le nom des :&lt;div&gt;&lt;div&gt;&amp;nbsp; -&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;communes&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&amp;nbsp; -&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;villes&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&amp;nbsp; -&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;départements&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&amp;nbsp; -&amp;nbsp;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;régions&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="-4034" y="1238" width="99" height="77" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
