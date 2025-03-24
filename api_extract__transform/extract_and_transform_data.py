@@ -17,8 +17,6 @@ from functions import (
     remove_all_json_files,
 )
 
-# init(autoreset=True)  # pour colorama, inutile de reset si on colorie
-
 # Récupération des credentials données sur le site de FT, depuis un fichier yaml
 SCOPES_OFFRES = "o2dsoffre api_offresdemploiv2"  # scopes définis dans https://francetravail.io/produits-partages/catalogue/offres-emploi/documentation#/
 CREDENTIALS_FILE = "api_credentials_minh.yml"  # à modifier selon qui lance le script
