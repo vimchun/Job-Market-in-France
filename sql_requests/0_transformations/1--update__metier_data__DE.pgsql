@@ -1,15 +1,15 @@
 -- Code pour afficher les offres DE
-SELECT DISTINCT
-    offre_id
-    , intitule_offre
-FROM
-    descriptionoffre
+-- SELECT DISTINCT
+--     offre_id
+--     , intitule_offre
+-- FROM
+--     descriptionoffre
 ------------
 -- Code pour mettre à jour les offres DE (attribut "metier_data")
--- UPDATE
---     descriptionoffre
--- SET
---     "metier_data" = 'DE' -- écrit dans la colonne
+UPDATE
+    descriptionoffre
+SET
+    "metier_data" = 'DE' -- écrit dans la colonne
     ------------
 WHERE
     -- inclusion
