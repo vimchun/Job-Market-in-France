@@ -53,6 +53,8 @@ Ce document retrace ce qui a été fait depuis Power BI :
 
 - On masque les colonnes non utilisées.
 
+- Paramétrer "Cross-filter direction = Both" pour certains liens est nécessaire pour la data viz.
+
 todo : ajouté une table de date
 
 
