@@ -4,6 +4,8 @@ SELECT
     , salaire_complement_1
     , salaire_complement_2
     , salaire_commentaire
+    , salaire_min
+    , salaire_max
 FROM
     descriptionoffre dof
     JOIN contrat c ON c.offre_id = dof.offre_id
@@ -14,5 +16,7 @@ GROUP BY
     , salaire_complement_1
     , salaire_complement_2
     , salaire_commentaire
+    , salaire_min
+    , salaire_max
 ORDER BY
-    total_offres DESC
+    salaire_min DESC, salaire_max DESC
