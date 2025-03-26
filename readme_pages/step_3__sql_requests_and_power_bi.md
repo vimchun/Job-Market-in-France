@@ -46,19 +46,30 @@ Si "salaire_libelle" donne :
     - `Annuel de 60000.0 Euros à 90000.0 Euros sur 12.0 mois`
     - `Annuel de 60000.0 Euros à 90000.0 Euros sur 13.0 mois`
 
-      - Alors, salaire_min vaudra la première valeur du string et salaire_max prendra la deuxième valeur du string.
-        Toutefois, si le salaire minimum récupéré est inférieur à 20000 € exclut, on remplira NULL pour les salaires min et max, par exemple pour les cas suivants :
+      - Si salaire minimale annuel récupéré < 20000/12 (1666.66€) [on suppose que ce n'est pas un salaire mensuel], alors on écrit NULL
+        - exemple : `Annuel de 25,00 Euros à 30,00 Euros`
 
-          - `Annuel de 25,00 Euros à 30,00 Euros`
-          - `Annuel de 486,00 Euros à 1801,00 Euros`
+      - Si salaire minimale annuel récupéré compris entre 20000/12 (1666.66€) et 20000 € [on considère que c'est un salaire mensuel], alors on récupère les salaires minimum et maximum et on les multiplie par 12
+        - exemple : `Annuel de 1800,00 Euros à 2000,00 Euros`
+
+      - Si salaire minimale annuel récupéré > 20000 € [on considère que c'est un salaire annuel], alors on récupère simplement les salaires minimum et maximum
+        - exemple : `Annuel de 55000,00 Euros à 65000,00 Euros`
+
+
 
   - un salaire unique annuel ("cas 12 (annuel salaire unique)") :
 
     - `Annuel de 48000.0 Euros sur 12.0 mois`
     - `Annuel de 50000,00 Euros`
 
-      - Alors, salaire_min et salaire_max vaudront la valeur du salaire récupérée.
-        Toutefois, si le salaire récupéré est inférieur à 20000 € exclut, on remplira NULL pour les salaires min et max, par exemple pour les cas suivants :
+      - Si salaire annuel récupéré < 20000/12 (1666.66€) [on suppose que ce n'est pas un salaire mensuel], alors on écrit NULL
+        - exemple : `Annuel de 40,00 Euros`
+
+      - Si salaire annuel récupéré compris entre 20000/12 (1666.66€) et 20000 € [on considère que c'est un salaire mensuel], alors on récupère les salaires minimum et maximum et on les multiplie par 12
+        - exemple factice (cas non rencontré) : `Annuel de 1800,00 Euros`
+
+      - Si salaire annuel récupéré > 20000 € [on considère que c'est un salaire annuel], alors on récupère simplement les salaires minimum et maximum
+        - exemple : `Annuel de 55000.0 Euros sur 12.0 mois`
 
           - `Annuel de 1000,00 Euros`
 
@@ -107,6 +118,26 @@ Si "salaire_libelle" donne :
         - exemple : `Autre de 30000,00 Euros à 400000,00 Euros`
 
 
+Pour finir, voilà un tableau récapitulatif avec ce qu'on écrit dans salaire_min et salaire_max pour les 5 cas décrits précédemment :
+
+
+  | salaire_libelle                                        | cas                             | salaire_min | salaire_max | commentaire                                                                      |
+  | ------------------------------------------------------ | ------------------------------- | ----------- | ----------- | -------------------------------------------------------------------------------- |
+  | Annuel de 60,00 Euros à 70,00 Euros                    | cas 11 (annuel fourchette)      | null        | null        | salaire minimum récupéré < 1666 € => on écrit NULL                               |
+  | Annuel de 2100,00 Euros à 2200,00 Euros                | cas 11 (annuel fourchette)      | 25200       | 26400       | salaire minimum récupéré compris entre 1666 € et 20 000 € => on multiplie par 12 |
+  | Annuel de 40000.0 Euros à 50000.0 Euros sur 12.0 mois  | cas 11 (annuel fourchette)      | 40000       | 50000       | salaire minimum récupéré > 20 000 € => on récupère les valeurs telles quelles    |
+  | Annuel de 13,00 Euros                                  | cas 12 (annuel salaire unique)  | null        | null        | salaire récupéré < 1666 € => on écrit NULL                                       |
+  | Annuel de 1800,00 Euros                                | cas 12 (annuel salaire unique)  | 21600       | 21600       | salaire récupéré compris entre 1666 € et 20 000 € => on multiplie par 12         |
+  | Annuel de 55000.0 Euros sur 12.0 mois                  | cas 12 (annuel salaire unique)  | 55000       | 55000       | salaire récupéré > 20 000 € => on récupère les valeurs telles quelles            |
+  | Mensuel de 1000 Euros à 1300 Euros sur 12 mois         | cas 21 (mensuel fourchette)     | null        | null        | salaire minimum récupéré < 1666 € => on écrit NULL                               |
+  | Mensuel de 1837.55 Euros à 2025.99 Euros sur 12.0 mois | cas 21 (mensuel fourchette)     | 22044       | 24300       | salaire minimum récupéré compris entre 1666 € et 20 000 € => on multiplie par 12 |
+  | Mensuel de 30000.0 Euros à 35000.0 Euros sur 12.0 mois | cas 21 (mensuel fourchette)     | 30000       | 35000       | salaire minimum récupéré > 20 000 € => on récupère les valeurs telles quelles    |
+  | Mensuel de 1000,00 Euros                               | cas 22 (mensuel salaire unique) | null        | null        | salaire récupéré < 1666 € => on écrit NULL                                       |
+  | Mensuel de 3000,00 Euros                               | cas 22 (mensuel salaire unique) | 36000       | 36000       | salaire récupéré compris entre 1666 € et 20 000 € => on multiplie par 12         |
+  | Mensuel de 45000.0 Euros sur 12.0 mois                 | cas 22 (mensuel salaire unique) | 45000       | 45000       | salaire récupéré > 20 000 € => on récupère les valeurs telles quelles            |
+  | De 13,00 Euros à 14,00 Euros                           | cas 31 (mensuel ou annuel ?)    | null        | null        | salaire minimum récupéré < 1666 € => on écrit NULL                               |
+  | Autre de 2000,00 Euros à 2195,00 Euros                 | cas 31 (mensuel ou annuel ?)    | 24000       | 26340       | salaire minimum récupéré compris entre 1666 € et 20 000 € => on multiplie par 12 |
+  | Autre de 45000,00 Euros à 55000,00 Euros               | cas 31 (mensuel ou annuel ?)    | 45000       | 55000       | salaire minimum récupéré > 20 000 € => on récupère les valeurs telles quelles    |
 
 
 ### Analyse du jeu de données à travers des requêtes SQL
