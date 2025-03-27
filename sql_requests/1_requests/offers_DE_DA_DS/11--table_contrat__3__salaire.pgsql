@@ -6,6 +6,7 @@ SELECT
     , salaire_commentaire
     , salaire_min
     , salaire_max
+    , alternance
 FROM
     descriptionoffre dof
     JOIN contrat c ON c.offre_id = dof.offre_id
@@ -18,5 +19,9 @@ GROUP BY
     , salaire_commentaire
     , salaire_min
     , salaire_max
+    , alternance
+-- HAVING
+--     alternance IS TRUE
 ORDER BY
-    salaire_min DESC, salaire_max DESC
+    salaire_min DESC
+    , salaire_max DESC
