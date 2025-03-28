@@ -5,10 +5,10 @@ WITH constante (
     , seuil_salaire_annuel_min
     , seuil_salaire_annuel_max
 ) AS (
-    VALUES (1600
-            , 10000 -- salaire mensuel ∈ [1 600, 10 000]
+    VALUES (1666
+            , 12500 --salaire mensuel ∈ [1 666, 12 500]
             , 20000
-            , 200000) -- salaire annuel ∈ [20 000, 200 000]
+            , 150000) --salaire annuel ∈ [20 000, 150 000]
 )
 , salaire AS (
     SELECT
@@ -192,7 +192,7 @@ WHERE
     AND alternance IS NOT TRUE
     -- AND get_salaire_min > get_salaire_max
 ORDER BY
-    --     -- cas DESC
+    -- cas DESC
     salaire_min DESC
     , salaire_max DESC
     -- LIMIT 4000
