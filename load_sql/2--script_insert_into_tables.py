@@ -174,11 +174,11 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                 type_contrat_libelle = offre.get("typeContratLibelle")
                 duree_travail_libelle = offre.get("dureeTravailLibelle")
                 duree_travail_libelle_converti = offre.get("dureeTravailLibelleConverti")
+                nature_contrat = offre.get("natureContrat")
                 salaire_libelle = offre.get("salaire").get("libelle")
                 salaire_complement_1 = offre.get("salaire").get("complement1")
                 salaire_complement_2 = offre.get("salaire").get("complement2")
                 salaire_commentaire = offre.get("salaire").get("commentaire")
-                nature_contrat = offre.get("natureContrat")
                 alternance = offre.get("alternance")
                 deplacement_code = offre.get("deplacementCode")
                 deplacement_libelle = offre.get("deplacementLibelle")
@@ -187,18 +187,18 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
                 # print pour investigation si besoin :
                 # print(
-                #     offre_id, type_contrat, type_contrat_libelle, duree_travail_libelle, duree_travail_libelle_converti,
+                #     offre_id, type_contrat, type_contrat_libelle, duree_travail_libelle, duree_travail_libelle_converti, nature_contrat,
                 #     salaire_libelle, salaire_complement_1, salaire_complement_2, salaire_commentaire,
-                #     nature_contrat, alternance, deplacement_code, deplacement_libelle, temps_travail, condition_specifique,
+                #     alternance, deplacement_code, deplacement_libelle, temps_travail, condition_specifique,
                 #     sep="\n-> ",
                 # )  # fmt:off
 
                 fill_db(
                     db_name="Contrat",
                     attributes_tuple=(
-                        "offre_id", "type_contrat", "type_contrat_libelle", "duree_travail_libelle", "duree_travail_libelle_converti",
+                        "offre_id", "type_contrat", "type_contrat_libelle", "duree_travail_libelle", "duree_travail_libelle_converti", "nature_contrat",
                         "salaire_libelle", "salaire_complement_1", "salaire_complement_2", "salaire_commentaire",
-                        "nature_contrat", "alternance", "deplacement_code", "deplacement_libelle", "temps_travail", "condition_specifique",
+                        "alternance", "deplacement_code", "deplacement_libelle", "temps_travail", "condition_specifique",
                     ),
                     on_conflict_string=("offre_id"),
                 )  # fmt:off
