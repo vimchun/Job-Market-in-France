@@ -1,5 +1,5 @@
 -- voir readme_pages/step_3__sql_requests_and_power_bi.md pour plus d'explications
--- reset des colonnes
+-- reset des colonnes :
 -- UPDATE
 --     contrat
 --     SET

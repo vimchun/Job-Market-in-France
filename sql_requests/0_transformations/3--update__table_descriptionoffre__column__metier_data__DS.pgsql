@@ -9,15 +9,15 @@
 UPDATE
     descriptionoffre
 SET
-    "metier_data" = 'DS' -- écrit dans la colonne
-    --     ------------
+    metier_data = 'DS' -- écrit dans la colonne
+    ------------
 WHERE
     -- inclusion
     (intitule_offre ILIKE '%data%scientist%' -- "Data-Scientist", "Datascientist"
         OR intitule_offre ILIKE '%data%science%' -- "Data-Science"
         OR intitule_offre ILIKE '%scientifique donnée%' -- "Scientifique des données"
 )
-    -- exlusion
+    -- exclusion
     AND intitule_offre NOT ILIKE '%développeur%' -- "développeur big data"
     AND intitule_offre NOT ILIKE '%center%' -- "data center"
     AND intitule_offre NOT ILIKE '%software%' -- "ingénieur software"

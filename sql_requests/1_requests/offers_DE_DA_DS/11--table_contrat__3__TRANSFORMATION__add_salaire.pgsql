@@ -189,7 +189,7 @@ WHERE
     c.salaire_libelle IS NOT NULL
     AND c.salaire_libelle != 'Annuel de'
     AND c.salaire_libelle NOT LIKE 'Horaire %'
-    AND alternance IS NOT TRUE
+    AND c.alternance IS NOT TRUE
     -- AND get_salaire_min > get_salaire_max
 ORDER BY
     -- cas DESC
