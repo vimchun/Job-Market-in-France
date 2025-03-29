@@ -1,6 +1,6 @@
 Ce document retrace ce qui a été fait depuis Power BI :
 
-# Premières étapes du projet
+# Connexion avec la base de données
 
 - cf https://learn.microsoft.com/fr-fr/power-query/connectors/postgresql
 
@@ -55,8 +55,14 @@ Ce document retrace ce qui a été fait depuis Power BI :
 
 - Paramétrer "Cross-filter direction = Both" pour certains liens est nécessaire pour la data viz.
 
-todo : ajouté une table de date
 
+
+# Table view
+
+Création table de date
+
+Création de colonnes :
+  - Date Différence = DATEDIFF('Offre Emploi'[Date Création], 'Offre Emploi'[Date Actualisation], DAY)
 
 # Transformations sur Power BI
 
