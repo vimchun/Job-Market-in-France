@@ -2,6 +2,8 @@
 
 ## important
 
+  1. Ajouter la date d'extraction dans un attribut
+
   1. Ajouter un attribut pour savoir si l'offre est encore d'actualité ou pas
       Attention à l'attribut "Date Actualisation"
 
