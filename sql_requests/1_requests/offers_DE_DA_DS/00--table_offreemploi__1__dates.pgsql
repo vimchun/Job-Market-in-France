@@ -1,5 +1,6 @@
 SELECT
     COUNT(*) AS total_offres
+    , date_extraction
     , date_creation
     , date_actualisation
     , date_actualisation - date_creation AS date_diff
@@ -9,7 +10,8 @@ FROM
 WHERE
     metier_data = 'DE' -- choisir entre 'DE', 'DA' or 'DS'
 GROUP BY
-    date_creation
+    date_extraction
+    , date_creation
     , date_actualisation
 ORDER BY
     -- total_offres DESC
