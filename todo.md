@@ -3,6 +3,7 @@
 ## important
 
   1. Ajouter un attribut pour savoir si l'offre est encore d'actualité ou pas
+      Attention à l'attribut "Date Actualisation"
 
 
 ## pas urgent
