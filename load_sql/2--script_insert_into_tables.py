@@ -10,17 +10,17 @@ Notes : met environ 11 minutes pour remplir les 19 tables, pour ~14k offres et ~
 
 # Booléens pour remplir ou pas les tables associées
 fill_table_OffreEmploi = 1
-fill_table_Contrat = 1
-fill_table_Entreprise = 1
-fill_table_Localisation = 1
-fill_table_DescriptionOffre = 1
-fill_table_Competence, fill_table_Offre_Competence = 1, 1
-fill_table_Experience, fill_table_Offre_Experience = 1, 1
-fill_table_Formation, fill_table_Offre_Formation = 1, 1
-fill_table_QualiteProfessionnelle, fill_table_Offre_QualiteProfessionnelle = 1, 1
-fill_table_Qualification, fill_table_Offre_Qualification = 1, 1
-fill_table_Langue, fill_table_Offre_Langue = 1, 1
-fill_table_PermisConduire, fill_table_Offre_PermisConduire = 1, 1
+fill_table_Contrat = 0
+fill_table_Entreprise = 0
+fill_table_Localisation = 0
+fill_table_DescriptionOffre = 0
+fill_table_Competence, fill_table_Offre_Competence = 0, 0
+fill_table_Experience, fill_table_Offre_Experience = 0, 0
+fill_table_Formation, fill_table_Offre_Formation = 0, 0
+fill_table_QualiteProfessionnelle, fill_table_Offre_QualiteProfessionnelle = 0, 0
+fill_table_Qualification, fill_table_Offre_Qualification = 0, 0
+fill_table_Langue, fill_table_Offre_Langue = 0, 0
+fill_table_PermisConduire, fill_table_Offre_PermisConduire = 0, 0
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 
@@ -34,8 +34,8 @@ with open(
         "outputs",
         "offres",
         "1--generated_json_files",
-        "2025-03-12--21h13__2__with_location_attributes.json",
-        # "2025-03-12--21h13__2__with_location_attributes____only_10_offres.json",
+        "2025-03-12--21h13__3__with_dateExtraction_attribute.json",
+        # "2025-03-12--21h13__2__with_location_attributes.json",
     ),
     "r",
 ) as file:
@@ -143,18 +143,19 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
             for offre in offres_data:
                 offre_id = offre.get("id")
-
+                date_extraction = offre.get("dateExtraction")
                 date_creation = offre.get("dateCreation").split("T")[0]  # inutile de récupérer l'heure
                 date_actualisation = offre.get("dateActualisation").split("T")[0]  # inutile de récupérer l'heure
                 nombre_postes = offre.get("nombrePostes")
 
                 # print pour investigation si besoin :
-                # print(offre_id, date_creation, date_actualisation, nombre_postes, sep="\n-> ")
+                # print(offre_id, date_extraction, date_creation, date_actualisation, nombre_postes, sep="\n-> ")
 
                 fill_db(
                     db_name="OffreEmploi",
                     attributes_tuple=(
                         "offre_id",
+                        "date_extraction",
                         "date_creation",
                         "date_actualisation",
                         "nombre_postes",
