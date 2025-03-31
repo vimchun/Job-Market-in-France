@@ -33,3 +33,4 @@ Voici un schéma récapitulatif des différentes étapes du projet :
 
 - [Étape 2 : Chargement des données dans une base de données relationnelle](readme_pages/step_2__load_data_to_database.md)
 
+- [Étape 2 : Consommation des données](readme_pages/step_3__data_consumption.md)
