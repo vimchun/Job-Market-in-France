@@ -161,7 +161,7 @@ def remove_all_json_files(json_files_directory):
 def create_csv__code_name__city_department_region():
     """
     Créé à partir du notebook "1--create_csv_codes__city_departement_region.ipynb".
-    Génère le fichier "Job_Market/additional_files/code_name__city_department_region" qui sert à récupérer les informations suivantes :
+    Génère le fichier "Job_Market/api_extract__transform/locations_information/code_name__city_department_region" qui sert à récupérer les informations suivantes :
 
         - code_insee
         - nom_commune
@@ -190,8 +190,7 @@ def create_csv__code_name__city_department_region():
 
     files_directory = os.path.join(
         current_directory,
-        "..",
-        "additional_files",
+        "locations_information",
         "archives",
     )
     file_commune = "v_commune_2024.csv"
@@ -315,8 +314,7 @@ def create_csv__code_name__city_department_region():
     df.to_csv(
         os.path.join(
             current_directory,
-            "..",
-            "additional_files",
+            "locations_information",
             "code_name__city_department_region.csv",
         ),
         index=False,  # pour ne pas écrire les index
@@ -685,7 +683,7 @@ def add_location_attributes(json_files_directory, json_filename):
 
     df_insee = pd.read_csv(
         os.path.join(
-            os.path.join(current_directory, "..", "additional_files"),
+            os.path.join(current_directory, "locations_information"),
             "code_name__city_department_region.csv",
         ),
         dtype=str,
