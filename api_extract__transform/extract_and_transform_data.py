@@ -6,6 +6,7 @@ import yaml
 
 # from colorama import init
 from functions import (
+    add_date_extract_attribute,
     add_location_attributes,
     concatenate_all_json_into_one,
     create_csv__code_name__city_department_region,
@@ -44,9 +45,10 @@ launch_remove_all_json_files = 0
 launch_create_csv__code_name__city_department_region = 0
 #
 launch_get_offres = 0  # ~ 20 minutes
-launch_concatenate_all_json_into_one = 1
-launch_keep_only_offres_from_metropole = 1
-launch_add_location_attributes = 1  # ~ 5 minutes
+launch_concatenate_all_json_into_one = 0
+launch_keep_only_offres_from_metropole = 0
+launch_add_location_attributes = 0  # ~ 5 minutes
+launch_add_date_extract_attributes = 1
 
 if launch_get_referentiel_appellations_rome:
     get_referentiel_appellations_rome(token)
@@ -173,3 +175,14 @@ if launch_add_location_attributes:
     json_generated_filename_2 = add_location_attributes(json_files_generated_directory, json_generated_filename_1)
 
     print(f"  ====> Fichier généré : {json_generated_filename_2}")
+
+if launch_add_date_extract_attributes:
+    json_generated_filename_2 = "2025-03-12--21h13__2__with_location_attributes.json"
+
+    json_generated_filename_3 = add_date_extract_attribute(
+        json_files_generated_directory,
+        json_generated_filename_2,
+        date_to_insert="2025-03-02",  # à commenter si on veut mettre la date du jour
+    )
+
+    print(f"  ====> Fichier généré : {json_generated_filename_3}")
