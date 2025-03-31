@@ -8,8 +8,6 @@ from colorama import Fore, Style, init
 
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
-
-token = ""
 current_directory = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -1050,3 +1048,48 @@ def add_location_attributes(json_files_directory, json_filename):
             f.write(content)
 
     return json_generated_file
+
+
+def add_date_extract_attribute(json_files_directory, json_filename, date_to_insert=None):
+    """
+    Fonction qui charge le json et qui écrit dans un nouveau json : un nouvel attribut "dateExtraction" avec la date désirée
+      (par défaut la date système pour avoir la date du jour)
+
+    Renvoie le nom du json généré
+    """
+    from datetime import datetime
+
+    import pandas as pd
+
+    if date_to_insert is None:
+        date_to_insert = datetime.today().date()  # .date() pour ne pas avoir l'heure
+
+    df = pd.read_json(
+        os.path.join(json_files_directory, json_filename),
+        dtype=False,  # pour ne pas inférer les dtypes
+    )
+
+    df["dateExtraction"] = pd.to_datetime(date_to_insert)  # sans la ligne suivante, on aura un timestamp en sortie de json "1743292800000"
+    df["dateExtraction"] = df["dateExtraction"].dt.strftime("%Y-%m-%d")  # Formate les dates au format string 'YYYY-MM-DD'
+
+    json_file_name_renamed = f'{json_filename.split("__2__with_location_attr")[0]}__3__with_dateExtraction_attribute.json'
+
+    df.to_json(
+        os.path.join(json_files_directory, json_file_name_renamed),
+        orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
+        force_ascii=False,  # pour convertir les caractères spéciaux
+        indent=4,  # pour formatter la sortie
+    )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs
+
+    # On supprime les backslashs ajoutés par la méthode .to_json()
+    with open(os.path.join(json_files_directory, json_file_name_renamed), "r", encoding="utf-8") as f:
+        content = f.read()
+
+        content = content.replace("\\/", "/")  # On remplace les "\/" par "/"
+        content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
+
+        # On sauvegarde le fichier final sans les '\'
+        with open(os.path.join(json_files_directory, json_file_name_renamed), "w", encoding="utf-8") as f:
+            f.write(content)
+
+    return json_file_name_renamed

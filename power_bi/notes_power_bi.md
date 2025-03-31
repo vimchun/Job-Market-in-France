@@ -1,6 +1,6 @@
 Ce document retrace ce qui a été fait depuis Power BI :
 
-# Premières étapes du projet
+# Connexion avec la base de données
 
 - cf https://learn.microsoft.com/fr-fr/power-query/connectors/postgresql
 
@@ -53,8 +53,16 @@ Ce document retrace ce qui a été fait depuis Power BI :
 
 - On masque les colonnes non utilisées.
 
-todo : ajouté une table de date
+- Paramétrer "Cross-filter direction = Both" pour certains liens est nécessaire pour la data viz.
 
+
+
+# Table view
+
+Création table de date
+
+Création de colonnes :
+  - Date Différence = DATEDIFF('Offre Emploi'[Date Création], 'Offre Emploi'[Date Actualisation], DAY)
 
 # Transformations sur Power BI
 
@@ -69,24 +77,40 @@ On renommera les colonnes avoir des noms plus facile à lire dans les rapports c
 - "Durée Travail Libellé" (au lieu de "duree_travail_libelle")
 
 
-## Ajout d'une variable "Nom Ville Modifié"
+## Ajout de variables avec le nom des villes, départements et région modifiés pour la data viz
+
+### Ajout d'une variable "Nom Ville Modifié"
 
 Dans le "report view" / carte mondiale, on a des villes françaises qui sont situés dans d'autres pays, par exemple :
 
   - offre_id = '2083056' dans la ville "Cologne" (code postal 32 430) en région Occitanie, département Gers  => placé en Allemagne (NOK, car on est censé avoir que des offres en France)
 
-    ![Cologne en Allemagne](screenshots/Cologne_in_Germany.png)
+    ![Cologne en Allemagne](screenshots/ville_Cologne_in_Germany.png)
 
 
   - offre_id = '2757953' dans la ville "La Réunion" (code postal 47700) en région Nouvelle-Aquitaine, département Lot-et-Garonne  => placé en France (OK)
 
-    ![Cologne en France](screenshots/Cologne_in_France.png)
+    ![Cologne en France](screenshots/ville_Cologne_in_France.png)
 
 
 Comme vu dans le dernier screenshot, pour avoir les villes placées en France, on définit une colonne "Nom Ville Modifié" avec le nom de la ville suffixé avec `, France` (par exemple "Cologne, France").
 
 
-## Ajout d'une variable "Nom Région Modifié"
+### Ajout d'une variable "Nom Département Modifié"
+
+Même chose pour le département de la "Lot" qui est placé en Lituanie, on ajoute une colonne qui suffixera le nom du département avec `, France` :
+
+  - Département "Lot" en Lituanie :
+
+    ![Département "Lot" en Lituanie](screenshots/department_Lot_in_Lithuania.png)
+
+
+  - Département "Lot" en France :
+
+    ![Département "Lot" en France](screenshots/department_Lot_in_France.png)
+
+
+### Ajout d'une variable "Nom Région Modifié"
 
 Quand on affiche la carte du monde avec les régions de la France, on constate que 2 régions (la Bretagne et l'Occitanie) ne sont pas complètement coloriées comme les autres régions :
 
