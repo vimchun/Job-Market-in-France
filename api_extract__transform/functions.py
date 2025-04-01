@@ -572,12 +572,57 @@ def concatenate_all_json_into_one(json_files_from_api_directory, generated_json_
     return json_file_name_renamed
 
 
-def keep_only_offres_from_metropole(json_files_directory, json_filename):
+def add_date_extract_attribute(json_files_directory, json_filename, new_json_filename, date_to_insert=None):
+    """
+    Fonction qui charge le json et qui écrit dans un nouveau json : un nouvel attribut "date_extraction" avec la date désirée
+      (par défaut la date système pour avoir la date du jour)
+
+    Renvoie new_json_filename (car utilisé pour la fonction suivante)
+    """
+    from datetime import datetime
+
+    import pandas as pd
+
+    print(f'{Fore.GREEN}\n==> Fonction "add_date_extract_attribute()"\n')
+
+    if date_to_insert is None:
+        date_to_insert = datetime.today().date()  # .date() pour ne pas avoir l'heure
+
+    df = pd.read_json(
+        os.path.join(json_files_directory, json_filename),
+        dtype=False,  # pour ne pas inférer les dtypes
+    )
+
+    df["dateExtraction"] = pd.to_datetime(date_to_insert)  # sans la ligne suivante, on aura un timestamp en sortie de json "1743292800000"
+    df["dateExtraction"] = df["dateExtraction"].dt.strftime("%Y-%m-%d")  # Formate les dates au format string 'YYYY-MM-DD'
+
+    df.to_json(
+        os.path.join(json_files_directory, new_json_filename),
+        orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
+        force_ascii=False,  # pour convertir les caractères spéciaux
+        indent=4,  # pour formatter la sortie
+    )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs
+
+    # On supprime les backslashs ajoutés par la méthode .to_json()
+    with open(os.path.join(json_files_directory, new_json_filename), "r", encoding="utf-8") as f:
+        content = f.read()
+
+        content = content.replace("\\/", "/")  # On remplace les "\/" par "/"
+        content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
+
+        # On sauvegarde le fichier final sans les '\'
+        with open(os.path.join(json_files_directory, new_json_filename), "w", encoding="utf-8") as f:
+            f.write(content)
+
+    return new_json_filename
+
+
+def keep_only_offres_from_metropole(json_files_directory, json_filename, new_json_filename):
     """
     Cette fonction écrase le json entré en paramètre, en ne conservant que les offres d'emploi de la France Métropolitaine.
     Elle ne conserve pas les offres de la Corse ni des DOMTOM.
 
-    Renvoie le nom du json généré qui servira à la fonction suivante "add_location_attributes()"
+    Renvoie new_json_filename (car utilisé pour la fonction suivante), et le nombre de ligne du DataFrame car sera utilisé pour renommer le fichier
     """
 
     print(f'{Fore.GREEN}\n==> Fonction "keep_only_offres_from_metropole()"\n')
@@ -619,28 +664,25 @@ def keep_only_offres_from_metropole(json_files_directory, json_filename):
     # On réécrit un nouveau json avec uniquement les offres en métropole
     df_only_metropole = df[df["id"].isin(df_lieu_norm_metropole["id"])]
 
-    # json_file_name = f"{json_filename.split("__0__all")[0]}.json"  # pour avoir seulement "2025-03-12--10h21.json"
-    json_file_name_renamed = f'{json_filename.split("__0__all")[0]}__1__only_metropole__{len(df_only_metropole)}_offres.json'
-
     df_only_metropole.to_json(
-        os.path.join(json_files_directory, json_file_name_renamed),
+        os.path.join(json_files_directory, new_json_filename),
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
         force_ascii=False,  # pour convertir les caractères spéciaux
         indent=4,  # pour formatter la sortie
     )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs
 
     # On supprime les backslashs ajoutés par la méthode .to_json()
-    with open(os.path.join(json_files_directory, json_file_name_renamed), "r", encoding="utf-8") as f:
+    with open(os.path.join(json_files_directory, new_json_filename), "r", encoding="utf-8") as f:
         content = f.read()
 
         content = content.replace("\\/", "/")  # On remplace les "\/" par "/"
         content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
 
         # On sauvegarde le fichier final sans les '\'
-        with open(os.path.join(json_files_directory, json_file_name_renamed), "w", encoding="utf-8") as f:
+        with open(os.path.join(json_files_directory, new_json_filename), "w", encoding="utf-8") as f:
             f.write(content)
 
-    return json_file_name_renamed
+    return new_json_filename, len(df_only_metropole)
 
 
 def add_location_attributes(json_files_directory, json_filename):
@@ -1046,48 +1088,3 @@ def add_location_attributes(json_files_directory, json_filename):
             f.write(content)
 
     return json_generated_file
-
-
-def add_date_extract_attribute(json_files_directory, json_filename, date_to_insert=None):
-    """
-    Fonction qui charge le json et qui écrit dans un nouveau json : un nouvel attribut "dateExtraction" avec la date désirée
-      (par défaut la date système pour avoir la date du jour)
-
-    Renvoie le nom du json généré
-    """
-    from datetime import datetime
-
-    import pandas as pd
-
-    if date_to_insert is None:
-        date_to_insert = datetime.today().date()  # .date() pour ne pas avoir l'heure
-
-    df = pd.read_json(
-        os.path.join(json_files_directory, json_filename),
-        dtype=False,  # pour ne pas inférer les dtypes
-    )
-
-    df["dateExtraction"] = pd.to_datetime(date_to_insert)  # sans la ligne suivante, on aura un timestamp en sortie de json "1743292800000"
-    df["dateExtraction"] = df["dateExtraction"].dt.strftime("%Y-%m-%d")  # Formate les dates au format string 'YYYY-MM-DD'
-
-    json_file_name_renamed = f'{json_filename.split("__2__with_location_attr")[0]}__3__with_dateExtraction_attribute.json'
-
-    df.to_json(
-        os.path.join(json_files_directory, json_file_name_renamed),
-        orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
-        force_ascii=False,  # pour convertir les caractères spéciaux
-        indent=4,  # pour formatter la sortie
-    )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs
-
-    # On supprime les backslashs ajoutés par la méthode .to_json()
-    with open(os.path.join(json_files_directory, json_file_name_renamed), "r", encoding="utf-8") as f:
-        content = f.read()
-
-        content = content.replace("\\/", "/")  # On remplace les "\/" par "/"
-        content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
-
-        # On sauvegarde le fichier final sans les '\'
-        with open(os.path.join(json_files_directory, json_file_name_renamed), "w", encoding="utf-8") as f:
-            f.write(content)
-
-    return json_file_name_renamed
