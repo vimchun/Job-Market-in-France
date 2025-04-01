@@ -685,7 +685,7 @@ def keep_only_offres_from_metropole(json_files_directory, json_filename, new_jso
     return new_json_filename, len(df_only_metropole)
 
 
-def add_location_attributes(json_files_directory, json_filename):
+def add_location_attributes(json_files_directory, json_filename, new_json_filename):
     """
     Prend en entrée un fichier json généré avec les fonctions précédentes.
     Génère en sortie un fichier json avec en plus les nouveaux attributs suivants :
@@ -1067,24 +1067,28 @@ def add_location_attributes(json_files_directory, json_filename):
     # Ecriture dans un fichier .json
     # ==============================
 
-    json_generated_file = f'{json_filename.split("__1__only_metropole")[0]}__2__with_location_attributes.json'
+    # json_generated_file = f'{json_filename.split("__1__only_metropole")[0]}__2__with_location_attributes.json'
 
     df_final.to_json(
-        os.path.join(json_files_directory, json_generated_file),
+        # os.path.join(json_files_directory, json_generated_file),
+        os.path.join(json_files_directory, new_json_filename),
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
         force_ascii=False,  # pour convertir les caractères spéciaux
         indent=4,  # pour formatter la sortie
     )
 
     # On supprime les backslashs ajoutés par la méthode .to_json()
-    with open(os.path.join(json_files_directory, json_generated_file), "r", encoding="utf-8") as f:
+    # with open(os.path.join(json_files_directory, json_generated_file), "r", encoding="utf-8") as f:
+    with open(os.path.join(json_files_directory, new_json_filename), "r", encoding="utf-8") as f:
         content = f.read()
 
         content = content.replace("\\/", "/")  # On remplace "\/" par "/"
         content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
 
         # On sauvegarde le fichier final sans les '\'
-        with open(os.path.join(json_files_directory, json_generated_file), "w", encoding="utf-8") as f:
+        # with open(os.path.join(json_files_directory, json_generated_file), "w", encoding="utf-8") as f:
+        with open(os.path.join(json_files_directory, new_json_filename), "w", encoding="utf-8") as f:
             f.write(content)
 
-    return json_generated_file
+    # return json_generated_file
+    return new_json_filename
