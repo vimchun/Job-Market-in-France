@@ -24,7 +24,7 @@ CREDENTIALS_FILE = "api_credentials_minh.yml"  # à modifier selon qui lance le 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 credential_filename = os.path.join(current_directory, CREDENTIALS_FILE)
 json_files_original_from_api_directory = os.path.join(current_directory, "outputs", "offres", "0--original_json_files_from_api")
-json_files_generated_directory = os.path.join(current_directory, "outputs", "offres", "1--generated_json_files")
+generated_json_files_directory = os.path.join(current_directory, "outputs", "offres", "1--generated_json_files")
 
 with open(credential_filename, "r") as file:
     creds = yaml.safe_load(file)
@@ -46,9 +46,9 @@ launch_create_csv__code_name__city_department_region = 0
 #
 launch_get_offres = 0  # ~ 20 minutes
 launch_concatenate_all_json_into_one = 0
-launch_keep_only_offres_from_metropole = 0
+launch_add_date_extract_attribute = 1
+launch_keep_only_offres_from_metropole = 1
 launch_add_location_attributes = 0  # ~ 5 minutes
-launch_add_date_extract_attributes = 1
 
 if launch_get_referentiel_appellations_rome:
     get_referentiel_appellations_rome(token)
@@ -147,24 +147,86 @@ if launch_get_offres:
 """
 Noms de fichiers à écrire dans le dossier "api_extract__transform/outputs/offres" :
 
-  - concatenate_all_json_into_one()    ==> json_generated_filename_0 = "2025-03-05--22h09__0__all__13639_offres.json"
-  - keep_only_offres_from_metropole()  ==> json_generated_filename_1 = "2025-03-05--22h09__1__only_metropole__13419_offres.json"
-  - add_location_attributes()          ==> json_generated_filename_2 = "2025-03-05--22h09__2__with_location_attributes.json"
+  - concatenate_all_json_into_one() :
+        => json_generated_filename_0 = "2025-03-05--22h09__0__all__13639_offres.json"
+
+  - add_date_extract_attribute() :
+        => json_generated_filename_1 = "2025-03-05--22h09__1__all__13639_offres__with_date_extraction_attribute.json"
+
+  - keep_only_offres_from_metropole() :
+        => json_generated_filename_2 = "2025-03-05--22h09__2__only_metropole__13419_offres.json"
+
+  - add_location_attributes() :
+        => json_generated_filename_3 = "2025-03-05--22h09__3__with_location_attributes.json"
 """
 
 if launch_concatenate_all_json_into_one:
-    json_generated_filename_0 = concatenate_all_json_into_one(json_files_original_from_api_directory, json_files_generated_directory)
-    print(f"  ====> Fichier généré : {json_generated_filename_0}")
+    generated_json_filename_0 = concatenate_all_json_into_one(json_files_original_from_api_directory, generated_json_files_directory)
+    print(f"  ====> Fichier généré : {generated_json_filename_0}")
+
+#################################################################################################################################
+
+if launch_add_date_extract_attribute:
+    # Décommenter la ligne suivante si besoin de hardcoder (si "concatenate_all_json_into_one()" n'est pas exécutée)
+    generated_json_filename_0 = "2025-03-12--21h13__0__all__13639_offres.json"
+
+    """
+    Noms de fichiers à écrire dans le dossier "api_extract__transform/outputs/offres" :
+
+      - concatenate_all_json_into_one() :
+            => json_generated_filename_0 = "2025-03-05--22h09__0__all__13639_offres.json"
+
+      - add_date_extract_attribute() :
+            => json_generated_filename_1 = "2025-03-05--22h09__1__all__13639_offres__with_date_extraction_attribute.json"
+    """
+
+    generated_json_filename_1_suffix = "__with_extraction_date_attribute.json"
+
+    generated_json_filename_1 = add_date_extract_attribute(
+        json_files_directory=generated_json_files_directory,
+        json_filename=generated_json_filename_0,
+        new_json_filename=f'{generated_json_filename_0.split(".json")[0]}{generated_json_filename_1_suffix}'.replace("__0__", "__1__"),
+        date_to_insert="2025-03-02",  # à commenter si on veut mettre la date du jour
+    )
+
+    print(f"  -> fichier généré : {generated_json_filename_1}\n")
 
 #################################################################################################################################
 
 if launch_keep_only_offres_from_metropole:
-    # Décommenter la ligne suivante si besoin de hardcoder (si concatenate_all_json_into_one() n'est pas exécutée)
-    # json_generated_filename_0 = "2025-03-12--10h21__0__all--13639_offres.json"
+    # Décommenter la ligne suivante si besoin de hardcoder (si "add_date_extract_attribute()" n'est pas exécutée)
+    # generated_json_filename_1 = "2025-03-12--21h13__1__all__13639_offres__with_extraction_date_attribute.json"
 
-    json_generated_filename_1 = keep_only_offres_from_metropole(json_files_generated_directory, json_generated_filename_0)
+    """
+    Noms de fichiers à écrire dans le dossier "api_extract__transform/outputs/offres" :
 
-    print(f"  ====> Fichier généré : {json_generated_filename_1}")
+      - add_date_extract_attribute() :
+            => json_generated_filename_1 = "2025-03-05--22h09__1__all__13639_offres__with_date_extraction_attribute.json"
+
+      - keep_only_offres_from_metropole() :
+            => json_generated_filename_2 = "2025-03-05--22h09__2__only_metropole__13419_offres.json"
+    """
+
+    generated_json_filename_2_suffix = "__2__only_metropole__xxxxx_offres.json"
+
+    generated_json_filename_2, df_lines_num = keep_only_offres_from_metropole(
+        json_files_directory=generated_json_files_directory,
+        json_filename=generated_json_filename_1,
+        new_json_filename=f"{generated_json_filename_1.split('__1__')[0]}{generated_json_filename_2_suffix}",
+    )
+
+    # Le fichier s'appelle "2025-03-12--21h13__2__only_metropole__xxxxx_offres.json" (première élément retourné par "keep_only_offres_from_metropole()")
+    # On remplace le nom du fichier en remplaçant le "xxxxx" avec le nombre de lignes du DataFrame (deuxième élément retourné par "keep_only_offres_from_metropole()")
+
+    os.rename(
+        os.path.join(generated_json_files_directory, generated_json_filename_2),
+        os.path.join(generated_json_files_directory, generated_json_filename_2.replace("xxxxx", str(df_lines_num))),
+    )
+
+    generated_json_filename_2 = generated_json_filename_2.replace("xxxxx", str(df_lines_num))
+
+    print(f"  -> fichier généré : {generated_json_filename_2}\n")
+
 
 #################################################################################################################################
 
@@ -172,17 +234,16 @@ if launch_add_location_attributes:
     # Décommenter la ligne suivante si besoin de hardcoder (si keep_only_offres_from_metropole() n'est pas exécutée)
     # json_generated_filename_1 = "2025-03-12--14h27__1__only_metropole__13419_offres.json"
 
-    json_generated_filename_2 = add_location_attributes(json_files_generated_directory, json_generated_filename_1)
+    """
+    Noms de fichiers à écrire dans le dossier "api_extract__transform/outputs/offres" :
 
-    print(f"  ====> Fichier généré : {json_generated_filename_2}")
+      - keep_only_offres_from_metropole() :
+            => json_generated_filename_2 = "2025-03-05--22h09__2__only_metropole__13419_offres.json"
 
-if launch_add_date_extract_attributes:
-    json_generated_filename_2 = "2025-03-12--21h13__2__with_location_attributes.json"
+      - add_location_attributes() :
+            => json_generated_filename_3 = "2025-03-05--22h09__3__with_location_attributes.json"
+    """
 
-    json_generated_filename_3 = add_date_extract_attribute(
-        json_files_generated_directory,
-        json_generated_filename_2,
-        date_to_insert="2025-03-02",  # à commenter si on veut mettre la date du jour
-    )
+    generated_json_filename_2 = add_location_attributes(generated_json_files_directory, generated_json_filename_1)
 
-    print(f"  ====> Fichier généré : {json_generated_filename_3}")
+    print(f"  ====> Fichier généré : {generated_json_filename_2}")
