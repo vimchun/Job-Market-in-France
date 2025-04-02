@@ -1,10 +1,16 @@
 import json
 import os
+import time
 
+from datetime import datetime
+
+import numpy as np
 import pandas as pd
 import requests
+import unidecode
 
 from colorama import Fore, Style, init
+from geopy.geocoders import Nominatim
 
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
@@ -174,10 +180,6 @@ def create_csv__code_name__city_department_region():
 
     Ne retourne rien.
     """
-
-    import os
-
-    import pandas as pd
 
     print(f'{Fore.GREEN}\n==> Fonction "create_csv__code_name__city_department_region()"\n')
 
@@ -521,8 +523,6 @@ def concatenate_all_json_into_one(json_files_from_api_directory, generated_json_
     Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
     """
 
-    # from datetime import datetime
-
     print(f'{Fore.GREEN}\n==> Fonction "concatenate_all_into_one()"\n')
 
     df_concat = pd.DataFrame()
@@ -547,12 +547,7 @@ def concatenate_all_json_into_one(json_files_from_api_directory, generated_json_
     num_offres_without_duplicates = len(df_concat.drop_duplicates(["id"]))
     print(f"\n --> df_concat : {df_concat.shape[0]} offres, df_concat_drop_duplicates : {num_offres_without_duplicates} offres\n\n")
 
-    # today = datetime.now()
-    # date_now = today.strftime("%Y-%m-%d--%Hh%M")
-    # json_file_name_renamed = f"{date_now}__0__all__{num_offres_without_duplicates}_offres.json"
-
     df_concat.drop_duplicates(["id"]).to_json(
-        # os.path.join(generated_json_file_directory, json_file_name_renamed),
         os.path.join(generated_json_file_directory, new_json_filename),
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
         force_ascii=False,  # pour convertir les caractères spéciaux
@@ -560,7 +555,6 @@ def concatenate_all_json_into_one(json_files_from_api_directory, generated_json_
     )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs
 
     # On supprime les backslashs ajoutés par la méthode .to_json()
-    # with open(os.path.join(generated_json_file_directory, json_file_name_renamed), "r", encoding="utf-8") as f:
     with open(os.path.join(generated_json_file_directory, new_json_filename), "r", encoding="utf-8") as f:
         content = f.read()
 
@@ -568,11 +562,9 @@ def concatenate_all_json_into_one(json_files_from_api_directory, generated_json_
         content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
 
         # On sauvegarde le fichier final sans les '\'
-        # with open(os.path.join(generated_json_file_directory, json_file_name_renamed), "w", encoding="utf-8") as f:
         with open(os.path.join(generated_json_file_directory, new_json_filename), "w", encoding="utf-8") as f:
             f.write(content)
 
-    # return json_file_name_renamed
     return new_json_filename
 
 
@@ -583,9 +575,6 @@ def add_date_extract_attribute(json_files_directory, json_filename, new_json_fil
 
     Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
     """
-    from datetime import datetime
-
-    import pandas as pd
 
     print(f'{Fore.GREEN}\n==> Fonction "add_date_extract_attribute()"\n')
 
@@ -706,14 +695,6 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
 
     Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
     """
-    import os
-    import time
-
-    import numpy as np
-    import pandas as pd
-    import unidecode
-
-    from geopy.geocoders import Nominatim
 
     print(f'{Fore.GREEN}\n==> Fonction "add_location_attributes()"\n')
 
@@ -1072,10 +1053,7 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
     # Ecriture dans un fichier .json
     # ==============================
 
-    # json_generated_file = f'{json_filename.split("__1__only_metropole")[0]}__2__with_location_attributes.json'
-
     df_final.to_json(
-        # os.path.join(json_files_directory, json_generated_file),
         os.path.join(json_files_directory, new_json_filename),
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
         force_ascii=False,  # pour convertir les caractères spéciaux
@@ -1083,7 +1061,6 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
     )
 
     # On supprime les backslashs ajoutés par la méthode .to_json()
-    # with open(os.path.join(json_files_directory, json_generated_file), "r", encoding="utf-8") as f:
     with open(os.path.join(json_files_directory, new_json_filename), "r", encoding="utf-8") as f:
         content = f.read()
 
@@ -1091,9 +1068,7 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
         content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
 
         # On sauvegarde le fichier final sans les '\'
-        # with open(os.path.join(json_files_directory, json_generated_file), "w", encoding="utf-8") as f:
         with open(os.path.join(json_files_directory, new_json_filename), "w", encoding="utf-8") as f:
             f.write(content)
 
-    # return json_generated_file
     return new_json_filename
