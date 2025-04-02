@@ -58,7 +58,7 @@ code_appellation_libelle: # "libelle" associé au code en commentaire (spécifiq
     - code: '404273'
       libelle: 'Explorateur_De_Donnees'
     - code: '38661'
-      libelle: 'Développeur_Decisionnel_BI'
+      libelle: 'Developpeur_Decisionnel_BI'
     #### élargissement avec d'autres métiers de la tech
     - code: '10944'
       libelle: 'Analyste_Developpeur'
