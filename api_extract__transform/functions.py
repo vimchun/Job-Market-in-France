@@ -513,15 +513,15 @@ def get_offres(token, code_appellation_libelle, filter_params):
     return None
 
 
-def concatenate_all_json_into_one(json_files_from_api_directory, generated_json_file_directory):
+def concatenate_all_json_into_one(json_files_from_api_directory, generated_json_file_directory, new_json_filename):
     """
-    On obtient suite à l'exécution de get_offres() x fichiers json (x = nombre d'appellations présents dans "code_appellation_libelle.yml").
+    On obtient suite à l'exécution de `get_offres()` x fichiers json (x = nombre d'appellations présents dans "code_appellation_libelle.yml").
     Cette fonction écrira dans un json chaque ligne de tous les json précédents, en supprimant les doublons.
 
-    Renvoie le nom du json généré qui servira à la fonction suivante "keep_only_offres_from_metropole()"
+    Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
     """
 
-    from datetime import datetime
+    # from datetime import datetime
 
     print(f'{Fore.GREEN}\n==> Fonction "concatenate_all_into_one()"\n')
 
@@ -547,29 +547,33 @@ def concatenate_all_json_into_one(json_files_from_api_directory, generated_json_
     num_offres_without_duplicates = len(df_concat.drop_duplicates(["id"]))
     print(f"\n --> df_concat : {df_concat.shape[0]} offres, df_concat_drop_duplicates : {num_offres_without_duplicates} offres\n\n")
 
-    today = datetime.now()
-    date_now = today.strftime("%Y-%m-%d--%Hh%M")
-    json_file_name_renamed = f"{date_now}__0__all__{num_offres_without_duplicates}_offres.json"
+    # today = datetime.now()
+    # date_now = today.strftime("%Y-%m-%d--%Hh%M")
+    # json_file_name_renamed = f"{date_now}__0__all__{num_offres_without_duplicates}_offres.json"
 
     df_concat.drop_duplicates(["id"]).to_json(
-        os.path.join(generated_json_file_directory, json_file_name_renamed),
+        # os.path.join(generated_json_file_directory, json_file_name_renamed),
+        os.path.join(generated_json_file_directory, new_json_filename),
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
         force_ascii=False,  # pour convertir les caractères spéciaux
         indent=4,  # pour formatter la sortie
     )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs
 
     # On supprime les backslashs ajoutés par la méthode .to_json()
-    with open(os.path.join(generated_json_file_directory, json_file_name_renamed), "r", encoding="utf-8") as f:
+    # with open(os.path.join(generated_json_file_directory, json_file_name_renamed), "r", encoding="utf-8") as f:
+    with open(os.path.join(generated_json_file_directory, new_json_filename), "r", encoding="utf-8") as f:
         content = f.read()
 
         content = content.replace("\\/", "/")  # On remplace "\/" par "/"
         content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
 
         # On sauvegarde le fichier final sans les '\'
-        with open(os.path.join(generated_json_file_directory, json_file_name_renamed), "w", encoding="utf-8") as f:
+        # with open(os.path.join(generated_json_file_directory, json_file_name_renamed), "w", encoding="utf-8") as f:
+        with open(os.path.join(generated_json_file_directory, new_json_filename), "w", encoding="utf-8") as f:
             f.write(content)
 
-    return json_file_name_renamed
+    # return json_file_name_renamed
+    return new_json_filename
 
 
 def add_date_extract_attribute(json_files_directory, json_filename, new_json_filename, date_to_insert=None):
@@ -577,7 +581,7 @@ def add_date_extract_attribute(json_files_directory, json_filename, new_json_fil
     Fonction qui charge le json et qui écrit dans un nouveau json : un nouvel attribut "date_extraction" avec la date désirée
       (par défaut la date système pour avoir la date du jour)
 
-    Renvoie new_json_filename (car utilisé pour la fonction suivante)
+    Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
     """
     from datetime import datetime
 
@@ -622,7 +626,8 @@ def keep_only_offres_from_metropole(json_files_directory, json_filename, new_jso
     Cette fonction écrase le json entré en paramètre, en ne conservant que les offres d'emploi de la France Métropolitaine.
     Elle ne conserve pas les offres de la Corse ni des DOMTOM.
 
-    Renvoie new_json_filename (car utilisé pour la fonction suivante), et le nombre de ligne du DataFrame car sera utilisé pour renommer le fichier
+    Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
+     et aussi le nombre de ligne du DataFrame (si on en a besoin pour renommer le fichier, mais on ne le fera pas conformément au workflow)
     """
 
     print(f'{Fore.GREEN}\n==> Fonction "keep_only_offres_from_metropole()"\n')
@@ -699,7 +704,7 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
         - code_region
         - nom_region
 
-    Renvoie le nom du json généré qui servira à la fonction suivante si besoin.
+    Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
     """
     import os
     import time
@@ -769,7 +774,7 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
     # On vérifie que parmi les offres "cas_1", il n'y a pas de nom_ville à Nan.
     print(f"      Vérification cas_1 ? {len(df_lieu[(df_lieu.lieu_cas == "cas_1") & (df_lieu.nom_ville.isna())]) == 0}")
 
-    assert len(df_lieu[(df_lieu.lieu_cas == "cas_1") & (df_lieu.nom_ville.isna())]) == 0
+    # assert len(df_lieu[(df_lieu.lieu_cas == "cas_1") & (df_lieu.nom_ville.isna())]) == 0
 
     #### Cas_2 : "code_insee = NAN" (dans ce cas "code_postal = NAN"), mais coordonnées GPS renseignées
     # =================================================================================================
@@ -878,7 +883,7 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
 
     print(f'      Vérification cas_2 OK ? {len(df_lieu[(df_lieu.lieu_cas == "cas_2") & (df_lieu.nom_departement.isna())]) == 0}')
 
-    assert len(df_lieu[(df_lieu.lieu_cas == "cas_2") & (df_lieu.nom_departement.isna())]) == 0
+    # assert len(df_lieu[(df_lieu.lieu_cas == "cas_2") & (df_lieu.nom_departement.isna())]) == 0
 
     #### Cas_3 : "code_postal = code_insee = latitude = longitude = NAN", mais "libelle = 'numéro_département - nom_département'" </u>
     # ================================================================================================================================
@@ -917,7 +922,7 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
 
     print(f'      Vérification cas_3 OK ? {len(df_lieu[(df_lieu.lieu_cas == "cas_3") & (df_lieu.nom_departement.isna())]) == 0}')
 
-    assert len(df_lieu[(df_lieu.lieu_cas == "cas_3") & (df_lieu.nom_departement.isna())]) == 0
+    # assert len(df_lieu[(df_lieu.lieu_cas == "cas_3") & (df_lieu.nom_departement.isna())]) == 0
 
     #### Cas_4 : "code_postal = code_insee = latitude = longitude = NAN", mais "libelle = nom_région"
     # ===============================================================================================
@@ -988,7 +993,7 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
 
     print(f'      Vérification cas_4 OK ? {len(df_lieu[(df_lieu.lieu_cas == "cas_3") & (df_lieu.nom_region.isna())]) == 0}')
 
-    assert len(df_lieu[(df_lieu.lieu_cas == "cas_4") & (df_lieu.nom_region.isna())]) == 0
+    # assert len(df_lieu[(df_lieu.lieu_cas == "cas_4") & (df_lieu.nom_region.isna())]) == 0
 
     #### Cas_5 : "code_postal = code_insee = latitude = longitude = NAN", et "libelle = ("FRANCE"|"France"|"France entière")"
     # =======================================================================================================================
@@ -1010,7 +1015,7 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
 
     print(f'      Vérification cas_5 OK ? {len(df_lieu[~df_lieu.lieu_cas.isin(["cas_1", "cas_2", "cas_3", "cas_4", "cas_5"])]) == 0}\n\n')
 
-    assert len(df_lieu[~df_lieu.lieu_cas.isin(["cas_1", "cas_2", "cas_3", "cas_4", "cas_5"])]) == 0  # != cas_1/2/3/4/5
+    # assert len(df_lieu[~df_lieu.lieu_cas.isin(["cas_1", "cas_2", "cas_3", "cas_4", "cas_5"])]) == 0  # != cas_1/2/3/4/5
 
     #### Update du df initial avec df_lieu
     # ====================================

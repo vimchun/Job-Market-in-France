@@ -1,10 +1,13 @@
 import os
 
-# from datetime import datetime
+from datetime import datetime
+
+import pandas as pd
 import yaml
 
+from colorama import Fore, init
 
-# from colorama import init
+init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 from functions import (
     add_date_extract_attribute,
     add_location_attributes,
@@ -17,6 +20,35 @@ from functions import (
     keep_only_offres_from_metropole,
     remove_all_json_files,
 )
+
+#### "Partie paramétrable"
+# On entre le nom du fichier qui sera le nom final du fichier json
+# "[date]__extract_0.json" montre qu'il s'agit de la première extraction
+# todo Le code futur devra incrémenter ce chiffre après chaque extraction
+
+today = datetime.now().strftime("%Y-%m-%d--%Hh%M")
+# date_now = today.strftime("%Y-%m-%d--%Hh%M")
+# json_filename = f"{date_now}__extraction_0.json"  # Pour ne pas le hardcoder
+json_filename = f"{today}__extraction_0.json"  # Pour ne pas le hardcoder
+# json_filename = "2025-04-02--14h40__extraction_0.json"  # Pour le hardcoder
+
+# Lancer les fonctions plus simplement ("= 1" pour lancer la fonction)
+#  Notes :  - Il faut tout mettre à 1 pour le script de bout en bout.
+#           - S'il n'y a pas de commentaire, la fonction met quelques secondes d'exécution.
+launch_get_referentiel_appellations_rome = 0
+launch_get_referentiel_pays = 0
+launch_remove_all_json_files = 0
+launch_create_csv__code_name__city_department_region = 0
+#
+launch_get_offres = 0  # ~ 20 minutes
+launch_concatenate_all_json_into_one = 1  # ~ 1 minute
+launch_add_date_extract_attribute = 1
+launch_keep_only_offres_from_metropole = 1
+launch_add_location_attributes = 1  # ~ 5 minutes
+
+
+#### Fin "Partie paramétrable"
+
 
 # Récupération des credentials données sur le site de FT, depuis un fichier yaml
 SCOPES_OFFRES = "o2dsoffre api_offresdemploiv2"  # scopes définis dans https://francetravail.io/produits-partages/catalogue/offres-emploi/documentation#/
@@ -34,21 +66,6 @@ CLE_SECRETE = creds["API_FRANCE_TRAVAIL"]["CLE_SECRETE"]
 
 token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)
 
-
-# Lancer les fonctions plus simplement ("= 1" pour lancer la fonction)
-#  Notes :
-#    - Il faut tout mettre à 1 pour le script de bout en bout.
-#    - S'il n'y a pas de commentaire, la fonction met quelques secondes d'exécution.
-launch_get_referentiel_appellations_rome = 0
-launch_get_referentiel_pays = 0
-launch_remove_all_json_files = 0
-launch_create_csv__code_name__city_department_region = 0
-#
-launch_get_offres = 0  # ~ 20 minutes
-launch_concatenate_all_json_into_one = 0
-launch_add_date_extract_attribute = 1
-launch_keep_only_offres_from_metropole = 1
-launch_add_location_attributes = 1  # ~ 5 minutes
 
 if launch_get_referentiel_appellations_rome:
     get_referentiel_appellations_rome(token)
@@ -160,15 +177,28 @@ Noms de fichiers à écrire dans le dossier "api_extract__transform/outputs/offr
         => json_generated_filename_3 = "2025-03-05--22h09__3__with_location_attributes.json"
 """
 
+
 if launch_concatenate_all_json_into_one:
-    generated_json_filename_0 = concatenate_all_json_into_one(json_files_original_from_api_directory, generated_json_files_directory)
-    print(f"  ====> Fichier généré : {generated_json_filename_0}")
+    # generated_json_filename = concatenate_all_json_into_one(
+    concatenate_all_json_into_one(
+        json_files_from_api_directory=json_files_original_from_api_directory,
+        generated_json_file_directory=generated_json_files_directory,
+        # new_json_filename=json_filename,
+        new_json_filename=json_filename,  # on écrase le fichier en entrée
+    )
+
+    # , , new_json_filename
+
+    # print(f"  ====> Fichier généré : {generated_json_filename_0}")
+
+    # Print de la shape du DataFrame du json nouvellement écrit pour information
+    print(Fore.YELLOW + str(pd.read_json(os.path.join(generated_json_files_directory, json_filename), dtype=False).shape))
 
 #################################################################################################################################
 
 if launch_add_date_extract_attribute:
     # Décommenter la ligne suivante si besoin de hardcoder (si "concatenate_all_json_into_one()" n'est pas exécutée)
-    generated_json_filename_0 = "2025-03-12--21h13__0__all__13639_offres.json"
+    # generated_json_filename_0 = "2025-03-12--21h13__0__all__13639_offres.json"
 
     """
     Noms de fichiers à écrire dans le dossier "api_extract__transform/outputs/offres" :
@@ -180,16 +210,26 @@ if launch_add_date_extract_attribute:
             => json_generated_filename_1 = "2025-03-05--22h09__1__all__13639_offres__with_date_extraction_attribute.json"
     """
 
-    generated_json_filename_1_suffix = "__with_extraction_date_attribute.json"
+    # generated_json_filename_suffix = "__with_extraction_date_attribute.json"
 
-    generated_json_filename_1 = add_date_extract_attribute(
+    # generated_json_filename = add_date_extract_attribute(
+    add_date_extract_attribute(
         json_files_directory=generated_json_files_directory,
-        json_filename=generated_json_filename_0,
-        new_json_filename=f'{generated_json_filename_0.split(".json")[0]}{generated_json_filename_1_suffix}'.replace("__0__", "__1__"),
-        date_to_insert="2025-03-02",  # à commenter si on veut mettre la date du jour
+        # json_filename=generated_json_filename,
+        json_filename=json_filename,
+        # new_json_filename=f'{generated_json_filename.split(".json")[0]}{generated_json_filename_suffix}'.replace("__0__", "__1__"),
+        # new_json_filename=generated_json_filename,
+        new_json_filename=json_filename,  # on écrase le fichier en entrée
+        date_to_insert="2025-03-22",  # à commenter si on veut mettre la date du jour
     )
 
-    print(f"  -> fichier généré : {generated_json_filename_1}\n")
+    # la valeur "date_to_insert" écrase la valeur si l'attribut est existant dans le json
+
+    # Print de la shape du DataFrame du json nouvellement écrit pour information
+    df = pd.read_json(os.path.join(generated_json_files_directory, json_filename), dtype=False)
+
+    # print(Fore.YELLOW + str(df.shape))
+    print(f'{Fore.YELLOW}{df.shape}   -   Valeur de "dateExtraction" pour le premier document json : {df.loc[1, "dateExtraction"]}')
 
 #################################################################################################################################
 
@@ -207,26 +247,33 @@ if launch_keep_only_offres_from_metropole:
             => json_generated_filename_2 = "2025-03-05--22h09__2__only_metropole__13419_offres.json"
     """
 
-    generated_json_filename_2_suffix = "__2__only_metropole__xxxxx_offres.json"
+    # generated_json_filename_suffix = "__2__only_metropole__xxxxx_offres.json"
 
-    generated_json_filename_2, df_lines_num = keep_only_offres_from_metropole(
+    # generated_json_filename, df_lines_num = keep_only_offres_from_metropole(
+    # generated_json_filename, _ = keep_only_offres_from_metropole(
+    keep_only_offres_from_metropole(
         json_files_directory=generated_json_files_directory,
-        json_filename=generated_json_filename_1,
-        new_json_filename=f"{generated_json_filename_1.split('__1__')[0]}{generated_json_filename_2_suffix}",
+        # json_filename=generated_json_filename,
+        json_filename=json_filename,
+        # new_json_filename=f"{generated_json_filename_1.split('__1__')[0]}{generated_json_filename_2_suffix}",
+        # new_json_filename=generated_json_filename,
+        new_json_filename=json_filename,  # on écrase le fichier en entrée
     )
 
     # Le fichier s'appelle "2025-03-12--21h13__2__only_metropole__xxxxx_offres.json" (première élément retourné par "keep_only_offres_from_metropole()")
     # On remplace le nom du fichier en remplaçant le "xxxxx" avec le nombre de lignes du DataFrame (deuxième élément retourné par "keep_only_offres_from_metropole()")
 
-    os.rename(
-        os.path.join(generated_json_files_directory, generated_json_filename_2),
-        os.path.join(generated_json_files_directory, generated_json_filename_2.replace("xxxxx", str(df_lines_num))),
-    )
+    # os.rename(
+    #     os.path.join(generated_json_files_directory, generated_json_filename_2),
+    #     os.path.join(generated_json_files_directory, generated_json_filename_2.replace("xxxxx", str(df_lines_num))),
+    # )
 
-    generated_json_filename_2 = generated_json_filename_2.replace("xxxxx", str(df_lines_num))
+    # generated_json_filename_2 = generated_json_filename_2.replace("xxxxx", str(df_lines_num))
 
-    print(f"  -> fichier généré : {generated_json_filename_2}\n")
+    # print(f"  -> fichier généré : {generated_json_filename_2}\n")
 
+    # Print de la shape du DataFrame du json nouvellement écrit pour information
+    print(Fore.YELLOW + str(pd.read_json(os.path.join(generated_json_files_directory, json_filename), dtype=False).shape))
 
 #################################################################################################################################
 
@@ -244,12 +291,18 @@ if launch_add_location_attributes:
             => json_generated_filename_3 = "2025-03-05--22h09__3__with_location_attributes.json"
     """
 
-    generated_json_filename_3_suffix = "__3__with_location_attributes.json"
+    # generated_json_filename_3_suffix = "__3__with_location_attributes.json"
 
-    generated_json_filename_3 = add_location_attributes(
+    # generated_json_filename_3 = add_location_attributes(
+    add_location_attributes(
         json_files_directory=generated_json_files_directory,
-        json_filename=generated_json_filename_2,
-        new_json_filename=f"{generated_json_filename_2.split("__2__")[0]}{generated_json_filename_3_suffix}",
+        # json_filename=generated_json_filename_2,
+        json_filename=json_filename,
+        # new_json_filename=f"{generated_json_filename_2.split("__2__")[0]}{generated_json_filename_3_suffix}",
+        new_json_filename=json_filename,
     )
 
-    print(f"  -> fichier généré : {generated_json_filename_3}\n")
+    # print(f"  -> fichier généré : {generated_json_filename_3}\n")
+
+    # Print de la shape du DataFrame du json nouvellement écrit pour information
+    print(Fore.YELLOW + str(pd.read_json(os.path.join(generated_json_files_directory, json_filename), dtype=False).shape))
