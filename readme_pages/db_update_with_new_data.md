@@ -47,6 +47,8 @@ La moulinette Python crée les fichiers suivants dans le dossier "api_extract__t
 
         - s'il y a un fichier json, le script `extract_and_transform_data.py` devrait mettre à jour la date et l'heure avec le moment où il est lancé, par exemple  "2025-04-02--20h40__extraction__occurence_2.json", le point important est d'avoir "__extraction__occurence_2.json" qui montre que le numéro dans le nom du fichier a été incrémenter
 
+          - l'ancien fichier devra être archivé dans un dossier à part, avant d'être renommé et traité
+
         - s'il n'y a pas de fichier json, le script `extract_and_transform_data.py` devrait créer un fichier json, par exemple  "2025-04-02--14h40__extraction__occurence_1.json", le point important est d'avoir "__extraction__occurence_1.json" qui mentionne qu'il s'agit de la première occurence
 
         - s'il contient plusieurs fichiers json, on arrête le script.

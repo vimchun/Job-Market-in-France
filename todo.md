@@ -15,6 +15,14 @@
     => code Python pour télécharger les fichiers depuis le site de l'insee (extraction du .zip, etc...)
 
 
+  1. Logguer dans un fichier : la date et l'heure quand l'extraction a été exécutée, et le nombre d'offres
+
+      ```csv
+      nom_fichier, nombre d'offres récupérées par API
+      2025-04-03--18h22__extraction_occurence_9.json, 1000
+      2025-04-03--19h50__extraction_occurence_10.json, 1000
+      ```
+
 
 ## nice to have
 

@@ -144,26 +144,6 @@ def get_referentiel_pays(token):
     return None
 
 
-def remove_all_json_files(json_files_directory):
-    """
-    Supprime tous les fichiers json du dossier spécifié
-    """
-
-    print(f'{Fore.GREEN}\n==> Fonction "remove_all_json_files()"\n')
-
-    for file in os.listdir(json_files_directory):
-        json_to_delete = os.path.join(json_files_directory, file)
-
-        # Vérifie si c'est un fichier et si son extension est .json
-        if os.path.isfile(json_to_delete) and file.endswith(".json"):
-            try:
-                os.remove(json_to_delete)
-            except Exception as e:
-                print(f"Erreur lors de la suppression de {json_to_delete}: {e}")
-
-    return None
-
-
 def create_csv__code_name__city_department_region():
     """
     Créé à partir du notebook "1--create_csv_codes__city_departement_region.ipynb".
@@ -323,6 +303,26 @@ def create_csv__code_name__city_department_region():
     )
 
 
+def remove_all_json_files(json_files_directory):
+    """
+    Supprime tous les fichiers json du dossier spécifié
+    """
+
+    print(f'{Fore.GREEN}\n==> Fonction "remove_all_json_files()"\n')
+
+    for file in os.listdir(json_files_directory):
+        json_to_delete = os.path.join(json_files_directory, file)
+
+        # Vérifie si c'est un fichier et si son extension est .json
+        if os.path.isfile(json_to_delete) and file.endswith(".json"):
+            try:
+                os.remove(json_to_delete)
+            except Exception as e:
+                print(f"Erreur lors de la suppression de {json_to_delete}: {e}")
+
+    return None
+
+
 def get_offres(token, code_appellation_libelle, filter_params):
     """
     A partir des appellations ROME décrites dans "code_appellation_libelle.yml", récupérer les offres de chaque appellation et les écrit dans un fichier json.
@@ -331,8 +331,6 @@ def get_offres(token, code_appellation_libelle, filter_params):
 
     Ne retourne rien.
     """
-
-    print(f'{Fore.GREEN}\n==> Fonction "get_offres()"\n')
 
     appellation = filter_params["appellation"]
 
@@ -376,10 +374,10 @@ def get_offres(token, code_appellation_libelle, filter_params):
             max_offres = int(content_range.split("/")[-1])
 
         if filter_params["appellation"] in codes_list:
-            output_file = os.path.join(current_directory, "outputs", "offres", "original_json_files_from_api", f"{appellation}_{libelle}.json")
+            output_file = os.path.join(current_directory, "outputs", "offres", "0--original_json_files_from_api", f"{appellation}_{libelle}.json")
 
         else:
-            output_file = os.path.join(current_directory, "outputs", "offres", "original_json_files_from_api", f"{appellation}.json")
+            output_file = os.path.join(current_directory, "outputs", "offres", "0--original_json_files_from_api", f"{appellation}.json")
 
         if os.path.exists(output_file):
             os.remove(output_file)
@@ -443,7 +441,14 @@ def get_offres(token, code_appellation_libelle, filter_params):
                         f.write(",\n")  # Ajouter une virgule après chaque objet
                         document_id += 1
                     print(f"{range_start}-{range_end}/{max_offres} {Fore.YELLOW}--> écriture dans le fichier (total: {document_id})")
+                elif response.status_code == 204:  # "No Content successful"
+                    # L'erreur 204 est dans un elif car pour cette erreur, "response.json()" renvoie l'erreur :
+                    #   "requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)"
+                    print(f"Status Code: {response.status_code}")
                 else:
+                    # Pas de problème avec
+                    #   - Status Code: 400 ('La position de début doit être inférieure ou égale à 3000.')
+                    #   - Status Code: 500 ('Erreur technique. Veuillez contacter le support de francetravail.io.')
                     print(f"Status Code: {response.status_code}, {response.json()}")
                     break
 
