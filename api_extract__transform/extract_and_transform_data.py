@@ -1,4 +1,6 @@
 import os
+import shutil
+import sys
 
 from datetime import datetime
 from pathlib import Path
@@ -22,11 +24,6 @@ from functions import (
     remove_all_json_files,
 )
 
-#### "Partie paramétrable"
-# On entre le nom du fichier qui sera le nom final du fichier json
-# todo Le code futur devra incrémenter ce chiffre après chaque extraction
-
-
 current_directory = os.path.dirname(os.path.abspath(__file__))
 generated_json_files_directory = os.path.join(current_directory, "outputs", "offres", "1--generated_json_file")
 
@@ -34,6 +31,7 @@ generated_json_files_directory = os.path.join(current_directory, "outputs", "off
 # création liste avec tous les fichiers json
 json_file_in_generated_directory = [file for file in os.listdir(generated_json_files_directory) if file.endswith(".json")]
 
+today = datetime.now().strftime("%Y-%m-%d--%Hh%M")
 
 # On continue le script si le dossier contient 0 ou 1 fichier json.
 if len(json_file_in_generated_directory) == 1:  # en premier car cas le plus fréquent
@@ -41,44 +39,75 @@ if len(json_file_in_generated_directory) == 1:  # en premier car cas le plus fr�
     current_json_file = json_file_in_generated_directory[0]  # exemple : 2025-04-02--15h52__extraction_occurence_0.json
 
     # On renomme le fichier json en mettant à jour la date et l'heure et on incrémente le numéro de l'occurence dans le nom du fichier
-    today = datetime.now().strftime("%Y-%m-%d--%Hh%M")
 
     occurence_number = int(Path(current_json_file).stem.split("extraction_occurence_")[1])  # note : stem pour récupérer le nom du fichier sans l'extension
     occurence_number += 1
 
-    json_file = f"{today}__extraction_occurence_{occurence_number}.json"
+    json_filename = f"{today}__extraction_occurence_{occurence_number}.json"
+
+    print(
+        f'Il y a 1 fichier json ("{current_json_file}") dans le dossier "{generated_json_files_directory}"',
+        "",
+        f"{Fore.RED}== Lancement de l'extraction occurence {occurence_number} ==",
+        f'Nouveau nom fichier json : "{json_filename}"',
+        sep="\n",
+    )
+
+    # archive de l'ancien fichier avant de le renommer et de le traiter
+    # shutil.copy(
+    #     os.path.join(generated_json_files_directory, current_json_file),
+    #     os.path.join(generated_json_files_directory, "archive_json_files", current_json_file),
+    # )
 
     os.rename(
         os.path.join(generated_json_files_directory, current_json_file),
-        os.path.join(generated_json_files_directory, json_file),
+        os.path.join(generated_json_files_directory, json_filename),
     )
+
+    df = pd.read_json(os.path.join(generated_json_files_directory, json_filename), dtype=False)
+
+    print(df)
+
 
 elif not json_file_in_generated_directory:
     # Le dossier contient 0 fichier json.
-    print("0")
+    print(
+        f'Il n\'y a pas de fichier json dans le dossier "{generated_json_files_directory}"',
+        f"{Fore.RED}== Lancement de l'extraction occurence 1 ==",
+        sep="\n",
+    )
+
+    json_filename = f"{today}__extraction_occurence_1.json"
 
 elif len(json_file_in_generated_directory) > 1:
     # Il y a plus d'un fichier, on arrête le script car le dossier doit en contenir 0 ou 1.
-    print("more")
+    print(
+        f'Il y a plusieurs fichiers json dans le dossier : "{generated_json_files_directory}" (il n\'en faut que 0 ou 1)',
+        f"{Fore.RED}== Arrêt du script ==",
+        sep="\n",
+    )
+    sys.exit()
 
 
 # today = datetime.now().strftime("%Y-%m-%d--%Hh%M")
 # json_filename = f"{today}__extraction_occurence_0.json"  # Pour ne pas le hardcoder
 # json_filename = "2025-04-02--14h40__extraction__occurence_0.json"  # Pour le hardcoder
 
+#### "Partie paramétrable"
 # Lancer les fonctions plus simplement ("= 1" pour lancer la fonction)
-#  Notes :  - Il faut tout mettre à 1 pour le script de bout en bout.
-#           - S'il n'y a pas de commentaire, la fonction met quelques secondes d'exécution.
-launch_get_referentiel_appellations_rome = 0
-launch_get_referentiel_pays = 0
-launch_remove_all_json_files = 0
-launch_create_csv__code_name__city_department_region = 0
+launch_get_referentiel_appellations_rome = 0  # fichier "appellations_rome.json" déjà généré et poussé (pas utile de relancer)
+launch_get_referentiel_pays = 0  # fichier "pays.json" déjà généré et poussé (pas utile de relancer)
+launch_create_location_csv = 0  # fichier "code_name__city_department_region.csv" déjà généré et poussé (pas utile de relancer)
 #
-launch_get_offres = 0  # ~ 20 minutes
-launch_concatenate_all_json_into_one = 0  # ~ 1 minute
-launch_add_date_extract_attribute = 0
-launch_keep_only_offres_from_metropole = 0
-launch_add_location_attributes = 0  # ~ 5 minutes
+#  Notes :  - Il faut mettre à 1 toutes les variables suivantes pour exécuter le script de bout en bout.
+#           - S'il n'y a pas de commentaire, la fonction met quelques secondes d'exécution.
+#
+launch_remove_all_get_json_files = 1  # ~ quelques secondes
+launch_get_offres = 1  # ~ 20 minutes
+launch_concatenate_all_json_into_one = 1  # ~ 1 minute
+launch_add_date_extract_attribute = 1  # ~ quelques secondes
+launch_keep_only_offres_from_metropole = 1  # ~ quelques secondes
+launch_add_location_attributes = 1  # ~ 5 minutes
 #### Fin "Partie paramétrable"
 
 
@@ -94,8 +123,8 @@ with open(credential_filename, "r") as file:
 IDENTIFIANT_CLIENT = creds["API_FRANCE_TRAVAIL"]["IDENTIFIANT_CLIENT"]
 CLE_SECRETE = creds["API_FRANCE_TRAVAIL"]["CLE_SECRETE"]
 
-# token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)
-token = ""  # lors des tests pour éviter de faire une requête
+token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)
+# token = ""  # lors des tests pour éviter de faire une requête
 
 
 if launch_get_referentiel_appellations_rome:
@@ -108,17 +137,19 @@ if launch_get_referentiel_pays:
 
 #################################################################################################################################
 
-if launch_remove_all_json_files:
+if launch_remove_all_get_json_files:
     remove_all_json_files(json_files_original_from_api_directory)
 
 #################################################################################################################################
 
-if launch_create_csv__code_name__city_department_region:
+if launch_create_location_csv:
     create_csv__code_name__city_department_region()
 
 #################################################################################################################################
 
 if launch_get_offres:
+    print(f'{Fore.GREEN}\n==> Fonction "get_offres()"\n')
+
     credential_filename = os.path.join(current_directory, "code_appellation_libelle.yml")
 
     with open(credential_filename, "r") as file:
@@ -210,7 +241,7 @@ if launch_add_date_extract_attribute:
         json_files_directory=generated_json_files_directory,
         json_filename=json_filename,
         new_json_filename=json_filename,  # on écrase le fichier en entrée
-        date_to_insert="2025-03-22",  # à commenter si on veut mettre la date du jour
+        # date_to_insert="2025-03-22",  # à commenter si on veut mettre la date du jour
         # la valeur "date_to_insert" écrase la valeur si l'attribut est existant dans le json
     )
 
