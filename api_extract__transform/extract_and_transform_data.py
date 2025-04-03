@@ -1,6 +1,7 @@
 import os
 
 from datetime import datetime
+from pathlib import Path
 
 import pandas as pd
 import yaml
@@ -25,9 +26,45 @@ from functions import (
 # On entre le nom du fichier qui sera le nom final du fichier json
 # todo Le code futur devra incrémenter ce chiffre après chaque extraction
 
-today = datetime.now().strftime("%Y-%m-%d--%Hh%M")
-json_filename = f"{today}__extraction_0.json"  # Pour ne pas le hardcoder
-# json_filename = "2025-04-02--14h40__extraction_0.json"  # Pour le hardcoder
+
+current_directory = os.path.dirname(os.path.abspath(__file__))
+generated_json_files_directory = os.path.join(current_directory, "outputs", "offres", "1--generated_json_file")
+
+
+# création liste avec tous les fichiers json
+json_file_in_generated_directory = [file for file in os.listdir(generated_json_files_directory) if file.endswith(".json")]
+
+
+# On continue le script si le dossier contient 0 ou 1 fichier json.
+if len(json_file_in_generated_directory) == 1:  # en premier car cas le plus fréquent
+    # Le dossier contient 1 fichier json.
+    current_json_file = json_file_in_generated_directory[0]  # exemple : 2025-04-02--15h52__extraction_occurence_0.json
+
+    # On renomme le fichier json en mettant à jour la date et l'heure et on incrémente le numéro de l'occurence dans le nom du fichier
+    today = datetime.now().strftime("%Y-%m-%d--%Hh%M")
+
+    occurence_number = int(Path(current_json_file).stem.split("extraction_occurence_")[1])  # note : stem pour récupérer le nom du fichier sans l'extension
+    occurence_number += 1
+
+    json_file = f"{today}__extraction_occurence_{occurence_number}.json"
+
+    os.rename(
+        os.path.join(generated_json_files_directory, current_json_file),
+        os.path.join(generated_json_files_directory, json_file),
+    )
+
+elif not json_file_in_generated_directory:
+    # Le dossier contient 0 fichier json.
+    print("0")
+
+elif len(json_file_in_generated_directory) > 1:
+    # Il y a plus d'un fichier, on arrête le script car le dossier doit en contenir 0 ou 1.
+    print("more")
+
+
+# today = datetime.now().strftime("%Y-%m-%d--%Hh%M")
+# json_filename = f"{today}__extraction_occurence_0.json"  # Pour ne pas le hardcoder
+# json_filename = "2025-04-02--14h40__extraction__occurence_0.json"  # Pour le hardcoder
 
 # Lancer les fonctions plus simplement ("= 1" pour lancer la fonction)
 #  Notes :  - Il faut tout mettre à 1 pour le script de bout en bout.
@@ -38,20 +75,18 @@ launch_remove_all_json_files = 0
 launch_create_csv__code_name__city_department_region = 0
 #
 launch_get_offres = 0  # ~ 20 minutes
-launch_concatenate_all_json_into_one = 1  # ~ 1 minute
-launch_add_date_extract_attribute = 1
-launch_keep_only_offres_from_metropole = 1
-launch_add_location_attributes = 1  # ~ 5 minutes
+launch_concatenate_all_json_into_one = 0  # ~ 1 minute
+launch_add_date_extract_attribute = 0
+launch_keep_only_offres_from_metropole = 0
+launch_add_location_attributes = 0  # ~ 5 minutes
 #### Fin "Partie paramétrable"
 
 
 # Récupération des credentials données sur le site de FT, depuis un fichier yaml
 SCOPES_OFFRES = "o2dsoffre api_offresdemploiv2"  # scopes définis dans https://francetravail.io/produits-partages/catalogue/offres-emploi/documentation#/
 CREDENTIALS_FILE = "api_credentials_minh.yml"  # à modifier selon qui lance le script
-current_directory = os.path.dirname(os.path.abspath(__file__))
 credential_filename = os.path.join(current_directory, CREDENTIALS_FILE)
 json_files_original_from_api_directory = os.path.join(current_directory, "outputs", "offres", "0--original_json_files_from_api")
-generated_json_files_directory = os.path.join(current_directory, "outputs", "offres", "1--generated_json_files")
 
 with open(credential_filename, "r") as file:
     creds = yaml.safe_load(file)
@@ -59,7 +94,8 @@ with open(credential_filename, "r") as file:
 IDENTIFIANT_CLIENT = creds["API_FRANCE_TRAVAIL"]["IDENTIFIANT_CLIENT"]
 CLE_SECRETE = creds["API_FRANCE_TRAVAIL"]["CLE_SECRETE"]
 
-token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)
+# token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)
+token = ""  # lors des tests pour éviter de faire une requête
 
 
 if launch_get_referentiel_appellations_rome:
