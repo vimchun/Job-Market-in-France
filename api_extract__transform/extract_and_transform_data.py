@@ -167,8 +167,8 @@ if 1:
         df1_minus_intersection = df1[~df1.id.isin(intersection_ids)]  # c'est la "partie_1" dans "workflow_db_update.drawio"
         df_concat = pd.concat([df1_minus_intersection, df2])  # concaténation de "partie_1" et "partie_2" (cf "workflow_db_update.drawio")
 
-        # Ecriture du nom du fichier et du nombre d'offres dans le fichier "json_files_history.csv"
-        with open(os.path.join(generated_json_files_directory, "json_files_history.csv"), "a") as f:
+        # Ecriture du nom du fichier et du nombre d'offres dans le fichier "_json_files_history.csv"
+        with open(os.path.join(generated_json_files_directory, "_json_files_history.csv"), "a", newline="") as f:
             writer = csv.writer(f)
             writer.writerow([new_json_file, len(df_concat)])
 
