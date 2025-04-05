@@ -9,33 +9,38 @@ Notes : met environ 11 minutes pour remplir les 19 tables, pour ~14k offres et ~
 
 
 # Booléens pour remplir ou pas les tables associées
-fill_table_OffreEmploi = 1
+fill_table_OffreEmploi = 0
 fill_table_Contrat = 0
 fill_table_Entreprise = 0
-fill_table_Localisation = 0
-fill_table_DescriptionOffre = 0
-fill_table_Competence, fill_table_Offre_Competence = 0, 0
-fill_table_Experience, fill_table_Offre_Experience = 0, 0
-fill_table_Formation, fill_table_Offre_Formation = 0, 0
-fill_table_QualiteProfessionnelle, fill_table_Offre_QualiteProfessionnelle = 0, 0
-fill_table_Qualification, fill_table_Offre_Qualification = 0, 0
-fill_table_Langue, fill_table_Offre_Langue = 0, 0
-fill_table_PermisConduire, fill_table_Offre_PermisConduire = 0, 0
+fill_table_Localisation = 1
+fill_table_DescriptionOffre = 1
+fill_table_Competence, fill_table_Offre_Competence = 1, 1
+fill_table_Experience, fill_table_Offre_Experience = 1, 1
+fill_table_Formation, fill_table_Offre_Formation = 1, 1
+fill_table_QualiteProfessionnelle, fill_table_Offre_QualiteProfessionnelle = 1, 1
+fill_table_Qualification, fill_table_Offre_Qualification = 1, 1
+fill_table_Langue, fill_table_Offre_Langue = 1, 1
+fill_table_PermisConduire, fill_table_Offre_PermisConduire = 1, 1
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 
 sql_safe_null = "Ceci est un string qui figure nulle part dans le json pour pouvoir écrire les NULL sans doublon"  # ne peut pas être "-" car cette valeur peut exister
 
+# Charger le fichier json dans le dossier "1--generated_json_file"
+generated_json_files_directory = os.path.join(current_directory, "..", "api_extract__transform", "outputs", "offres", "1--generated_json_file")
+json_file_in_generated_directory = [file for file in os.listdir(generated_json_files_directory) if file.endswith(".json")]
+
+assert len(json_file_in_generated_directory) == 1  # On doit avoir un seul fichier json dans le dossier
+
+current_json_file = json_file_in_generated_directory[0]  # exemple : 2025-04-02--15h52__extraction_occurence_1.json
+
+
 with open(
     os.path.join(
-        current_directory,
-        "..",
-        "api_extract__transform",
-        "outputs",
-        "offres",
-        "1--generated_json_files",
-        "2025-03-12--21h13__3__with_dateExtraction_attribute.json",
-        # "2025-03-12--21h13__2__with_location_attributes.json",
+        generated_json_files_directory,
+        current_json_file,
+        # "2025-03-02--18h36__extraction_occurence_1.json",
+        # "2025-04-04--17h18__extraction_occurence_2.json",
     ),
     "r",
 ) as file:
@@ -47,16 +52,21 @@ def fill_db(db_name, attributes_tuple, on_conflict_string):
     Crée et exécute la requête pour insérer les données dans la table "db_name".
     Evite de devoir construire la requête suivante et de l'écrire <nombre_de_tables> fois :
 
+    https://www.postgresql.org/docs/current/sql-insert.html
+
         # query = cursor.execute(
         #     '''--sql
         #     INSERT INTO OffreEmploi (offre_id, date_creation, date_actualisation, nombre_postes)
         #         VALUES (%s, %s, %s, %s)
         #     ON CONFLICT (offre_id)
-        #         DO NOTHING
+        #         -- DO NOTHING
+        #         DO UPDATE SET
+        #             date_creation = EXCLUDED.date_creation,
+        #             date_actualisation = EXCLUDED.date_actualisation,
+        #             nombre_postes = EXCLUDED.nombre_postes
         #     ''',
         #     (offre_id, date_creation, date_actualisation, nombre_postes)
         # )
-        #
         # cursor.execute(query, (offre_id, date_creation, date_actualisation, nombre_postes))
         # conn.commit()  # Commit des changements
 
@@ -73,11 +83,15 @@ def fill_db(db_name, attributes_tuple, on_conflict_string):
     query = f"""
         INSERT INTO {db_name} ({string_attributs})
         VALUES ({placeholders})
-        ON CONFLICT ({", ".join(on_conflict_string.split(" | "))}) DO NOTHING
+        ON CONFLICT ({", ".join(on_conflict_string.split(" | "))})
+        -- DO NOTHING
+        DO UPDATE SET
+            {", ".join([f"{attr} = EXCLUDED.{attr}" for attr in attributes_tuple if attr not in on_conflict_string.split(" | ")])}
     """
 
     # print(", ".join(on_conflict_string.split(" | ")))
     cursor.execute(query, tuple(dict_.values()))
+    # cursor.execute(query, tuple(globals().get(attr) for attr in attributes_tuple))
 
     conn.commit()  # Commit des changements
 
@@ -242,7 +256,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                 nom_region = offre.get("nom_region")
 
                 # print pour investigation si besoin :
-                # print(offre_id, code_insee, nom_commune, code_postal, nom_ville, code_departement, nom_departement, code_region, nom_region, sep="\n-> ")
+                print(offre_id, code_insee, nom_commune, code_postal, nom_ville, code_departement, nom_departement, code_region, nom_region, sep="\n-> ")
 
                 fill_db(
                     db_name="Localisation",
