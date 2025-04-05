@@ -228,6 +228,9 @@ def create_csv__code_name__city_department_region():
         inplace=True,
     )
 
+    # On exclut les régions hors de la France Métropolitaine
+    df_region = df_region[~df_region.nom_region.isin(["Guadeloupe", "Martinique", "Guyane", "La Réunion", "Mayotte", "Corse"])]
+
     # merging
 
     df_lien_2 = df_commune.merge(df_departement, on="code_departement").merge(df_region, on="code_region")
