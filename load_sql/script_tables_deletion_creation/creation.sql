@@ -1,7 +1,7 @@
 -------------------
 -- table de fait --
 -------------------
-DROP TABLE OffreEmploi CASCADE;
+-- DROP TABLE OffreEmploi CASCADE;
 CREATE TABLE OffreEmploi (
     offre_id VARCHAR(7) NOT NULL PRIMARY KEY
     , date_extraction DATE
@@ -53,6 +53,7 @@ CREATE TABLE Localisation (
     , nom_region VARCHAR(200)
 );
 
+DROP TABLE DescriptionOffre CASCADE;
 CREATE TABLE DescriptionOffre (
     offre_id VARCHAR(7) NOT NULL PRIMARY KEY
     , intitule_offre VARCHAR(200)

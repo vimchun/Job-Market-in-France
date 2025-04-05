@@ -36,7 +36,7 @@ sql_files = (
     "08--table_localisation__3__nom_region.pgsql",
     "09--table_entreprise__1__nom_entreprise__entreprise_adapte.pgsql",
     "09--table_entreprise__2__secteur_activite_libelle.pgsql",
-    # "10--table_descriptionoffre__1__intitule__description.pgsql",
+    "10--table_descriptionoffre__1__intitule__description.pgsql",
     "10--table_descriptionoffre__2__nom_partenaire.pgsql",
     "10--table_descriptionoffre__3__rome.pgsql",
     "10--table_descriptionoffre__3__rome_M1811.pgsql",
