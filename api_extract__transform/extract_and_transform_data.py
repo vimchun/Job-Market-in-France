@@ -1,3 +1,4 @@
+import csv
 import os
 import shutil
 import sys
@@ -11,6 +12,7 @@ import yaml
 from colorama import Fore, Style, init
 
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
+
 from functions import (
     add_date_extract_attribute,
     add_location_attributes,
@@ -125,109 +127,117 @@ def functions_sequence(json_files_from_api_directory, generated_json_files_direc
         print(f'{Fore.YELLOW}{df.shape}   -   Valeur de "dateExtraction" pour le premier document json : {df.loc[1, "dateExtraction"]}')  # Print shape df du json nouvellement écrit
 
 
-# création liste avec tous les fichiers json
-json_file_in_generated_directory = [file for file in os.listdir(generated_json_files_directory) if file.endswith(".json")]
+if 1:
+    # création liste avec tous les fichiers json
+    json_file_in_generated_directory = [file for file in os.listdir(generated_json_files_directory) if file.endswith(".json")]
 
-now = datetime.now().strftime("%Y-%m-%d--%Hh%M")
+    now = datetime.now().strftime("%Y-%m-%d--%Hh%M")
 
-# Le script continue si le dossier "1--generated_json_file" contient 0 ou 1 fichier json
+    # Le script continue si le dossier "1--generated_json_file" contient 0 ou 1 fichier json
 
-if len(json_file_in_generated_directory) == 1:  # en premier car cas le plus fréquent
-    #### Le dossier contient 1 fichier json.
-    current_json_file = json_file_in_generated_directory[0]  # exemple : 2025-04-02--15h52__extraction_occurence_1.json
+    if len(json_file_in_generated_directory) == 1:  # en premier car cas le plus fréquent
+        #### Le dossier contient 1 fichier json.
+        current_json_file = json_file_in_generated_directory[0]  # exemple : 2025-04-02--15h52__extraction_occurence_1.json
 
-    # Création d'un nouveau json, créé à partir des nouvelles offres, avec de nouveaux appels API
-    occurence_number = int(Path(current_json_file).stem.split("extraction_occurence_")[1])  # note : stem pour récupérer le nom du fichier sans l'extension
-    new_json_file = f"{now}__extraction_occurence_{occurence_number+1}.json"
+        # Création d'un nouveau json, créé à partir des nouvelles offres, avec de nouveaux appels API
+        occurence_number = int(Path(current_json_file).stem.split("extraction_occurence_")[1])  # note : stem pour récupérer le nom du fichier sans l'extension
+        new_json_file = f"{now}__extraction_occurence_{occurence_number+1}.json"
 
-    print(
-        f'Il y a 1 fichier json dans le dossier "{generated_json_files_directory}"',
-        f' -> json_1 = "{Fore.YELLOW}{current_json_file}{Style.RESET_ALL}"',
-        "",
-        f"{Fore.RED}== Lancement de l'extraction occurence {occurence_number+1} ==",
-        f'On va créer json_2 = "{Fore.YELLOW}{new_json_file}{Style.RESET_ALL}" à partir de nouvelles requêtes API, qui après traitement sera le seul json qui restera dans le dossier',
-        sep="\n",
-    )
+        print(
+            f'Il y a 1 fichier json dans le dossier "{generated_json_files_directory}"',
+            f' -> json_1 = "{Fore.YELLOW}{current_json_file}{Style.RESET_ALL}"',
+            "",
+            f"{Fore.RED}== Lancement de l'extraction occurence {occurence_number+1} ==",
+            f'On va créer json_2 = "{Fore.YELLOW}{new_json_file}{Style.RESET_ALL}" à partir de nouvelles requêtes API, qui après traitement sera le seul json qui restera dans le dossier',
+            sep="\n",
+        )
 
-    functions_sequence(
-        json_files_from_api_directory=json_files_original_from_api_directory,
-        generated_json_files_directory=generated_json_files_directory,
-        json_filename=new_json_file,
-    )
+        functions_sequence(
+            json_files_from_api_directory=json_files_original_from_api_directory,
+            generated_json_files_directory=generated_json_files_directory,
+            json_filename=new_json_file,
+        )
 
-    print("\nConcaténation entre le json précédemment présent dans le dossier, et le json nouvellement créé\n")
-    df1 = pd.read_json(os.path.join(generated_json_files_directory, current_json_file), dtype=False)
-    df2 = pd.read_json(os.path.join(generated_json_files_directory, new_json_file), dtype=False)
+        print("\nConcaténation entre le json précédemment présent dans le dossier, et le json nouvellement créé\n")
+        df1 = pd.read_json(os.path.join(generated_json_files_directory, current_json_file), dtype=False)
+        df2 = pd.read_json(os.path.join(generated_json_files_directory, new_json_file), dtype=False)
 
-    #
-    intersection_ids = pd.merge(df1, df2, on="id")["id"].tolist()
-    df1_minus_intersection = df1[~df1.id.isin(intersection_ids)]  # c'est la "partie_1" dans "workflow_db_update.drawio"
-    df_concat = pd.concat([df1_minus_intersection, df2])  # concaténation de "partie_1" et "partie_2" (cf "workflow_db_update.drawio")
+        #
+        intersection_ids = pd.merge(df1, df2, on="id")["id"].tolist()
+        df1_minus_intersection = df1[~df1.id.isin(intersection_ids)]  # c'est la "partie_1" dans "workflow_db_update.drawio"
+        df_concat = pd.concat([df1_minus_intersection, df2])  # concaténation de "partie_1" et "partie_2" (cf "workflow_db_update.drawio")
 
-    print(Fore.YELLOW + str(pd.read_json(os.path.join(generated_json_files_directory, df_concat), dtype=False).shape))  # Print shape df du json nouvellement écrit
+        # Ecriture du nom du fichier et du nombre d'offres dans le fichier "json_files_history.csv"
+        with open(os.path.join(generated_json_files_directory, "json_files_history.csv"), "a") as f:
+            writer = csv.writer(f)
+            writer.writerow([new_json_file, len(df_concat)])
 
-    df_concat.to_json(
-        os.path.join(generated_json_files_directory, new_json_file),
-        orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
-        force_ascii=False,  # pour convertir les caractères spéciaux
-        indent=4,  # pour formatter la sortie
-    )
+        # Ecriture dans le fichier json
+        df_concat.to_json(
+            os.path.join(generated_json_files_directory, new_json_file),
+            orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
+            force_ascii=False,  # pour convertir les caractères spéciaux
+            indent=4,  # pour formatter la sortie
+        )
 
-    # On supprime les backslashs ajoutés par la méthode .to_json()
-    with open(os.path.join(generated_json_files_directory, new_json_file), "r", encoding="utf-8") as f:
-        content = f.read()
+        # On supprime les backslashs ajoutés par la méthode .to_json()
+        with open(os.path.join(generated_json_files_directory, new_json_file), "r", encoding="utf-8") as f:
+            content = f.read()
 
-        content = content.replace("\\/", "/")  # On remplace "\/" par "/"
-        content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
+            content = content.replace("\\/", "/")  # On remplace "\/" par "/"
+            content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
 
-        # On sauvegarde le fichier final sans les '\'
-        with open(os.path.join(generated_json_files_directory, new_json_file), "w", encoding="utf-8") as f:
-            f.write(content)
+            # On sauvegarde le fichier final sans les '\'
+            with open(os.path.join(generated_json_files_directory, new_json_file), "w", encoding="utf-8") as f:
+                f.write(content)
 
-    # Le nouveau json a été mis à jour avec la concaténation, il reste à déplacer l'ancien fichier json dans le dossier "archive_json_files"
-    shutil.move(
-        os.path.join(generated_json_files_directory, current_json_file),
-        os.path.join(generated_json_files_directory, "archive_json_files", current_json_file),
-    )
+        print(f"{Fore.YELLOW}Shape du df du json concaténé : {pd.read_json(os.path.join(generated_json_files_directory, new_json_file), dtype=False).shape}")
 
-    ####
+        # Le nouveau json a été mis à jour avec la concaténation, il reste à déplacer l'ancien fichier json dans le dossier "archive_json_files"
+        shutil.move(
+            os.path.join(generated_json_files_directory, current_json_file),
+            os.path.join(generated_json_files_directory, "archive_json_files", current_json_file),
+        )
 
-elif not json_file_in_generated_directory:
-    #### Le dossier contient 0 fichier json.
-    print(
-        f'Il n\'y a pas de fichier json dans le dossier "{generated_json_files_directory}"',
-        f"{Fore.RED}== Lancement de l'extraction occurence 1 ==",
-        sep="\n",
-    )
+        ####
 
-    json_filename = f"{now}__extraction_occurence_1.json"
+    elif not json_file_in_generated_directory:
+        #### Le dossier contient 0 fichier json.
+        print(
+            f'Il n\'y a pas de fichier json dans le dossier "{generated_json_files_directory}"',
+            f"{Fore.RED}== Lancement de l'extraction occurence 1 ==",
+            sep="\n",
+        )
 
-    functions_sequence(
-        json_files_from_api_directory=json_files_original_from_api_directory,
-        generated_json_files_directory=generated_json_files_directory,
-        json_filename=json_filename,
-    )
+        json_filename = f"{now}__extraction_occurence_1.json"
 
-    ####
+        functions_sequence(
+            json_files_from_api_directory=json_files_original_from_api_directory,
+            generated_json_files_directory=generated_json_files_directory,
+            json_filename=json_filename,
+        )
 
-elif len(json_file_in_generated_directory) > 1:
-    #### Il y a plus d'un fichier, on arrête le script car le dossier doit en contenir 0 ou 1.
-    print(
-        f'Il y a plusieurs fichiers json dans le dossier : "{generated_json_files_directory}" (il n\'en faut que 0 ou 1)',
-        f"{Fore.RED}== Arrêt du script ==",
-        sep="\n",
-    )
-    sys.exit()
+        ####
+
+    elif len(json_file_in_generated_directory) > 1:
+        #### Il y a plus d'un fichier, on arrête le script car le dossier doit en contenir 0 ou 1.
+        print(
+            f'Il y a plusieurs fichiers json dans le dossier : "{generated_json_files_directory}" (il n\'en faut que 0 ou 1)',
+            f"{Fore.RED}== Arrêt du script ==",
+            sep="\n",
+        )
+        sys.exit()
 
 
 ####
 if 0:
     """
     Ce qui suit n'a normalement pas besoin d'être lancé car les fonctions ont déjà générés les fichiers (voir commentaires)
+    On laisse cette partie au cas où ça pourrait servir, par exemple pour mettre à jour un des fichiers.
     """
     launch_get_referentiel_appellations_rome = 0  # fichier "appellations_rome.json" déjà généré et poussé
     launch_get_referentiel_pays = 0  # fichier "pays.json" déjà généré et poussé
-    launch_create_location_csv = 0  # fichier "code_name__city_department_region.csv" déjà généré et poussé
+    launch_create_location_csv = 1  # fichier "code_name__city_department_region.csv" déjà généré et poussé
 
     if launch_get_referentiel_appellations_rome:
         get_referentiel_appellations_rome(token)
