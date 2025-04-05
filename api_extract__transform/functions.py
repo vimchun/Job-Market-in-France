@@ -643,7 +643,7 @@ def keep_only_offres_from_metropole(json_files_directory, json_filename, new_jso
     df_lieu_norm_metropole = df_lieu_norm[~df_lieu_norm.libelle.str.match(r"^(\d{3}|2(A|B))\s-\s")]
 
     # On exclut les offres où le libelle du lieu matche un des départements suivants
-    list_departements = [
+    list_regions = [
         "Guadeloupe",
         "Martinique",
         "Guyane",
@@ -658,10 +658,11 @@ def keep_only_offres_from_metropole(json_files_directory, json_filename, new_jso
         "Nouvelle-Calédonie",
         "Haute-Corse",
         "Corse-du-Sud",
+        "Corse",
         # "Nouvelle-Aquitaine",  # pour tester
     ]
 
-    df_lieu_norm_metropole = df_lieu_norm_metropole[~df_lieu_norm_metropole["libelle"].isin(list_departements)]  # .value_counts(subset="libelle")
+    df_lieu_norm_metropole = df_lieu_norm_metropole[~df_lieu_norm_metropole["libelle"].isin(list_regions)]  # .value_counts(subset="libelle")
 
     # On réécrit un nouveau json avec uniquement les offres en métropole
     df_only_metropole = df[df["id"].isin(df_lieu_norm_metropole["id"])]
@@ -793,7 +794,9 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
         if (latitude_min <= row["latitude"] <= latitude_max) and (longitude_min <= row["longitude"] <= longitude_max):
             row["lieu_cas"] = "cas_2"
         else:
-            row["lieu_cas"] = "cas_2_coordonnées_gps_hors_FR"
+            # par exemple pour "id": "4016067"
+            #  => "lieuTravail": { "libelle": "Corse", "latitude": 41.952873, "longitude": 8.795956 },
+            row["lieu_cas"] = "cas_2_hors_metropole"
 
         # Géocodage avec retry
         retries = 0
