@@ -2,26 +2,13 @@
 
 ## important
 
-  1. Ajouter un attribut pour savoir si l'offre est encore d'actualité ou pas
-      Attention à l'attribut "Date Actualisation"
-
-  1. Transformation Python : mettre l'étape d'ajout de la date d'extraction avant "la conservation des offres en France Métropolitaine et l'ajout des attributs des localisations"
-
+  1. mettre à jour la db avec psycopg
 
 ## pas urgent
 
   1. "1--create_csv_with_commune_departement_region_names.ipynb"
 
     => code Python pour télécharger les fichiers depuis le site de l'insee (extraction du .zip, etc...)
-
-
-  1. Logguer dans un fichier : la date et l'heure quand l'extraction a été exécutée, et le nombre d'offres
-
-      ```csv
-      nom_fichier, nombre d'offres récupérées par API
-      2025-04-03--18h22__extraction_occurence_9.json, 1000
-      2025-04-03--19h50__extraction_occurence_10.json, 1000
-      ```
 
 
 ## nice to have
