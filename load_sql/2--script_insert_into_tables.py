@@ -4,23 +4,24 @@ import os
 import psycopg2
 
 """
-Notes : met environ 11 minutes pour remplir les 19 tables, pour ~14k offres et ~60 attributs
+Notes :
+  - met environ 11 minutes pour remplir les 19 tables, pour ~14k offres et ~60 attributs
 """
 
 
 # Booléens pour remplir ou pas les tables associées
-fill_table_OffreEmploi = 0
+fill_table_OffreEmploi = 1
 fill_table_Contrat = 0
 fill_table_Entreprise = 0
-fill_table_Localisation = 1
-fill_table_DescriptionOffre = 1
-fill_table_Competence, fill_table_Offre_Competence = 1, 1
-fill_table_Experience, fill_table_Offre_Experience = 1, 1
-fill_table_Formation, fill_table_Offre_Formation = 1, 1
-fill_table_QualiteProfessionnelle, fill_table_Offre_QualiteProfessionnelle = 1, 1
+fill_table_Localisation = 0
+fill_table_DescriptionOffre = 0
+fill_table_Competence, fill_table_Offre_Competence = 0, 0  # pb
+fill_table_Experience, fill_table_Offre_Experience = 0, 0
+fill_table_Formation, fill_table_Offre_Formation = 0, 0
+fill_table_QualiteProfessionnelle, fill_table_Offre_QualiteProfessionnelle = 0, 0
 fill_table_Qualification, fill_table_Offre_Qualification = 1, 1
-fill_table_Langue, fill_table_Offre_Langue = 1, 1
-fill_table_PermisConduire, fill_table_Offre_PermisConduire = 1, 1
+fill_table_Langue, fill_table_Offre_Langue = 0, 0
+fill_table_PermisConduire, fill_table_Offre_PermisConduire = 0, 0
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 
@@ -38,64 +39,18 @@ current_json_file = json_file_in_generated_directory[0]  # exemple : 2025-04-02-
 with open(
     os.path.join(
         generated_json_files_directory,
-        current_json_file,
+        # current_json_file,
         # "2025-03-02--18h36__extraction_occurence_1.json",
         # "2025-04-04--17h18__extraction_occurence_2.json",
+        #
+        #
+        "troubleshooting",
+        # "test_with_few_documents_occurence_1.json",
+        "test_with_few_documents_occurence_2.json",
     ),
     "r",
 ) as file:
     offres_data = json.load(file)
-
-
-def fill_db(db_name, attributes_tuple, on_conflict_string):
-    """
-    Crée et exécute la requête pour insérer les données dans la table "db_name".
-    Evite de devoir construire la requête suivante et de l'écrire <nombre_de_tables> fois :
-
-    https://www.postgresql.org/docs/current/sql-insert.html
-
-        # query = cursor.execute(
-        #     '''--sql
-        #     INSERT INTO OffreEmploi (offre_id, date_creation, date_actualisation, nombre_postes)
-        #         VALUES (%s, %s, %s, %s)
-        #     ON CONFLICT (offre_id)
-        #         -- DO NOTHING
-        #         DO UPDATE SET
-        #             date_creation = EXCLUDED.date_creation,
-        #             date_actualisation = EXCLUDED.date_actualisation,
-        #             nombre_postes = EXCLUDED.nombre_postes
-        #     ''',
-        #     (offre_id, date_creation, date_actualisation, nombre_postes)
-        # )
-        # cursor.execute(query, (offre_id, date_creation, date_actualisation, nombre_postes))
-        # conn.commit()  # Commit des changements
-
-    Ne retourne rien.
-    """
-
-    string_attributs = ", ".join(attributes_tuple)  # pour avoir "attribut1, attribut2, ..." sans les quotes
-    placeholders = ", ".join(["%s"] * len(attributes_tuple))  # pour avoir "%s, %s, ..." pour chaque valeur
-
-    dict_ = {attribut: globals().get(attribut) for attribut in attributes_tuple}
-
-    # print(dict_)
-
-    query = f"""
-        INSERT INTO {db_name} ({string_attributs})
-        VALUES ({placeholders})
-        ON CONFLICT ({", ".join(on_conflict_string.split(" | "))})
-        -- DO NOTHING
-        DO UPDATE SET
-            {", ".join([f"{attr} = EXCLUDED.{attr}" for attr in attributes_tuple if attr not in on_conflict_string.split(" | ")])}
-    """
-
-    # print(", ".join(on_conflict_string.split(" | ")))
-    cursor.execute(query, tuple(dict_.values()))
-    # cursor.execute(query, tuple(globals().get(attr) for attr in attributes_tuple))
-
-    conn.commit()  # Commit des changements
-
-    return None
 
 
 with psycopg2.connect(database="francetravail", host="localhost", user="mhh", password="mhh", port=5432) as conn:
@@ -165,17 +120,36 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                 # print pour investigation si besoin :
                 # print(offre_id, date_extraction, date_creation, date_actualisation, nombre_postes, sep="\n-> ")
 
-                fill_db(
-                    db_name="OffreEmploi",
-                    attributes_tuple=(
-                        "offre_id",
-                        "date_extraction",
-                        "date_creation",
-                        "date_actualisation",
-                        "nombre_postes",
-                    ),
-                    on_conflict_string=("offre_id"),
+                cursor.execute(
+                    f"""--sql
+                        INSERT INTO OffreEmploi (offre_id, date_extraction, date_creation, date_actualisation, nombre_postes)
+                        VALUES (%s, %s, %s, %s, %s)
+                        ON CONFLICT (offre_id) DO UPDATE SET
+                            date_extraction = EXCLUDED.date_extraction,
+                            date_creation = EXCLUDED.date_creation,
+                            date_actualisation = EXCLUDED.date_actualisation,
+                            nombre_postes = EXCLUDED.nombre_postes
+                        """,
+                    (offre_id, date_extraction, date_creation, date_actualisation, nombre_postes),
                 )
+
+                conn.commit()  # Commit des changements
+
+                # req = fill_db(
+                #     db_name="OffreEmploi",
+                #     attributes_tuple=(
+                #         "offre_id",
+                #         "date_extraction",
+                #         "date_creation",
+                #         "date_actualisation",
+                #         "nombre_postes",
+                #     ),
+                #     on_conflict_string=("offre_id"),
+                # )
+
+                # print(req)
+
+                # query = f"""--sql
 
         #### table "Contrat"
 
@@ -254,9 +228,10 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                 nom_departement = offre.get("nom_departement")
                 code_region = offre.get("code_region")
                 nom_region = offre.get("nom_region")
+                lieu_cas = offre.get("lieu_cas")
 
                 # print pour investigation si besoin :
-                print(offre_id, code_insee, nom_commune, code_postal, nom_ville, code_departement, nom_departement, code_region, nom_region, sep="\n-> ")
+                # print(offre_id, code_insee, nom_commune, code_postal, nom_ville, code_departement, nom_departement, code_region, nom_region, lieu_cas, sep="\n-> ")
 
                 fill_db(
                     db_name="Localisation",
@@ -543,7 +518,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
             #### table "QualiteProfessionnelle"
 
             if fill_table_QualiteProfessionnelle:
-                print("Mise à jour de la table Formation (on réécrit les NULL)")
+                print("Mise à jour de la table QualiteProfessionnelle (on réécrit les NULL)")
                 pass  # pas besoin, on n'a pas de NULL
 
             #### table "Qualification" : inutile de le faire car toutes les clés ont "NOT NULL" dans le CREATE TABLE
@@ -747,6 +722,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
                     qualification_code = offre.get("qualificationCode")
                     qualification_libelle = offre.get("qualificationLibelle")
+                    date_extraction = offre.get("dateExtraction")
 
                     # print pour investigation si besoin :
                     # print(offre_id, qualification_code, qualification_libelle, sep="\n-->", end="\n\n")
@@ -767,11 +743,40 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                         # print pour investigation si besoin :
                         # print(offre_id, qualification_code, qualification_libelle, sep="\n-->", end="\n\n")
 
-                        fill_db(
-                            db_name="Offre_Qualification",
-                            attributes_tuple=("offre_id", "qualification_code"),
-                            on_conflict_string="offre_id | qualification_code",
+                        cursor.execute(
+                            f"""--sql
+                                INSERT INTO Offre_Qualification (offre_id, qualification_code, date_extraction)
+                                VALUES (%s, %s, %s)
+                                -- ON CONFLICT (offre_id) DO UPDATE SET
+                                ON CONFLICT (offre_id, qualification_code) DO UPDATE SET
+                                    -- qualification_code = EXCLUDED.qualification_code,
+                                    date_extraction = EXCLUDED.date_extraction
+                                """,
+                            (offre_id, qualification_code, date_extraction),
                         )
+
+                        conn.commit()
+
+                # # On supprime les lignes où 1 offre_id est présente avec 2 qualification_code différents :
+                # requête non fonctionnelle
+                # cursor.execute(
+                #     f"""--sql
+                #         DELETE FROM Offre_Qualification oq
+                #         USING Offre_Qualification oq_newer
+                #         WHERE
+                #             oq.offre_id = oq_newer.offre_id
+                #             AND oq.qualification_code = oq_newer.qualification_code
+                #             AND oq.date_extraction < oq_newer.date_extraction;
+                #             """
+                # )
+
+                # conn.commit()
+
+                # fill_db(
+                #     db_name="Offre_Qualification",
+                #     attributes_tuple=("offre_id", "qualification_code"),
+                #     on_conflict_string="offre_id | qualification_code",
+                # )
 
             #### table "Offre_Langue"
 
