@@ -61,7 +61,6 @@ def fill_db(db_name, attributes_tuple, on_conflict_string):
 
     Évite de devoir construire la requête, et de devoir dupliquer certaines informations comme les attributs.
 
-
     Exemple dans le code suivant où on écrit l'attribut date_extraction 4 fois :
 
         cursor.execute(
@@ -98,8 +97,6 @@ def fill_db(db_name, attributes_tuple, on_conflict_string):
 
     string_attributs = ", ".join(attributes_tuple)  # pour avoir "attribut1, attribut2, ..." sans les quotes
     placeholders = ", ".join(["%s"] * len(attributes_tuple))  # pour avoir "%s, %s, ..." pour chaque valeur
-
-    # dict_ = {attribut: globals().get(attribut) for attribut in attributes_tuple}
 
     query = f"""
         INSERT INTO {db_name} ({string_attributs})
@@ -199,8 +196,6 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                     ),
                     on_conflict_string=("offre_id"),
                 )
-
-        # conn.commit()
 
         #### table "Contrat"
 
@@ -494,19 +489,6 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                         on_conflict_string="qualification_code | qualification_libelle",
                     )
 
-                    # cursor.execute(
-                    #     f"""--sql
-                    #         INSERT INTO Qualification (qualification_code, qualification_libelle)
-                    #         VALUES (%s, %s)
-                    #         ON CONFLICT (qualification_code, qualification_libelle) DO UPDATE SET
-                    #             qualification_code = EXCLUDED.qualification_code,
-                    #             qualification_libelle = EXCLUDED.qualification_libelle
-                    #         """,
-                    #     (qualification_code, qualification_libelle),
-                    # )
-
-                    # conn.commit()  # Commit des changements
-
         #### table "Langue"
 
         if fill_table_Langue:
@@ -594,7 +576,6 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                         competence_code_exigence = '{sql_safe_null}'
                 """
                 cursor.execute(update_query)
-                # conn.commit()
 
             #### table "Experience"
 
@@ -614,7 +595,6 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                 """
 
                 cursor.execute(update_query)
-                # conn.commit()
 
             #### table "Formation"
 
@@ -638,7 +618,6 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                 """
 
                 cursor.execute(update_query)
-                # conn.commit()
 
             #### table "QualiteProfessionnelle"
 
@@ -649,7 +628,6 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
             #### table "Qualification" : inutile de le faire car toutes les clés ont "NOT NULL" dans le CREATE TABLE
             #### table "Langue" : inutile de le faire car toutes les clés ont "NOT NULL" dans le CREATE TABLE
             #### table "PermisConduire" : inutile de le faire car toutes les clés ont "NOT NULL" dans le CREATE TABLE
-        # conn.commit()
 
         ##################
         #### PARTIE 3 ####
@@ -730,6 +708,10 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                     experience_libelle = offre.get("experienceLibelle")
                     experience_code_exigence = offre.get("experienceExige")
                     experience_commentaire = offre.get("experienceCommentaire")
+                    date_extraction = offre.get("dateExtraction")
+
+                    # print pour investigation si besoin :
+                    # print(offre_id, experience_libelle, experience_code_exigence, experience_commentaire, sep="\n-> ")
 
                     # Récupérer experience_id
                     query = """
@@ -741,9 +723,6 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                             AND (experience_commentaire IS NULL AND %s IS NULL OR experience_commentaire = %s)
                     """
 
-                    # print pour investigation si besoin :
-                    # print(offre_id, experience_libelle, experience_code_exigence, experience_commentaire, sep="\n-> ")
-
                     cursor.execute(query, (experience_libelle, experience_libelle, experience_code_exigence, experience_code_exigence, experience_commentaire, experience_commentaire))
                     experience_id = cursor.fetchone()[0]
 
@@ -752,9 +731,28 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                         attributes_tuple=(
                             "offre_id",
                             "experience_id",
+                            "date_extraction",
                         ),
-                        on_conflict_string="offre_id | experience_id",
+                        on_conflict_string="offre_id | experience_id | date_extraction",
                     )
+
+                # On supprime les lignes où 1 offre_id est présente avec 2 experience_id différents :
+                cursor.execute(f"""--sql
+                    -- CTE pour afficher l'offre_id le plus récent s'il y a 1 offre_id avec plusieurs experience_id
+                    WITH latest_offre_id AS (
+                        SELECT DISTINCT ON (offre_id)
+                            offre_id,
+                            experience_id,
+                            date_extraction
+                        FROM Offre_Experience
+                        ORDER BY offre_id, date_extraction DESC
+                    )
+                    DELETE FROM Offre_Experience
+                    WHERE (offre_id, experience_id, date_extraction) NOT IN (
+                        SELECT offre_id, experience_id, date_extraction
+                        FROM latest_offre_id
+                    );
+                    """)
 
             #### table "Offre_Formation"
 
@@ -883,8 +881,6 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
                         fill_db(
                             db_name="Offre_Qualification",
-                            # attributes_tuple=("offre_id", "qualite_professionnelle_id"),
-                            # on_conflict_string="offre_id | qualite_professionnelle_id",
                             attributes_tuple=(
                                 "offre_id",
                                 "qualification_code",
@@ -893,24 +889,9 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                             on_conflict_string="offre_id | qualification_code",
                         )
 
-                        # cursor.execute(
-                        #     f"""--sql
-                        #         INSERT INTO Offre_Qualification (offre_id, qualification_code, date_extraction)
-                        #         VALUES (%s, %s, %s)
-                        #         -- ON CONFLICT (offre_id) DO UPDATE SET
-                        #         ON CONFLICT (offre_id, qualification_code) DO UPDATE SET
-                        #             -- qualification_code = EXCLUDED.qualification_code,
-                        #             date_extraction = EXCLUDED.date_extraction
-                        #         """,
-                        #     (offre_id, qualification_code, date_extraction),
-                        # )
-
-                        # conn.commit()
-
                 # On supprime les lignes où 1 offre_id est présente avec 2 qualification_code différents :
                 cursor.execute(f"""--sql
-                    -- CTE pour afficher l'offre_id le plus récent
-                    --  s'il y a 1 offre_id avec plusieurs qualification_code
+                    -- CTE pour afficher l'offre_id le plus récent s'il y a 1 offre_id avec plusieurs qualification_code
                     WITH latest_offre_id AS (
                         SELECT DISTINCT ON (offre_id)
                             offre_id,
@@ -925,14 +906,6 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                         FROM latest_offre_id
                     );
                     """)
-
-                # conn.commit()
-
-                # fill_db(
-                #     db_name="Offre_Qualification",
-                #     attributes_tuple=("offre_id", "qualification_code"),
-                #     on_conflict_string="offre_id | qualification_code",
-                # )
 
             #### table "Offre_Langue"
 
