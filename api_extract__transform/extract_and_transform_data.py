@@ -14,6 +14,7 @@ from colorama import Fore, Style, init
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
 from functions import (
+    add_date_ecriture_offre_attribute,
     add_date_extract_attribute,
     add_location_attributes,
     concatenate_all_json_into_one,
@@ -32,7 +33,9 @@ from functions import (
 launch_remove_all_get_json_files = 1  # ~ quelques secondes
 launch_get_offres = 1  # ~ 20 minutes
 launch_concatenate_all_json_into_one = 1  # ~ 1 minute
+#
 launch_add_date_extract_attribute = 1  # ~ quelques secondes
+launch_add_date_ecriture_offre_attribute = 1
 launch_keep_only_offres_from_metropole = 1  # ~ quelques secondes
 launch_add_location_attributes = 1  # ~ 5 minutes
 #### Fin "Partie paramétrable"
@@ -120,7 +123,8 @@ def functions_sequence(json_files_from_api_directory, generated_json_files_direc
             json_files_directory=generated_json_files_directory,
             json_filename=json_filename,
             new_json_filename=json_filename,  # on écrase le fichier en entrée
-            # date_to_insert="2025-03-22",  # à commenter si on veut mettre la date du jour
+            date_to_insert="2025-03-02",  # à commenter si on veut mettre la date du jour
+            # date_to_insert="2025-04-05",  # à commenter si on veut mettre la date du jour
             # la valeur "date_to_insert" écrase la valeur si l'attribut est existant dans le json
         )
         df = pd.read_json(os.path.join(generated_json_files_directory, json_filename), dtype=False)
@@ -191,6 +195,29 @@ if 1:
             with open(os.path.join(generated_json_files_directory, new_json_file), "w", encoding="utf-8") as f:
                 f.write(content)
 
+        ####
+        if launch_add_date_ecriture_offre_attribute:
+            add_date_ecriture_offre_attribute(
+                json_files_directory=generated_json_files_directory,
+                json_filename=new_json_file,
+                new_json_filename=new_json_file,  # on écrase le fichier en entrée
+                # date_to_insert="2025-04-10",  # à commenter si on veut mettre la date du jour
+                # la valeur "date_to_insert" écrase la valeur si l'attribut est existant dans le json
+                overwrite_all_lines=False,
+            )
+
+        # ####
+        # if launch_add_date_ecriture_offre_attribute:
+        #     add_date_ecriture_offre_attribute(
+        #         json_files_directory=generated_json_files_directory,
+        #         json_filename=json_filename,
+        #         new_json_filename=json_filename,  # on écrase le fichier en entrée
+        #         # date_to_insert="2025-03-02",  # à commenter si on veut mettre la date du jour
+        #         date_to_insert="2025-04-05",  # à commenter si on veut mettre la date du jour
+        #         # la valeur "date_to_insert" écrase la valeur si l'attribut est existant dans le json
+        #         overwrite_all_lines=False,
+        #     )
+
         print(f"{Fore.YELLOW}Shape du df du json concaténé : {pd.read_json(os.path.join(generated_json_files_directory, new_json_file), dtype=False).shape}")
 
         # Le nouveau json a été mis à jour avec la concaténation, il reste à déplacer l'ancien fichier json dans le dossier "archive_json_files"
@@ -216,6 +243,17 @@ if 1:
             generated_json_files_directory=generated_json_files_directory,
             json_filename=json_filename,
         )
+
+        # todo : à revoir/tester ce qui suit
+        # if launch_add_date_ecriture_offre_attribute:  #
+        #     add_date_ecriture_offre_attribute(
+        #         json_files_directory=generated_json_files_directory,
+        #         json_filename=new_json_file,
+        #         new_json_filename=new_json_file,  # on écrase le fichier en entrée
+        #         # date_to_insert="2025-04-05",  # à commenter si on veut mettre la date du jour
+        #         # la valeur "date_to_insert" écrase la valeur si l'attribut est existant dans le json
+        #         overwrite_all_lines=False,
+        #     )
 
         ####
 
@@ -247,3 +285,52 @@ if 0:
 
     if launch_create_location_csv:
         create_csv__code_name__city_department_region()
+
+####
+if 0:
+    """
+    Bloc de test, par exemple pour ajouter des attributs à un json
+    """
+
+    if 1:
+        """
+        Prendre un json, et modifier ses attributs "dateExtraction" et "dateEcritureOffre"
+        """
+
+        json_file_in_generated_directory = [file for file in os.listdir(generated_json_files_directory) if file.endswith(".json")]
+        json_filename = json_file_in_generated_directory[0]
+
+        # print(
+        #     generated_json_files_directory,
+        #     json_file_in_generated_directory[0],
+        # )
+        df = pd.read_json(os.path.join(generated_json_files_directory, json_filename), dtype=False)  # pour ne pas inférer les dtypes
+
+        add_date_extract_attribute(
+            json_files_directory=generated_json_files_directory,
+            json_filename=json_filename,
+            new_json_filename=json_filename,  # on écrase le fichier en entrée
+            date_to_insert="2025-03-02",  # à commenter si on veut mettre la date du jour
+        )
+
+        print(
+            # df.dateExtraction,
+            # df.dateEcritureOffre,
+            # sep="\n\n",
+        )
+
+        add_date_ecriture_offre_attribute(
+            json_files_directory=generated_json_files_directory,
+            json_filename=json_filename,
+            new_json_filename=json_filename,  # on écrase le fichier en entrée
+            date_to_insert="2025-03-02",  # à commenter si on veut mettre la date du jour
+            overwrite_all_lines=False,
+        )
+
+        df = pd.read_json(os.path.join(generated_json_files_directory, json_filename), dtype=False)  # pour ne pas inférer les dtypes
+
+        print(
+            # df.dateExtraction,
+            df.dateEcritureOffre,
+            sep="\n\n",
+        )
