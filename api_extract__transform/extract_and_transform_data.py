@@ -205,18 +205,6 @@ if 0:
                 overwrite_all_lines=False,
             )
 
-        # ####
-        # if launch_add_date_ecriture_offre_attribute:
-        #     add_date_ecriture_offre_attribute(
-        #         json_files_directory=generated_json_files_directory,
-        #         json_filename=json_filename,
-        #         new_json_filename=json_filename,  # on écrase le fichier en entrée
-        #         # date_to_insert="2025-03-02",  # à commenter si on veut mettre la date du jour
-        #         date_to_insert="2025-04-05",  # à commenter si on veut mettre la date du jour
-        #         # la valeur "date_to_insert" écrase la valeur si l'attribut est existant dans le json
-        #         overwrite_all_lines=False,
-        #     )
-
         print(f"{Fore.YELLOW}Shape du df du json concaténé : {pd.read_json(os.path.join(generated_json_files_directory, new_json_file), dtype=False).shape}")
 
         # Le nouveau json a été mis à jour avec la concaténation, il reste à déplacer l'ancien fichier json dans le dossier "archive_json_files"
@@ -243,7 +231,6 @@ if 0:
             json_filename=json_filename,
         )
 
-        # todo : à revoir/tester ce qui suit
         if launch_add_date_premiere_ecriture_attribute:
             add_date_premiere_ecriture_attribute(
                 json_files_directory=generated_json_files_directory,
