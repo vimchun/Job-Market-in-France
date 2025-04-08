@@ -17,14 +17,18 @@
 
 ## Problématiques rencontrées lors de la mise à jour de la base de données après récupération de nouvelles offres
 
-
 ### Evolution de "qualification_code"
 
 Certaines offres voient leur `qualification_code` évoluer, par exemple :
 
-- `offre_id = 188LLXS` (`intitule = Technicien de gestion de données sur équipement (H/F)`) avait `qualification_code = 7` lors de `date_extraction = 2025-03-02`, puis `qualification_code = 8` lors de `date_extraction = 2025-04-05`
+  - `offre_id = 188LLXS` (`intitule = Technicien de gestion de données sur équipement (H/F)`) :
+    - lors de `date_extraction = 2025-03-02` : `qualification_code = 7`
+    - lors de `date_extraction = 2025-04-05` : `qualification_code = 8`
 
-- `offre_id = 186XNDD` (`intitule = Coach sportif(ve) (H/F)`) avait `qualification_code = 6` lors de `date_extraction = 2025-03-02`, puis `qualification_code = 7` lors de `date_extraction = 2025-04-05`
+  - `offre_id = 186XNDD` (`intitule = Coach sportif(ve) (H/F)`) :
+    - lors de `date_extraction = 2025-03-02` : `qualification_code = 6`
+    - lors de `date_extraction = 2025-04-05` : `qualification_code = 7`
+
 
 Avec l'attribut `date_extraction` qui vient de la table OffreEmploi, on n'a pas moyen de savoir quelle ligne parmi les suivantes sont les plus récentes, car pour chaque mise à jour, l'attribut `date_extraction` est mis à jour et prend la valeur `2025-04-05`.
 
@@ -55,4 +59,14 @@ pour ne garder que le `qualification_code` le plus récent si 1 offre_id est pr�
 
 Il faut donc ajouter `date_extraction` dans la table `offre_qualification`.
 
+
+### Evolution de "experienceExige" et "experienceLibelle"
+
+Même problématique avec certaines offres qui voient leur `experienceExige` et leur `experienceLibelle` évoluer, par exemple :
+
+  - `offre_id = 1316532` (`intitule = Administrateur linux (H/F)`) :
+
+    - lors de `date_extraction = 2025-03-02` : `experienceExige = E` et `experienceLibelle = Expérience exigée de 3 An(s)` (par exemple `experience_id = 6`)
+
+    - lors de `date_extraction = 2025-04-05` : `experienceExige = D` et `experienceLibelle = Débutant accepté` (par exemple `experience_id = 2`)
 
