@@ -53,7 +53,7 @@ CREATE TABLE Localisation (
     , nom_region VARCHAR(200)
 );
 
-DROP TABLE DescriptionOffre CASCADE;
+-- DROP TABLE DescriptionOffre CASCADE;
 CREATE TABLE DescriptionOffre (
     offre_id VARCHAR(7) NOT NULL PRIMARY KEY
     , intitule_offre VARCHAR(200)
@@ -72,7 +72,6 @@ CREATE TABLE DescriptionOffre (
 -- note: ON DELETE CASCADE pour maintenir l'intégrité des données :
 --  pour supprimer toutes les lignes associées dans Offre_Competence si une offre ou une compétence correspondante est supprimée
 -- DROP TABLE Competence CASCADE;
--- DROP TABLE Offre_Competence CASCADE;
 CREATE TABLE Competence (
     competence_id SERIAL NOT NULL PRIMARY KEY
     , competence_code INTEGER
@@ -81,6 +80,7 @@ CREATE TABLE Competence (
     , CONSTRAINT competence_unique UNIQUE (competence_code , competence_libelle , competence_code_exigence)
 );
 
+-- DROP TABLE Offre_Competence CASCADE;
 CREATE TABLE Offre_Competence (
     offre_id VARCHAR(7) NOT NULL
     , competence_id INTEGER NOT NULL
@@ -91,7 +91,6 @@ CREATE TABLE Offre_Competence (
 
 -----------------------------------------------------------------------------------------------------------
 -- DROP TABLE Experience CASCADE;
--- DROP TABLE Offre_Experience CASCADE;
 CREATE TABLE Experience (
     experience_id SERIAL NOT NULL PRIMARY KEY
     , experience_libelle VARCHAR(100)
@@ -100,17 +99,18 @@ CREATE TABLE Experience (
     , CONSTRAINT experience_unique UNIQUE (experience_libelle , experience_code_exigence , experience_commentaire)
 );
 
+-- DROP TABLE Offre_Experience CASCADE;
 CREATE TABLE Offre_Experience (
     offre_id VARCHAR(7) NOT NULL
     , experience_id INTEGER NOT NULL
-    , PRIMARY KEY (offre_id , experience_id)
+    , date_extraction DATE
+    , PRIMARY KEY (offre_id , experience_id, date_extraction)
     , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id) ON DELETE CASCADE
     , FOREIGN KEY (experience_id) REFERENCES Experience (experience_id) ON DELETE CASCADE
 );
 
 -----------------------------------------------------------------------------------------------------------
 -- DROP TABLE Formation CASCADE;
--- DROP TABLE Offre_Formation CASCADE;
 CREATE TABLE Formation (
     formation_id SERIAL NOT NULL PRIMARY KEY
     , formation_code INTEGER
@@ -121,6 +121,7 @@ CREATE TABLE Formation (
     , CONSTRAINT formation_unique UNIQUE (formation_code , formation_domaine_libelle , formation_niveau_libelle , formation_commentaire , formation_code_exigence)
 );
 
+-- DROP TABLE Offre_Formation CASCADE;
 CREATE TABLE Offre_Formation (
     offre_id VARCHAR(7) NOT NULL
     , formation_id INTEGER NOT NULL
@@ -131,7 +132,6 @@ CREATE TABLE Offre_Formation (
 
 -----------------------------------------------------------------------------------------------------------
 -- DROP TABLE QualiteProfessionnelle CASCADE;
--- DROP TABLE Offre_QualiteProfessionnelle CASCADE;
 CREATE TABLE QualiteProfessionnelle (
     qualite_professionnelle_id SERIAL NOT NULL PRIMARY KEY
     , qualite_professionnelle_libelle VARCHAR(100)
@@ -139,6 +139,7 @@ CREATE TABLE QualiteProfessionnelle (
     , CONSTRAINT qualitepro_unique UNIQUE (qualite_professionnelle_libelle , qualite_professionnelle_description)
 );
 
+-- DROP TABLE Offre_QualiteProfessionnelle CASCADE;
 CREATE TABLE Offre_QualiteProfessionnelle (
     offre_id VARCHAR(7) NOT NULL
     , qualite_professionnelle_id INTEGER NOT NULL
@@ -149,16 +150,17 @@ CREATE TABLE Offre_QualiteProfessionnelle (
 
 -----------------------------------------------------------------------------------------------------------
 -- DROP TABLE Qualification CASCADE;
--- DROP TABLE Offre_Qualification CASCADE;
 CREATE TABLE Qualification (
     qualification_code INTEGER PRIMARY KEY NOT NULL
     , qualification_libelle VARCHAR(100) NOT NULL
     , CONSTRAINT qualification_unique UNIQUE (qualification_code , qualification_libelle)
 );
 
+-- DROP TABLE Offre_Qualification CASCADE;
 CREATE TABLE Offre_Qualification (
     offre_id VARCHAR(7) NOT NULL
     , qualification_code INTEGER NOT NULL
+    , date_extraction DATE
     , PRIMARY KEY (offre_id , qualification_code)
     , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id) ON DELETE CASCADE
     , FOREIGN KEY (qualification_code) REFERENCES Qualification (qualification_code) ON DELETE CASCADE
@@ -166,7 +168,6 @@ CREATE TABLE Offre_Qualification (
 
 -----------------------------------------------------------------------------------------------------------
 -- DROP TABLE Langue CASCADE;
--- DROP TABLE Offre_Langue CASCADE;
 CREATE TABLE Langue (
     langue_id SERIAL NOT NULL PRIMARY KEY
     , langue_libelle VARCHAR(30) NOT NULL
@@ -174,6 +175,7 @@ CREATE TABLE Langue (
     , CONSTRAINT langue_unique UNIQUE (langue_libelle , langue_code_exigence)
 );
 
+-- DROP TABLE Offre_Langue CASCADE;
 CREATE TABLE Offre_Langue (
     offre_id VARCHAR(7) NOT NULL
     , langue_id INTEGER NOT NULL
@@ -184,7 +186,6 @@ CREATE TABLE Offre_Langue (
 
 -----------------------------------------------------------------------------------------------------------
 -- DROP TABLE PermisConduire CASCADE;
--- DROP TABLE Offre_PermisConduire CASCADE;
 CREATE TABLE PermisConduire (
     permis_id SERIAL NOT NULL PRIMARY KEY
     , permis_libelle VARCHAR(100) NOT NULL
@@ -192,6 +193,7 @@ CREATE TABLE PermisConduire (
     , CONSTRAINT permis_unique UNIQUE (permis_libelle , permis_code_exigence)
 );
 
+-- DROP TABLE Offre_PermisConduire CASCADE;
 CREATE TABLE Offre_PermisConduire (
     offre_id VARCHAR(7) NOT NULL
     , permis_id INTEGER NOT NULL

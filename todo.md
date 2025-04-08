@@ -11,6 +11,8 @@
     => code Python pour télécharger les fichiers depuis le site de l'insee (extraction du .zip, etc...)
 
 
+  1. évolution des données dans les tables experience et qualification => pris en compte mais le faire pour les autres tables de fait.
+
 ## nice to have
 
   1. transformation pour avoir les années d'exp. (table experience)

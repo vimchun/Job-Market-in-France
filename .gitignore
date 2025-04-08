@@ -6,6 +6,8 @@ api_extract__transform/outputs/*.json
 api_extract__transform/outputs/offres/0--original_json_files_from_api/*.json
 api_extract__transform/outputs/offres/1--generated_json_file/*.json
 api_extract__transform/outputs/offres/1--generated_json_file/archive_json_files
+api_extract__transform/outputs/offres/1--generated_json_file/troubleshooting/archives
+
 power_bi/archives_pbi
 node_modules
 package-lock.json
