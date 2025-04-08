@@ -576,13 +576,13 @@ def concatenate_all_json_into_one(json_files_from_api_directory, generated_json_
     return new_json_filename
 
 
-def add_date_ecriture_offre_attribute(json_files_directory, json_filename, new_json_filename, date_to_insert=None, overwrite_all_lines=False):
+def add_date_premiere_ecriture_attribute(json_files_directory, json_filename, new_json_filename, date_to_insert=None, overwrite_all_lines=False):
     """
-    Fonction qui charge le json et qui écrit dans un nouveau json : un nouvel attribut "dateEcritureOffre" avec la date désirée
+    Fonction qui charge le json et qui écrit dans un nouveau json : un nouvel attribut "datePremiereEcriture" avec la date désirée
       (par défaut la date système pour avoir la date du jour)
 
-    Si le paramètre "overwrite_all_lines" est vrai, on écrase toutes les ligne de "dateEcritureOffre" avec "date_to_insert".
-      Sinon, seulement les lignes où "dateEcritureOffre" sont vides seront remplies avec "date_to_insert".
+    Si le paramètre "overwrite_all_lines" est vrai, on écrase toutes les ligne de "datePremiereEcriture" avec "date_to_insert".
+      Sinon, seulement les lignes où "datePremiereEcriture" sont vides seront remplies avec "date_to_insert".
 
     Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
     """
@@ -594,16 +594,16 @@ def add_date_ecriture_offre_attribute(json_files_directory, json_filename, new_j
 
     df = pd.read_json(os.path.join(json_files_directory, json_filename), dtype=False)  # pour ne pas inférer les dtypes
 
-    # Créer la colonne "dateEcritureOffre" avec des NaN si elle n'existe pas
-    if "dateEcritureOffre" not in df.columns:
-        df["dateEcritureOffre"] = np.nan
+    # Créer la colonne "datePremiereEcriture" avec des NaN si elle n'existe pas
+    if "datePremiereEcriture" not in df.columns:
+        df["datePremiereEcriture"] = np.nan
 
     if overwrite_all_lines:
         # Si on veut écraser toutes les valeurs déjà écrites :
-        df["dateEcritureOffre"] = pd.to_datetime(date_to_insert)  # sans la ligne suivante, on aura un timestamp en sortie de json "1743292800000"
-        df["dateEcritureOffre"] = df["dateEcritureOffre"].dt.strftime("%Y-%m-%d")  # Formate les dates au format string 'YYYY-MM-DD'
+        df["datePremiereEcriture"] = pd.to_datetime(date_to_insert)  # sans la ligne suivante, on aura un timestamp en sortie de json "1743292800000"
+        df["datePremiereEcriture"] = df["datePremiereEcriture"].dt.strftime("%Y-%m-%d")  # Formate les dates au format string 'YYYY-MM-DD'
     else:
-        df["dateEcritureOffre"] = df["dateEcritureOffre"].fillna(date_to_insert)
+        df["datePremiereEcriture"] = df["datePremiereEcriture"].fillna(date_to_insert)
 
     df.to_json(
         os.path.join(json_files_directory, new_json_filename),
