@@ -5,6 +5,7 @@
 CREATE TABLE OffreEmploi (
     offre_id VARCHAR(7) NOT NULL PRIMARY KEY
     , date_extraction DATE
+    , date_premiere_ecriture DATE
     , date_creation DATE
     , date_actualisation DATE
     , nombre_postes INTEGER

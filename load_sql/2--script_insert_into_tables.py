@@ -42,10 +42,10 @@ with open(
     os.path.join(
         generated_json_files_directory,
         #
-        # current_json_file,
+        current_json_file,
         #
         # "archive_json_files", "2025-03-02--18h36__extraction_occurence_1.json",
-        "archive_json_files", "2025-04-05--21h48__extraction_occurence_2.json",
+        # "archive_json_files", "2025-04-05--21h48__extraction_occurence_2.json",
         #
         # "troubleshooting", "test_with_few_documents_occurence_1.json",
         # "troubleshooting", "test_with_few_documents_occurence_2.json",
@@ -178,18 +178,20 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
             for offre in offres_data:
                 offre_id = offre.get("id")
                 date_extraction = offre.get("dateExtraction")
+                date_premiere_ecriture = offre.get("datePremiereEcriture")
                 date_creation = offre.get("dateCreation").split("T")[0]  # inutile de récupérer l'heure
                 date_actualisation = offre.get("dateActualisation").split("T")[0]  # inutile de récupérer l'heure
                 nombre_postes = offre.get("nombrePostes")
 
                 # print pour investigation si besoin :
-                # print(offre_id, date_extraction, date_creation, date_actualisation, nombre_postes, sep="\n-> ")
+                # print(offre_id, date_extraction, date_premiere_ecriture, date_creation, date_actualisation, nombre_postes, sep="\n-> ")
 
                 fill_db(
                     db_name="OffreEmploi",
                     attributes_tuple=(
                         "offre_id",
                         "date_extraction",
+                        "date_premiere_ecriture",
                         "date_creation",
                         "date_actualisation",
                         "nombre_postes",
