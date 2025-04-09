@@ -81,7 +81,6 @@
         "complementExercice": null,
         "experienceCommentaire": null,
         "conditionExercice": null,
-        "dateExtraction": "2025-03-02",
         "lieu_cas": "cas_1",
         "code_insee": "38485",
         "nom_commune": "Seyssinet-Pariset",
@@ -91,6 +90,8 @@
         "nom_departement": "Isère",
         "code_region": "84",
         "nom_region": "Auvergne-Rhône-Alpes"
+        "dateExtraction": "2025-03-02",
+		"datePremiereEcriture": "2025-03-02"
     },
     {
         "id": "0000002",
@@ -153,7 +154,6 @@
         "complementExercice": null,
         "experienceCommentaire": null,
         "conditionExercice": null,
-        "dateExtraction": "2025-03-02",
         "lieu_cas": "cas_1",
         "code_insee": "76245",
         "nom_commune": "Eslettes",
@@ -163,6 +163,8 @@
         "nom_departement": "Seine-Maritime",
         "code_region": "28",
         "nom_region": "Normandie"
+        "dateExtraction": "2025-03-02",
+		"datePremiereEcriture": "2025-03-02"
     },
     {
         "id": "0000003",
@@ -249,7 +251,6 @@
         "complementExercice": null,
         "experienceCommentaire": null,
         "conditionExercice": null,
-        "dateExtraction": "2025-03-02",
         "lieu_cas": "cas_1",
         "code_insee": "72181",
         "nom_commune": "Le Mans",
@@ -259,262 +260,15 @@
         "nom_departement": "Sarthe",
         "code_region": "52",
         "nom_region": "Pays de la Loire"
-    },
-    {
-        "id": "0000004",
-        "intitule": "Alternant Ingénieur cybersécurité (H/F)",
-        "description": "Rejoignez la Direction de la Transformation IT d'Albioma en tant qu'alternant(e) ingénieur cybersécurité, et tenez un rôle clé en étroite collaboration avec l'équipe infrastructure IT du Groupe pour surveiller, analyser et renforcer nos infrastructures contre les cybermenaces.\n\nRattaché-e à l'Ingénieur cybersécurité, vous participerez aux missions suivantes :\n\n\n\n- Participer à la mise en œuvre et à la gestion des systèmes de sécurité\n\n- Surveiller les systèmes informatiques pour détecter les activités suspectes\n\n- Analyser et répondre aux incidents de sécurité\n\n- Conduire des évaluations de risque\n\n- Développer et mettre en œuvre des politiques de sécurité\n\n- Collaborer avec les autres équipes pour garantir la conformité aux normes de sécurité\n\n- Accompagner les utilisateurs (sensibilisation, .)\n\n- Effectuer une veille technologique sur les nouvelles menaces et solutions de sécurité\n\nVous préparez un diplôme BAC+5 en école d'ingénieur ou Université avec une spécialité en informatique et cybersécurité.\n\n\n\nVous disposez d'un anglais courant qui vous permet de communiquer avec aisance. Vous maîtrisez une autre langue, idéalement portugais et/ou turc.\n\n\n\nSavoir-être recherché :\n\n- Capacité de communication\n\n- Rigueur\n\n- Curiosité\n\n- Force de proposition\n\n\n\nCe que nous vous offrons :\n\n- Intégrer un acteur clé de la transition énergétique ;\n\n- Participer à des projets innovants, à forts enjeux sociaux et environnementaux ;\n\n- Travailler dans un environnement de travail enrichissant au sein d'un groupe international ;\n\n\n\nPrêt(e) à relever ce défi et contribuer à un avenir durable ? Postulez dès maintenant !\n\n\n\nLocalisation : Poste basé à Puteaux, La Défense.\n\nContrat : Alternance - A pourvoir dès août 2025",
-        "dateCreation": "2025-03-18T16:02:18.420Z",
-        "dateActualisation": "2025-03-18T17:04:25.113Z",
-        "romeCode": "M1846",
-        "romeLibelle": "Ingénieur / Ingénieure Cybersécurité Datacenter",
-        "appellationlibelle": "Ingénieur / Ingénieure Cybersécurité Datacenter",
-        "entreprise": {
-            "nom": "ALBIOMA",
-            "entrepriseAdaptee": false
-        },
-        "typeContrat": "CDD",
-        "typeContratLibelle": "CDD - 12 Mois",
-        "natureContrat": "Contrat apprentissage",
-        "experienceExige": "D",
-        "experienceLibelle": "Débutant accepté",
-        "competences": null,
-        "salaire": {
-            "libelle": "Mensuel de 1170.0 Euros à 1171.0 Euros sur 12.0 mois"
-        },
-        "dureeTravailLibelle": "35H Autre",
-        "dureeTravailLibelleConverti": "Temps plein",
-        "alternance": true,
-        "contact": {
-            "coordonnees1": "https://taleez.com/apply/alternant-ingenieur-cybersecurite-secteur-des-energies-renouvelables-puteaux-albioma/applying",
-            "urlPostulation": "https://taleez.com/apply/alternant-ingenieur-cybersecurite-secteur-des-energies-renouvelables-puteaux-albioma/applying"
-        },
-        "agence": {
-
-        },
-        "nombrePostes": 1,
-        "accessibleTH": false,
-        "deplacementCode": null,
-        "deplacementLibelle": null,
-        "qualificationCode": "8",
-        "qualificationLibelle": "Agent de maîtrise",
-        "codeNAF": "70.10Z",
-        "secteurActivite": "70",
-        "secteurActiviteLibelle": "Activités des sièges sociaux",
-        "qualitesProfessionnelles": null,
-        "origineOffre": {
-            "origine": "1",
-            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/189SNYW"
-        },
-        "offresManqueCandidats": false,
-        "contexteTravail": {
-            "horaires": [
-                "35H Autre"
-            ],
-            "conditionsExercice": [
-                "Autre"
-            ]
-        },
-        "formations": null,
-        "langues": null,
-        "permis": null,
-        "complementExercice": null,
-        "experienceCommentaire": null,
-        "conditionExercice": null,
-        "dateExtraction": "2025-04-05",
-        "lieu_cas": "cas_1",
-        "code_insee": "92062",
-        "nom_commune": "Puteaux",
-        "code_postal": "92800",
-        "nom_ville": "Puteaux",
-        "code_departement": "92",
-        "nom_departement": "Hauts-de-Seine",
-        "code_region": "11",
-        "nom_region": "Île-de-France"
-    },
-    {
-        "id": "0000005",
-        "intitule": "Ingénieur Informatique / Cybersécurité Industrielle (H/F)",
-        "description": "Contexte :\nDans le cadre de projets d'envergure liés au stockage de gaz, nous recherchons un(e) Ingénieur Informatique / Cybersécurité Industrielle pour renforcer notre équipe. Le poste aura pour mission de gérer les affaires et de coordonner les aspects techniques relatifs à l'automatisme, à l'informatique et à la cybersécurité industrielle dans des projets Core Business.\n\nMissions principales :\nEn collaboration avec plusieurs acteurs internes et externes, vous interviendrez sur les projets de stockage de gaz (gaz conventionnel, hydrogène, mix hydrogène/gaz conventionnel), en particulier sur la gestion des systèmes industriels et leur cybersécurité.\nVos responsabilités incluront, entre autres :\n- Gestion et coordination technique des projets automatisme, informatique et cybersécurité industrielle.\n- Suivi et mise à jour des systèmes industriels, incluant la supervision de pilotage et des contrôles commandes spécifiques.\n- Suivi des systèmes de cybersécurité, tels que les firewalls, réseaux industriels, serveurs d'accès à distance, et antivirus.\n- Assistance à la maintenance en conditions opérationnelles (MCO) et à la maintenance en conditions de sécurité (MCS) des outils de cybersécurité et des systèmes de supervision.\n- Mise à jour des logiciels et systèmes, incluant l'intégration des évolutions et la mise en conformité avec les normes et réglementations en vigueur, telles que la Loi de Programmation Militaire (LPM) et la politique de sécurité du groupe.\n- Coordination de la mise en conformité des systèmes, en garantissant leur alignement avec les exigences de cybersécurité.\n- Suivi des accès à distance, des supervisions et des réseaux afin de garantir la sécurité et la continuité des opérations.\n- Pilotage des interventions, planification et suivi des demandes de maintenance et de sécurité avec les différents exploitants et mainteneurs.\n\nLivrables attendus :\n- Rapport mensuel sur l'avancement du projet.\n- Rapport de fin de mission et transfert de connaissance.\n- Suivi hebdomadaire des activités du projet, avec des rapports détaillés sur les actions menées.\n\nCompétences techniques requises :\n- Expérience confirmée de plus de 5 ans dans un rôle similaire en aMOA ou MOE, idéalement dans l'informatique industrielle et la cybersécurité.\n- Maîtrise des systèmes de cybersécurité industrielle, y compris la gestion des firewalls, des réseaux informatiques industriels et des systèmes de contrôle et de supervision.\n- Bonne connaissance des normes de sécurité industrielle, des environnements ATEX et des réglementations relatives à la cybersécurité industrielle.\n\nCompétences fonctionnelles :\n- Excellente capacité de communication, tant à l'oral qu'à l'écrit, avec toutes les parties prenantes du projet.\n- Aptitude à travailler en équipe, sens de l'analyse et de la synthèse.\n- Autonomie, rigueur et capacité à s'adapter à des environnements techniques complexes.\n- Bon niveau d'anglais opérationnel.\n\nAutres prérequis :\n- Habilitation électrique B0-H0-H0V.\n- Permis de conduire B.\n\nNous recherchons une personne capable de travailler dans un environnement dynamique, en interaction avec plusieurs équipes techniques et parties prenantes externes, et ayant une forte appétence pour les technologies de cybersécurité industrielle.\nSi vous êtes passionné(e) par la cybersécurité industrielle et souhaitez contribuer à des projets de grande envergure dans un secteur stratégique, rejoignez-nous !",
-        "dateCreation": "2025-03-10T11:23:42.681Z",
-        "dateActualisation": "2025-03-10T14:42:35.247Z",
-        "romeCode": "M1846",
-        "romeLibelle": "Ingénieur / Ingénieure Cybersécurité Datacenter",
-        "appellationlibelle": "Ingénieur / Ingénieure Cybersécurité Datacenter",
-        "entreprise": {
-            "nom": "EPSYL",
-            "description": "EPSYL est une société du groupe ALCEN qui répond à différents besoins de conception et d'optimisation de systèmes pour les grands secteurs industriels (nucléaire, aéronautique, transport, santé). EPSYL mène des études pour ses clients et pour ses propres produits et s'engage sur des projets complexes de conception-réalisation avec le support et la puissance industrielle du groupe ALCEN.",
-            "entrepriseAdaptee": false
-        },
-        "typeContrat": "CDI",
-        "typeContratLibelle": "CDI",
-        "natureContrat": "Contrat travail",
-        "experienceExige": "E",
-        "experienceLibelle": "6 An(s)",
-        "competences": null,
-        "salaire": {
-            "libelle": "Annuel de 30000.0 Euros à 60000.0 Euros sur 12.0 mois",
-            "complement1": "Primes",
-            "complement2": "Pc portable"
-        },
-        "dureeTravailLibelle": "37H30 Autre",
-        "dureeTravailLibelleConverti": "Temps plein",
-        "alternance": false,
-        "contact": {
-            "nom": "EPSYL - Mme Jennifer BERTHIER",
-            "coordonnees1": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/189GNHS",
-            "courriel": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/189GNHS"
-        },
-        "agence": {
-
-        },
-        "nombrePostes": 1,
-        "accessibleTH": false,
-        "deplacementCode": null,
-        "deplacementLibelle": null,
-        "qualificationCode": "9",
-        "qualificationLibelle": "Cadre",
-        "codeNAF": "74.90B",
-        "secteurActivite": "74",
-        "secteurActiviteLibelle": "Activités spécialisées, scientifiques et techniques diverses",
-        "qualitesProfessionnelles": [
-            {
-                "libelle": "Faire preuve d'autonomie",
-                "description": "Capacité à prendre en charge son activité sans devoir être encadré de façon continue (le cas échéant, à solliciter les autres acteurs de l'entreprise)."
-            },
-            {
-                "libelle": "Faire preuve de rigueur et de précision",
-                "description": "Capacité à réaliser des tâches en suivant avec exactitude les règles, les procédures, les instructions qui ont été fournies, sans réaliser d'erreur et à transmettre clairement des informations. Se montrer ponctuel et respectueux des règles de savoir-vivre usuelles."
-            },
-            {
-                "libelle": "Faire preuve de réactivité",
-                "description": "Capacité à réagir rapidement face à des évènements et à des imprévus, en hiérarchisant les actions, en fonction de leur degré d'urgence / d'importance."
-            }
-        ],
-        "origineOffre": {
-            "origine": "1",
-            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/189GNHS"
-        },
-        "offresManqueCandidats": false,
-        "contexteTravail": {
-            "horaires": [
-                "37H30 Autre"
-            ],
-            "conditionsExercice": [
-                "Autre"
-            ]
-        },
-        "formations": null,
-        "langues": null,
-        "permis": null,
-        "complementExercice": null,
-        "experienceCommentaire": null,
-        "conditionExercice": null,
-        "dateExtraction": "2025-04-05",
-        "lieu_cas": "cas_1",
-        "code_insee": "92009",
-        "nom_commune": "Bois-Colombes",
-        "code_postal": "92270",
-        "nom_ville": "Bois-Colombes",
-        "code_departement": "92",
-        "nom_departement": "Hauts-de-Seine",
-        "code_region": "11",
-        "nom_region": "Île-de-France"
-    },
-    {
-        "id": "0000006",
-        "intitule": "Ingénieur Cybersécurité - Sécurité SI H/F (H/F)",
-        "description": "Rattaché au Responsable Sécurité SI Groupe, vous intégrez une équipe de 3 personnes et participez à mettre en place les dispositifs cybersécurité du groupe conformément à la politique de sécurité des SI et aux réglementations.\n \nDans ce cadre, vos missions consistent à :\n \n-      Conduire et mettre en œuvre des projets de cybersécurité.\n-      Gérer les vulnérabilités et les incidents de sécurité.\n-      Assurer le maintien en conditions opérationnelles des outils de sécurité.\n-      Assurer une veille technologique.\n-      Maintenir et participer à l'évolution du corpus documentaire de la sécurité du SI.\n-      Sensibiliser les collaborateurs à la cybersécurité.\n-       Collaborer avec les équipes IT du groupe.\n\nVotre profil :\nVous êtes titulaire d'un Bac+5 Ingénieur ou Master en informatique.\nVous avez une expérience de 2 ans minimum en cybersécurité ou en système et réseau, orienté(e) vers la sécurité. \nVotre forte appétence pour la sécurité est un atout pour ce poste et vous avez déjà mis en œuvre des solutions de sécurité dans le cadre de projets ou géré des incidents de sécurité dans le cadre de vos responsabilités opérationnelles.\nEnfin, vous aimez travailler en équipe et en mode projet tout en assurant des tâches opérationnelles. \nUne expérience en réponse à incident, SOC (Security Operations Center) et gestion des vulnérabilités est un plus.\nLa pratique de l'anglais (B1/B2) est nécessaire pour ce poste.",
-        "dateCreation": "2025-02-11T14:25:33.153Z",
-        "dateActualisation": "2025-04-03T15:17:41.443Z",
-        "romeCode": "M1846",
-        "romeLibelle": "Ingénieur / Ingénieure Cybersécurité Datacenter",
-        "appellationlibelle": "Ingénieur / Ingénieure Cybersécurité Datacenter",
-        "entreprise": {
-            "nom": "SOCOMEC",
-            "description": "Nous sommes un groupe industriel centenaire qui compte plus de 4 200 collaborateurs répartis dans 80 pays. Nous concevons, fabriquons et commercialisons des équipements électriques (interrupteurs, onduleurs, sectionneurs...) qui assurent la fiabilité et la maîtrise de l'énergie. Quand le courant est vital, quand la lumière est indispensable, quand l'activité est cruciale, nous fournissons des solutions adaptées aux installations critiques.",
-            "entrepriseAdaptee": false
-        },
-        "typeContrat": "CDI",
-        "typeContratLibelle": "CDI",
-        "natureContrat": "Contrat travail",
-        "experienceExige": "E",
-        "experienceLibelle": "2 An(s)",
-        "competences": null,
-        "salaire": {
-            "commentaire": "A définir selon profil",
-            "complement1": "Autre"
-        },
-        "dureeTravailLibelle": "35H Autre",
-        "dureeTravailLibelleConverti": "Temps plein",
-        "alternance": false,
-        "contact": {
-            "nom": "SOCOMEC - Mme RECRUTEMENT SOCOMEC",
-            "coordonnees1": "https://apply.workable.com/j/C566C3821D",
-            "urlPostulation": "https://apply.workable.com/j/C566C3821D"
-        },
-        "agence": {
-
-        },
-        "nombrePostes": 1,
-        "accessibleTH": false,
-        "deplacementCode": "1",
-        "deplacementLibelle": "Jamais",
-        "qualificationCode": "9",
-        "qualificationLibelle": "Cadre",
-        "codeNAF": "27.12Z",
-        "secteurActivite": "27",
-        "secteurActiviteLibelle": "Fabrication de matériel de distribution et de commande électrique",
-        "qualitesProfessionnelles": [
-            {
-                "libelle": "Faire preuve d'autonomie",
-                "description": "Capacité à prendre en charge son activité sans devoir être encadré de façon continue (le cas échéant, à solliciter les autres acteurs de l'entreprise)."
-            },
-            {
-                "libelle": "Organiser son travail selon les priorités et les objectifs",
-                "description": "Capacité à planifier, prioriser, anticiper des actions, en tenant compte des moyens, des ressources, des objectifs et du calendrier pour les réaliser."
-            },
-            {
-                "libelle": "Travailler en équipe",
-                "description": "Capacité à travailler et à se coordonner avec les autres au sein de l'entreprise pour réaliser les objectifs fixés."
-            }
-        ],
-        "origineOffre": {
-            "origine": "1",
-            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/187YWCY"
-        },
-        "offresManqueCandidats": true,
-        "contexteTravail": {
-            "horaires": [
-                "35H Autre"
-            ],
-            "conditionsExercice": [
-                "Autre"
-            ]
-        },
-        "formations": null,
-        "langues": null,
-        "permis": null,
-        "complementExercice": null,
-        "experienceCommentaire": null,
-        "conditionExercice": null,
-        "dateExtraction": "2025-04-05",
-        "lieu_cas": "cas_1",
-        "code_insee": "67028",
-        "nom_commune": "Benfeld",
-        "code_postal": "67230",
-        "nom_ville": "Benfeld",
-        "code_departement": "67",
-        "nom_departement": "Bas-Rhin",
-        "code_region": "44",
-        "nom_region": "Grand Est"
-    },
+        "dateExtraction": "2025-03-02",
+        "datePremiereEcriture": "2025-03-02"
+	},
     {
         "id": "PBQUAL1",
         "intitule": "[ QUALIFICATION_CODE = 7 PUIS 8  (id=188LLXS) ] Technicien de gestion de données sur équipement (H/F)",
         "description": "Afin de contribuer à la réalisation des projets pétroliers majeurs, un spécialiste de la gestion de données sera en charge de collecter les données techniques principales pour tous les équipements et tous les composants des équipements fournis par les partenaires, dans le but de les charger dans la base de données du projet (AVEVA Engineering).\nLa base de données technique sera mise à la disposition du client final pour les opération FPSO pour les opérations de maintenance.\nL'activité principale consiste à collecter les données provenant de divers équipements délivré par les fournisseurs, vérifier la pertinence des dessins et des revues documentaires du fournisseur pour bien déterminer qu'il ne manque pas d'information.\n\nCompétences requises :\nAvoir des notions d'anglais, des connaissances des documents courants des équipement fournis sur des projets pétroliers tels que : P&ID, data sheet, layout drawing, wiring drawing.",
         "dateCreation": "2025-02-20T13:26:04.059Z",
-        "dateActualisation": "2025-04-01T12:18:25.686Z",
+        "dateActualisation": "2025-02-20T13:26:04.526Z",
         "romeCode": "M1811",
         "romeLibelle": "Data engineer",
         "appellationlibelle": "Data engineer",
@@ -545,11 +299,11 @@
             }
         ],
         "salaire": {
-            "commentaire": "à définir selon e",
+            "commentaire": "à définir selon expérience",
             "complement1": "Mutuelle",
             "complement2": "Autre"
         },
-        "dureeTravailLibelle": "40H Autre",
+        "dureeTravailLibelle": "40H Travail en journée",
         "dureeTravailLibelleConverti": "Temps plein",
         "alternance": false,
         "contact": {
@@ -562,8 +316,8 @@
         "accessibleTH": false,
         "deplacementCode": "1",
         "deplacementLibelle": "Jamais",
-        "qualificationCode": "8",
-        "qualificationLibelle": "Agent de maîtrise",
+        "qualificationCode": "7",
+        "qualificationLibelle": "Technicien",
         "codeNAF": "71.12B",
         "secteurActivite": "71",
         "secteurActiviteLibelle": "Ingénierie, études techniques",
@@ -580,40 +334,41 @@
         "offresManqueCandidats": false,
         "contexteTravail": {
             "horaires": [
-                "40H Autre"
+                "40H Travail en journée"
             ],
             "conditionsExercice": [
-                "Autre"
+                ""
             ]
         },
         "formations": null,
         "langues": [
             {
                 "libelle": "Anglais",
-                "exigence": "E"
+                "exigence": "S"
             }
         ],
         "permis": null,
         "complementExercice": null,
         "experienceCommentaire": null,
         "conditionExercice": null,
-        "dateExtraction": "2025-04-05",
         "lieu_cas": "cas_1",
-        "code_insee": "92062",
-        "nom_commune": "Puteaux",
-        "code_postal": "92800",
-        "nom_ville": "Puteaux",
-        "code_departement": "92",
-        "nom_departement": "Hauts-de-Seine",
-        "code_region": "11",
-        "nom_region": "Île-de-France"
-    },
+        "code_insee": "57031",
+        "nom_commune": "Ars-Laquenexy",
+        "code_postal": "57530",
+        "nom_ville": "Ars-Laquenexy",
+        "code_departement": "57",
+        "nom_departement": "Moselle",
+        "code_region": "44",
+        "nom_region": "Grand Est"
+        "dateExtraction": "2025-03-02",
+ 		"datePremiereEcriture": "2025-03-02"
+   },
     {
         "id": "PBQUAL2",
         "intitule": "[ QUALIFICATION_CODE = 6 PUIS 7  (id=186XNDD) ] Coach sportif(ve) (H/F)",
-        "description": "Curves Bruz, club de fitness dédié exclusivement aux femmes, recherche un(e) coach sportif(ve) dynamique et passionné(e) pour accompagner et motiver nos adhérentes dans une ambiance conviviale et bienveillante.\n\nVOS MISSIONS:\n- Animer et surveiller un circuit de cardio training adapté à tous les niveaux, en veillant à la bonne exécution des exercices.\n- Motiver et encourager chaque participante à atteindre ses objectifs tout en respectant son rythme\n- Corriger les postures, guider les mouvements et garantir une pratique sécurisée et efficace\n- Suivre les progrès des adhérentes et leur proposer des conseils personnalisés\n- Travailler en équipe pour créer une atmosphère positive et inspirante\n\nPROFIL RECHERCHE:\n- Diplôme dans le domaine du sport (STAPS, BPJEPS ou équivalent). Vous devez être en possession d'une carte d'éducateur sportif valide.\n- Une expérience dans l'animation de circuits cardio training ou de cours collectifs est un atout\n- Dynamisme, bienveillance et excellent relationnel\n- Capacité de s'adapter aux besoins et objectifs d'une clientèle féminine\n- Esprit d'équipe et volonté de contribuer à une ambiance chaleureuse et motivante\n\nCONDITIONS:\n\n- Repos: samedi après midi, dimanche et un autre repos dans la semaine\n- Avantages: accès aux installations, opportunités de formations continue, chèques vacances, primes sur objectifs d'équipe\n- Rémunération selon grille de la convention et selon expérience. Rémunération de départ = 1600€ net / mois pour 35h00 semaine\n\nVous êtes motivé(e), passionné(e) par le fitness; et prêt(e) à inspirer une communauté 100% féminine? Vous avez envie de travailler auprès d'un public varié: sportives/non sportives; avec ou sans souci de santé, tout âge... ?\n\nPoste à pourvoir de suite",
+        "description": "Curves Bruz, club de fitness dédié exclusivement aux femmes, recherche un(e) coach sportif(ve) dynamique et passionné(e) pour accompagner et motiver nos adhérentes dans une ambiance conviviale et bienveillante.\n\nVOS MISSIONS:\n- Animer et surveiller un circuit de cardio training adapté à tous les niveaux, en veillant à la bonne exécution des exercices.\n- Proposer et encadrer des cours collectifs de Pilates et Zumba, en maintenant l'énergie et la motivation du groupe\n- Motiver et encourager chaque participante à atteindre ses objectifs tout en respectant son rythme\n- Corriger les postures, guider les mouvements et garantir une pratique sécurisée et efficace\n- Suivre les progrès des adhérentes et leur proposer des conseils personnalisés\n- Travailler en équipe pour créer une atmosphère positive et inspirante\n\nPROFIL RECHERCHE:\n- Diplôme dans le domaine du sport (STAPS, BPJEPS ou équivalent). Vous devez être en possession d'une carte d'éducateur sportif valide.\n- Certification ou expérience significative en Pilates et Zumba indispensable\n- Une expérience dans l'animation de circuits cardio training ou de cours collectifs est un atout\n- Dynamisme, bienveillance et excellent relationnel\n- Capacité de s'adapter aux besoins et objectifs d'une clientèle féminine\n- Esprit d'équipe et volonté de contribuer à une ambiance chaleureuse et motivante\n\nCONDITIONS:\n\n- Repos: samedi après midi, dimanche et un autre repos dans la semaine\n- Avantages: accès aux installations, opportunités de formations continue, chèques vacances, primes sur objectifs d'équipe\n- Rémunération selon grille de la convention et selon expérience.\n\nVous êtes motivé(e), passionné(e) par le fitness, le Pilates et la Zumba; et prête à inspirer une communauté 100% féminine? Vous avez envie de travailler auprès d'un public varié: sportives/non sportives; avec ou sans souci de santé, tout âge... ?\n\nPoste à pourvoir de suite",
         "dateCreation": "2025-01-20T19:10:47.200Z",
-        "dateActualisation": "2025-04-04T16:11:13.273Z",
+        "dateActualisation": "2025-02-26T12:22:46.742Z",
         "romeCode": "G1217",
         "romeLibelle": "Moniteur / Monitrice en salle de sport",
         "appellationlibelle": "Coach sportif",
@@ -647,8 +402,8 @@
         "accessibleTH": false,
         "deplacementCode": "1",
         "deplacementLibelle": "Jamais",
-        "qualificationCode": "7",
-        "qualificationLibelle": "Technicien",
+        "qualificationCode": "6",
+        "qualificationLibelle": "Employé qualifié",
         "codeNAF": "93.13Z",
         "secteurActivite": "93",
         "secteurActiviteLibelle": "Activités des centres de culture physique",
@@ -672,7 +427,6 @@
         "complementExercice": null,
         "experienceCommentaire": null,
         "conditionExercice": null,
-        "dateExtraction": "2025-04-05",
         "lieu_cas": "cas_1",
         "code_insee": "35047",
         "nom_commune": "Bruz",
@@ -682,25 +436,26 @@
         "nom_departement": "Ille-et-Vilaine",
         "code_region": "53",
         "nom_region": "Bretagne"
+        "dateExtraction": "2025-03-02",
+		"datePremiereEcriture": "2025-03-02"
     },
     {
         "id": "PBEXP01",
-        "intitule": "[ EXPERIENCE = E/Expérience exigée de 3 An(s) PUIS D/Débutant accepté  (id=1316532) ] Ingénieur(e) Cloud - Île-de-France (H/F)",
-        "description": "En tant qu&#039;organisateur de forums de recrutement, Talents Handicap accompagne de très nombreuses entreprises &amp; organisations en France dans leurs recrutements de collaborateurs en situation de handicap. Participant actuellement à l&#039;un de nos forums. L'entreprise Sopra Steria recherche actuellement des profils :  Description de l'entrepriseSopra Steria, acteur majeur de la Tech en Europe avec  collaborateurs dans près de 30 pays, est reconnu pour ses activités de conseil, de services numériques et d'édition de logiciels. Il aide ses clients à mener leur transformation digitale et à obtenir des bénéfices concrets et durables. Le Groupe apporte une réponse globale aux enjeux de compétitivité des grandes entreprises et organisations, combinant une connaissance approfondie des secteurs d'activité et des technologies innovantes à une approche résolument collaborative. Sopra Steria place l'humain au centre de son action et s'engage auprès de ses clients à tirer le meilleur parti du digital pour construire un avenir positif. En , le Groupe a réalisé un chiffre d'affaires de 5,8 milliards d'euros.The world is how we shape itSopra Steria Infrastructure &amp; Security Services est la business unit de Sopra Steria dédiée aux activités d'infrastructures, cloud et cybersécurité. Elle est un acteur clé du end-to-end de Sopra Steria. Forte de ses  collaborateurs, Sopra Steria I2S se distingue par la flexibilité de son modèle de delivery qui associe la proximité clients depuis nos 8 agences et les capacités industrielles avancées de nos centres de services en off-shore.Description du posteVotre futur environnement de travail: Vous intégrez une agence dynamique qui compte plus de 370 collaborateurs répartis sur toute la région parisienne. Suivant les missions qui vous sont confiées, vous êtes amené(evoluer au sein d'équipes internes Sopra Steria dans des prestations de type Infogérance ou vous êtes directement intégré(e) à des équipes client.L'agence commercialise ses activités auprès de clients Grands Comptes appartenant aux secteurs de la Banque, Assurances Protection Sociale, Retail &amp; Automotive, Service Public et Santé Social et Emploi, et bien d'autres.Prêt(e) à relever le défi avec nous ?Votre rôle et vos missions :L'administrateur cloud, est responsable de la conception, de la mise en œuvre et de la maintenance des infrastructures de virtualisation Cloud :Vous assurez le build d'un socle de virtualisation selon les documents d'architectures communiqués.Vous prenez en charge l'administration, la configuration et l'optimisation des systèmes.Vous assurez le maintien en conditions opérationnelles des infrastructures (physiques et virtuelles) : suivi de l'état de l'art et traitement des incidents de niveau 2 et 3.Vous mettez à jour les référentiels assets et documentaires d'exploitation / d'administration.Vous participez à l'évolution du système d'information de notre client (migration et sécurisation des socles de virtualisation, etc.).Vous contribuez aux tâches d'exploitation (suivi des sauvegardes, supervision, etc.).Vous automatisez les tâches d'administration et de déploiement des services.Les expertises attendues pour réaliser cette prestation sont listées ci-après :Vmware(ESX6.5, 7.x) avec compétences avérées des composants VCenter/ vCloud Director/ vRops / NSX/ VRA / VRO. Ansible et/ou KubernetesCe que nous vous proposons :Un accord télétravail pour télétravailler jusqu'à 2 jours par semaine selon vos missions.Un package avantages intéressants : une mutuelle, un CSE, des titres restaurants, un accord d'intéressement, des primes vacances et cooptation.Un accompagnement individualisé avec un mentor que vous choisissez. Des opportunités de carrières multiples : plus de 50 métiers, autant de passerelles à imaginer ensemble. Plusieurs centaines de formations accessibles en toute autonomie depuis l'app mobile avec Sopra Steria Academy.La possibilité de s'engager auprès de notre fondation ou de notre partenaire «Vendredi »L'opportunité de rejoindre le collectif Tech'Me UP (formations, conférences, veille, et bien plus encoreli>QualificationsDiplômé(e) d'une école d'Ingénieur ou équivalent, vous avez au moins 5 ans d'expérience sur un poste d'Ingénieur(e) Cloud.\nVous êtes reconnu(e) pour votre adaptabilité, votre esprit d'innovation, votre capacité à convaincre et votre esprit de synthèse.\nVous avez le goût du challenge et vous appréciez le travail en équipe, tout en faisant preuve d'autonomie.\nVous recherchez des projets qui allient challenge technique, nouvelles technologies et innovation.\nVous vous reconnaissez ? Nous sommes impatients de vous rencontrer ! Informations supplémentairesEmployeur inclusif et engagé, notre société œuvre chaque jour pour lutter contre toute forme de discrimination et favoriser un environnement de travail respectueux. C'est pourquoi, attachés à",
+        "intitule": "[ EXPERIENCE = E/Expérience exigée de 3 An(s) PUIS D/Débutant accepté  (id=1316532) ] Administrateur linux (H/F)",
+        "description": "Description du poste :\nEn tant qu'organisateur de forums de recrutement, Talents Handicap accompagne de très nombreuses entreprises & organisations en France dans leurs recrutements de collaborateurs en situation de handicap. Participant actuellement à l'un de nos forums.\nL'entreprise Sopra Steria recherche actuellement des profils :\nDescription de l'entreprise\nSopra Steria, acteur majeur de la Tech en Europe avec 56 000 collaborateurs dans près de 30 pays, est reconnu pour ses activités de conseil, de services numériques et d'édition de logiciels. Il aide ses clients à mener leur transformation digitale et à obtenir des bénéfices concrets et durables. Le Groupe apporte une réponse globale aux enjeux de compétitivité des grandes entreprises et organisations, combinant une connaissance approfondie des secteurs d'activité et des technologies innovantes à une approche résolument collaborative. Sopra Steria place l'humain au centre de son action et s'engage auprès de ses clients à tirer le meilleur parti du digital pour construire un avenir positif. En 2023, le Groupe a réalisé un chiffre d'affaires de 5,8 milliards d'euros.\nThe world is how we shape it\nSopra Steria Infrastructure & Security Services est la business unit de Sopra Steria dédiée aux activités d'infrastructures, cloud et cybersécurité. Elle est un acteur clé du end-to-end de Sopra Steria. Forte de ses 3000 collaborateurs, Sopra Steria I2S se distingue par la flexibilité de son modèle de delivery qui associe la proximité clients depuis nos 8 agences et les capacités industrielles avancées de nos centres de services en off-shore.\nDescription du poste\nVotre futur environnement de travail:\nVous intégrez une agence dynamique qui compte plus de 370 collaborateurs répartis sur toute la région parisienne. Suivant les missions qui vous sont confiées, vous êtes amené(e) à évoluer au sein d'équipes internes Sopra Steria dans des prestations de type Infogérance ou vous êtes directement intégré(e) à des équipes client.\nL'agence commercialise ses activités auprès de clients Grands Comptes appartenant aux secteurs de la Banque, Assurances Protection Sociale, Retail & Automotive, Service Public et Santé Social et Emploi, et bien d'autres.\nPrêt(e) à relever le défi avec nous ?\nVotre rôle et vos missions :\nL'administrateur cloud, est responsable de la conception, de la mise en œuvre et de la maintenance des infrastructures de virtualisation Cloud :***Vous assurez le build d'un socle de virtualisation selon les documents d'architectures communiqués.\n* Vous prenez en charge l'administration, la configuration et l'optimisation des systèmes.\n* Vous assurez le maintien en conditions opérationnelles des infrastructures (physiques et virtuelles) : suivi de l'état de l'art et traitement des incidents de niveau 2 et 3.\n* Vous mettez à jour les référentiels assets et documentaires d'exploitation / d'administration.\n* Vous participez à l'évolution du système d'information de notre client (migration et sécurisation des socles de virtualisation, etc.).\n* Vous contribuez aux tâches d'exploitation (suivi des sauvegardes, supervision, etc.).\n* Vous automatisez les tâches d'administration et de déploiement des services.\nLes expertises attendues pour réaliser cette prestation sont listées ci-après :***Vmware(ESX6.5, 7.x) avec compétences avérées des composants VCenter/ vCloud Director/ vRops / NSX/ VRA / VRO.\n* Ansible et/ou Kubernetes\nCe que nous vous proposons :***Un accord télétravail pour télétravailler jusqu'à 2 jours par semaine selon vos missions.\n* Un package avantages intéressants : une mutuelle, un CSE, des titres restaurants, un accord d'intéressement, des primes vacances et cooptation.\n* Un accompagnement individualisé avec un mentor que vous choisissez.\n* Des opportunités de carrières multiples : plus de 50 métiers, autant de passerelles à imaginer ensemble. Plusieurs centaines de formations accessibles en toute autonomie depuis l'app mobile avec Sopra Steria Academy.\n* La possibilité de s'engager auprès de notre fondation ou de notre partenaire «Vendredi »\n* L'opportunité de rejoindre le collectif Tech'Me UP (formations, conférences, veille, et bien plus encore...).\nQualifications\nDiplômé(e) d'une école d'Ingénieur ou équivalent, vous avez au moins 5 ans d'expérience sur un poste d'Ingénieur(e) Cloud.\nVous êtes reconnu(e) pour votre adaptabilité, votre esprit d'innovation, votre capacité à convaincre et votre esprit de synthèse.\nVous avez le goût du challenge et vous appréciez le travail en équipe, tout en faisant preuve d'autonomie.\nVous recherchez des projets qui allient challenge technique, nouvelles technologies et innovation.\nVous vous reconnaissez ? Nous sommes impatients de vous rencontrer !",
         "dateCreation": "2025-01-25T16:57:20.000Z",
-        "dateActualisation": "2025-04-04T03:51:31.000Z",
-        "romeCode": "M1860",
-        "romeLibelle": "Architecte cloud",
-        "appellationlibelle": "Architecte cloud",
+        "dateActualisation": "2025-03-01T11:10:01.000Z",
+        "romeCode": "M1843",
+        "romeLibelle": "Administrateur / Administratrice de serveurs",
+        "appellationlibelle": "Administrateur / Administratrice de serveurs",
         "entreprise": {
-            "description": "Une offre présentée par Talents Handicap : le forum en ligne au service de l'emploi des personnes en situation de handicap. \n\nAvec près de 10 ans d'expérience, des dizaines de forums réalisés, plus d'une centaine d'entreprises partenaires et plus de 130 000 visiteurs uniques par an, le forum en ligne Talents Handicap s'est installé comme une référence au service de l'emploi des personnes en situation de handicap. \n\nCette année, Talents Handicap propose 5 forum...",
             "entrepriseAdaptee": false
         },
         "typeContrat": "CDI",
         "typeContratLibelle": "Contrat à durée indéterminée",
         "natureContrat": "Contrat travail",
-        "experienceExige": "D",
-        "experienceLibelle": "Débutant accepté",
+        "experienceExige": "E",
+        "experienceLibelle": "Expérience exigée de 3 An(s)",
         "competences": null,
         "salaire": {
 
@@ -733,7 +488,9 @@
         },
         "offresManqueCandidats": null,
         "contexteTravail": {
-
+            "horaires": [
+                ""
+            ]
         },
         "formations": null,
         "langues": null,
@@ -741,23 +498,24 @@
         "complementExercice": null,
         "experienceCommentaire": null,
         "conditionExercice": null,
-        "dateExtraction": "2025-04-05",
-        "lieu_cas": "cas_1",
-        "code_insee": "92050",
-        "nom_commune": "Nanterre",
-        "code_postal": "92000",
-        "nom_ville": "Nanterre",
+        "lieu_cas": "cas_3",
+        "code_insee": null,
+        "nom_commune": null,
+        "code_postal": null,
+        "nom_ville": null,
         "code_departement": "92",
         "nom_departement": "Hauts-de-Seine",
         "code_region": "11",
         "nom_region": "Île-de-France"
+        "dateExtraction": "2025-03-02",
+		"datePremiereEcriture": "2025-03-02"
     },
     {
         "id": "PBEXP02",
-        "intitule": "[ EXPERIENCE = E/Expérience exigée de 3 An(s) PUIS E/Expérience exigée de 3 An(s)  (id=0268188) ] ingénieur cybersécurité H/F - EC20545",
+        "intitule": "[ EXPERIENCE = E/Expérience exigée de 2 An(s) PUIS E/Expérience exigée de 3 An(s)  (id=0268188) ] ingénieur cybersécurité H/F - EC20545",
         "description": "ingénieur cybersécurité H/F - EC20545 - Proposer et/ou mettre en œuvre la gouvernance Cybersécurité GPS impliquant les équipes internes et externes en charge de la sécurité informatique.\n- Planifier, organiser et piloter en responsabilité directe la mise en œuvre des mesures de cybersécurité (projets humains, logiciels, matériels), en définissant et garantissant la méthode, les échéanciers, l'implication des ressources nécessaires, les indicateurs de performance clés \n- D ... émarche d'amélioration continue, analyser et identifier les besoins en cybersécurité de GPS et proposer une actualisation de la feuille de route cybersécurité globale \n- Sélectionner et/ou déployer et gérer les technologies (matérielles et/ou logicielles) de cybersécurité, identifiées d ... uille de route. Assurer et garantir la maintenance des technologies mise en œuvre\n- Superviser les tests de sécurité, y compris les tests de pénétration, les analyses de vulnérabilités et les simulations d'attaques, pour évaluer l'efficacité des contrôles de sécurité. \n- Assurer la formation et la sensibilisation à la sécurité pour l'ensemble du personnel, en mettant l'accent sur les bonnes pratiques et les politiques de sécurité de l'entreprise.\n- Gérer les incidents de sécurité, en coordonnant la réponse de l'organisation, en menant des enquêtes post-incident et en mettant en œuvre des mesures correctives pour éviter de futures violations.\n- Effectuer une surveillance continue de la sécurité informatique, en analysant les journaux d'activité, en identifiant les anomalies et en répondant aux menaces émergentes.\n\n\n\n\n\n- Préparer des rapports réguliers sur l'état de la sécurité informatique de GPS y compris les incidents de sécurité, les performances des contrôles de sécurité et les mesures prises pour renforcer la sécurité.\n- Assurer une veille technologique constante sur les tendances et les développements en matière de cybersécurité, et recommander des améliorations aux systèmes et aux processus de sécurité.\n- Déplacements sur le territoire\n- Peut être amené à intervenir en renfort sur d'autres services ou d'autres métiers de la DSIC en cas de pics d'activité.",
         "dateCreation": "2025-01-05T07:38:09.000Z",
-        "dateActualisation": "2025-04-04T07:30:47.000Z",
+        "dateActualisation": "2025-03-02T02:43:48.000Z",
         "romeCode": "M1854",
         "romeLibelle": "Administrateur / Administratrice réseau informatique",
         "appellationlibelle": "Administrateur / Administratrice réseau informatique",
@@ -769,7 +527,7 @@
         "typeContratLibelle": "Contrat à durée indéterminée",
         "natureContrat": "Contrat travail",
         "experienceExige": "E",
-        "experienceLibelle": "Expérience exigée de 3 An(s)",
+        "experienceLibelle": "Expérience exigée de 2 An(s)",
         "competences": null,
         "salaire": {
 
@@ -802,7 +560,9 @@
         },
         "offresManqueCandidats": null,
         "contexteTravail": {
-
+            "horaires": [
+                ""
+            ]
         },
         "formations": null,
         "langues": null,
@@ -810,7 +570,6 @@
         "complementExercice": null,
         "experienceCommentaire": null,
         "conditionExercice": null,
-        "dateExtraction": "2025-04-05",
         "lieu_cas": "cas_1",
         "code_insee": "91228",
         "nom_commune": "Évry-Courcouronnes",
@@ -820,5 +579,7 @@
         "nom_departement": "Essonne",
         "code_region": "11",
         "nom_region": "Île-de-France"
-    }
+        "dateExtraction": "2025-03-02",
+ 		"datePremiereEcriture": "2025-03-02"
+   }
 ]
