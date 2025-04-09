@@ -562,6 +562,8 @@ def concatenate_all_json_into_one(json_files_from_api_directory, generated_json_
         indent=4,  # pour formatter la sortie
     )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs
 
+    # print(df_concat)  # pour investigation
+
     # On supprime les backslashs ajoutés par la méthode .to_json()
     with open(os.path.join(generated_json_file_directory, new_json_filename), "r", encoding="utf-8") as f:
         content = f.read()
@@ -612,6 +614,8 @@ def add_date_premiere_ecriture_attribute(json_files_directory, json_filename, ne
         indent=4,  # pour formatter la sortie
     )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs
 
+    # print(df)  # pour investigation
+
     # On supprime les backslashs ajoutés par la méthode .to_json()
     with open(os.path.join(json_files_directory, new_json_filename), "r", encoding="utf-8") as f:
         content = f.read()
@@ -637,7 +641,8 @@ def add_date_extract_attribute(json_files_directory, json_filename, new_json_fil
     print(f'{Fore.GREEN}\n==> Fonction "add_date_extract_attribute()"\n')
 
     if date_to_insert is None:
-        date_to_insert = datetime.today().date()  # .date() pour ne pas avoir l'heure
+        # date_to_insert = datetime.today().date()  # .date() pour ne pas avoir l'heure
+        date_to_insert = datetime.today().strftime("%Y-%m-%d")  # formatage en string 'YYYY-MM-DD'
 
     df = pd.read_json(
         os.path.join(json_files_directory, json_filename),
@@ -653,6 +658,8 @@ def add_date_extract_attribute(json_files_directory, json_filename, new_json_fil
         force_ascii=False,  # pour convertir les caractères spéciaux
         indent=4,  # pour formatter la sortie
     )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs
+
+    # print(df)  # pour investigation
 
     # On supprime les backslashs ajoutés par la méthode .to_json()
     with open(os.path.join(json_files_directory, new_json_filename), "r", encoding="utf-8") as f:
@@ -812,7 +819,7 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
     ### Vérification
 
     # On vérifie que parmi les offres "cas_1", il n'y a pas de nom_ville à Nan.
-    print(f"      Vérification cas_1 ? {len(df_lieu[(df_lieu.lieu_cas == "cas_1") & (df_lieu.nom_ville.isna())]) == 0}")
+    print(f"      Vérification cas_1 OK ? {len(df_lieu[(df_lieu.lieu_cas == "cas_1") & (df_lieu.nom_ville.isna())]) == 0}")
 
     # assert len(df_lieu[(df_lieu.lieu_cas == "cas_1") & (df_lieu.nom_ville.isna())]) == 0
 
