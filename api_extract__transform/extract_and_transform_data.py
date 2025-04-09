@@ -130,7 +130,7 @@ def functions_sequence(json_files_from_api_directory, generated_json_files_direc
         print(f'{Fore.YELLOW}{df.shape}   -   Valeur de "dateExtraction" pour le premier document json : {df.loc[1, "dateExtraction"]}')  # Print shape df du json nouvellement écrit
 
 
-if 0:
+if 1:
     # création liste avec tous les fichiers json
     json_file_in_generated_directory = [file for file in os.listdir(generated_json_files_directory) if file.endswith(".json")]
 
@@ -161,7 +161,7 @@ if 0:
             json_filename=new_json_file,
         )
 
-        print("\nConcaténation entre le json précédemment présent dans le dossier, et le json nouvellement créé\n")
+        print(f"{Fore.GREEN}\n==> Concaténation entre le json précédemment présent dans le dossier, et le json nouvellement créé\n")
         df1 = pd.read_json(os.path.join(generated_json_files_directory, current_json_file), dtype=False)
         df2 = pd.read_json(os.path.join(generated_json_files_directory, new_json_file), dtype=False)
 
@@ -169,6 +169,20 @@ if 0:
         intersection_ids = pd.merge(df1, df2, on="id")["id"].tolist()
         df1_minus_intersection = df1[~df1.id.isin(intersection_ids)]  # c'est la "partie_1" dans "workflow_db_update.drawio"
         df_concat = pd.concat([df1_minus_intersection, df2])  # concaténation de "partie_1" et "partie_2" (cf "workflow_db_update.drawio")
+
+        # Pour faire ce qui est décrit ici "api_extract__transform/outputs/offres/1--generated_json_file/troubleshooting/...
+        #   ...concatenation_dateExtraction_datePremiereEcriture/notes.xlsx" pour l'attribut "datePremiereEcriture".
+        df_concat.loc[df_concat["id"].isin(df1["id"]), "datePremiereEcriture"] = df1["datePremiereEcriture"]
+
+        # print(
+        #     "df1",
+        #     df1[["id", "datePremiereEcriture", "dateExtraction"]],
+        #     "df2",
+        #     df2[["id", "dateExtraction"]],
+        #     "df_concat",
+        #     df_concat,
+        #     sep="\n\n",
+        # )  # pour investigation
 
         # Ecriture du nom du fichier et du nombre d'offres dans le fichier "_json_files_history.csv"
         with open(os.path.join(generated_json_files_directory, "_json_files_history.csv"), "a", newline="") as f:
@@ -213,7 +227,7 @@ if 0:
             os.path.join(generated_json_files_directory, "archive_json_files", current_json_file),
         )
 
-        ####
+    ####
 
     elif not json_file_in_generated_directory:
         #### Le dossier contient 0 fichier json.
