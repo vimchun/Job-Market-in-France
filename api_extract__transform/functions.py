@@ -589,7 +589,7 @@ def add_date_premiere_ecriture_attribute(json_files_directory, json_filename, ne
     Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
     """
 
-    print(f'{Fore.GREEN}\n==> Fonction "add_date_ecriture_offre_attribute()"\n')
+    print(f'{Fore.GREEN}\n==> Fonction "add_date_premiere_ecriture_attribute()"\n')
 
     if date_to_insert is None:
         date_to_insert = datetime.today().strftime("%Y-%m-%d")  # formatage en string 'YYYY-MM-DD'
