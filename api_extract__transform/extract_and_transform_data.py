@@ -282,6 +282,10 @@ if 1:
                 overwrite_all_lines=False,
             )
 
+        # Ecriture du nom du fichier et du nombre d'offres dans le fichier "_json_files_history.csv"
+        with open(os.path.join(generated_json_files_directory, "_json_files_history.csv"), "a", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow([json_filename, len(json_filename)])
         ####
 
     elif len(json_file_in_generated_directory) > 1:
