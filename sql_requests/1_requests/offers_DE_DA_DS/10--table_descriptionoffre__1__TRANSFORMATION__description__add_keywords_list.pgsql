@@ -1,7 +1,7 @@
--- requête pour afficher dans la colonne "mots_cles" une liste
---  de mots-clés qui apparaissent dans la description de l'offre
---
-WITH mots_cles AS (
+-- -- requête pour afficher dans la colonne "liste_mots_cles" une liste
+-- --  de mots-clés qui apparaissent dans la description de l'offre
+-- --
+WITH liste_mots_cles AS (
     SELECT
         UNNEST(ARRAY[
             -- langues
@@ -69,7 +69,7 @@ WITH mots_cles AS (
             , 'azure'
             -- dataviz
             , 'power bi'
-            , 'tableau'
+            -- , 'tableau'  -- peut poser problème car on peut avoir "tableau de bord"
             , 'excel'
             -- plus pour un ds
             , 'machine learning'
@@ -94,40 +94,37 @@ WITH mots_cles AS (
                 SELECT
                     COUNT(*)
                 FROM
-                    REGEXP_MATCHES(LOWER(dof.description_offre) , m.mot , 'g')) AS nb_occurrences
+                REGEXP_MATCHES(LOWER(dof.description_offre) , m.mot , 'g')) AS nb_occurrences
             FROM
                 DescriptionOffre dof
-            CROSS JOIN mots_cles m
+            CROSS JOIN liste_mots_cles m
         WHERE
-            dof.metier_data = 'DA'
-            OR dof.metier_data = 'DE'
-            OR dof.metier_data = 'DS'
-)
-SELECT
-    offre_id
-    , intitule_offre
-    , metier_data
-    , description_offre
-    , ARRAY_AGG(mot) AS mots_cles -- solution 1 : liste
-    -- , JSON_OBJECT_AGG(mot , nb_occurrences) AS mots_cles  -- solution 2 : dictionnaire
-    -- Choix 1 : avec toutes les clés du json
-    -- FROM
-    --     occurrences
-    -- Choix 2 : avec que les clés du json où les valeurs sont positives
-FROM (
-    SELECT
-        offre_id
-        , intitule_offre
-        , metier_data
-        , description_offre
-        , mot
-        , nb_occurrences
-    FROM
-        occurrences
-    WHERE
-        nb_occurrences > 0) AS filtered_occurrences
-GROUP BY
-    offre_id
-    , intitule_offre
-    , metier_data
-    , description_offre
+            dof.metier_data IN ('DA' , 'DE' , 'DS'))
+        SELECT
+            offre_id
+            , intitule_offre
+            , metier_data
+            , description_offre
+            , ARRAY_AGG(mot) AS liste_mots_cles -- solution 1 : liste
+            -- , JSON_OBJECT_AGG(mot , nb_occurrences) AS liste_mots_cles  -- solution 2 : dictionnaire
+            -- Choix 1 : avec toutes les clés du json
+            -- FROM
+            --     occurrences
+            -- Choix 2 : avec que les clés du json où les valeurs sont positives
+        FROM (
+            SELECT
+                offre_id
+                , intitule_offre
+                , metier_data
+                , description_offre
+                , mot
+                , nb_occurrences
+            FROM
+                occurrences
+            WHERE
+                nb_occurrences > 0) AS filtered_occurrences
+        GROUP BY
+            offre_id
+            , intitule_offre
+            , metier_data
+            , description_offre
