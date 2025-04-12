@@ -201,3 +201,34 @@ Sur le json archivé, c'est le cas pour 252 offres sur 13 639, soit 1.85% des of
 C'est le cas le plus défavorable qui ne permet pas de retrouver la ville, le département ni la région.
 
 On pourrait aller plus loin, et tenter de retrouver l'information dans l'intitulé ou la description de l'offre d'emploi, mais on ne le fera pas ici.
+
+
+## Script "api_extract__transform/extract_and_transform_data.py"
+
+Tout se base dans le dossier "api_extract__transform/outputs/offres/1--generated_json_file".
+
+  - S'il y a plusieurs fichiers json dans ce dossier, le script s'arrête.
+
+  - S'il y a aucun fichier json dans ce dossier, le script :
+
+    - 1. supprime tous les fichiers json du dossier "api_extract__transform/outputs/offres/0--original_json_files_from_api"
+    - 2. récupère toutes les offres par API (61 fichiers json)
+    - 3. concatène les 61 fichiers en 1 fichier json
+    - 4. retire de ce fichier toutes les offres qui sont hors de la France métropolitaine
+    - 5. ajoute des attributs de localisation `nom_commune`, `nom_ville`, `code_departement`, `nom_departement`, `code_region`, `nom_region`
+          à partir du code insee, des coordonnées GPS et des informations renseignées dans l'attribut `libelle`, comme le département ou la région.
+    - 6. ajoute un attribut `dateExtraction` à la date du jour actuelle, qui correspond à la date d'extraction des données par API
+    - 7. ajoute un attribut `datePremiereEcriture` à la date du jour actuelle, qui correspond à la date où on écrit une offre dans la base la première fois.
+
+  - S'il y a un fichier json dans ce dossier, le script :
+    - supposons que le nom de ce fichier json_1 soit "2025-04-09--14h19__extraction_occurence_2.json"
+    - le script va créer un autre fichier json_2 à la date/heure du jour et incrémenter l'occurence,
+       le fichier json_2 s'appellera par exemple "2025-04-12--21h41__extraction_occurence_3.json"
+    - les étapes 1-6 précédentes sont exécutées pour json_2
+    - le script va ensuite concaténer avec "json_1 - json_2" et "json_2" (il y a une intersection entre json_1 et json_2) dans "json_2"
+    - l'attribut `datePremiereEcriture` aura la date du jour pour toutes les nouvelles offres, mais prendra les anciennes valeurs pour les anciennes offres
+    - json_1 est déplacé dans le dossier "archive_json_files", laissant json_2 être le seul fichier json
+       dans le dossier "api_extract__transform/outputs/offres/1--generated_json_file"
+
+
+Le fichier json servira d'entrée à un autre script "load_sql/2--script_insert_into_tables.py".

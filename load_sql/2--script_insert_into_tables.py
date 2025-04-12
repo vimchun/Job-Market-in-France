@@ -1,3 +1,16 @@
+"""
+Temps d'exécution : 10 minutes de bout en bout pour remplir les 19 tables, pour un json avec ~30k offres et ~60 attributs
+
+Ce script est utilisé pour remplir et mettre à jour la base de données avec l'unique json généré dans le dossier :
+    "api_extract__transform/outputs/offres/1--generated_json_file"
+
+- Séquencement de ce script :
+  - PARTIE 1 : on remplit la table de fait et toutes les tables de dimension (pas celles de liaison)
+  - PARTIE 2 : on réécrit les NULL
+  - PARTIE 3 : on remplit les tables de liaison
+  - PARTIE 4 : on exécute les scripts SQL pour les transformations
+"""
+
 import json
 import os
 
@@ -6,13 +19,6 @@ import psycopg2
 from colorama import Fore, init
 
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
-
-"""
-Notes :
-  - Pour remplir les 19 tables, pour ~14k offres et ~60 attributs :
-    - met environ 11 minutes si .commit() dans la base pour chaque ligne
-    - met environ 3 minutes si .commit() dans la base en fin de script
-"""
 
 
 #### "Partie paramétrable"
@@ -129,15 +135,6 @@ def fill_db(db_name, attributes_tuple, on_conflict_string):
 
     return None
 
-
-""" Séquencement de ce script :
-
-      - PARTIE 1 : on remplit la table de fait et toutes les tables de dimension (pas celles de liaison)
-      - PARTIE 2 : on réécrit les NULL
-      - PARTIE 3 : on remplit les tables de liaison
-      - PARTIE 4 : on exécute les scripts SQL pour les transformations
-
-"""
 
 with psycopg2.connect(database="francetravail", host="localhost", user="mhh", password="mhh", port=5432) as conn:
     with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
@@ -587,7 +584,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
             #### table "Competence"
 
             if fill_table_Competence:
-                print("Table Competence (on réécrit les NULL)")
+                print("Table Competence")
 
                 update_query = f"""
                     UPDATE Competence
@@ -605,7 +602,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
             #### table "Experience"
 
             if fill_table_Experience:
-                print("Table Experience (on réécrit les NULL)")
+                print("Table Experience")
 
                 update_query = f"""
                     UPDATE Experience
@@ -624,7 +621,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
             #### table "Formation"
 
             if fill_table_Formation:
-                print("Table Formation (on réécrit les NULL)")
+                print("Table Formation")
 
                 update_query = f"""
                     UPDATE Formation
@@ -647,7 +644,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
             #### table "QualiteProfessionnelle"
 
             if fill_table_QualiteProfessionnelle:
-                print("Table QualiteProfessionnelle (on réécrit les NULL)")
+                print("Table QualiteProfessionnelle")
                 pass  # pas besoin, on n'a pas de NULL
 
             #### table "Qualification" : inutile de le faire car toutes les clés ont "NOT NULL" dans le CREATE TABLE
