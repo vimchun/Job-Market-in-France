@@ -10,11 +10,9 @@
 
   1. évolution des données dans les tables experience et qualification => pris en compte mais le faire pour les autres tables de fait.
 
-  1. Job_Market/load_sql/2--script_insert_into_tables.py => intégrer les transformations (Job_Market/sql_requests/0--execute_transformations.sh)
+  1. attribut `liste_mots_cles` : faisabilité regex sur le mot entier (exemple si on cherche le langage `R`)
 
 
 ## nice to have
 
   1. transformation pour avoir les années d'exp. (table experience)
-
-  1. transformation pour avoir un attribut avec un dictionnaire avec les outils (python, sql, pyspark...) et le nombre de fois où le keyword apparaît dans la description de l'offre
