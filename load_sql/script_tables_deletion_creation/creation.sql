@@ -85,7 +85,8 @@ CREATE TABLE Competence (
 CREATE TABLE Offre_Competence (
     offre_id VARCHAR(7) NOT NULL
     , competence_id INTEGER NOT NULL
-    , PRIMARY KEY (offre_id , competence_id)
+    , date_extraction DATE
+    , PRIMARY KEY (offre_id , competence_id, date_extraction)
     , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id) ON DELETE CASCADE
     , FOREIGN KEY (competence_id) REFERENCES Competence (competence_id) ON DELETE CASCADE
 );
@@ -126,7 +127,8 @@ CREATE TABLE Formation (
 CREATE TABLE Offre_Formation (
     offre_id VARCHAR(7) NOT NULL
     , formation_id INTEGER NOT NULL
-    , PRIMARY KEY (offre_id , formation_id)
+    , date_extraction DATE
+    , PRIMARY KEY (offre_id , formation_id, date_extraction)
     , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id) ON DELETE CASCADE
     , FOREIGN KEY (formation_id) REFERENCES Formation (formation_id) ON DELETE CASCADE
 );
@@ -144,7 +146,8 @@ CREATE TABLE QualiteProfessionnelle (
 CREATE TABLE Offre_QualiteProfessionnelle (
     offre_id VARCHAR(7) NOT NULL
     , qualite_professionnelle_id INTEGER NOT NULL
-    , PRIMARY KEY (offre_id , qualite_professionnelle_id)
+    , date_extraction DATE
+    , PRIMARY KEY (offre_id , qualite_professionnelle_id, date_extraction)
     , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id) ON DELETE CASCADE
     , FOREIGN KEY (qualite_professionnelle_id) REFERENCES QualiteProfessionnelle (qualite_professionnelle_id) ON DELETE CASCADE
 );
@@ -162,7 +165,8 @@ CREATE TABLE Offre_Qualification (
     offre_id VARCHAR(7) NOT NULL
     , qualification_code INTEGER NOT NULL
     , date_extraction DATE
-    , PRIMARY KEY (offre_id , qualification_code)
+    -- , PRIMARY KEY (offre_id , qualification_code)
+    , PRIMARY KEY (offre_id , qualification_code, date_extraction)
     , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id) ON DELETE CASCADE
     , FOREIGN KEY (qualification_code) REFERENCES Qualification (qualification_code) ON DELETE CASCADE
 );
@@ -180,7 +184,8 @@ CREATE TABLE Langue (
 CREATE TABLE Offre_Langue (
     offre_id VARCHAR(7) NOT NULL
     , langue_id INTEGER NOT NULL
-    , PRIMARY KEY (offre_id , langue_id)
+    , date_extraction DATE
+    , PRIMARY KEY (offre_id , langue_id, date_extraction)
     , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id) ON DELETE CASCADE
     , FOREIGN KEY (langue_id) REFERENCES Langue (langue_id) ON DELETE CASCADE
 );
@@ -198,7 +203,8 @@ CREATE TABLE PermisConduire (
 CREATE TABLE Offre_PermisConduire (
     offre_id VARCHAR(7) NOT NULL
     , permis_id INTEGER NOT NULL
-    , PRIMARY KEY (offre_id , permis_id)
+    , date_extraction DATE
+    , PRIMARY KEY (offre_id , permis_id, date_extraction)
     , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id) ON DELETE CASCADE
     , FOREIGN KEY (permis_id) REFERENCES PermisConduire (permis_id) ON DELETE CASCADE
 );
