@@ -1,3 +1,13 @@
+"""
+Temps d'exécution : 20-30 minutes de bout en bout
+
+Ce script est utilisé pour générer un fichier json qui contiendra toutes les anciennes offres et toutes les nouvelles récupérées par API.
+
+Descriptif de ce que fait le script : `readme_pages/step_1__extract_and_transform_data.md`,
+ section `Script "api_extract__transform/extract_and_transform_data.py"`
+
+"""
+
 import csv
 import os
 import shutil
@@ -30,8 +40,8 @@ from functions import (
 #### "Partie paramétrable"
 # Lancer les fonctions plus simplement ("= 1" pour lancer la fonction)
 #  => Il faut mettre à 1 toutes les variables suivantes pour exécuter le script de bout en bout.
-launch_remove_all_get_json_files = 0  # ~ quelques secondes
-launch_get_offres = 0  # ~ 20 minutes
+launch_remove_all_get_json_files = 1  # ~ quelques secondes
+launch_get_offres = 1  # ~ 20 minutes
 launch_concatenate_all_json_into_one = 1  # ~ 1 minute
 #
 launch_keep_only_offres_from_metropole = 1  # ~ quelques secondes
