@@ -27,7 +27,7 @@ init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 #  => Il faut mettre à 1 toutes les variables suivantes (sauf "delete_and_create_tables_again") pour exécuter le script de bout en bout.
 
 # (PARTIE 0) Booléen **OPTIONNEL** si on veut supprimer les tables et les recréer (par défault, mettre 0)
-delete_and_create_tables_again = 1
+delete_and_create_tables_again = 0
 
 # (PARTIES 1 + 2) Booléens pour remplir ou pas la table de fait et toutes les tables de dimension (pas celles de liaison)
 fill_OffreEmploi = 1
@@ -147,7 +147,6 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
             sql_dir = os.path.join(current_directory, "script_tables_deletion_creation")
             sql_files = sorted(f for f in os.listdir(sql_dir) if f.endswith(".sql"))
 
-            print(sql_files)
             for sql_file in sql_files:
                 file_path = os.path.join(sql_dir, sql_file)
                 print(f"{sql_file:<20}", end="")
@@ -231,14 +230,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
                     fill_db(
                         db_name="OffreEmploi",
-                        attributes_tuple=(
-                            "offre_id",
-                            "date_extraction",
-                            "date_premiere_ecriture",
-                            "date_creation",
-                            "date_actualisation",
-                            "nombre_postes",
-                        ),
+                        attributes_tuple=("offre_id", "date_extraction", "date_premiere_ecriture", "date_creation", "date_actualisation", "nombre_postes"),
                         on_conflict_string=("offre_id"),
                     )
 
@@ -276,24 +268,12 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                     fill_db(
                         db_name="Contrat",
                         attributes_tuple=(
-                            "offre_id",
-                            "type_contrat",
-                            "type_contrat_libelle",
-                            "duree_travail_libelle",
-                            "duree_travail_libelle_converti",
-                            "nature_contrat",
-                            "salaire_libelle",
-                            "salaire_complement_1",
-                            "salaire_complement_2",
-                            "salaire_commentaire",
-                            "alternance",
-                            "deplacement_code",
-                            "deplacement_libelle",
-                            "temps_travail",
-                            "condition_specifique",
+                            "offre_id", "type_contrat", "type_contrat_libelle", "duree_travail_libelle", "duree_travail_libelle_converti", "nature_contrat",
+                            "salaire_libelle", "salaire_complement_1", "salaire_complement_2", "salaire_commentaire", "alternance",
+                            "deplacement_code", "deplacement_libelle", "temps_travail", "condition_specifique"
                         ),
                         on_conflict_string=("offre_id"),
-                    )
+                    )  # fmt: skip
 
             #### table "Entreprise"
 
@@ -311,14 +291,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
                     fill_db(
                         db_name="Entreprise",
-                        attributes_tuple=(
-                            "offre_id",
-                            "nom_entreprise",
-                            "description_entreprise",
-                            "code_naf",
-                            "secteur_activite_libelle",
-                            "entreprise_adaptee",
-                        ),
+                        attributes_tuple=("offre_id", "nom_entreprise", "description_entreprise", "code_naf", "secteur_activite_libelle", "entreprise_adaptee"),
                         on_conflict_string=("offre_id"),
                     )
 
@@ -345,17 +318,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
                     fill_db(
                         db_name="Localisation",
-                        attributes_tuple=(
-                            "offre_id",
-                            "code_insee",
-                            "nom_commune",
-                            "code_postal",
-                            "nom_ville",
-                            "code_departement",
-                            "nom_departement",
-                            "code_region",
-                            "nom_region",
-                        ),
+                        attributes_tuple=("offre_id", "code_insee", "nom_commune", "code_postal", "nom_ville", "code_departement", "nom_departement", "code_region", "nom_region"),
                         on_conflict_string=("offre_id"),
                     )
 
@@ -381,18 +344,11 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                     fill_db(
                         db_name="DescriptionOffre",
                         attributes_tuple=(
-                            "offre_id",
-                            "intitule_offre",
-                            "description_offre",
-                            "nom_partenaire",
-                            "rome_code",
-                            "rome_libelle",
-                            "appellation_rome",
-                            "difficile_a_pourvoir",
-                            "accessible_travailleurs_handicapes",
+                            "offre_id", "intitule_offre", "description_offre", "nom_partenaire",
+                            "rome_code", "rome_libelle", "appellation_rome", "difficile_a_pourvoir", "accessible_travailleurs_handicapes",
                         ),
                         on_conflict_string=("offre_id"),
-                    )
+                    )  # fmt:skip
 
             #### table "Competence"
             if fill_Competence:
@@ -417,11 +373,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
                             fill_db(
                                 db_name="Competence",
-                                attributes_tuple=(
-                                    "competence_code",
-                                    "competence_libelle",
-                                    "competence_code_exigence",
-                                ),
+                                attributes_tuple=("competence_code", "competence_libelle", "competence_code_exigence"),
                                 on_conflict_string=("competence_code | competence_libelle | competence_code_exigence"),
                             )
 
@@ -442,11 +394,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                     if any([i != sql_safe_null for i in [experience_libelle, experience_code_exigence, experience_commentaire]]):
                         fill_db(
                             db_name="Experience",
-                            attributes_tuple=(
-                                "experience_libelle",
-                                "experience_code_exigence",
-                                "experience_commentaire",
-                            ),
+                            attributes_tuple=("experience_libelle", "experience_code_exigence", "experience_commentaire"),
                             on_conflict_string="experience_libelle | experience_code_exigence | experience_commentaire",
                         )
 
@@ -473,13 +421,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
                             fill_db(
                                 db_name="Formation",
-                                attributes_tuple=(
-                                    "formation_code",
-                                    "formation_domaine_libelle",
-                                    "formation_niveau_libelle",
-                                    "formation_commentaire",
-                                    "formation_code_exigence",
-                                ),
+                                attributes_tuple=("formation_code", "formation_domaine_libelle", "formation_niveau_libelle", "formation_commentaire", "formation_code_exigence"),
                                 on_conflict_string="formation_code | formation_domaine_libelle | formation_niveau_libelle | formation_commentaire | formation_code_exigence",
                             )
 
@@ -503,10 +445,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
                             fill_db(
                                 db_name="QualiteProfessionnelle",
-                                attributes_tuple=(
-                                    "qualite_professionnelle_libelle",
-                                    "qualite_professionnelle_description",
-                                ),
+                                attributes_tuple=("qualite_professionnelle_libelle", "qualite_professionnelle_description"),
                                 on_conflict_string=("qualite_professionnelle_libelle | qualite_professionnelle_description"),
                             )
 
@@ -527,10 +466,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                     if (qualification_code is not None) or (qualification_libelle is not None):
                         fill_db(
                             db_name="Qualification",
-                            attributes_tuple=(
-                                "qualification_code",
-                                "qualification_libelle",
-                            ),
+                            attributes_tuple=("qualification_code", "qualification_libelle"),
                             on_conflict_string="qualification_code | qualification_libelle",
                         )
 
@@ -557,10 +493,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
                             fill_db(
                                 db_name="Langue",
-                                attributes_tuple=(
-                                    "langue_libelle",
-                                    "langue_code_exigence",
-                                ),
+                                attributes_tuple=("langue_libelle", "langue_code_exigence"),
                                 on_conflict_string=("langue_libelle | langue_code_exigence"),
                             )
 
@@ -587,10 +520,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
                             fill_db(
                                 db_name="PermisConduire",
-                                attributes_tuple=(
-                                    "permis_libelle",
-                                    "permis_code_exigence",
-                                ),
+                                attributes_tuple=("permis_libelle", "permis_code_exigence"),
                                 on_conflict_string=("permis_libelle | permis_code_exigence"),
                             )
 
@@ -790,11 +720,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
                     fill_db(
                         db_name="Offre_Experience",
-                        attributes_tuple=(
-                            "offre_id",
-                            "experience_id",
-                            "date_extraction",
-                        ),
+                        attributes_tuple=("offre_id", "experience_id", "date_extraction"),
                         on_conflict_string="offre_id | experience_id | date_extraction",
                     )
 
@@ -974,7 +900,6 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                         fill_db(
                             db_name="Offre_Qualification",
                             attributes_tuple=("offre_id", "qualification_code", "date_extraction"),
-                            # on_conflict_string="offre_id | qualification_code",
                             on_conflict_string="offre_id | qualification_code | date_extraction",
                         )
 
