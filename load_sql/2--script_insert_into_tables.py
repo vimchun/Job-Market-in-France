@@ -5,6 +5,7 @@ Ce script est utilisé pour remplir et mettre à jour la base de données avec l
     "api_extract__transform/outputs/offres/1--generated_json_file"
 
 - Séquencement de ce script :
+  - PARTIE 0 : on exécute les scripts SQL pour supprimer les tables et les recréer
   - PARTIE 1 : on remplit la table de fait et toutes les tables de dimension (pas celles de liaison)
   - PARTIE 2 : on réécrit les NULL
   - PARTIE 3 : on remplit les tables de liaison
@@ -23,24 +24,22 @@ init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
 #### "Partie paramétrable"
 # Lancer les codes plus simplement ("= 1" pour lancer le code associé)
-#  => Il faut mettre à 1 toutes les variables suivantes pour exécuter le script de bout en bout.
+#  => Il faut mettre à 1 toutes les variables suivantes (sauf "delete_and_create_tables_again") pour exécuter le script de bout en bout.
 
-# Booléens pour remplir ou pas les tables associées
-fill_table_OffreEmploi = 1
-fill_table_Contrat = 1
-fill_table_Entreprise = 1
-fill_table_Localisation = 1
-fill_table_DescriptionOffre = 1
-fill_table_Competence, fill_table_Offre_Competence = 1, 1
-fill_table_Experience, fill_table_Offre_Experience = 1, 1
-fill_table_Formation, fill_table_Offre_Formation = 1, 1
-fill_table_QualiteProfessionnelle, fill_table_Offre_QualiteProfessionnelle = 1, 1
-fill_table_Qualification, fill_table_Offre_Qualification = 1, 1
-fill_table_Langue, fill_table_Offre_Langue = 1, 1
-fill_table_PermisConduire, fill_table_Offre_PermisConduire = 1, 1
+# (PARTIE 0) Booléen **OPTIONNEL** si on veut supprimer les tables et les recréer (par défault, mettre 0)
+delete_and_create_tables_again = 1
 
-# Booléen pour exécuter tous les scripts sql du dossier "sql_requests/0_transformations"
+# (PARTIES 1 + 2) Booléens pour remplir ou pas la table de fait et toutes les tables de dimension (pas celles de liaison)
+fill_OffreEmploi = 1
+fill_Contrat = fill_Entreprise = fill_Localisation = fill_DescriptionOffre = 1
+fill_Competence = fill_Experience = fill_Formation = fill_QualiteProfessionnelle = fill_Qualification = fill_Langue = fill_PermisConduire = 1
+
+# (PARTIE 3) Booléens pour remplir ou pas les tables de liaison
+fill_Offre_Competence = fill_Offre_Experience = fill_Offre_Formation = fill_Offre_QualiteProfessionnelle = fill_Offre_Qualification = fill_Offre_Langue = fill_Offre_PermisConduire = 1
+
+# (PARTIE 4) Booléen pour exécuter tous les scripts sql du dossier "sql_requests/1_transformations"
 execute_transformation_at_the_end_of_script = 1
+
 #### Fin "Partie paramétrable"
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
@@ -138,6 +137,31 @@ def fill_db(db_name, attributes_tuple, on_conflict_string):
 
 with psycopg2.connect(database="francetravail", host="localhost", user="mhh", password="mhh", port=5432) as conn:
     with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
+        ########################################################################################
+        #### PARTIE 0 : on exécute les scripts SQL pour supprimer les tables et les recréer ####
+        ########################################################################################
+
+        if delete_and_create_tables_again:
+            print(f"\n{Fore.RED}== PARTIE 0 : on exécute les scripts SQL pour supprimer les tables et les recréer ==")
+
+            sql_dir = os.path.join(current_directory, "script_tables_deletion_creation")
+            sql_files = sorted(f for f in os.listdir(sql_dir) if f.endswith(".sql"))
+
+            print(sql_files)
+            for sql_file in sql_files:
+                file_path = os.path.join(sql_dir, sql_file)
+                print(f"{sql_file:<20}", end="")
+                with open(file_path, "r", encoding="utf-8") as f:
+                    sql_script = f.read()
+
+                try:
+                    cursor.execute(sql_script)
+                    conn.commit()
+                    print(f"{Fore.GREEN} ==> OK")
+                except Exception as e:
+                    print(f"{Fore.YELLOW} ==> KO : {e}", end="")
+                    conn.rollback()
+
         ##########################################################################################################
         #### PARTIE 1 : on remplit la table de fait et toutes les tables de dimension (pas celles de liaison) ####
         ##########################################################################################################
@@ -191,7 +215,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
             #### table "OffreEmploi"
 
-            if fill_table_OffreEmploi:
+            if fill_OffreEmploi:
                 print("Table OffreEmploi")
 
                 for offre in offres_data:
@@ -220,7 +244,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
             #### table "Contrat"
 
-            if fill_table_Contrat:
+            if fill_Contrat:
                 print("Table Contrat")
 
                 for offre in offres_data:
@@ -273,7 +297,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
             #### table "Entreprise"
 
-            if fill_table_Entreprise:
+            if fill_Entreprise:
                 print("Table Entreprise")
 
                 for offre in offres_data:
@@ -300,7 +324,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
             #### table "Localisation"
 
-            if fill_table_Localisation:
+            if fill_Localisation:
                 print("Table Localisation")
 
                 for offre in offres_data:
@@ -336,7 +360,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                     )
 
             #### table "DescriptionOffre"
-            if fill_table_DescriptionOffre:
+            if fill_DescriptionOffre:
                 print("Table DescriptionOffre")
 
                 for offre in offres_data:
@@ -371,7 +395,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                     )
 
             #### table "Competence"
-            if fill_table_Competence:
+            if fill_Competence:
                 print("Table Competence")
 
                 for offre in offres_data:
@@ -402,7 +426,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                             )
 
             #### table "Experience"
-            if fill_table_Experience:
+            if fill_Experience:
                 print("Table Experience")
 
                 for offre in offres_data:
@@ -428,7 +452,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
             #### table "Formation"
 
-            if fill_table_Formation:
+            if fill_Formation:
                 print("Table Formation")
 
                 for offre in offres_data:
@@ -461,7 +485,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
             #### table "QualiteProfessionnelle"
 
-            if fill_table_QualiteProfessionnelle:
+            if fill_QualiteProfessionnelle:
                 print("Table QualiteProfessionnelle")
 
                 for offre in offres_data:
@@ -488,7 +512,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
             #### table "Qualification"
 
-            if fill_table_Qualification:
+            if fill_Qualification:
                 print("Table Qualification")
 
                 for offre in offres_data:
@@ -512,7 +536,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
             #### table "Langue"
 
-            if fill_table_Langue:
+            if fill_Langue:
                 print("Table Langue")
 
                 for offre in offres_data:
@@ -542,7 +566,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
             #### table "PermisConduire"
 
-            if fill_table_PermisConduire:
+            if fill_PermisConduire:
                 print("Table PermisConduire")
 
                 for offre in offres_data:
@@ -583,7 +607,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
             #### table "Competence"
 
-            if fill_table_Competence:
+            if fill_Competence:
                 print("Table Competence")
 
                 update_query = f"""
@@ -601,7 +625,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
             #### table "Experience"
 
-            if fill_table_Experience:
+            if fill_Experience:
                 print("Table Experience")
 
                 update_query = f"""
@@ -620,7 +644,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
             #### table "Formation"
 
-            if fill_table_Formation:
+            if fill_Formation:
                 print("Table Formation")
 
                 update_query = f"""
@@ -643,7 +667,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
             #### table "QualiteProfessionnelle"
 
-            if fill_table_QualiteProfessionnelle:
+            if fill_QualiteProfessionnelle:
                 print("Table QualiteProfessionnelle")
                 pass  # pas besoin, on n'a pas de NULL
 
@@ -675,7 +699,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
             #### table "Offre_Competence"
 
-            if fill_table_Offre_Competence:
+            if fill_Offre_Competence:
                 print("Table Offre_Competence")
 
                 for offre in offres_data:
@@ -713,16 +737,31 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
                             fill_db(
                                 db_name="Offre_Competence",
-                                attributes_tuple=(
-                                    "offre_id",
-                                    "competence_id",
-                                ),
-                                on_conflict_string="offre_id | competence_id",
+                                attributes_tuple=("offre_id", "competence_id", "date_extraction"),
+                                on_conflict_string="offre_id | competence_id | date_extraction",
                             )
+
+                # On supprime les lignes où 1 offre_id est présente avec 2 competence_id différents :
+                cursor.execute(f"""--sql
+                    -- CTE pour afficher l'offre_id le plus récent s'il y a 1 offre_id avec plusieurs competence_id
+                    WITH latest_offre_id AS (
+                        SELECT DISTINCT ON (offre_id)
+                            offre_id,
+                            competence_id,
+                            date_extraction
+                        FROM Offre_Competence
+                        ORDER BY offre_id, date_extraction DESC
+                    )
+                    DELETE FROM Offre_Competence
+                    WHERE (offre_id, competence_id, date_extraction) NOT IN (
+                        SELECT offre_id, competence_id, date_extraction
+                        FROM latest_offre_id
+                    );
+                    """)
 
             #### table "Offre_Experience"
 
-            if fill_table_Offre_Experience:
+            if fill_Offre_Experience:
                 print("Table Offre_Experience")
 
                 for offre in offres_data:
@@ -779,7 +818,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
             #### table "Offre_Formation"
 
-            if fill_table_Offre_Formation:
+            if fill_Offre_Formation:
                 print("Table Offre_Formation")
 
                 for offre in offres_data:
@@ -826,16 +865,31 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
                             fill_db(
                                 db_name="Offre_Formation",
-                                attributes_tuple=(
-                                    "offre_id",
-                                    "formation_id",
-                                ),
-                                on_conflict_string="offre_id | formation_id",
+                                attributes_tuple=("offre_id", "formation_id", "date_extraction"),
+                                on_conflict_string="offre_id | formation_id | date_extraction",
                             )
+
+                # On supprime les lignes où 1 offre_id est présente avec 2 formation_id différents :
+                cursor.execute(f"""--sql
+                    -- CTE pour afficher l'offre_id le plus récent s'il y a 1 offre_id avec plusieurs formation_id
+                    WITH latest_offre_id AS (
+                        SELECT DISTINCT ON (offre_id)
+                            offre_id,
+                            formation_id,
+                            date_extraction
+                        FROM Offre_Formation
+                        ORDER BY offre_id, date_extraction DESC
+                    )
+                    DELETE FROM Offre_Formation
+                    WHERE (offre_id, formation_id, date_extraction) NOT IN (
+                        SELECT offre_id, formation_id, date_extraction
+                        FROM latest_offre_id
+                    );
+                    """)
 
             #### table "Offre_QualiteProfessionnelle"
 
-            if fill_table_Offre_QualiteProfessionnelle:
+            if fill_Offre_QualiteProfessionnelle:
                 print("Table Offre_QualiteProfessionnelle")
 
                 for offre in offres_data:
@@ -864,16 +918,31 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
                             fill_db(
                                 db_name="Offre_QualiteProfessionnelle",
-                                attributes_tuple=(
-                                    "offre_id",
-                                    "qualite_professionnelle_id",
-                                ),
-                                on_conflict_string="offre_id | qualite_professionnelle_id",
+                                attributes_tuple=("offre_id", "qualite_professionnelle_id", "date_extraction"),
+                                on_conflict_string="offre_id | qualite_professionnelle_id | date_extraction",
                             )
+
+                # On supprime les lignes où 1 offre_id est présente avec 2 qualite_professionnelle_id différents :
+                cursor.execute(f"""--sql
+                    -- CTE pour afficher l'offre_id le plus récent s'il y a 1 offre_id avec plusieurs qualite_professionnelle_id
+                    WITH latest_offre_id AS (
+                        SELECT DISTINCT ON (offre_id)
+                            offre_id,
+                            qualite_professionnelle_id,
+                            date_extraction
+                        FROM Offre_QualiteProfessionnelle
+                        ORDER BY offre_id, date_extraction DESC
+                    )
+                    DELETE FROM Offre_QualiteProfessionnelle
+                    WHERE (offre_id, qualite_professionnelle_id, date_extraction) NOT IN (
+                        SELECT offre_id, qualite_professionnelle_id, date_extraction
+                        FROM latest_offre_id
+                    );
+                    """)
 
             #### table "Offre_Qualification"
 
-            if fill_table_Offre_Qualification:
+            if fill_Offre_Qualification:
                 print("Table Offre_Qualification")
 
                 for offre in offres_data:
@@ -904,12 +973,9 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
                         fill_db(
                             db_name="Offre_Qualification",
-                            attributes_tuple=(
-                                "offre_id",
-                                "qualification_code",
-                                "date_extraction",
-                            ),
-                            on_conflict_string="offre_id | qualification_code",
+                            attributes_tuple=("offre_id", "qualification_code", "date_extraction"),
+                            # on_conflict_string="offre_id | qualification_code",
+                            on_conflict_string="offre_id | qualification_code | date_extraction",
                         )
 
                 # On supprime les lignes où 1 offre_id est présente avec 2 qualification_code différents :
@@ -932,7 +998,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
             #### table "Offre_Langue"
 
-            if fill_table_Offre_Langue:
+            if fill_Offre_Langue:
                 print("Table Offre_Langue")
 
                 for offre in offres_data:
@@ -958,16 +1024,31 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
                             fill_db(
                                 db_name="Offre_Langue",
-                                attributes_tuple=(
-                                    "offre_id",
-                                    "langue_id",
-                                ),
-                                on_conflict_string="offre_id | langue_id",
+                                attributes_tuple=("offre_id", "langue_id", "date_extraction"),
+                                on_conflict_string="offre_id | langue_id | date_extraction",
                             )
+
+                # On supprime les lignes où 1 offre_id est présente avec 2 langue_id différents :
+                cursor.execute(f"""--sql
+                    -- CTE pour afficher l'offre_id le plus récent s'il y a 1 offre_id avec plusieurs langue_id
+                    WITH latest_offre_id AS (
+                        SELECT DISTINCT ON (offre_id)
+                            offre_id,
+                            langue_id,
+                            date_extraction
+                        FROM Offre_Langue
+                        ORDER BY offre_id, date_extraction DESC
+                    )
+                    DELETE FROM Offre_Langue
+                    WHERE (offre_id, langue_id, date_extraction) NOT IN (
+                        SELECT offre_id, langue_id, date_extraction
+                        FROM latest_offre_id
+                    );
+                    """)
 
             #### table "Offre_PermisConduire"
 
-            if fill_table_Offre_PermisConduire:
+            if fill_Offre_PermisConduire:
                 print("Table Offre_PermisConduire")
 
                 for offre in offres_data:
@@ -990,12 +1071,27 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
 
                             fill_db(
                                 db_name="Offre_PermisConduire",
-                                attributes_tuple=(
-                                    "offre_id",
-                                    "permis_id",
-                                ),
-                                on_conflict_string="offre_id | permis_id",
+                                attributes_tuple=("offre_id", "permis_id", "date_extraction"),
+                                on_conflict_string="offre_id | permis_id | date_extraction",
                             )
+
+                # On supprime les lignes où 1 offre_id est présente avec 2 permis_id différents :
+                cursor.execute(f"""--sql
+                    -- CTE pour afficher l'offre_id le plus récent s'il y a 1 offre_id avec plusieurs permis_id
+                    WITH latest_offre_id AS (
+                        SELECT DISTINCT ON (offre_id)
+                            offre_id,
+                            permis_id,
+                            date_extraction
+                        FROM Offre_PermisConduire
+                        ORDER BY offre_id, date_extraction DESC
+                    )
+                    DELETE FROM Offre_PermisConduire
+                    WHERE (offre_id, permis_id, date_extraction) NOT IN (
+                        SELECT offre_id, permis_id, date_extraction
+                        FROM latest_offre_id
+                    );
+                    """)
 
         ########################################################################
         #### PARTIE 4 : on exécute les scripts SQL pour les transformations ####
