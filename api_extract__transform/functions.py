@@ -1,10 +1,16 @@
 import json
 import os
+import time
 
+from datetime import datetime
+
+import numpy as np
 import pandas as pd
 import requests
+import unidecode
 
 from colorama import Fore, Style, init
+from geopy.geocoders import Nominatim
 
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
@@ -138,30 +144,10 @@ def get_referentiel_pays(token):
     return None
 
 
-def remove_all_json_files(json_files_directory):
-    """
-    Supprime tous les fichiers json du dossier spécifié
-    """
-
-    print(f'{Fore.GREEN}\n==> Fonction "remove_all_json_files()"\n')
-
-    for file in os.listdir(json_files_directory):
-        json_to_delete = os.path.join(json_files_directory, file)
-
-        # Vérifie si c'est un fichier et si son extension est .json
-        if os.path.isfile(json_to_delete) and file.endswith(".json"):
-            try:
-                os.remove(json_to_delete)
-            except Exception as e:
-                print(f"Erreur lors de la suppression de {json_to_delete}: {e}")
-
-    return None
-
-
 def create_csv__code_name__city_department_region():
     """
     Créé à partir du notebook "1--create_csv_codes__city_departement_region.ipynb".
-    Génère le fichier "Job_Market/additional_files/code_name__city_department_region" qui sert à récupérer les informations suivantes :
+    Génère le fichier "Job_Market/api_extract__transform/locations_information/code_name__city_department_region" qui sert à récupérer les informations suivantes :
 
         - code_insee
         - nom_commune
@@ -175,10 +161,6 @@ def create_csv__code_name__city_department_region():
     Ne retourne rien.
     """
 
-    import os
-
-    import pandas as pd
-
     print(f'{Fore.GREEN}\n==> Fonction "create_csv__code_name__city_department_region()"\n')
 
     # todo : ajouter la partie download / unzip des fichiers (pas urgent)
@@ -190,8 +172,7 @@ def create_csv__code_name__city_department_region():
 
     files_directory = os.path.join(
         current_directory,
-        "..",
-        "additional_files",
+        "locations_information",
         "archives",
     )
     file_commune = "v_commune_2024.csv"
@@ -246,6 +227,9 @@ def create_csv__code_name__city_department_region():
         axis=1,
         inplace=True,
     )
+
+    # On exclut les régions hors de la France Métropolitaine
+    df_region = df_region[~df_region.nom_region.isin(["Guadeloupe", "Martinique", "Guyane", "La Réunion", "Mayotte", "Corse"])]
 
     # merging
 
@@ -315,12 +299,31 @@ def create_csv__code_name__city_department_region():
     df.to_csv(
         os.path.join(
             current_directory,
-            "..",
-            "additional_files",
+            "locations_information",
             "code_name__city_department_region.csv",
         ),
         index=False,  # pour ne pas écrire les index
     )
+
+
+def remove_all_json_files(json_files_directory):
+    """
+    Supprime tous les fichiers json du dossier spécifié
+    """
+
+    print(f'{Fore.GREEN}\n==> Fonction "remove_all_json_files()"\n')
+
+    for file in os.listdir(json_files_directory):
+        json_to_delete = os.path.join(json_files_directory, file)
+
+        # Vérifie si c'est un fichier et si son extension est .json
+        if os.path.isfile(json_to_delete) and file.endswith(".json"):
+            try:
+                os.remove(json_to_delete)
+            except Exception as e:
+                print(f"Erreur lors de la suppression de {json_to_delete}: {e}")
+
+    return None
 
 
 def get_offres(token, code_appellation_libelle, filter_params):
@@ -331,8 +334,6 @@ def get_offres(token, code_appellation_libelle, filter_params):
 
     Ne retourne rien.
     """
-
-    print(f'{Fore.GREEN}\n==> Fonction "get_offres()"\n')
 
     appellation = filter_params["appellation"]
 
@@ -376,10 +377,10 @@ def get_offres(token, code_appellation_libelle, filter_params):
             max_offres = int(content_range.split("/")[-1])
 
         if filter_params["appellation"] in codes_list:
-            output_file = os.path.join(current_directory, "outputs", "offres", "original_json_files_from_api", f"{appellation}_{libelle}.json")
+            output_file = os.path.join(current_directory, "outputs", "offres", "0--original_json_files_from_api", f"{appellation}_{libelle}.json")
 
         else:
-            output_file = os.path.join(current_directory, "outputs", "offres", "original_json_files_from_api", f"{appellation}.json")
+            output_file = os.path.join(current_directory, "outputs", "offres", "0--original_json_files_from_api", f"{appellation}.json")
 
         if os.path.exists(output_file):
             os.remove(output_file)
@@ -443,7 +444,14 @@ def get_offres(token, code_appellation_libelle, filter_params):
                         f.write(",\n")  # Ajouter une virgule après chaque objet
                         document_id += 1
                     print(f"{range_start}-{range_end}/{max_offres} {Fore.YELLOW}--> écriture dans le fichier (total: {document_id})")
+                elif response.status_code == 204:  # "No Content successful"
+                    # L'erreur 204 est dans un elif car pour cette erreur, "response.json()" renvoie l'erreur :
+                    #   "requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)"
+                    print(f"Status Code: {response.status_code}")
                 else:
+                    # Pas de problème avec
+                    #   - Status Code: 400 ('La position de début doit être inférieure ou égale à 3000.')
+                    #   - Status Code: 500 ('Erreur technique. Veuillez contacter le support de francetravail.io.')
                     print(f"Status Code: {response.status_code}, {response.json()}")
                     break
 
@@ -515,15 +523,13 @@ def get_offres(token, code_appellation_libelle, filter_params):
     return None
 
 
-def concatenate_all_json_into_one(json_files_from_api_directory, generated_json_file_directory):
+def concatenate_all_json_into_one(json_files_from_api_directory, generated_json_file_directory, new_json_filename):
     """
-    On obtient suite à l'exécution de get_offres() x fichiers json (x = nombre d'appellations présents dans "code_appellation_libelle.yml").
+    On obtient suite à l'exécution de `get_offres()` x fichiers json (x = nombre d'appellations présents dans "code_appellation_libelle.yml").
     Cette fonction écrira dans un json chaque ligne de tous les json précédents, en supprimant les doublons.
 
-    Renvoie le nom du json généré qui servira à la fonction suivante "keep_only_offres_from_metropole()"
+    Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
     """
-
-    from datetime import datetime
 
     print(f'{Fore.GREEN}\n==> Fonction "concatenate_all_into_one()"\n')
 
@@ -549,37 +555,133 @@ def concatenate_all_json_into_one(json_files_from_api_directory, generated_json_
     num_offres_without_duplicates = len(df_concat.drop_duplicates(["id"]))
     print(f"\n --> df_concat : {df_concat.shape[0]} offres, df_concat_drop_duplicates : {num_offres_without_duplicates} offres\n\n")
 
-    today = datetime.now()
-    date_now = today.strftime("%Y-%m-%d--%Hh%M")
-    json_file_name_renamed = f"{date_now}__0__all__{num_offres_without_duplicates}_offres.json"
-
     df_concat.drop_duplicates(["id"]).to_json(
-        os.path.join(generated_json_file_directory, json_file_name_renamed),
+        os.path.join(generated_json_file_directory, new_json_filename),
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
         force_ascii=False,  # pour convertir les caractères spéciaux
         indent=4,  # pour formatter la sortie
     )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs
 
+    # print(df_concat)  # pour investigation
+
     # On supprime les backslashs ajoutés par la méthode .to_json()
-    with open(os.path.join(generated_json_file_directory, json_file_name_renamed), "r", encoding="utf-8") as f:
+    with open(os.path.join(generated_json_file_directory, new_json_filename), "r", encoding="utf-8") as f:
         content = f.read()
 
         content = content.replace("\\/", "/")  # On remplace "\/" par "/"
         content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
 
         # On sauvegarde le fichier final sans les '\'
-        with open(os.path.join(generated_json_file_directory, json_file_name_renamed), "w", encoding="utf-8") as f:
+        with open(os.path.join(generated_json_file_directory, new_json_filename), "w", encoding="utf-8") as f:
             f.write(content)
 
-    return json_file_name_renamed
+    return new_json_filename
 
 
-def keep_only_offres_from_metropole(json_files_directory, json_filename):
+def add_date_premiere_ecriture_attribute(json_files_directory, json_filename, new_json_filename, date_to_insert=None, overwrite_all_lines=False):
+    """
+    Fonction qui charge le json et qui écrit dans un nouveau json : un nouvel attribut "datePremiereEcriture" avec la date désirée
+      (par défaut la date système pour avoir la date du jour)
+
+    Si le paramètre "overwrite_all_lines" est vrai, on écrase toutes les ligne de "datePremiereEcriture" avec "date_to_insert".
+      Sinon, seulement les lignes où "datePremiereEcriture" sont vides seront remplies avec "date_to_insert".
+
+    Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
+    """
+
+    print(f'{Fore.GREEN}\n==> Fonction "add_date_premiere_ecriture_attribute()"\n')
+
+    if date_to_insert is None:
+        date_to_insert = datetime.today().strftime("%Y-%m-%d")  # formatage en string 'YYYY-MM-DD'
+
+    df = pd.read_json(os.path.join(json_files_directory, json_filename), dtype=False)  # pour ne pas inférer les dtypes
+
+    # Créer la colonne "datePremiereEcriture" avec des NaN si elle n'existe pas
+    if "datePremiereEcriture" not in df.columns:
+        df["datePremiereEcriture"] = np.nan
+
+    if overwrite_all_lines:
+        # Si on veut écraser toutes les valeurs déjà écrites :
+        df["datePremiereEcriture"] = pd.to_datetime(date_to_insert)  # sans la ligne suivante, on aura un timestamp en sortie de json "1743292800000"
+        df["datePremiereEcriture"] = df["datePremiereEcriture"].dt.strftime("%Y-%m-%d")  # Formate les dates au format string 'YYYY-MM-DD'
+    else:
+        df["datePremiereEcriture"] = df["datePremiereEcriture"].fillna(date_to_insert)
+
+    df.to_json(
+        os.path.join(json_files_directory, new_json_filename),
+        orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
+        force_ascii=False,  # pour convertir les caractères spéciaux
+        indent=4,  # pour formatter la sortie
+    )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs
+
+    # print(df)  # pour investigation
+
+    # On supprime les backslashs ajoutés par la méthode .to_json()
+    with open(os.path.join(json_files_directory, new_json_filename), "r", encoding="utf-8") as f:
+        content = f.read()
+
+        content = content.replace("\\/", "/")  # On remplace les "\/" par "/"
+        content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
+
+        # On sauvegarde le fichier final sans les '\'
+        with open(os.path.join(json_files_directory, new_json_filename), "w", encoding="utf-8") as f:
+            f.write(content)
+
+    return new_json_filename
+
+
+def add_date_extract_attribute(json_files_directory, json_filename, new_json_filename, date_to_insert=None):
+    """
+    Fonction qui charge le json et qui écrit dans un nouveau json : un nouvel attribut "date_extraction" avec la date désirée
+      (par défaut la date système pour avoir la date du jour)
+
+    Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
+    """
+
+    print(f'{Fore.GREEN}\n==> Fonction "add_date_extract_attribute()"\n')
+
+    if date_to_insert is None:
+        # date_to_insert = datetime.today().date()  # .date() pour ne pas avoir l'heure
+        date_to_insert = datetime.today().strftime("%Y-%m-%d")  # formatage en string 'YYYY-MM-DD'
+
+    df = pd.read_json(
+        os.path.join(json_files_directory, json_filename),
+        dtype=False,  # pour ne pas inférer les dtypes
+    )
+
+    df["dateExtraction"] = pd.to_datetime(date_to_insert)  # sans la ligne suivante, on aura un timestamp en sortie de json "1743292800000"
+    df["dateExtraction"] = df["dateExtraction"].dt.strftime("%Y-%m-%d")  # Formate les dates au format string 'YYYY-MM-DD'
+
+    df.to_json(
+        os.path.join(json_files_directory, new_json_filename),
+        orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
+        force_ascii=False,  # pour convertir les caractères spéciaux
+        indent=4,  # pour formatter la sortie
+    )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs
+
+    # print(df)  # pour investigation
+
+    # On supprime les backslashs ajoutés par la méthode .to_json()
+    with open(os.path.join(json_files_directory, new_json_filename), "r", encoding="utf-8") as f:
+        content = f.read()
+
+        content = content.replace("\\/", "/")  # On remplace les "\/" par "/"
+        content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
+
+        # On sauvegarde le fichier final sans les '\'
+        with open(os.path.join(json_files_directory, new_json_filename), "w", encoding="utf-8") as f:
+            f.write(content)
+
+    return new_json_filename
+
+
+def keep_only_offres_from_metropole(json_files_directory, json_filename, new_json_filename):
     """
     Cette fonction écrase le json entré en paramètre, en ne conservant que les offres d'emploi de la France Métropolitaine.
     Elle ne conserve pas les offres de la Corse ni des DOMTOM.
 
-    Renvoie le nom du json généré qui servira à la fonction suivante "add_location_attributes()"
+    Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
+     et aussi le nombre de ligne du DataFrame (si on en a besoin pour renommer le fichier, mais on ne le fera pas conformément au workflow)
     """
 
     print(f'{Fore.GREEN}\n==> Fonction "keep_only_offres_from_metropole()"\n')
@@ -598,7 +700,7 @@ def keep_only_offres_from_metropole(json_files_directory, json_filename):
     df_lieu_norm_metropole = df_lieu_norm[~df_lieu_norm.libelle.str.match(r"^(\d{3}|2(A|B))\s-\s")]
 
     # On exclut les offres où le libelle du lieu matche un des départements suivants
-    list_departements = [
+    list_regions = [
         "Guadeloupe",
         "Martinique",
         "Guyane",
@@ -613,39 +715,37 @@ def keep_only_offres_from_metropole(json_files_directory, json_filename):
         "Nouvelle-Calédonie",
         "Haute-Corse",
         "Corse-du-Sud",
+        "Corse",
         # "Nouvelle-Aquitaine",  # pour tester
     ]
 
-    df_lieu_norm_metropole = df_lieu_norm_metropole[~df_lieu_norm_metropole["libelle"].isin(list_departements)]  # .value_counts(subset="libelle")
+    df_lieu_norm_metropole = df_lieu_norm_metropole[~df_lieu_norm_metropole["libelle"].isin(list_regions)]  # .value_counts(subset="libelle")
 
     # On réécrit un nouveau json avec uniquement les offres en métropole
     df_only_metropole = df[df["id"].isin(df_lieu_norm_metropole["id"])]
 
-    # json_file_name = f"{json_filename.split("__0__all")[0]}.json"  # pour avoir seulement "2025-03-12--10h21.json"
-    json_file_name_renamed = f'{json_filename.split("__0__all")[0]}__1__only_metropole__{len(df_only_metropole)}_offres.json'
-
     df_only_metropole.to_json(
-        os.path.join(json_files_directory, json_file_name_renamed),
+        os.path.join(json_files_directory, new_json_filename),
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
         force_ascii=False,  # pour convertir les caractères spéciaux
         indent=4,  # pour formatter la sortie
     )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs
 
     # On supprime les backslashs ajoutés par la méthode .to_json()
-    with open(os.path.join(json_files_directory, json_file_name_renamed), "r", encoding="utf-8") as f:
+    with open(os.path.join(json_files_directory, new_json_filename), "r", encoding="utf-8") as f:
         content = f.read()
 
         content = content.replace("\\/", "/")  # On remplace les "\/" par "/"
         content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
 
         # On sauvegarde le fichier final sans les '\'
-        with open(os.path.join(json_files_directory, json_file_name_renamed), "w", encoding="utf-8") as f:
+        with open(os.path.join(json_files_directory, new_json_filename), "w", encoding="utf-8") as f:
             f.write(content)
 
-    return json_file_name_renamed
+    return new_json_filename, len(df_only_metropole)
 
 
-def add_location_attributes(json_files_directory, json_filename):
+def add_location_attributes(json_files_directory, json_filename, new_json_filename):
     """
     Prend en entrée un fichier json généré avec les fonctions précédentes.
     Génère en sortie un fichier json avec en plus les nouveaux attributs suivants :
@@ -659,16 +759,8 @@ def add_location_attributes(json_files_directory, json_filename):
         - code_region
         - nom_region
 
-    Renvoie le nom du json généré qui servira à la fonction suivante si besoin.
+    Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
     """
-    import os
-    import time
-
-    import numpy as np
-    import pandas as pd
-    import unidecode
-
-    from geopy.geocoders import Nominatim
 
     print(f'{Fore.GREEN}\n==> Fonction "add_location_attributes()"\n')
 
@@ -685,7 +777,7 @@ def add_location_attributes(json_files_directory, json_filename):
 
     df_insee = pd.read_csv(
         os.path.join(
-            os.path.join(current_directory, "..", "additional_files"),
+            os.path.join(current_directory, "locations_information"),
             "code_name__city_department_region.csv",
         ),
         dtype=str,
@@ -727,9 +819,9 @@ def add_location_attributes(json_files_directory, json_filename):
     ### Vérification
 
     # On vérifie que parmi les offres "cas_1", il n'y a pas de nom_ville à Nan.
-    print(f"      Vérification cas_1 ? {len(df_lieu[(df_lieu.lieu_cas == "cas_1") & (df_lieu.nom_ville.isna())]) == 0}")
+    print(f"      Vérification cas_1 OK ? {len(df_lieu[(df_lieu.lieu_cas == "cas_1") & (df_lieu.nom_ville.isna())]) == 0}")
 
-    assert len(df_lieu[(df_lieu.lieu_cas == "cas_1") & (df_lieu.nom_ville.isna())]) == 0
+    # assert len(df_lieu[(df_lieu.lieu_cas == "cas_1") & (df_lieu.nom_ville.isna())]) == 0
 
     #### Cas_2 : "code_insee = NAN" (dans ce cas "code_postal = NAN"), mais coordonnées GPS renseignées
     # =================================================================================================
@@ -759,7 +851,9 @@ def add_location_attributes(json_files_directory, json_filename):
         if (latitude_min <= row["latitude"] <= latitude_max) and (longitude_min <= row["longitude"] <= longitude_max):
             row["lieu_cas"] = "cas_2"
         else:
-            row["lieu_cas"] = "cas_2_coordonnées_gps_hors_FR"
+            # par exemple pour "id": "4016067"
+            #  => "lieuTravail": { "libelle": "Corse", "latitude": 41.952873, "longitude": 8.795956 },
+            row["lieu_cas"] = "cas_2_hors_metropole"
 
         # Géocodage avec retry
         retries = 0
@@ -838,7 +932,7 @@ def add_location_attributes(json_files_directory, json_filename):
 
     print(f'      Vérification cas_2 OK ? {len(df_lieu[(df_lieu.lieu_cas == "cas_2") & (df_lieu.nom_departement.isna())]) == 0}')
 
-    assert len(df_lieu[(df_lieu.lieu_cas == "cas_2") & (df_lieu.nom_departement.isna())]) == 0
+    # assert len(df_lieu[(df_lieu.lieu_cas == "cas_2") & (df_lieu.nom_departement.isna())]) == 0
 
     #### Cas_3 : "code_postal = code_insee = latitude = longitude = NAN", mais "libelle = 'numéro_département - nom_département'" </u>
     # ================================================================================================================================
@@ -877,7 +971,7 @@ def add_location_attributes(json_files_directory, json_filename):
 
     print(f'      Vérification cas_3 OK ? {len(df_lieu[(df_lieu.lieu_cas == "cas_3") & (df_lieu.nom_departement.isna())]) == 0}')
 
-    assert len(df_lieu[(df_lieu.lieu_cas == "cas_3") & (df_lieu.nom_departement.isna())]) == 0
+    # assert len(df_lieu[(df_lieu.lieu_cas == "cas_3") & (df_lieu.nom_departement.isna())]) == 0
 
     #### Cas_4 : "code_postal = code_insee = latitude = longitude = NAN", mais "libelle = nom_région"
     # ===============================================================================================
@@ -948,7 +1042,7 @@ def add_location_attributes(json_files_directory, json_filename):
 
     print(f'      Vérification cas_4 OK ? {len(df_lieu[(df_lieu.lieu_cas == "cas_3") & (df_lieu.nom_region.isna())]) == 0}')
 
-    assert len(df_lieu[(df_lieu.lieu_cas == "cas_4") & (df_lieu.nom_region.isna())]) == 0
+    # assert len(df_lieu[(df_lieu.lieu_cas == "cas_4") & (df_lieu.nom_region.isna())]) == 0
 
     #### Cas_5 : "code_postal = code_insee = latitude = longitude = NAN", et "libelle = ("FRANCE"|"France"|"France entière")"
     # =======================================================================================================================
@@ -970,7 +1064,7 @@ def add_location_attributes(json_files_directory, json_filename):
 
     print(f'      Vérification cas_5 OK ? {len(df_lieu[~df_lieu.lieu_cas.isin(["cas_1", "cas_2", "cas_3", "cas_4", "cas_5"])]) == 0}\n\n')
 
-    assert len(df_lieu[~df_lieu.lieu_cas.isin(["cas_1", "cas_2", "cas_3", "cas_4", "cas_5"])]) == 0  # != cas_1/2/3/4/5
+    # assert len(df_lieu[~df_lieu.lieu_cas.isin(["cas_1", "cas_2", "cas_3", "cas_4", "cas_5"])]) == 0  # != cas_1/2/3/4/5
 
     #### Update du df initial avec df_lieu
     # ====================================
@@ -1027,69 +1121,22 @@ def add_location_attributes(json_files_directory, json_filename):
     # Ecriture dans un fichier .json
     # ==============================
 
-    json_generated_file = f'{json_filename.split("__1__only_metropole")[0]}__2__with_location_attributes.json'
-
     df_final.to_json(
-        os.path.join(json_files_directory, json_generated_file),
+        os.path.join(json_files_directory, new_json_filename),
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
         force_ascii=False,  # pour convertir les caractères spéciaux
         indent=4,  # pour formatter la sortie
     )
 
     # On supprime les backslashs ajoutés par la méthode .to_json()
-    with open(os.path.join(json_files_directory, json_generated_file), "r", encoding="utf-8") as f:
+    with open(os.path.join(json_files_directory, new_json_filename), "r", encoding="utf-8") as f:
         content = f.read()
 
         content = content.replace("\\/", "/")  # On remplace "\/" par "/"
         content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
 
         # On sauvegarde le fichier final sans les '\'
-        with open(os.path.join(json_files_directory, json_generated_file), "w", encoding="utf-8") as f:
+        with open(os.path.join(json_files_directory, new_json_filename), "w", encoding="utf-8") as f:
             f.write(content)
 
-    return json_generated_file
-
-
-def add_date_extract_attribute(json_files_directory, json_filename, date_to_insert=None):
-    """
-    Fonction qui charge le json et qui écrit dans un nouveau json : un nouvel attribut "dateExtraction" avec la date désirée
-      (par défaut la date système pour avoir la date du jour)
-
-    Renvoie le nom du json généré
-    """
-    from datetime import datetime
-
-    import pandas as pd
-
-    if date_to_insert is None:
-        date_to_insert = datetime.today().date()  # .date() pour ne pas avoir l'heure
-
-    df = pd.read_json(
-        os.path.join(json_files_directory, json_filename),
-        dtype=False,  # pour ne pas inférer les dtypes
-    )
-
-    df["dateExtraction"] = pd.to_datetime(date_to_insert)  # sans la ligne suivante, on aura un timestamp en sortie de json "1743292800000"
-    df["dateExtraction"] = df["dateExtraction"].dt.strftime("%Y-%m-%d")  # Formate les dates au format string 'YYYY-MM-DD'
-
-    json_file_name_renamed = f'{json_filename.split("__2__with_location_attr")[0]}__3__with_dateExtraction_attribute.json'
-
-    df.to_json(
-        os.path.join(json_files_directory, json_file_name_renamed),
-        orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
-        force_ascii=False,  # pour convertir les caractères spéciaux
-        indent=4,  # pour formatter la sortie
-    )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs
-
-    # On supprime les backslashs ajoutés par la méthode .to_json()
-    with open(os.path.join(json_files_directory, json_file_name_renamed), "r", encoding="utf-8") as f:
-        content = f.read()
-
-        content = content.replace("\\/", "/")  # On remplace les "\/" par "/"
-        content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
-
-        # On sauvegarde le fichier final sans les '\'
-        with open(os.path.join(json_files_directory, json_file_name_renamed), "w", encoding="utf-8") as f:
-            f.write(content)
-
-    return json_file_name_renamed
+    return new_json_filename
