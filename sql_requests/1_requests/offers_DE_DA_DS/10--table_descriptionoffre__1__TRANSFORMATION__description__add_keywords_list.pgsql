@@ -61,7 +61,7 @@ WITH liste_mots_cles AS (
             , 'grafana'
             -- power platform
             , 'power platform'
-            , 'power automate' -- pas de e volontairement
+            , 'power automate'
             , 'power apps'
             -- cloud
             , 'aws'
@@ -69,7 +69,7 @@ WITH liste_mots_cles AS (
             , 'azure'
             -- dataviz
             , 'power bi'
-            -- , 'tableau'  -- peut poser problème car on peut avoir "tableau de bord"
+            -- , 'tableau'  -- pose problème car certaines descriptions stipulent "tableau de bord"
             , 'excel'
             -- plus pour un ds
             , 'machine learning'
