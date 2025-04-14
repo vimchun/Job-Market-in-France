@@ -165,7 +165,6 @@ CREATE TABLE Offre_Qualification (
     offre_id VARCHAR(7) NOT NULL
     , qualification_code INTEGER NOT NULL
     , date_extraction DATE
-    -- , PRIMARY KEY (offre_id , qualification_code)
     , PRIMARY KEY (offre_id , qualification_code, date_extraction)
     , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id) ON DELETE CASCADE
     , FOREIGN KEY (qualification_code) REFERENCES Qualification (qualification_code) ON DELETE CASCADE

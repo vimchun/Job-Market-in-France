@@ -1,5 +1,5 @@
 """
-Temps d'exécution : 10 minutes de bout en bout pour remplir les 19 tables, pour un json avec ~30k offres et ~60 attributs
+Temps d'exécution : 10 minutes de bout en bout pour remplir les 19 tables, pour un json avec ~30k offres et 66 attributs
 
 Ce script est utilisé pour remplir et mettre à jour la base de données avec l'unique json généré dans le dossier :
     "api_extract__transform/outputs/offres/1--generated_json_file"
@@ -37,7 +37,7 @@ fill_Competence = fill_Experience = fill_Formation = fill_QualiteProfessionnelle
 # (PARTIE 3) Booléens pour remplir ou pas les tables de liaison
 fill_Offre_Competence = fill_Offre_Experience = fill_Offre_Formation = fill_Offre_QualiteProfessionnelle = fill_Offre_Qualification = fill_Offre_Langue = fill_Offre_PermisConduire = 1
 
-# (PARTIE 4) Booléen pour exécuter tous les scripts sql du dossier "sql_requests/1_transformations"
+# (PARTIE 4) Booléen pour exécuter tous les scripts sql du dossier "sql_requests/0_transformations"
 execute_transformation_at_the_end_of_script = 1
 
 #### Fin "Partie paramétrable"
@@ -55,21 +55,23 @@ assert len(json_file_in_generated_directory) == 1  # On doit avoir un seul fichi
 current_json_file = json_file_in_generated_directory[0]  # exemple : 2025-04-02--15h52__extraction_occurence_1.json
 
 
-with open(
+json_file = (
     os.path.join(
         generated_json_files_directory,
         #
         current_json_file,
         #
         # "archive_json_files", "2025-03-02--18h36__extraction_occurence_1.json",
-        # "archive_json_files", "2025-04-05--21h48__extraction_occurence_2.json",
+        # "archive_json_files", "2025-04-09--14h19__extraction_occurence_2.json",
         #
-        # "troubleshooting", "test_with_few_documents_occurence_1.json",
-        # "troubleshooting", "test_with_few_documents_occurence_2.json",
-    ),
-    "r",
-) as file:  # fmt: off
+        # "troubleshooting", "small_json_to_ingest_on_db_much_faster", "extract_from_real_json_12_2DE_2DA_2DS.json"
+    )
+)  # fmt: off
+
+with open(json_file, "r") as file:
     offres_data = json.load(file)
+
+print(f"fichier json utilisé :\n{json_file}")
 
 
 def fill_db(db_name, attributes_tuple, on_conflict_string):
