@@ -81,6 +81,16 @@ On renommera les colonnes avoir des noms plus facile à lire dans les rapports c
 - "Durée Travail Libellé" (au lieu de "duree_travail_libelle")
 
 
+#### Attribut "Liste Mots-Clés"
+
+Exemple de valeur pour une offre : `{etl,git,"power bi",python,sql,tableau}`
+
+- On supprime les accolades et les guillemets.
+  - ce qui donne pour l'exemple : `etl,git,power bi,python,sql,tableau`
+- On éclate la colonne en faisant `Split Column` > `By delimiter` (Split into Rows)
+  - l'offre est donc splittée sur 6 lignes avec un seul mot-clé dans la colonne "Liste Mots Clés"
+
+
 #### Ajout de variables avec le nom des villes, départements et région modifiés pour la data viz
 
 ##### Ajout de la variable "Nom Ville Modifié"
