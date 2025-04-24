@@ -12,6 +12,9 @@
   1. attribut `liste_mots_cles` : faisabilité regex sur le mot entier (exemple si on cherche le langage `R`)
 
 
+  1. mettre en place dbt ?
+
+
 ## nice to have
 
   1. transformation pour avoir les années d'exp. (table experience)
