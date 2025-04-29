@@ -1,6 +1,6 @@
 [Retour à la page principale](../README.md)
 
-# Étape 2 : Récolte des données par API
+# 2. Chargement des données dans une base de données relationnelle
 
 - L'API de France Travail contient beaucoup d'attibuts pour une offre d'emploi, qui seront quasiment tous exploités par la suite.
 
