@@ -1,9 +1,9 @@
 [Retour à la page principale](../README.md)
 
-# Étape 3 : Consommation des données
+# 3. Consommation des données
 
 
-## I. Power BI
+## 3a. Power BI
 
 
 ### Connexion avec la base de données
@@ -163,7 +163,7 @@ Cela résout bien le problème de colorisation :
 
 
 
-## II. Requêtes SQL
+## 3b. Requêtes SQL
 
 ### Transformations pour écrire l'attribut "metier_data"
 

@@ -5,15 +5,17 @@
 
 ## pas urgent
 
-  1. "1--create_csv_with_commune_departement_region_names.ipynb"
+  - "1--create_csv_with_commune_departement_region_names.ipynb"
     => code Python pour télécharger les fichiers depuis le site de l'insee (extraction du .zip, etc...)
 
 
-  1. attribut `liste_mots_cles` : faisabilité regex sur le mot entier (exemple si on cherche le langage `R`)
+  - attribut `liste_mots_cles` : faisabilité regex sur le mot entier (exemple si on cherche le langage `R`)
 
 
-  1. mettre en place dbt ?
+  - mettre en place dbt ?
 
+
+  - script "2--script_insert_into_tables.py" => option pour ne prendre en compte que les dernières offres (pour que le script tourne plus vite)
 
 ## nice to have
 
