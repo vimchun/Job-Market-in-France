@@ -4,13 +4,18 @@
 
 - L'API de France Travail contient beaucoup d'attibuts pour une offre d'emploi, qui seront quasiment tous exploités par la suite.
 
-    - Seuls les attributs liés aux "contacts" et aux "agences" ne seront pas conservé, n'apportant pas d'utilité.
+  - Seuls les attributs liés aux `contacts` et aux `agences` ne seront pas conservé, n'apportant pas d'utilité.
 
 - Pour la suite, une modélisation snowflake est utilisée :
 
-    ![screenshot du workflow](screenshots/UML.png)
+  ![screenshot du workflow](screenshots/UML.png)
 
 - Le SGBD PostgreSQL sera utilisé, et la base de données sera hébergée dans un conteneur Docker exécutant le service PostgreSQL.
+
+  - PostgreSQL a été choisi pour ses performances, sa fiabilité et sa flexibilité.
+  - En tant que solution open source, il offre une grande transparence et une forte extensibilité.
+  - Il prend en charge des types de données complexes, respecte les principes ACID et bénéficie d’une communauté active assurant une évolution continue.
+
 
 - Les données issues du json généré dans la première étape seront récupérées et écrites en base avec la librairie psycopg2.
 
@@ -19,7 +24,7 @@
 
 ### Evolution de "qualification_code"
 
-Certaines offres voient leur `qualification_code` évoluer, par exemple :
+- Certaines offres voient la valeur de l'attribut `qualification_code` évoluer, par exemple :
 
   - `offre_id = 188LLXS` (`intitule = Technicien de gestion de données sur équipement (H/F)`) :
     - lors de `date_extraction = 2025-03-02` : `qualification_code = 7`
@@ -30,7 +35,7 @@ Certaines offres voient leur `qualification_code` évoluer, par exemple :
     - lors de `date_extraction = 2025-04-05` : `qualification_code = 7`
 
 
-Avec l'attribut `date_extraction` qui vient de la table OffreEmploi, on n'a pas moyen de savoir quelle ligne parmi les suivantes sont les plus récentes, car pour chaque mise à jour, l'attribut `date_extraction` est mis à jour et prend la valeur `2025-04-05`.
+- Avec l'attribut `date_extraction` qui vient de la table `OffreEmploi`, on n'a pas moyen de savoir quelle ligne parmi les suivantes sont les plus récentes, car pour chaque mise à jour, l'attribut `date_extraction` est mis à jour et prend la valeur `2025-04-05`.
 
   | offre_id | qualification_code | date_extraction |
   | -------- | ------------------ | --------------- |
@@ -40,7 +45,7 @@ Avec l'attribut `date_extraction` qui vient de la table OffreEmploi, on n'a pas 
   | 186XNDD  | 7                  | 2025-04-05      |
 
 
-Ce qui nous intéresse est d'avoir la date d'extraction réelle :
+- Ce qui nous intéresse est d'avoir la date d'extraction réelle :
 
   | offre_id | qualification_code | date_extraction |
   | -------- | ------------------ | --------------- |
@@ -57,12 +62,12 @@ pour ne garder que le `qualification_code` le plus récent si 1 offre_id est pr�
   | 186XNDD  | 7                  | 2025-04-05      |
 
 
-Il faut donc ajouter `date_extraction` dans la table `offre_qualification`.
+- Il faut donc ajouter `date_extraction` dans la table `offre_qualification`.
 
 
 ### Evolution de "experienceExige" et "experienceLibelle"
 
-Même problématique avec certaines offres qui voient leur `experienceExige` et leur `experienceLibelle` évoluer, par exemple :
+Même problématique avec certaines offres qui voient la valeur de l'attribut `experienceExige` et leur `experienceLibelle` évoluer, par exemple :
 
   - `offre_id = 1316532` (`intitule = Administrateur linux (H/F)`) :
 

@@ -16,5 +16,3 @@
 Voici un schéma récapitulatif des différentes étapes du projet :
 
 ![screenshot du workflow](readme_pages/screenshots/workflow.png)
-
-

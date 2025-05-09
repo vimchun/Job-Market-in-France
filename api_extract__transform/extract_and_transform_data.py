@@ -4,8 +4,7 @@ Temps d'exécution : 20-30 minutes de bout en bout
 Ce script est utilisé pour générer un fichier json qui contiendra toutes les anciennes offres et toutes les nouvelles récupérées par API.
 
 Descriptif de ce que fait le script : `readme_pages/step_1__extract_and_transform_data.md`,
- section `Script "api_extract__transform/extract_and_transform_data.py"`
-
+  section `Script "api_extract__transform/extract_and_transform_data.py"`
 """
 
 import csv

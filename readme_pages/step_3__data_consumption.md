@@ -2,9 +2,7 @@
 
 # 3. Consommation des données
 
-
 ## 3a. Power BI
-
 
 ### Connexion avec la base de données
 
@@ -14,119 +12,118 @@
 
 - `Get data` > `PostgreSQL database` > `connect`
 
-  - fenêtre "PostgreSQL database" :
-    - Server : localhost
-    - Database : francetravail
-    - Data Connectivity mode : Import
+  - fenêtre `PostgreSQL database` :
+    - `Server : localhost`
+    - `Database : francetravail`
+    - `Data Connectivity mode : Import`
       - Notes :
         - Import → Charge toutes les données en mémoire de Power BI.
         - DirectQuery → Interroge PostgreSQL en temps réel sans stocker les données localement.
-    - Advanced options : pas touché
+    - `Advanced options` : pas touché
 
-  - fenêtre "localhost;francetravail" :
-    - User name : mhh
-    - Password : mhh
-    - Select which level to apply these settings to : localhost
+  - fenêtre `localhost;francetravail` :
+    - `User name : mhh`
+    - `Password : mhh`
+    - `Select which level to apply these settings to : localhost`
 
 
-  - fenêtre "Encryption Support" :
+  - fenêtre `Encryption Support` :
 
-    - We were unable to connect to the data source using an encrypted connection. To access this data source using an unencrypted connection, click OK.
+    - `We were unable to connect to the data source using an encrypted connection. To access this data source using an unencrypted connection, click OK.` => On valide.
 
-      - On valide "OK".
+  - fenêtre `Navigator`, où on peut sélectionner les 19 tables.
 
-  - fenêtre "Navigator", où on peut sélectionner les 19 tables.
+    - On sélectionne tout, puis `Load`.
 
-    - On sélectionne tout, puis "Load".
+      - fenêtre `Processing Queries` (Determining automatic transformations...)
 
-      - fenêtre "Processing Queries" (Determining automatic transformations...)
-
-        - On peut "Skip", ce qu'on va faire après une dizaine de minutes, car ça bloque sur la table "formation" (pourtant, toutes les autres tables sont bien validées, et j'arrive bien à voir le contenu de la table "formation" par une requête sql)
+        - On peut `Skip`, ce qu'on va faire après une dizaine de minutes, car ça bloque sur la table `formation` (pourtant, toutes les autres tables sont bien validées, et on arrive bien à voir le contenu de la table `formation` par une requête sql)
 
         - Note : on n'a pas cette fenêtre la deuxième fois (Power BI avait crashé quand j'ai voulu sauvegardé la première fois)
 
-          - fenêtre "Load" (qui finit par bien aboutir)
+          - fenêtre `Load` (qui finit par bien aboutir)
 
 
 ### Model view
 
-- Onglet "model view" : on voit bien les 19 tables, on doit refaire les liens créés automatiquement.
+- Onglet `model view` : on voit bien les 19 tables, on doit refaire les liens créés automatiquement.
 
-  - On procède comme le diagramme UML qu'on a défini (voir "load_sql/UML.drawio")
+  - On procède comme le diagramme UML qu'on a défini (voir `load_sql/UML.drawio`)
 
 
 - On masque les colonnes non utilisées.
 
-- Paramétrer "Cross-filter direction = Both" pour certains liens est nécessaire pour la data viz.
+- Paramétrer `Cross-filter direction = Both` pour certains liens est nécessaire pour la data viz.
 
 
 
 ### Table view
 
-Création table de date
+- Création table de date
 
-Création de colonnes :
+- Création de colonnes :
   - Date Différence = DATEDIFF('Offre Emploi'[Date Création], 'Offre Emploi'[Date Actualisation], DAY)
+
 
 ### Transformations sur Power BI
 
-
 #### Renommage de toutes les colonnes
 
-C'est juste pour Power BI.
+- C'est juste pour Power BI.
 
-On renommera les colonnes avoir des noms plus facile à lire dans les rapports comme :
+- On renomme les colonnes avoir des noms plus facile à lire dans les rapports comme :
 
-- "Offre ID" (au lieu de "offre_id")
-- "Durée Travail Libellé" (au lieu de "duree_travail_libelle")
+  - `Offre ID` (au lieu de `offre_id`)
+  - `Durée Travail Libellé` (au lieu de `duree_travail_libelle`)
 
 
 #### Attribut "Liste Mots-Clés"
 
-Exemple de valeur pour une offre : `{etl,git,"power bi",python,sql,tableau}`
+- Exemple de valeur pour une offre : `{etl,git,"power bi",python,sql,tableau}`
 
 - On supprime les accolades et les guillemets.
   - ce qui donne pour l'exemple : `etl,git,power bi,python,sql,tableau`
+
 - On éclate la colonne en faisant `Split Column` > `By delimiter` (Split into Rows)
-  - l'offre est donc splittée sur 6 lignes avec un seul mot-clé dans la colonne "Liste Mots Clés"
+  - l'offre est donc splittée sur 6 lignes avec un seul mot-clé dans la colonne `Liste Mots Clés`
 
 
 #### Ajout de variables avec le nom des villes, départements et région modifiés pour la data viz
 
 ##### Ajout de la variable "Nom Ville Modifié"
 
-Dans le "report view" / carte mondiale, on a des villes françaises qui sont situés dans d'autres pays, par exemple :
+- Dans le `report view` / carte mondiale, on a des villes françaises qui sont situées dans d'autres pays, par exemple :
 
-  - offre_id = '2083056' dans la ville "Cologne" (code postal 32 430) en région Occitanie, département Gers  => placé en Allemagne (NOK, car on est censé avoir que des offres en France)
+  - offre_id = `2083056` dans la ville `Cologne` (code postal 32 430) en région Occitanie, département Gers  => placé en Allemagne (NOK, car on est censé avoir que des offres en France)
 
     ![Cologne en Allemagne](screenshots/power_bi/city_Cologne_in_Germany.png)
 
 
-  - offre_id = '2757953' dans la ville "La Réunion" (code postal 47700) en région Nouvelle-Aquitaine, département Lot-et-Garonne  => placé en France (OK)
+  - offre_id = `2757953` dans la ville `La Réunion` (code postal 47 700) en région Nouvelle-Aquitaine, département Lot-et-Garonne  => placé en France (OK)
 
     ![Cologne en France](screenshots/power_bi/city_Cologne_in_France.png)
 
 
-Comme vu dans le dernier screenshot, pour avoir les villes placées en France, on définit une colonne "Nom Ville Modifié" avec le nom de la ville suffixé avec `, France` (par exemple "Cologne, France").
+- Comme vu dans le dernier screenshot, pour avoir les villes placées en France, on définit une colonne `Nom Ville Modifié` avec le nom de la ville suffixé avec `, France` (par exemple `Cologne, France`).
 
 
 ##### Ajout de la variable "Nom Département Modifié"
 
-Même chose pour le département de la "Lot" qui est placé en Lituanie, on ajoute une colonne qui suffixera le nom du département avec `, France` :
+Même chose pour le département de la `Lot` qui est placé en Lituanie, on ajoute une colonne qui suffixera le nom du département avec `, France` :
 
-  - Département "Lot" en Lituanie :
+  - Département `Lot` en Lituanie :
 
     ![Département "Lot" en Lituanie](screenshots/power_bi/department_Lot_in_Lithuania.png)
 
 
-  - Département "Lot" en France :
+  - Département `Lot` en France :
 
     ![Département "Lot" en France](screenshots/power_bi/department_Lot_in_France.png)
 
 
 ##### Ajout de la variable "Nom Région Modifié"
 
-Quand on affiche la carte du monde avec les régions de la France, on constate que 2 régions (la Bretagne et l'Occitanie) ne sont pas complètement coloriées comme les autres régions :
+- Quand on affiche la carte du monde avec les régions de la France, on constate que 2 régions (la Bretagne et l'Occitanie) ne sont pas complètement coloriées comme les autres régions :
 
   - pour la Bretagne :
 
@@ -138,24 +135,22 @@ Quand on affiche la carte du monde avec les régions de la France, on constate q
     ![Occitanie non colorié entièrement](screenshots/power_bi/region_Occitanie_KO.png)
 
 
-Changer le "Data category" (à "County" ou "State or Province") résout le problème pour l'Occitanie mais pas la Bretagne.
+- Changer le `Data category` (à `County` ou `State or Province`) résout le problème pour l'Occitanie mais pas la Bretagne.
 
-Le contournement est d'ajouter une colonne, où on préfixera le nom de la région de `Région d('|de|du|des)` en fonction des régions, par exemple :
+- Le contournement est d'ajouter une colonne, où on préfixera le nom de la région de `Région d('|de|du|des)` en fonction des régions, par exemple :
 
-  - "Région d'Île-de-France"
-  - "Région de Normandie"
-  - "Région des Hauts-de-France"
-  - "Région du Grand Est"
+  - `Région d'Île-de-France`
+  - `Région de Normandie`
+  - `Région des Hauts-de-France`
+  - `Région du Grand Est`
 
-A noter qu'il y a une exception pour "Région Bourgogne-Franche-Comté" (pas de `de`).
+- A noter qu'il y a une exception pour `Région Bourgogne-Franche-Comté` (pas de `de`).
 
-Cela résout bien le problème de colorisation :
-
+- Cela résout bien le problème de colorisation :
 
   - pour la Bretagne :
 
     ![Bretagne colorié entièrement](screenshots/power_bi/region_Bretagne_OK.png)
-
 
   - pour l'Occitanie :
 
@@ -167,34 +162,30 @@ Cela résout bien le problème de colorisation :
 
 ### Transformations pour écrire l'attribut "metier_data"
 
-- Pour identifier les offres de "Data Engineer" parmi toutes les offres récupérées, le premier réflexe serait de filtrer sur le rome_code "M1811" qui correspond à "Data engineer", mais on se rend compte que les offres d'emploi associées ne sont pas toutes liées à ce poste.
+- Pour identifier les offres de "Data Engineer" parmi toutes les offres récupérées, le premier réflexe serait de filtrer sur le rome_code `M1811` qui correspond à `Data engineer`, mais on se rend compte que les offres d'emploi associées ne sont pas toutes liées à ce poste.
 
-- On retrouve en effet des postes d'architecte, d'ingénieur base de données, de data analyst, de data manager, de technicien data center, etc...
+- On retrouve en effet des postes d'architecte, d'ingénieur base de données, de data analyst, de data manager, de technicien data center, etc... (voir résultats de la requête `sql_requests/1_requests/offers_DE_DA_DS/10--table_descriptionoffre__rome_M1811.pgsql`)
 
-  (voir résultats de la requête "sql_requests/1_requests/offers_DE_DA_DS/10--table_descriptionoffre__rome_M1811.pgsql")
+- L'attribut `intitule_offre` de la table `DescriptionOffre` sera donc utilisé pour filtrer les offres voulues (ici : `Data Engineer`, `Data Analyst` et `Data Scientist`) grâce à des requêtes qui utilisent des regex, écrivant la valeur `DE`, `DA`, `DS` dans l'attribut `metier_data` (voir `sql_requests/0_transformations`).
 
-- L'attribut "intitule_offre" de la table "DescriptionOffre" sera donc utilisé pour filtrer les offres voulues (ici : "Data Engineer", "Data Analyst" et "Data Scientist") grâce à des requêtes qui utilisent des regex, écrivant la valeur "DE", "DA", "DS" dans l'attribut "metier_data" (voir "sql_requests/0_transformations").
 
 
 ### Transformations pour écrire les attributs "salaire_min" et "salaire_max"
 
-
 #### Contexte
 
-Pour écrire ces attributs qui donnent les salaires minimum et maximum annuels, on se base sur l'attribut "salaire_libelle", qui n'est pas toujours renseigné.
+- Pour écrire ces attributs qui donnent les salaires minimum et maximum annuels, on se base sur l'attribut `salaire_libelle`, qui n'est pas toujours renseigné.
 
-Lorsqu'elle l'est, les valeurs pour cette attribut sont parfois mal renseignées par les recruteurs :
+- Lorsqu'elle l'est, les valeurs pour cet attribut sont parfois mal renseignées par les recruteurs :
 
   - qui inversent parfois le salaire annuel avec le salaire mensuel [auquel cas on fera un traitement (voir ci-dessous) pour avoir les bons salaires] :
 
     - `Annuel de 486,00 Euros à 1801,00 Euros` (c'est sûrement un salaire mensuel et non annuel)
     - `Mensuel de 32000,00 Euros à 40000,00 Euros` (c'est sûrement un salaire annuel et non mensuel)
 
-
   - qui inversent les salaires min et max [auquel cas on les inversera] :
 
     - `Annuel de 60000,00 Euros à 40000,00 Euros`
-
 
   - qui se trompent sûrement dans les salaires renseignés :
 
@@ -203,7 +194,7 @@ Lorsqu'elle l'est, les valeurs pour cette attribut sont parfois mal renseignées
     - `Annuel de 550000.0 Euros sur 12.0 mois` (salaire = 550k : sûrement erroné avec un 0 en trop)
 
 
-D'autre part, il faut noter que beaucoup d'offres ne renseignent que le taux horaire [auquel cas on écrira null], par exemple :
+- D'autre part, il faut noter que beaucoup d'offres ne renseignent que le taux horaire [auquel cas on écrira null], par exemple :
 
   - `Annuel de 11,00 Euros` (c'est sûrement un taux horaire)
   - `Horaire de 11.88 Euros sur 12 mois`
@@ -211,13 +202,13 @@ D'autre part, il faut noter que beaucoup d'offres ne renseignent que le taux hor
 
 #### Hypothèses
 
-Comme on n'est pas certain si les salaires indiqués sont mensuels ou annuels (à cause des erreurs des recruteurs), on va prendre les hypothèses suivantes :
+- Comme on n'est pas certain si les salaires indiqués sont mensuels ou annuels (à cause des erreurs des recruteurs), on va prendre les hypothèses suivantes :
   - salaire mensuel ∈ [1 666, 12 500]
   - salaire annuel ∈ [20 000, 150 000]
 
-Donc, on considère que si salaire mensuel :
+- Donc, on considère que si salaire mensuel :
   - inférieur à 1666 € (20k), ce n'est pas un salaire mensuel (pour écarter les taux horaires, les salaires à mi-temps, les salaires en alternance...)
-  - supérieur à 12 500 € (150k), c'est très certainement une faute de frappe (il y a vraiment très peu d'offres dans ce cas, peut-être 4)
+  - supérieur à 12 500 € (150k), c'est très certainement une faute de frappe (il y a vraiment très peu d'offres dans ce cas, peut-être 4 pour 13k offres)
 
     - par exemple :
 
@@ -229,9 +220,9 @@ Donc, on considère que si salaire mensuel :
 
 #### Algorithme
 
-Pour les transformations, on va considérer les cas suivants.
+- Pour les transformations, on va considérer les cas suivants.
 
-Si "salaire_libelle" donne :
+- Si "salaire_libelle" donne :
 
   - A. une fourchette de salaire ("cas fourchette") :
 
@@ -246,30 +237,30 @@ Si "salaire_libelle" donne :
     - `Cachet de 50000,00 Euros à 55000,00 Euros`
 
 
-      - cas 1. Si salaire minimum récupéré > salaire maximal récupéré *ET* salaires min+max récupérés ∈ [1 666 €, 12 500 €] (on considère que c'est un salaire mensuel)
+      - cas 1 : Si salaire minimum récupéré > salaire maximal récupéré *ET* salaires min+max récupérés ∈ [1 666 €, 12 500 €] (on considère que c'est un salaire mensuel)
         - alors on inverse les salaires mensuels minimum et maximum.
 
           - exemple :
             - `Mensuel de 5500.0 Euros à 4200.0 Euros sur 12.0 mois`
 
 
-      - cas 2. Si salaires min+max récupérés ∈ [1 666 €, 12 500 €] (on considère que c'est un salaire mensuel)
+      - cas 2 : Si salaires min+max récupérés ∈ [1 666 €, 12 500 €] (on considère que c'est un salaire mensuel)
         - alors on récupère les salaires minimum et maximum et on les multiplie par 12.
 
           - exemples :
-             - `Annuel de 1800,00 Euros à 2000,00 Euros`
+            - `Annuel de 1800,00 Euros à 2000,00 Euros`
             - `Mensuel de 2900,00 Euros à 3000,00 Euros`
             - `Autre de 1855,26 Euros à 1855,26 Euros`
 
 
-      - cas 3. Si salaire minimum récupéré > salaire maximal récupéré *ET* salaires min+max récupérés ∈ [20 000 €, 150 000 €] (on considère que c'est un salaire annuel)
+      - cas 3 : Si salaire minimum récupéré > salaire maximal récupéré *ET* salaires min+max récupérés ∈ [20 000 €, 150 000 €] (on considère que c'est un salaire annuel)
         - alors on inverse les salaires annuels minimum et maximum.
 
           - exemple :
             - `Annuel de 60000,00 Euros à 40000,00 Euros`
 
 
-      - cas 4. Si salaires min+max récupérés ∈ [20 000 €, 150 000 €] (on considère que c'est un salaire annuel)
+      - cas 4 : Si salaires min+max récupérés ∈ [20 000 €, 150 000 €] (on considère que c'est un salaire annuel)
         - alors on récupère les salaires minimum et maximum.
 
           - exemples :
@@ -278,7 +269,7 @@ Si "salaire_libelle" donne :
             - `Autre de 45000,00 Euros à 55000,00 Euros`
 
 
-      - cas 5. Sinon, dans les autres cas
+      - cas 5 : Sinon, dans les autres cas
           - alors salaire min/max = NULL.
 
             - exemples où `salaire minimum <= 1 666 €` :
@@ -304,26 +295,27 @@ Si "salaire_libelle" donne :
     - `Mensuel de 45000.0 Euros sur 12.0 mois`
 
 
-      - cas 2. Si salaire récupéré ∈ [1 666 €, 12 500 €] (on considère que c'est un salaire mensuel)
+      - cas 2 : Si salaire récupéré ∈ [1 666 €, 12 500 €] (on considère que c'est un salaire mensuel)
         - alors on récupère le salaire et on le multiplie par 12.
 
           - exemples :
             - `Mensuel de 4410,00 Euros`
 
 
-      - cas 4. Si salaire récupéré ∈ [20 000 €, 150 000 €] (on considère que c'est un salaire annuel)
+      - cas 4 : Si salaire récupéré ∈ [20 000 €, 150 000 €] (on considère que c'est un salaire annuel)
         - alors on récupère le salaire.
 
           - exemples :
             - `Annuel de 55000.0 Euros sur 12.0 mois`
 
 
+      - cas 5 : Sinon, dans les autres cas
+        - alors salaire min/max = NULL.
 
-      - cas 5. Sinon, dans les autres cas
-          - alors salaire min/max = NULL.
-        - `Annuel de 1000,00 Euros`
-        - `Mensuel de 12,00 Euros`
-        - `Annuel de 550000.0 Euros sur 12.0 mois`
+          - exemples :
+            - `Annuel de 1000,00 Euros`
+            - `Mensuel de 12,00 Euros`
+            - `Annuel de 550000.0 Euros sur 12.0 mois`
 
 
 
@@ -343,12 +335,11 @@ Si "salaire_libelle" donne :
 | 2968347  | Gestionnaire ERP (H/F)                 | Mensuel de 352800,00 Euros à 411600,00 Euros | 352800          | 411600          | cas fourchette     | 5 (autres cas : salaire > 150 000 €)        | null        | null        |
 
 
-A noter aussi que les salaires des offres en alternance seront exclues ici car leur salaire est très majoritairement inférieur au seuil minimum qu'on a défini ici.
-
+- A noter aussi que les salaires des offres en alternance seront exclues ici car leur salaire est très majoritairement inférieur au seuil minimum qu'on a défini ici.
 
 
 ### Analyse du jeu de données à travers des requêtes SQL
 
-- voir le dossier "sql_requests/1_requests/offers_DE_DA_DS/"
+- voir le dossier `sql_requests/1_requests/offers_DE_DA_DS/`
 
 - Au moins une requête sera faite pour chaque table de dimension pour mieux comprendre notre jeu de données.
