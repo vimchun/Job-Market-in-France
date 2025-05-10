@@ -8,7 +8,8 @@ FROM
     descriptionoffre dof
     JOIN offreemploi oe ON oe.offre_id = dof.offre_id
 WHERE
-    metier_data = 'DE' -- choisir entre 'DE', 'DA' or 'DS'
+    metier_data = 'placeholder_metier_data'  -- placeholder qui sera remplacé dans "Job_Market/fastapi/fastapi.py"
+    -- metier_data = 'DE' -- choisir entre 'DE', 'DA' or 'DS'
 GROUP BY
     date_extraction
     , date_creation
