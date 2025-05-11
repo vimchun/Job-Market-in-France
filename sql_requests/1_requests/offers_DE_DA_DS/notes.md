@@ -1,3 +1,0 @@
-- Ces fichiers pgsql sont destinés à être exécutés depuis le sript Python Job_Market/fastapi/fastapi.py (avec notamment psycopg2).
-- Le placeholder `placeholder_metier_data` est remplacé dynamiquement par la variable `metier_data` dans le script Python.
-- Sinon on peut hardcoder `metier_data` ('DE', 'DA' or 'DS') dans le cas où on veut exécuter ce script SQL sans script Python.
