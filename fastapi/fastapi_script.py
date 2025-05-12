@@ -38,17 +38,7 @@ app = FastAPI(
     ],
 )
 
-sql_files_directory_part_1 = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sql_requests")
-
-
-def get_conn():
-    return psycopg2.connect(database="francetravail", host="localhost", user="mhh", password="mhh", port=5432)
-
-
-def read_sql_file(sql_files_directory_part_2):
-    """Simple fonction pour gagner une ligne de code pour que le code soit plus simple à écrire/lire"""
-    with open(os.path.join(sql_files_directory_part_1, sql_files_directory_part_2), "r") as file:
-        return file.read()
+sql_file_directory_part_1 = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sql_requests")
 
 
 # Fonction pour centraliser les filtres
@@ -88,34 +78,48 @@ def set_endpoints_filters(
 
 
 # Fonction de filtrage qui modifie la requête SQL selon les paramètres
-def modify_sql_request_with_filters(
-    sql_file_content: str,
-    metier_data: Optional[str],
-    date_creation_min: Optional[str],
+def execute_modified_sql_request_with_filters(
+    sql_files_directory_part_2,
+    metier_data,
+    date_creation_min,
+    fetch="all",
 ):
     """
-    Applique les filtres sur la requête SQL en fonction des paramètres fournis
-    Retourne le contenu du fichier sql modifié, et les paramètres
+    Prend en entrée le fichier sql dont le chemin se termine par la paramètre "sql_files_directory_part_2"
+      et applique les filtres sur la requête SQL en fonction des paramètres fournis.
+
+    Retourne le contenu du fichier sql modifié, et les paramètres.
     """
     params = []
 
-    # Filtrage par "metier_data"
-    if metier_data is None:
-        sql_file_content = sql_file_content.replace("metier_data = 'placeholder_metier_data'", "1=1")
-    else:
-        sql_file_content = sql_file_content.replace("'placeholder_metier_data'", "%s")
-        params.append(metier_data)
+    with open(os.path.join(sql_file_directory_part_1, sql_files_directory_part_2), "r") as file:
+        sql_file_content = file.read()
 
-    # Filtrage par "date_creation_min"
-    if date_creation_min is None:
-        sql_file_content = sql_file_content.replace("AND date_creation >= 'placeholder_date_min'", "")
-    else:
-        sql_file_content = sql_file_content.replace("'placeholder_date_min'", "%s")
-        params.append(date_creation_min)
+        print(f'\n{Fore.CYAN}===> requête depuis le fichier "{sql_files_directory_part_2}"')
 
-    modified_sql_file_content = sql_file_content
+        # Filtrage par "metier_data"
+        if metier_data is None:
+            sql_file_content = sql_file_content.replace("metier_data = 'placeholder_metier_data'", "1=1")
+        else:
+            sql_file_content = sql_file_content.replace("'placeholder_metier_data'", "%s")
+            params.append(metier_data)
 
-    return modified_sql_file_content, params
+        # Filtrage par "date_creation_min"
+        if date_creation_min is None:
+            sql_file_content = sql_file_content.replace("AND date_creation >= 'placeholder_date_creation_min'", "")
+        else:
+            sql_file_content = sql_file_content.replace("'placeholder_date_creation_min'", "%s")
+            params.append(date_creation_min)
+
+        modified_sql_file_content = sql_file_content
+
+        with psycopg2.connect(database="francetravail", host="localhost", user="mhh", password="mhh", port=5432) as conn:
+            with conn.cursor() as cursor:
+                cursor.execute(modified_sql_file_content, tuple(params))
+                if fetch == "all":
+                    return cursor.fetchall()
+                elif fetch == "one":
+                    return cursor.fetchone()
 
 
 @app.get("/competence", tags=['Table "Competence"'])
@@ -124,25 +128,16 @@ def get_competences(filters: dict = Depends(set_endpoints_filters)):
     metier_data = filters["metier_data"]
     date_creation_min = filters["date_creation_min"]
 
-    with get_conn() as conn:
-        with conn.cursor() as cursor:
-            sql_files_directory_part_2 = os.path.join("01_table_Competence", "competences.pgsql")
-            sql_file_content = read_sql_file(sql_files_directory_part_2)
+    sql_file_directory_part_2 = os.path.join("01_table_Competence", "competences.pgsql")
+    result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, metier_data, date_creation_min, fetch="all")
 
-            print(f'\n{Fore.CYAN}===> requête depuis le fichier "{sql_files_directory_part_2}"')
+    # tronquer la colonne "libelle" à 60 caractères pour chaque ligne, sinon le tableau s'affichera mal sur Open API
+    truncated_result = [(row[0], row[1], row[2][:60] if row[2] else row[2], row[3]) for row in result]
 
-            modified_sql_file_content, params = modify_sql_request_with_filters(sql_file_content, metier_data, date_creation_min)
+    table = tabulate(truncated_result, headers=["nb occurences", "code", "libelle", "code exigence"], tablefmt="psql").replace("'", " ")
+    # note : on remplace les guillemets simples parce que ce qui se trouve entre 2 guillemets simples est écrit en vert sur Open API
 
-            cursor.execute(modified_sql_file_content, tuple(params))
-            result = cursor.fetchall()
-
-            # tronquer la colonne "libelle" à 60 caractères pour chaque ligne, sinon le tableau s'affichera mal
-            truncated_result = [(row[0], row[1], row[2][:60] if row[2] else row[2], row[3]) for row in result]
-
-            table = tabulate(truncated_result, headers=["nb occurences", "code", "libelle", "code exigence"], tablefmt="psql").replace("'", " ")
-            # note : on remplace les guillemets simples parce que ce qui se trouve entre 2 guillemets simples est écrit en vert sur Open API.
-
-            return Response(content=table, media_type="text/plain")
+    return Response(content=table, media_type="text/plain")
 
 
 @app.get("/description_offre/total_offres", tags=['Table "Description_Offre"'])
@@ -151,61 +146,10 @@ def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
     metier_data = filters["metier_data"]
     date_creation_min = filters["date_creation_min"]
 
-    with get_conn() as conn:
-        with conn.cursor() as cursor:
-            sql_files_directory_part_2 = os.path.join("10_table_DescriptionOffre", "0__total_offres.pgsql")
-            sql_file_content = read_sql_file(sql_files_directory_part_2)
+    sql_file_directory_part_2 = os.path.join("10_table_DescriptionOffre", "0__total_offres.pgsql")
 
-            print(f'\n{Fore.CYAN}===> requête depuis le fichier "{sql_files_directory_part_2}"')
+    result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, metier_data, date_creation_min, fetch="one")
 
-            modified_sql_file_content, params = modify_sql_request_with_filters(sql_file_content, metier_data, date_creation_min)
+    total_offres = result[0] if result else 0
 
-            cursor.execute(modified_sql_file_content, tuple(params))
-            result = cursor.fetchone()
-            total_offres = result[0] if result else 0
-
-            return {"total_offres": total_offres}
-
-
-################################################################################################################################################################
-if 0:
-    """Pour exécuter une requête sql avec les placeholders et afficher les résultats dans la console (en dehors de FastAPI donc)"""
-
-    def execute_request_without_fastapi(metier_data=None, date_min=None):
-        """Pour voir le résultat de la requête dans la console"""
-        with get_conn() as conn:
-            with conn.cursor() as cursor:
-                sql_files_directory_part_2 = os.path.join("10_table_DescriptionOffre", "0__total_offres.pgsql")
-                sql_file_content = read_sql_file(sql_files_directory_part_2)
-
-                print(f'\n{Fore.CYAN}===> requête depuis le fichier "{sql_files_directory_part_2}"')
-
-                params = []
-
-                # metier_data
-                if metier_data is None:
-                    sql_file_content = sql_file_content.replace("metier_data = 'placeholder_metier_data'", "1=1")
-                else:
-                    sql_file_content = sql_file_content.replace("'placeholder_metier_data'", "%s")
-                    params.append(metier_data)
-
-                # date_min
-                if date_min is None:
-                    sql_file_content = sql_file_content.replace("AND date_creation >= 'placeholder_date_min'", "")
-                else:
-                    sql_file_content = sql_file_content.replace("'placeholder_date_min'", "%s")
-                    params.append(date_min)
-
-                # exécution
-                cursor.execute(sql_file_content, tuple(params))
-
-                rows = cursor.fetchall()
-
-                headers = ["#"] + [desc[0] for desc in cursor.description]  # Récupérer les noms des colonnes
-                rows_with_index = [(index + 1, *row) for index, row in enumerate(rows)]  # Ajouter les numéros de ligne en première colonne
-                print(tabulate(rows_with_index, headers=headers, tablefmt="psql"), "\n")  # Affichage du tableau avec tabulate
-
-    execute_request_without_fastapi(
-        metier_data="DE",  # metier_data = None, "DE", "DA" ou "DS"
-        date_min=None,
-    )
+    return Response(content=f"total offres = {total_offres}", media_type="text/plain")
