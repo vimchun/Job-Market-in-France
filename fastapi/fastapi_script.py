@@ -8,6 +8,7 @@ from datetime import datetime
 from textwrap import dedent  # used to dedent variable strings that are indented because defined on a function
 from typing import Optional
 
+import pandas as pd
 import psycopg2
 
 from colorama import Fore, init
@@ -40,6 +41,27 @@ app = FastAPI(
 
 sql_file_directory_part_1 = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sql_requests")
 
+location_csv_file = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "..",
+    "api_extract__transform",
+    "locations_information",
+    "code_name__city_department_region.csv",
+)
+
+df_location = pd.read_csv(
+    location_csv_file,
+    usecols=[
+        "code_region",
+    ],
+    dtype={
+        "code_region": str,
+    },
+)
+
+
+codes_regions = df_location["code_region"].drop_duplicates()
+
 
 # Fonction pour centraliser les filtres
 def set_endpoints_filters(
@@ -54,19 +76,22 @@ def set_endpoints_filters(
     code_region: Optional[str] = Query(
         default=None,
         description=dedent("""\
-            Filtrer sur le code de la région (laisser vide pour ne pas filtrer). Valeurs possibles :\n
-            • 11: Île-de-France\n
-            • 24: Centre-Val de Loire\n
-            • 27: Bourgogne-Franche-Comté\n
-            • 28: Normandie\n
-            • 32: Hauts-de-France\n
-            • 44: Grand Est\n
-            • 52: Pays de la Loire\n
-            • 53: Bretagne\n
-            • 75: Nouvelle-Aquitaine\n
-            • 76: Occitanie\n
-            • 84: Auvergne-Rhône-Alpes\n
+            Filtrer sur le code de la région (laisser vide pour ne pas filtrer).\n
+            <i>
+            Valeurs possibles :
+            • 11: Île-de-France
+            • 24: Centre-Val de Loire
+            • 27: Bourgogne-Franche-Comté
+            • 28: Normandie
+            • 32: Hauts-de-France
+            • 44: Grand Est
+            • 52: Pays de la Loire
+            • 53: Bretagne
+            • 75: Nouvelle-Aquitaine
+            • 76: Occitanie
+            • 84: Auvergne-Rhône-Alpes
             • 93: Provence-Alpes-Côte d'Azur
+            </i>
             """),
     ),
     nom_region: Optional[str] = Query(
@@ -110,8 +135,11 @@ def set_endpoints_filters(
             )
 
     # Validation de `code_region`
-    if code_region:
-        pass
+    if code_region not in codes_regions.values:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Le code région est invalide.",
+        )
 
     # Validation de `nom_region`
     if nom_region:
