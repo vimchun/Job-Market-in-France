@@ -51,27 +51,16 @@ location_csv_file = os.path.join(
 
 df_location = pd.read_csv(
     location_csv_file,
-    usecols=[
-        "code_region",
-    ],
-    dtype={
-        "code_region": str,
-    },
+    usecols=["code_region", "nom_region", "code_departement", "nom_departement", "code_postal", "nom_ville"],
+    dtype={"code_region": str, "nom_region": str, "code_departement": str, "nom_departement": str, "code_postal": str, "nom_ville": str},
 )
-
-
-codes_regions = df_location["code_region"].drop_duplicates()
 
 
 # Fonction pour centraliser les filtres
 def set_endpoints_filters(
-    metier_data: Optional[str] = Query(
-        default=None,
-        description='Valeurs possibles : "DE", "DA", "DS" _(champ vide pour ne pas filtrer)_',
-    ),
+    metier_data: Optional[str] = Query(default=None, description='Valeurs possibles : "DE", "DA", "DS" _(champ vide pour ne pas filtrer)_'),
     date_creation_min: Optional[str] = Query(
-        default=None,
-        description='Filtrer par date de création, par exemple les offres à partir de "2025-04-25" (format "YYYY-MM-DD") _(champ vide pour ne pas filtrer)_',
+        default=None, description='Filtrer par date de création, par exemple les offres à partir de "2025-04-25" (format "YYYY-MM-DD") _(champ vide pour ne pas filtrer)_'
     ),
     code_region: Optional[str] = Query(
         default=None,
@@ -94,72 +83,48 @@ def set_endpoints_filters(
             </i>
             """),
     ),
-    nom_region: Optional[str] = Query(
-        default=None,
-        description="Filtrer sur le nom de la région _(champ vide pour ne pas filtrer)_",
-    ),
-    code_departement: Optional[str] = Query(
-        default=None,
-        description="Filtrer sur le code du département _(champ vide pour ne pas filtrer)_",
-    ),
-    nom_departement: Optional[str] = Query(
-        default=None,
-        description="Filtrer sur le nom du département _(champ vide pour ne pas filtrer)_",
-    ),
-    code_postal: Optional[str] = Query(
-        default=None,
-        description="Filtrer sur le code de la ville _(champ vide pour ne pas filtrer)_",
-    ),
-    nom_ville: Optional[str] = Query(
-        default=None,
-        description="Filtrer sur le nom de la ville _(champ vide pour ne pas filtrer)_",
-    ),
+    nom_region: Optional[str] = Query(default=None, description="Filtrer sur le nom de la région _(champ vide pour ne pas filtrer)_"),
+    code_departement: Optional[str] = Query(default=None, description="Filtrer sur le code du département _(champ vide pour ne pas filtrer)_"),
+    nom_departement: Optional[str] = Query(default=None, description="Filtrer sur le nom du département _(champ vide pour ne pas filtrer)_"),
+    code_postal: Optional[str] = Query(default=None, description="Filtrer sur le code de la ville _(champ vide pour ne pas filtrer)_"),
+    nom_ville: Optional[str] = Query(default=None, description="Filtrer sur le nom de la ville _(champ vide pour ne pas filtrer)_"),
 ):
     # Validation de `metier_data`
     allowed_metier_data = {"DE", "DA", "DS", None}  # set
 
     if metier_data not in allowed_metier_data:
-        raise HTTPException(
-            status_code=400,
-            detail=f"'metier_data' doit être vide ou valoir 'DE', 'DA' ou 'DS'",
-        )
+        raise HTTPException(status_code=400, detail=f"'metier_data' doit être vide ou valoir 'DE', 'DA' ou 'DS'")
 
     # Validation de `date_creation_min`
     if date_creation_min:
         try:
             datetime.strptime(date_creation_min, "%Y-%m-%d")
         except ValueError:
-            raise HTTPException(
-                status_code=400,
-                detail="Format invalide pour 'date_creation_min' (attendu : YYYY-MM-DD)",
-            )
+            raise HTTPException(status_code=400, detail="Format invalide pour 'date_creation_min' (attendu : YYYY-MM-DD)")
 
     # Validation de `code_region`
-    if code_region not in codes_regions.values:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Le code région est invalide.",
-        )
+    if code_region is not None and code_region not in df_location["code_region"].values:
+        raise HTTPException(status_code=400, detail=f"Le code région '{code_region}' est invalide.")
 
     # Validation de `nom_region`
-    if nom_region:
-        pass
+    if nom_region is not None and nom_region not in df_location["nom_region"].values:
+        raise HTTPException(status_code=400, detail=f"Le nom de la région '{nom_region}' est invalide.")
 
     # Validation de `code_departement`
-    if code_departement:
-        pass
+    if code_departement is not None and code_departement not in df_location["code_departement"].values:
+        raise HTTPException(status_code=400, detail=f"Le code département '{code_departement}' est invalide.")
 
     # Validation de `nom_departement`
-    if nom_departement:
-        pass
+    if nom_departement is not None and nom_departement not in df_location["nom_departement"].values:
+        raise HTTPException(status_code=400, detail=f"Le nom du département '{nom_departement}' est invalide.")
 
     # Validation de `code_postal`
-    if code_postal:
-        pass
+    if code_postal is not None and code_postal not in df_location["code_postal"].values:
+        raise HTTPException(status_code=400, detail=f"Le code postal '{code_postal}' est invalide.")
 
     # Validation de `nom_ville`
-    if nom_ville:
-        pass
+    if nom_ville is not None and nom_ville not in df_location["nom_ville"].values:
+        raise HTTPException(status_code=400, detail=f"Le nom de la ville '{nom_ville}' est invalide.")
 
     return {
         "metier_data": metier_data,
