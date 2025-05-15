@@ -6,12 +6,12 @@ import os
 
 from datetime import datetime
 from textwrap import dedent  # used to dedent variable strings that are indented because defined on a function
-from typing import Optional
+from typing import List, Optional
 
 import pandas as pd
 import psycopg2
 
-from colorama import Fore, init
+from colorama import Fore, Style, init
 from pydantic import BaseModel, field_validator
 from tabulate import tabulate  # pour afficher les résultats sous forme de tableau
 
@@ -62,7 +62,7 @@ def set_endpoints_filters(
     date_creation_min: Optional[str] = Query(
         default=None, description='Filtrer par date de création, par exemple les offres à partir de "2025-04-25" (format "YYYY-MM-DD") _(champ vide = pas de filtre)_'
     ),
-    code_region: Optional[str] = Query(
+    code_region: Optional[List[str]] = Query(
         default=None,
         description=dedent("""\
             Filtrer sur le code de la région (champ vide = pas de filtre).\n
@@ -90,9 +90,11 @@ def set_endpoints_filters(
         except ValueError:
             raise HTTPException(status_code=400, detail="Format invalide pour 'date_creation_min' (attendu : YYYY-MM-DD)")
 
-    # Validation de `code_region`
-    if code_region is not None and code_region not in df_location["code_region"].values:
-        raise HTTPException(status_code=400, detail=f"Le code région '{code_region}' est invalide.")
+    if code_region:
+        invalid_codes = [cr for cr in code_region if cr not in df_location["code_region"].values]
+        print(f"invalid_codes: {invalid_codes}\n")  # debug
+        if invalid_codes:
+            raise HTTPException(status_code=400, detail=f"Les codes région {invalid_codes} sont invalides.")
 
     # Validation de `nom_region`
     if nom_region is not None and nom_region not in df_location["nom_region"].values:
@@ -139,6 +141,19 @@ def execute_modified_sql_request_with_filters(
     nom_ville,
     fetch="all",
 ):
+    print(
+        "======== debug",
+        metier_data,
+        date_creation_min,
+        code_region,
+        nom_region,
+        code_departement,
+        nom_departement,
+        code_postal,
+        nom_ville,
+        "======== fin debug\n\n",
+        sep="\n",
+    )
     """
     Prend en entrée le fichier sql dont le chemin se termine par la paramètre "sql_files_directory_part_2"
       et applique les filtres sur la requête SQL en fonction des paramètres fournis.
@@ -150,14 +165,14 @@ def execute_modified_sql_request_with_filters(
     with open(os.path.join(sql_file_directory_part_1, sql_files_directory_part_2), "r") as file:
         sql_file_content = file.read()
 
-        print(f'\n{Fore.CYAN}===> requête depuis le fichier "{sql_files_directory_part_2}"')
-
         # Filtrage par "metier_data"
         if metier_data is None:
             sql_file_content = sql_file_content.replace("metier_data = 'placeholder_metier_data'", "1=1")
         else:
             sql_file_content = sql_file_content.replace("'placeholder_metier_data'", "%s")
+            print(f"avant : {params}")
             params.append(metier_data)
+            print(f"après : {params}")
 
         # Filtrage par "date_creation_min"
         if date_creation_min is None:
@@ -167,18 +182,36 @@ def execute_modified_sql_request_with_filters(
             params.append(date_creation_min)
 
         # Filtrage par "code_region"
+        # if code_region is None:
+        #     sql_file_content = sql_file_content.replace("AND code_region = 'placeholder_code_region'", "")
+        # else:
+        #     sql_file_content = sql_file_content.replace("'placeholder_code_region'", "%s")
+        #     params.append(code_region)
         if code_region is None:
-            sql_file_content = sql_file_content.replace("AND code_region = 'placeholder_code_region'", "")
+            sql_file_content = sql_file_content.replace("AND code_region IN (placeholder_code_region)", "")
         else:
-            sql_file_content = sql_file_content.replace("'placeholder_code_region'", "%s")
-            params.append(code_region)
+            placeholders = ", ".join(["%s"] * len(code_region))
+            sql_file_content = sql_file_content.replace("placeholder_code_region", placeholders)
+            print(
+                "problème ????",
+                code_region,
+                placeholders,
+                sep="\n",
+            )
+
+            print(f"avant : {params}")
+            params.extend(code_region)
+            # params.append(code_region)
+            print(f"après : {params}")
 
         # Filtrage par "nom_region"
         if nom_region is None:
             sql_file_content = sql_file_content.replace("AND nom_region = 'placeholder_nom_region'", "")
         else:
             sql_file_content = sql_file_content.replace("'placeholder_nom_region'", "%s")
+            print(f"avant : {params}")
             params.append(nom_region)
+            print(f"après : {params}")
 
         # Filtrage par "code_departement"
         if code_departement is None:
@@ -212,6 +245,11 @@ def execute_modified_sql_request_with_filters(
 
         with psycopg2.connect(database="francetravail", host="localhost", user="mhh", password="mhh", port=5432) as conn:
             with conn.cursor() as cursor:
+                print(f'\n{Fore.CYAN}===> Requête SQL depuis le fichier "{sql_files_directory_part_2}" :')
+                print(f"{Style.DIM}{modified_sql_file_content}")
+                print(f"{Fore.CYAN}===> paramètres :")
+                print(f"{Fore.CYAN}{Style.DIM}{params}")
+
                 cursor.execute(modified_sql_file_content, tuple(params))
                 if fetch == "all":
                     return cursor.fetchall()
@@ -245,4 +283,4 @@ def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
 
     total_offres = result[0] if result else 0
 
-    return Response(content=f"total offres = {total_offres}", media_type="text/plain")
+    return Response(content=f"total offres = {total_offres:,}".replace(",", " "), media_type="text/plain")  # espace pour séparer les milliers
