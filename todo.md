@@ -29,6 +29,8 @@
   - faire un script qui vérifie qu'on a tout ce qu'il faut avant de déclencher les autres scripts (ex: vérifier que le conteneur postgresql tourne)
 
 
+  - fastapi : param "job toujours dispo à la dernière date d'extraction ?" (bool)
+
 ## nice to have
 
   1. transformation pour avoir les années d'exp. (table experience)

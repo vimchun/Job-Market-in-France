@@ -58,24 +58,22 @@ df_location = pd.read_csv(
 
 # Fonction pour centraliser les filtres
 def set_endpoints_filters(
-    metier_data: Optional[str] = Query(default=None, description='Valeurs possibles : "DE", "DA", "DS" _(champ vide = pas de filtre)_'),
+    metier_data: Optional[str] = Query(default=None, description="Valeurs possibles : `DE`, `DA` ou `DS` _(champ vide = pas de filtre)_"),
     date_creation_min: Optional[str] = Query(
-        default=None, description='Filtrer par date de création, par exemple les offres à partir de "2025-04-25" (format "YYYY-MM-DD") _(champ vide = pas de filtre)_'
+        default=None, description='Filtrer par date de création, par exemple les offres à partir de "2025-04-25" (format `YYYY-MM-DD`) _(champ vide = pas de filtre)_'
     ),
     code_region: Optional[List[str]] = Query(
         default=None,
         description=dedent("""\
-            Filtrer sur le code de la région (champ vide = pas de filtre).\n
-            <i> Valeurs possibles :
-            [11] Île-de-France, [24] Centre-Val de Loire, [27] Bourgogne-Franche-Comté, [28] Normandie,
-            [32] Hauts-de-France, [44] Grand Est, [52] Pays de la Loire, [53] Bretagne, [75] Nouvelle-Aquitaine,
-            [76] Occitanie, [84] Auvergne-Rhône-Alpes, [93] Provence-Alpes-Côte d'Azur </i> """),
+            Filtrer sur le code de la région _(champ vide = pas de filtre)_\n
+            <i> Valeurs possibles :`11`(Île-de-France),`24`(Centre-Val de Loire),`27`(Bourgogne-Franche-Comté),`28`(Normandie),`32`(Hauts-de-France),`44`(Grand
+            Est),`52`(Pays de la Loire),`53`(Bretagne),`75`(Nouvelle-Aquitaine),`76`(Occitanie),`84`(Auvergne-Rhône-Alpes),`93`(Provence-Alpes-Côte d'Azur) </i>"""),
     ),
-    nom_region: Optional[str] = Query(default=None, description="Filtrer sur le nom de la région _(champ vide = pas de filtre)_"),
-    code_departement: Optional[str] = Query(default=None, description="Filtrer sur le code du département _(champ vide = pas de filtre)_"),
-    nom_departement: Optional[str] = Query(default=None, description="Filtrer sur le nom du département _(champ vide = pas de filtre)_"),
-    code_postal: Optional[str] = Query(default=None, description="Filtrer sur le code de la ville _(champ vide = pas de filtre)_"),
-    nom_ville: Optional[str] = Query(default=None, description="Filtrer sur le nom de la ville _(champ vide = pas de filtre)_"),
+    nom_region: Optional[List[str]] = Query(default=None, description="Filtrer sur le nom de la région _(champ vide = pas de filtre)_"),
+    code_departement: Optional[List[str]] = Query(default=None, description="Filtrer sur le code du département _(champ vide = pas de filtre)_"),
+    nom_departement: Optional[List[str]] = Query(default=None, description="Filtrer sur le nom du département _(champ vide = pas de filtre)_"),
+    code_postal: Optional[List[str]] = Query(default=None, description="Filtrer sur le code de la ville _(champ vide = pas de filtre)_"),
+    nom_ville: Optional[List[str]] = Query(default=None, description="Filtrer sur le nom de la ville _(champ vide = pas de filtre)_"),
 ):
     # Validation de `metier_data`
     allowed_metier_data = {"DE", "DA", "DS", None}  # set
@@ -90,31 +88,41 @@ def set_endpoints_filters(
         except ValueError:
             raise HTTPException(status_code=400, detail="Format invalide pour 'date_creation_min' (attendu : YYYY-MM-DD)")
 
+    # Validation de `code_region`
     if code_region:
-        invalid_codes = [cr for cr in code_region if cr not in df_location["code_region"].values]
-        print(f"invalid_codes: {invalid_codes}\n")  # debug
-        if invalid_codes:
-            raise HTTPException(status_code=400, detail=f"Les codes région {invalid_codes} sont invalides.")
+        invalid_codes_region = [cr for cr in code_region if cr not in df_location["code_region"].values]
+        if invalid_codes_region:
+            raise HTTPException(status_code=400, detail=f"Les codes région {invalid_codes_region} sont invalides.")
 
     # Validation de `nom_region`
-    if nom_region is not None and nom_region not in df_location["nom_region"].values:
-        raise HTTPException(status_code=400, detail=f"Le nom de la région '{nom_region}' est invalide.")
+    if nom_region:
+        invalid_noms_region = [nr for nr in nom_region if nr not in df_location["nom_region"].values]
+        if invalid_noms_region:
+            raise HTTPException(status_code=400, detail=f"Les noms de région {invalid_noms_region} sont invalides.")
 
     # Validation de `code_departement`
-    if code_departement is not None and code_departement not in df_location["code_departement"].values:
-        raise HTTPException(status_code=400, detail=f"Le code département '{code_departement}' est invalide.")
+    if code_departement:
+        invalid_codes_departement = [cd for cd in code_departement if cd not in df_location["code_departement"].values]
+        if invalid_codes_departement:
+            raise HTTPException(status_code=400, detail=f"Les codes département {invalid_codes_departement} sont invalides.")
 
     # Validation de `nom_departement`
-    if nom_departement is not None and nom_departement not in df_location["nom_departement"].values:
-        raise HTTPException(status_code=400, detail=f"Le nom du département '{nom_departement}' est invalide.")
+    if nom_departement:
+        invalid_noms_departement = [nr for nr in nom_departement if nr not in df_location["nom_departement"].values]
+        if invalid_noms_departement:
+            raise HTTPException(status_code=400, detail=f"Les noms de département {invalid_noms_departement} sont invalides.")
 
     # Validation de `code_postal`
-    if code_postal is not None and code_postal not in df_location["code_postal"].values:
-        raise HTTPException(status_code=400, detail=f"Le code postal '{code_postal}' est invalide.")
+    if code_postal:
+        invalid_codes_postal = [cp for cp in code_postal if cp not in df_location["code_postal"].values]
+        if invalid_codes_postal:
+            raise HTTPException(status_code=400, detail=f"Les codes postaux {invalid_codes_postal} sont invalides.")
 
     # Validation de `nom_ville`
-    if nom_ville is not None and nom_ville not in df_location["nom_ville"].values:
-        raise HTTPException(status_code=400, detail=f"Le nom de la ville '{nom_ville}' est invalide.")
+    if nom_ville:
+        invalid_noms_ville = [nv for nv in nom_ville if nv not in df_location["nom_ville"].values]
+        if invalid_noms_ville:
+            raise HTTPException(status_code=400, detail=f"Les noms de ville {invalid_noms_ville} sont invalides.")
 
     return {
         "metier_data": metier_data,
@@ -141,19 +149,6 @@ def execute_modified_sql_request_with_filters(
     nom_ville,
     fetch="all",
 ):
-    print(
-        "======== debug",
-        metier_data,
-        date_creation_min,
-        code_region,
-        nom_region,
-        code_departement,
-        nom_departement,
-        code_postal,
-        nom_ville,
-        "======== fin debug\n\n",
-        sep="\n",
-    )
     """
     Prend en entrée le fichier sql dont le chemin se termine par la paramètre "sql_files_directory_part_2"
       et applique les filtres sur la requête SQL en fonction des paramètres fournis.
@@ -182,64 +177,52 @@ def execute_modified_sql_request_with_filters(
             params.append(date_creation_min)
 
         # Filtrage par "code_region"
-        # if code_region is None:
-        #     sql_file_content = sql_file_content.replace("AND code_region = 'placeholder_code_region'", "")
-        # else:
-        #     sql_file_content = sql_file_content.replace("'placeholder_code_region'", "%s")
-        #     params.append(code_region)
         if code_region is None:
             sql_file_content = sql_file_content.replace("AND code_region IN (placeholder_code_region)", "")
         else:
             placeholders = ", ".join(["%s"] * len(code_region))
             sql_file_content = sql_file_content.replace("placeholder_code_region", placeholders)
-            print(
-                "problème ????",
-                code_region,
-                placeholders,
-                sep="\n",
-            )
-
-            print(f"avant : {params}")
             params.extend(code_region)
-            # params.append(code_region)
-            print(f"après : {params}")
 
         # Filtrage par "nom_region"
         if nom_region is None:
-            sql_file_content = sql_file_content.replace("AND nom_region = 'placeholder_nom_region'", "")
+            sql_file_content = sql_file_content.replace("AND nom_region IN (placeholder_nom_region)", "")
         else:
-            sql_file_content = sql_file_content.replace("'placeholder_nom_region'", "%s")
-            print(f"avant : {params}")
-            params.append(nom_region)
-            print(f"après : {params}")
+            placeholders = ", ".join(["%s"] * len(nom_region))
+            sql_file_content = sql_file_content.replace("placeholder_nom_region", placeholders)
+            params.extend(nom_region)
 
         # Filtrage par "code_departement"
         if code_departement is None:
-            sql_file_content = sql_file_content.replace("AND code_departement = 'placeholder_code_departement'", "")
+            sql_file_content = sql_file_content.replace("AND code_departement IN (placeholder_code_departement)", "")
         else:
-            sql_file_content = sql_file_content.replace("'placeholder_code_departement'", "%s")
-            params.append(code_departement)
+            placeholders = ", ".join(["%s"] * len(code_departement))
+            sql_file_content = sql_file_content.replace("placeholder_code_departement", placeholders)
+            params.extend(code_departement)
 
         # Filtrage par "nom_departement"
         if nom_departement is None:
-            sql_file_content = sql_file_content.replace("AND nom_departement = 'placeholder_nom_departement'", "")
+            sql_file_content = sql_file_content.replace("AND nom_departement IN (placeholder_nom_departement)", "")
         else:
-            sql_file_content = sql_file_content.replace("'placeholder_nom_departement'", "%s")
-            params.append(nom_departement)
+            placeholders = ", ".join(["%s"] * len(nom_departement))
+            sql_file_content = sql_file_content.replace("placeholder_nom_departement", placeholders)
+            params.extend(nom_departement)
 
         # Filtrage par "code_postal"
         if code_postal is None:
-            sql_file_content = sql_file_content.replace("AND code_postal = 'placeholder_code_postal'", "")
+            sql_file_content = sql_file_content.replace("AND code_postal IN (placeholder_code_postal)", "")
         else:
-            sql_file_content = sql_file_content.replace("'placeholder_code_postal'", "%s")
-            params.append(code_postal)
+            placeholders = ", ".join(["%s"] * len(code_postal))
+            sql_file_content = sql_file_content.replace("placeholder_code_postal", placeholders)
+            params.extend(code_postal)
 
         # Filtrage par "nom_ville"
         if nom_ville is None:
-            sql_file_content = sql_file_content.replace("AND nom_ville = 'placeholder_nom_ville'", "")
+            sql_file_content = sql_file_content.replace("AND nom_ville IN (placeholder_nom_ville)", "")
         else:
-            sql_file_content = sql_file_content.replace("'placeholder_nom_ville'", "%s")
-            params.append(nom_ville)
+            placeholders = ", ".join(["%s"] * len(nom_ville))
+            sql_file_content = sql_file_content.replace("placeholder_nom_ville", placeholders)
+            params.extend(nom_ville)
 
         modified_sql_file_content = sql_file_content
 
@@ -283,4 +266,4 @@ def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
 
     total_offres = result[0] if result else 0
 
-    return Response(content=f"total offres = {total_offres:,}".replace(",", " "), media_type="text/plain")  # espace pour séparer les milliers
+    return Response(content=f"total: {total_offres:,} offres".replace(",", " "), media_type="text/plain")  # espace pour séparer les milliers
