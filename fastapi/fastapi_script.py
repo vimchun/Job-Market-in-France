@@ -58,36 +58,24 @@ df_location = pd.read_csv(
 
 # Fonction pour centraliser les filtres
 def set_endpoints_filters(
-    metier_data: Optional[str] = Query(default=None, description='Valeurs possibles : "DE", "DA", "DS" _(champ vide pour ne pas filtrer)_'),
+    metier_data: Optional[str] = Query(default=None, description='Valeurs possibles : "DE", "DA", "DS" _(champ vide = pas de filtre)_'),
     date_creation_min: Optional[str] = Query(
-        default=None, description='Filtrer par date de création, par exemple les offres à partir de "2025-04-25" (format "YYYY-MM-DD") _(champ vide pour ne pas filtrer)_'
+        default=None, description='Filtrer par date de création, par exemple les offres à partir de "2025-04-25" (format "YYYY-MM-DD") _(champ vide = pas de filtre)_'
     ),
     code_region: Optional[str] = Query(
         default=None,
         description=dedent("""\
-            Filtrer sur le code de la région (laisser vide pour ne pas filtrer).\n
-            <i>
-            Valeurs possibles :
-            • 11: Île-de-France
-            • 24: Centre-Val de Loire
-            • 27: Bourgogne-Franche-Comté
-            • 28: Normandie
-            • 32: Hauts-de-France
-            • 44: Grand Est
-            • 52: Pays de la Loire
-            • 53: Bretagne
-            • 75: Nouvelle-Aquitaine
-            • 76: Occitanie
-            • 84: Auvergne-Rhône-Alpes
-            • 93: Provence-Alpes-Côte d'Azur
-            </i>
-            """),
+            Filtrer sur le code de la région (champ vide = pas de filtre).\n
+            <i> Valeurs possibles :
+            [11] Île-de-France, [24] Centre-Val de Loire, [27] Bourgogne-Franche-Comté, [28] Normandie,
+            [32] Hauts-de-France, [44] Grand Est, [52] Pays de la Loire, [53] Bretagne, [75] Nouvelle-Aquitaine,
+            [76] Occitanie, [84] Auvergne-Rhône-Alpes, [93] Provence-Alpes-Côte d'Azur </i> """),
     ),
-    nom_region: Optional[str] = Query(default=None, description="Filtrer sur le nom de la région _(champ vide pour ne pas filtrer)_"),
-    code_departement: Optional[str] = Query(default=None, description="Filtrer sur le code du département _(champ vide pour ne pas filtrer)_"),
-    nom_departement: Optional[str] = Query(default=None, description="Filtrer sur le nom du département _(champ vide pour ne pas filtrer)_"),
-    code_postal: Optional[str] = Query(default=None, description="Filtrer sur le code de la ville _(champ vide pour ne pas filtrer)_"),
-    nom_ville: Optional[str] = Query(default=None, description="Filtrer sur le nom de la ville _(champ vide pour ne pas filtrer)_"),
+    nom_region: Optional[str] = Query(default=None, description="Filtrer sur le nom de la région _(champ vide = pas de filtre)_"),
+    code_departement: Optional[str] = Query(default=None, description="Filtrer sur le code du département _(champ vide = pas de filtre)_"),
+    nom_departement: Optional[str] = Query(default=None, description="Filtrer sur le nom du département _(champ vide = pas de filtre)_"),
+    code_postal: Optional[str] = Query(default=None, description="Filtrer sur le code de la ville _(champ vide = pas de filtre)_"),
+    nom_ville: Optional[str] = Query(default=None, description="Filtrer sur le nom de la ville _(champ vide = pas de filtre)_"),
 ):
     # Validation de `metier_data`
     allowed_metier_data = {"DE", "DA", "DS", None}  # set
