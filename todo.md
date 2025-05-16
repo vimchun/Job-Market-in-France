@@ -31,6 +31,7 @@
 
   - fastapi : param "job toujours dispo à la dernière date d'extraction ?" (bool)
 
+
 ## nice to have
 
   1. transformation pour avoir les années d'exp. (table experience)

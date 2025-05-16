@@ -1,6 +1,5 @@
-# cd fastapi/
-# uvicorn fastapi_script:app --reload
-# uvicorn fastapi_script:app --reload  --log-level debug
+# cd fastapi/  &&  uvicorn fastapi_script:app --reload
+# cd fastapi/  &&  uvicorn fastapi_script:app --reload  --log-level debug
 
 import os
 
@@ -58,9 +57,12 @@ df_location = pd.read_csv(
 
 # Fonction pour centraliser les filtres
 def set_endpoints_filters(
-    metier_data: Optional[str] = Query(default=None, description="Valeurs possibles : `DE`, `DA` ou `DS` _(champ vide = pas de filtre)_"),
+    metier_data: Optional[str] = Query(
+        default=None,
+        description='Filtrer sur les métiers "Data Engineer", "Data Analyst" ou "Data Scientist". <br> <i> Valeurs possibles : `DE`, `DA` ou `DS` _(champ vide = pas de filtre)_ </i>',
+    ),
     date_creation_min: Optional[str] = Query(
-        default=None, description='Filtrer par date de création, par exemple les offres à partir de "2025-04-25" (format `YYYY-MM-DD`) _(champ vide = pas de filtre)_'
+        default=None, description='Filtrer par date de création des offres, par exemple les offres à partir de "2025-04-25" (format `YYYY-MM-DD`) _(champ vide = pas de filtre)_'
     ),
     code_region: Optional[List[str]] = Query(
         default=None,
@@ -260,7 +262,7 @@ def get_competences(filters: dict = Depends(set_endpoints_filters)):
 def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
     """Nombre total d'offres d'emploi."""
 
-    sql_file_directory_part_2 = os.path.join("10_table_DescriptionOffre", "0__total_offres.pgsql")
+    sql_file_directory_part_2 = os.path.join("10_table_DescriptionOffre", "total_offres.pgsql")
 
     result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="one")
 
