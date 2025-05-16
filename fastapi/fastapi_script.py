@@ -25,7 +25,7 @@ app = FastAPI(
     openapi_tags=[
         {"name": 'Table "Offre_Emploi"'},
         {"name": 'Table "Competence"'},
-        # {"name": 'Table "Experience"'},
+        {"name": 'Table "Experience"'},
         # {"name": 'Table "Qualite_Professionnelle"'},
         # {"name": 'Table "Qualification"'},
         # {"name": 'Table "Formation"'},
@@ -269,9 +269,9 @@ def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
 @app.get(
     "/competence",
     tags=['Table "Competence"'],
-    summary="Récupère les compétences demandées par les recruteurs",
+    summary="Récupère les compétences (techniques, managériales...) demandées par les recruteurs",
     description=dedent("""
-    Compétences triées par code exigence ((E)xigé d'abord, puis (S)ouhaité), par nombre d'occurences (DESC) et par code (ASC).\n
+    Compétences triées par code exigence (<b>E</b>xigé d'abord, puis <b>S</b>ouhaité), puis par nombre d'occurences (DESC), et enfin par code (ASC).\n
     Chaque champ est facultatif (champ vide = pas de filtre).
     """),
 )
@@ -283,6 +283,38 @@ def get_competences(filters: dict = Depends(set_endpoints_filters)):
     truncated_result = [(row[0], row[1], row[2][:60] if row[2] else row[2], row[3]) for row in result]
 
     table = tabulate(truncated_result, headers=["nb occurences", "code", "libelle", "code exigence"], tablefmt="psql").replace("'", " ")
+    # note : on remplace les guillemets simples parce que ce qui se trouve entre 2 guillemets simples est écrit en vert sur Open API
+
+    return Response(content=table, media_type="text/plain")
+
+
+@app.get(
+    "/experience",
+    tags=['Table "Experience"'],
+    summary="Récupère les expériences demandées par les recruteurs",
+    description=dedent("""\
+    Expériences triées par code exigence (<b>D</b>ébutant d'abord, <b>S</b>ouhaité, puis <b>E</b>xigé), puis par nombre d'occurences (DESC) et enfin par libellé (ASC).
+
+    Peut répondre aux questions :</br>
+    - Est-ce qu'un diplôme est requis ?</br>
+    - Nombre d'années d'études minimum ?</br>
+    - Nombre d'années d'expérience minimum ?</br>
+    - Expérience requise dans tel domaine ou tel secteur ?</br>
+    - Expérience requis sur un poste similaire ?</br>
+    - etc...
+
+    Chaque champ est facultatif (champ vide = pas de filtre).
+    """),
+)
+def get_experiences(filters: dict = Depends(set_endpoints_filters)):
+    sql_file_directory_part_2 = os.path.join("02_table_Experience", "experiences.pgsql")
+
+    result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
+
+    # tronquer la colonne "libelle" à 60 caractères pour chaque ligne, sinon le tableau s'affichera mal sur Open API
+    truncated_result = [(row[0], row[1], row[2][:60] if row[2] else row[2], row[3]) for row in result]
+
+    table = tabulate(truncated_result, headers=["nb occurences", "libelle", "commentaire", "code exigence"], tablefmt="psql").replace("'", " ")
     # note : on remplace les guillemets simples parce que ce qui se trouve entre 2 guillemets simples est écrit en vert sur Open API
 
     return Response(content=table, media_type="text/plain")
