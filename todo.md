@@ -32,6 +32,12 @@
   - fastapi : param "job toujours dispo à la dernière date d'extraction ?" (bool)
 
 
+  - fastapi idées :
+    - création offre
+      - id offre obligatoire, mais doit être nouveau
+
+    - suppression offre
+
 ## nice to have
 
   1. transformation pour avoir les années d'exp. (table experience)

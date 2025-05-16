@@ -1060,6 +1060,9 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
     # On remplace ["FRANCE", "France", "France entière"] par NaN
     df_lieu.loc[df_lieu.lieu_cas == "cas_5", "libelle"] = np.nan
 
+    # Dans de rare cas, CP setté à "Inconnu" précédemment
+    df_lieu.loc[df_lieu.lieu_cas == "cas_5", "code_postal"] = np.nan
+
     # Vérification qu'il n'y a pas d'autres cas que les cas 1, 2, 3, 4 et 5.
 
     print(f'      Vérification cas_5 OK ? {len(df_lieu[~df_lieu.lieu_cas.isin(["cas_1", "cas_2", "cas_3", "cas_4", "cas_5"])]) == 0}\n\n')
