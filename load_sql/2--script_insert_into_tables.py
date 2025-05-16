@@ -1036,7 +1036,7 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
         if execute_transformation_at_the_end_of_script:
             print(f"\n{Fore.RED}== PARTIE 4 : on exécute les scripts SQL pour les transformations ==")
 
-            sql_dir = os.path.join(current_directory, "..", "sql_requests", "0_transformations")
+            sql_dir = os.path.join(current_directory, "sql_requests_for_transformations")
             sql_files = sorted(f for f in os.listdir(sql_dir) if f.endswith(".pgsql"))
 
             for sql_file in sql_files:
