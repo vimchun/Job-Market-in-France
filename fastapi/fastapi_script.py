@@ -4,7 +4,7 @@
 import os
 
 from datetime import datetime
-from textwrap import dedent  # used to dedent variable strings that are indented because defined on a function
+from textwrap import dedent  # pour gérer les indentations
 from typing import List, Optional
 
 import pandas as pd
@@ -25,18 +25,19 @@ app = FastAPI(
     openapi_tags=[
         {"name": 'Table "Offre_Emploi"'},
         {"name": 'Table "Competence"'},
-        {"name": 'Table "Experience"'},
-        {"name": 'Table "Qualite_Professionnelle"'},
-        {"name": 'Table "Qualification"'},
-        {"name": 'Table "Formation"'},
-        {"name": 'Table "Permis_Conduire"'},
-        {"name": 'Table "Langue"'},
-        {"name": 'Table "Localisation"'},
-        {"name": 'Table "Entreprise"'},
-        {"name": 'Table "Description_Offre"'},
-        {"name": 'Table "Contrat"'},
+        # {"name": 'Table "Experience"'},
+        # {"name": 'Table "Qualite_Professionnelle"'},
+        # {"name": 'Table "Qualification"'},
+        # {"name": 'Table "Formation"'},
+        # {"name": 'Table "Permis_Conduire"'},
+        # {"name": 'Table "Langue"'},
+        # {"name": 'Table "Localisation"'},
+        # {"name": 'Table "Entreprise"'},
+        # {"name": 'Table "Description_Offre"'},
+        # {"name": 'Table "Contrat"'},
     ],
 )
+
 
 sql_file_directory_part_1 = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sql_requests")
 
@@ -59,23 +60,30 @@ df_location = pd.read_csv(
 def set_endpoints_filters(
     metier_data: Optional[str] = Query(
         default=None,
-        description='Filtrer sur les métiers "Data Engineer", "Data Analyst" ou "Data Scientist". <br> <i> Valeurs possibles : `DE`, `DA` ou `DS` _(champ vide = pas de filtre)_ </i>',
+        # description='<b>Filtrer sur les métiers "Data Engineer", "Data Analyst" ou "Data Scientist".</b> <br> &nbsp; <i> Valeurs possibles : `DE`, `DA` ou `DS` </i>',
+        description=dedent("""
+        <b>Filtrer sur les métiers "Data Engineer", "Data Analyst" ou "Data Scientist".</b>\n
+        &nbsp; <i> Valeurs possibles : `DE`, `DA` ou `DS` </i>"""),
     ),
     date_creation_min: Optional[str] = Query(
-        default=None, description='Filtrer par date de création des offres, par exemple les offres à partir de "2025-04-25" (format `YYYY-MM-DD`) _(champ vide = pas de filtre)_'
+        default=None,
+        description="<b>Filtrer par date de création des offres.</b>  <br> &nbsp; <i> Par exemple, les offres à partir du `2025-04-28` (format `YYYY-MM-DD`) </i>",
     ),
     code_region: Optional[List[str]] = Query(
         default=None,
         description=dedent("""\
-            Filtrer sur le code de la région _(champ vide = pas de filtre)_\n
-            <i> Valeurs possibles :`11`(Île-de-France),`24`(Centre-Val de Loire),`27`(Bourgogne-Franche-Comté),`28`(Normandie),`32`(Hauts-de-France),`44`(Grand
-            Est),`52`(Pays de la Loire),`53`(Bretagne),`75`(Nouvelle-Aquitaine),`76`(Occitanie),`84`(Auvergne-Rhône-Alpes),`93`(Provence-Alpes-Côte d'Azur) </i>"""),
+            <b>Filtrer sur le code de la région</b>. <i> Valeurs possibles :\n
+            &nbsp; `11`(Île-de-France),`24`(Centre-Val de Loire),`27`(Bourgogne-Franche-Comté),`28`(Normandie),`32`(Hauts-de-France),`44`(Grand Est),\n
+            &nbsp; `52`(Pays de la Loire),`53`(Bretagne),`75`(Nouvelle-Aquitaine),`76`(Occitanie),`84`(Auvergne-Rhône-Alpes),`93`(Provence-Alpes-Côte d'Azur) </i>\n
+            """),
     ),
-    nom_region: Optional[List[str]] = Query(default=None, description="Filtrer sur le nom de la région _(champ vide = pas de filtre)_"),
-    code_departement: Optional[List[str]] = Query(default=None, description="Filtrer sur le code du département _(champ vide = pas de filtre)_"),
-    nom_departement: Optional[List[str]] = Query(default=None, description="Filtrer sur le nom du département _(champ vide = pas de filtre)_"),
-    code_postal: Optional[List[str]] = Query(default=None, description="Filtrer sur le code de la ville _(champ vide = pas de filtre)_"),
-    nom_ville: Optional[List[str]] = Query(default=None, description="Filtrer sur le nom de la ville _(champ vide = pas de filtre)_"),
+    # <b>Filtrer sur le code de la région</b>.\n
+    # &nbsp; <i> Valeurs possibles :\n
+    nom_region: Optional[List[str]] = Query(default=None, description="<b>Filtrer sur le nom de la région.</b>"),
+    code_departement: Optional[List[str]] = Query(default=None, description="<b>Filtrer sur le code du département.</b>"),
+    nom_departement: Optional[List[str]] = Query(default=None, description="<b>Filtrer sur le nom du département.</b>"),
+    code_postal: Optional[List[str]] = Query(default=None, description="<b>Filtrer sur le code postal.</b>"),
+    nom_ville: Optional[List[str]] = Query(default=None, description="<b>Filtrer sur le nom de la ville.</b>"),
 ):
     # Validation de `metier_data`
     allowed_metier_data = {"DE", "DA", "DS", None}  # set
@@ -242,10 +250,32 @@ def execute_modified_sql_request_with_filters(
                     return cursor.fetchone()
 
 
-@app.get("/competence", tags=['Table "Competence"'])
-def get_competences(filters: dict = Depends(set_endpoints_filters)):
-    """Compétences triées par code exigence ((E)xigé d'abord, puis (S)ouhaité), par nombre d'occurences (DESC) et par code (ASC)."""
+@app.get(
+    "/description_offre/total_offres",
+    tags=['Table "Offre_Emploi"'],
+    summary="Récupère le nombre total d'offres d'emploi",
+    description="Chaque champ est facultatif (champ vide = pas de filtre).",
+)
+def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
+    sql_file_directory_part_2 = os.path.join("00_table_OffreEmploi", "total_offres.pgsql")
 
+    result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="one")
+
+    total_offres = result[0] if result else 0
+
+    return Response(content=f"total: {total_offres:,} offres".replace(",", " "), media_type="text/plain")  # espace pour séparer les milliers
+
+
+@app.get(
+    "/competence",
+    tags=['Table "Competence"'],
+    summary="Récupère les compétences demandées par les recruteurs",
+    description=dedent("""
+    Compétences triées par code exigence ((E)xigé d'abord, puis (S)ouhaité), par nombre d'occurences (DESC) et par code (ASC).\n
+    Chaque champ est facultatif (champ vide = pas de filtre).
+    """),
+)
+def get_competences(filters: dict = Depends(set_endpoints_filters)):
     sql_file_directory_part_2 = os.path.join("01_table_Competence", "competences.pgsql")
     result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
 
@@ -256,16 +286,3 @@ def get_competences(filters: dict = Depends(set_endpoints_filters)):
     # note : on remplace les guillemets simples parce que ce qui se trouve entre 2 guillemets simples est écrit en vert sur Open API
 
     return Response(content=table, media_type="text/plain")
-
-
-@app.get("/description_offre/total_offres", tags=['Table "Description_Offre"'])
-def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
-    """Nombre total d'offres d'emploi."""
-
-    sql_file_directory_part_2 = os.path.join("10_table_DescriptionOffre", "total_offres.pgsql")
-
-    result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="one")
-
-    total_offres = result[0] if result else 0
-
-    return Response(content=f"total: {total_offres:,} offres".replace(",", " "), media_type="text/plain")  # espace pour séparer les milliers
