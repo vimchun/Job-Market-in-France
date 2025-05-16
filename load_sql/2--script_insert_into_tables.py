@@ -31,8 +31,17 @@ delete_and_create_tables_again = 0
 
 # (PARTIES 1 + 2) Booléens pour remplir ou pas la table de fait et toutes les tables de dimension (pas celles de liaison)
 fill_OffreEmploi = 1
-fill_Contrat = fill_Entreprise = fill_Localisation = fill_DescriptionOffre = 1
-fill_Competence = fill_Experience = fill_Formation = fill_QualiteProfessionnelle = fill_Qualification = fill_Langue = fill_PermisConduire = 1
+fill_Contrat = 1
+fill_Entreprise = 1
+fill_Localisation = 1
+fill_DescriptionOffre = 1
+fill_Competence = 1
+fill_Experience = 1
+fill_Formation = 1
+fill_QualiteProfessionnelle = 1
+fill_Qualification = 1
+fill_Langue = 1
+fill_PermisConduire = 1
 
 # (PARTIE 3) Booléens pour remplir ou pas les tables de liaison
 fill_Offre_Competence = fill_Offre_Experience = fill_Offre_Formation = fill_Offre_QualiteProfessionnelle = fill_Offre_Qualification = fill_Offre_Langue = fill_Offre_PermisConduire = 1
