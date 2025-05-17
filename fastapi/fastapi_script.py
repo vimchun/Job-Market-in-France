@@ -326,11 +326,9 @@ def get_experiences(filters: dict = Depends(set_endpoints_filters)):
 
     result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
 
-    # tronquer la colonne "libelle" à 60 caractères pour chaque ligne, sinon le tableau s'affichera mal sur Open API
     truncated_result = [(row[0], row[1], row[2][:60] if row[2] else row[2], row[3]) for row in result]
 
     table = tabulate(truncated_result, headers=["nb occurences", "libelle", "commentaire", "code exigence"], tablefmt="psql").replace("'", " ")
-    # note : on remplace les guillemets simples parce que ce qui se trouve entre 2 guillemets simples est écrit en vert sur Open API
 
     return Response(content=table, media_type="text/plain")
 
@@ -350,11 +348,9 @@ def get_qualites_professionnelles(filters: dict = Depends(set_endpoints_filters)
 
     result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
 
-    # tronquer la colonne "libelle" à 60 caractères pour chaque ligne, sinon le tableau s'affichera mal sur Open API
     truncated_result = [(row[0], row[1][:60] if row[1] else row[1]) for row in result]
 
     table = tabulate(truncated_result, headers=["nb occurences", "qualité professionnelle"], tablefmt="psql").replace("'", " ")
-    # note : on remplace les guillemets simples parce que ce qui se trouve entre 2 guillemets simples est écrit en vert sur Open API
 
     return Response(content=table, media_type="text/plain")
 
@@ -373,11 +369,9 @@ def get_qualifications(filters: dict = Depends(set_endpoints_filters)):
     sql_file_directory_part_2 = os.path.join("04_table_Qualification", "qualifications.pgsql")
     result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
 
-    # tronquer la colonne "libelle" à 60 caractères pour chaque ligne, sinon le tableau s'affichera mal sur Open API
     truncated_result = [(row[0], row[1][:60] if row[1] else row[1]) for row in result]
 
     table = tabulate(truncated_result, headers=["nb occurences", "qualification"], tablefmt="psql").replace("'", " ")
-    # note : on remplace les guillemets simples parce que ce qui se trouve entre 2 guillemets simples est écrit en vert sur Open API
 
     return Response(content=table, media_type="text/plain")
 
@@ -399,10 +393,51 @@ def get_formations(filters: dict = Depends(set_endpoints_filters)):
     sql_file_directory_part_2 = os.path.join("05_table_Formation", "formations.pgsql")
     result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
 
-    # tronquer la colonne "libelle" à 60 caractères pour chaque ligne, sinon le tableau s'affichera mal sur Open API
-    truncated_result = [(row[0], row[1], row[2], row[3], row[4]) for row in result]
+    truncated_result = [(row[0], row[1], row[2], row[3], row[4]) for row in result]  # todo : à supprimer si pas besoin de tronquer une colonne
 
     table = tabulate(truncated_result, headers=["nb occurences", "code", "domaine", "niveau", "commentaire", "code exigence"], tablefmt="psql").replace("'", " ")
-    # note : on remplace les guillemets simples parce que ce qui se trouve entre 2 guillemets simples est écrit en vert sur Open API
+
+    return Response(content=table, media_type="text/plain")
+
+
+@app.get(
+    "/criteres_recruteurs/permis_conduire",
+    tags=[tag_all_offres],
+    summary="Permis de conduire demandées par les recruteurs",
+    description=dedent("""\
+    Permis de conduire triés :
+      - par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis
+      - par nombre d'occurences (DESC)
+      - par  (ASC)
+
+    Chaque champ est facultatif (champ vide = pas de filtre).
+    """),
+)
+def get_permis_conduire(filters: dict = Depends(set_endpoints_filters)):
+    sql_file_directory_part_2 = os.path.join("06_table_PermisConduire", "permis_conduire.pgsql")
+
+    result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
+    table = tabulate(result, headers=["nb occurences", "permis de conduire", "code exigence"], tablefmt="psql").replace("'", " ")
+
+    return Response(content=table, media_type="text/plain")
+
+
+@app.get(
+    "/criteres_recruteurs/langues",
+    tags=[tag_all_offres],
+    summary="Langues demandées par les recruteurs",
+    description=dedent("""\
+    Langues triés :
+      - par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis
+      - par nombre d'occurences (DESC)
+      - par langue (ASC)
+
+    Chaque champ est facultatif (champ vide = pas de filtre).
+    """),
+)
+def get_permis_conduire(filters: dict = Depends(set_endpoints_filters)):
+    sql_file_directory_part_2 = os.path.join("07_table_Langue", "langues.pgsql")
+    result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
+    table = tabulate(result, headers=["nb occurences", "langue", "code exigence"], tablefmt="psql").replace("'", " ")
 
     return Response(content=table, media_type="text/plain")
