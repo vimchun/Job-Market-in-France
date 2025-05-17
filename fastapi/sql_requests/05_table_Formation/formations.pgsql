@@ -29,7 +29,8 @@ GROUP BY
 HAVING
     COUNT(f.formation_code) > 0
 ORDER BY
-    nombre_occurences DESC
+    formation_code_exigence ASC --tri par E(xigé), S(ouhaité)
+    , nombre_occurences DESC
     , f.formation_code ASC
     , f.formation_niveau_libelle ASC;
 

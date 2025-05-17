@@ -266,9 +266,7 @@ def execute_modified_sql_request_with_filters(
 )
 def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
     sql_file_directory_part_2 = os.path.join("00_table_OffreEmploi", "total_offres.pgsql")
-
     result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="one")
-
     total_offres = result[0] if result else 0
 
     return Response(content=f"total: {total_offres:,} offres".replace(",", " "), media_type="text/plain")  # espace pour séparer les milliers
@@ -323,11 +321,8 @@ def get_competences(filters: dict = Depends(set_endpoints_filters)):
 )
 def get_experiences(filters: dict = Depends(set_endpoints_filters)):
     sql_file_directory_part_2 = os.path.join("02_table_Experience", "experiences.pgsql")
-
     result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
-
     truncated_result = [(row[0], row[1], row[2][:60] if row[2] else row[2], row[3]) for row in result]
-
     table = tabulate(truncated_result, headers=["nb occurences", "libelle", "commentaire", "code exigence"], tablefmt="psql").replace("'", " ")
 
     return Response(content=table, media_type="text/plain")
@@ -345,11 +340,8 @@ def get_experiences(filters: dict = Depends(set_endpoints_filters)):
 )
 def get_qualites_professionnelles(filters: dict = Depends(set_endpoints_filters)):
     sql_file_directory_part_2 = os.path.join("03_table_QualiteProfessionnelle", "qualites_professionnelles.pgsql")
-
     result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
-
     truncated_result = [(row[0], row[1][:60] if row[1] else row[1]) for row in result]
-
     table = tabulate(truncated_result, headers=["nb occurences", "qualité professionnelle"], tablefmt="psql").replace("'", " ")
 
     return Response(content=table, media_type="text/plain")
@@ -368,9 +360,7 @@ def get_qualites_professionnelles(filters: dict = Depends(set_endpoints_filters)
 def get_qualifications(filters: dict = Depends(set_endpoints_filters)):
     sql_file_directory_part_2 = os.path.join("04_table_Qualification", "qualifications.pgsql")
     result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
-
     truncated_result = [(row[0], row[1][:60] if row[1] else row[1]) for row in result]
-
     table = tabulate(truncated_result, headers=["nb occurences", "qualification"], tablefmt="psql").replace("'", " ")
 
     return Response(content=table, media_type="text/plain")
@@ -382,6 +372,7 @@ def get_qualifications(filters: dict = Depends(set_endpoints_filters)):
     summary="Formations (domaines, nombre d'années d'études) demandées par les recruteurs",
     description=dedent("""\
     Formations triées :
+      - par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis
       - par nombre d'occurences (DESC), puis
       - par code (ASC), puis
       - par niveau (ASC)
@@ -392,10 +383,7 @@ def get_qualifications(filters: dict = Depends(set_endpoints_filters)):
 def get_formations(filters: dict = Depends(set_endpoints_filters)):
     sql_file_directory_part_2 = os.path.join("05_table_Formation", "formations.pgsql")
     result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
-
-    truncated_result = [(row[0], row[1], row[2], row[3], row[4]) for row in result]  # todo : à supprimer si pas besoin de tronquer une colonne
-
-    table = tabulate(truncated_result, headers=["nb occurences", "code", "domaine", "niveau", "commentaire", "code exigence"], tablefmt="psql").replace("'", " ")
+    table = tabulate(result, headers=["nb occurences", "code", "domaine", "niveau", "commentaire", "code exigence"], tablefmt="psql").replace("'", " ")
 
     return Response(content=table, media_type="text/plain")
 
@@ -415,7 +403,6 @@ def get_formations(filters: dict = Depends(set_endpoints_filters)):
 )
 def get_permis_conduire(filters: dict = Depends(set_endpoints_filters)):
     sql_file_directory_part_2 = os.path.join("06_table_PermisConduire", "permis_conduire.pgsql")
-
     result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
     table = tabulate(result, headers=["nb occurences", "permis de conduire", "code exigence"], tablefmt="psql").replace("'", " ")
 
