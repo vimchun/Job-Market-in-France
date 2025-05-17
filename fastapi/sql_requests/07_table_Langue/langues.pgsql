@@ -21,8 +21,7 @@ GROUP BY
     l.langue_libelle
     , l.langue_code_exigence
 ORDER BY
-    --tri par E(xigé), S(ouhaité)
-    langue_code_exigence ASC
+    langue_code_exigence ASC --tri par E(xigé), S(ouhaité)
     , nombre_occurences DESC
     , langue_libelle ASC;
 

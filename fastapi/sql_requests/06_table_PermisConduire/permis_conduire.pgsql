@@ -21,8 +21,7 @@ GROUP BY
     pc.permis_libelle
     , pc.permis_code_exigence
 ORDER BY
-    --tri par E(xigé), S(ouhaité)
-    permis_code_exigence ASC
+    permis_code_exigence ASC --tri par E(xigé), S(ouhaité)
     , nombre_occurences DESC
     , permis_libelle ASC;
 
