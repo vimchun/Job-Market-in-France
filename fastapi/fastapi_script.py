@@ -19,13 +19,24 @@ from fastapi import Depends, FastAPI, HTTPException, Query, Response  # status
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
 
+tag_all_offres = "Pour toutes les offres d'emploi"
+
+
 app = FastAPI(
     title="API sur les offres d'emploi chez France Travail",
     description="description à remplir",
     openapi_tags=[
-        {"name": 'Table "Offre_Emploi"'},
-        {"name": 'Table "Competence"'},
-        {"name": 'Table "Experience"'},
+        {
+            "name": tag_all_offres,
+            "description": "aaa",
+        },
+        {
+            "name": "Pour une offre d'emploi",
+            "description": "aaa2",
+        },
+        # {"name": 'Table "Offre_Emploi"'},
+        # {"name": 'Table "Competence"'},
+        # {"name": 'Table "Experience"'},
         # {"name": 'Table "Qualite_Professionnelle"'},
         # {"name": 'Table "Qualification"'},
         # {"name": 'Table "Formation"'},
@@ -60,7 +71,6 @@ df_location = pd.read_csv(
 def set_endpoints_filters(
     metier_data: Optional[str] = Query(
         default=None,
-        # description='<b>Filtrer sur les métiers "Data Engineer", "Data Analyst" ou "Data Scientist".</b> <br> &nbsp; <i> Valeurs possibles : `DE`, `DA` ou `DS` </i>',
         description=dedent("""
         <b>Filtrer sur les métiers "Data Engineer", "Data Analyst" ou "Data Scientist".</b>\n
         &nbsp; <i> Valeurs possibles : `DE`, `DA` ou `DS` </i>"""),
@@ -77,8 +87,6 @@ def set_endpoints_filters(
             &nbsp; `52`(Pays de la Loire),`53`(Bretagne),`75`(Nouvelle-Aquitaine),`76`(Occitanie),`84`(Auvergne-Rhône-Alpes),`93`(Provence-Alpes-Côte d'Azur) </i>\n
             """),
     ),
-    # <b>Filtrer sur le code de la région</b>.\n
-    # &nbsp; <i> Valeurs possibles :\n
     nom_region: Optional[List[str]] = Query(default=None, description="<b>Filtrer sur le nom de la région.</b>"),
     code_departement: Optional[List[str]] = Query(default=None, description="<b>Filtrer sur le code du département.</b>"),
     nom_departement: Optional[List[str]] = Query(default=None, description="<b>Filtrer sur le nom du département.</b>"),
@@ -251,9 +259,9 @@ def execute_modified_sql_request_with_filters(
 
 
 @app.get(
-    "/description_offre/total_offres",
-    tags=['Table "Offre_Emploi"'],
-    summary="Récupère le nombre total d'offres d'emploi",
+    "/statistiques/total_offres",
+    tags=[tag_all_offres],
+    summary="Nombre total d'offres d'emploi",
     description="Chaque champ est facultatif (champ vide = pas de filtre).",
 )
 def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
@@ -267,11 +275,15 @@ def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
 
 
 @app.get(
-    "/competence",
-    tags=['Table "Competence"'],
-    summary="Récupère les compétences (techniques, managériales...) demandées par les recruteurs",
+    "/criteres_recruteurs/competences",
+    tags=[tag_all_offres],
+    summary="Compétences (techniques, managériales...) demandées par les recruteurs",
     description=dedent("""
-    Compétences triées par code exigence (<b>E</b>xigé d'abord, puis <b>S</b>ouhaité), puis par nombre d'occurences (DESC), et enfin par code (ASC).\n
+    Compétences triées :
+      - par code exigence (<b>E</b>xigé d'abord, puis <b>S</b>ouhaité), puis
+      - par nombre d'occurences (DESC), puis
+      - par code (ASC)
+
     Chaque champ est facultatif (champ vide = pas de filtre).
     """),
 )
@@ -289,18 +301,21 @@ def get_competences(filters: dict = Depends(set_endpoints_filters)):
 
 
 @app.get(
-    "/experience",
-    tags=['Table "Experience"'],
-    summary="Récupère les expériences demandées par les recruteurs",
+    "/criteres_recruteurs/experiences",
+    tags=[tag_all_offres],
+    summary="Expériences (études, diplôme, années expérience...) demandées par les recruteurs",
     description=dedent("""\
-    Expériences triées par code exigence (<b>D</b>ébutant d'abord, <b>S</b>ouhaité, puis <b>E</b>xigé), puis par nombre d'occurences (DESC) et enfin par libellé (ASC).
+    Expériences triées :
+      - par code exigence (<b>D</b>ébutant d'abord, <b>S</b>ouhaité, puis <b>E</b>xigé), puis
+      - par nombre d'occurences (DESC), puis
+      - par libellé (ASC).
 
-    Peut répondre aux questions :</br>
-    - Est-ce qu'un diplôme est requis ?</br>
-    - Nombre d'années d'études minimum ?</br>
-    - Nombre d'années d'expérience minimum ?</br>
-    - Expérience requise dans tel domaine ou tel secteur ?</br>
-    - Expérience requis sur un poste similaire ?</br>
+    Peut répondre aux questions :
+    - Est-ce qu'un diplôme est requis ?
+    - Nombre d'années d'études minimum ?
+    - Nombre d'années d'expérience minimum ?
+    - Expérience requise dans tel domaine ou tel secteur ?
+    - Expérience requis sur un poste similaire ?
     - etc...
 
     Chaque champ est facultatif (champ vide = pas de filtre).
@@ -315,6 +330,79 @@ def get_experiences(filters: dict = Depends(set_endpoints_filters)):
     truncated_result = [(row[0], row[1], row[2][:60] if row[2] else row[2], row[3]) for row in result]
 
     table = tabulate(truncated_result, headers=["nb occurences", "libelle", "commentaire", "code exigence"], tablefmt="psql").replace("'", " ")
+    # note : on remplace les guillemets simples parce que ce qui se trouve entre 2 guillemets simples est écrit en vert sur Open API
+
+    return Response(content=table, media_type="text/plain")
+
+
+@app.get(
+    "/criteres_recruteurs/qualites_professionnelles",
+    tags=[tag_all_offres],
+    summary="Qualités professionnelles demandées par les recruteurs",
+    description=dedent("""\
+    Qualités professionnelles triées par nombre d'occurences (DESC).
+
+    Chaque champ est facultatif (champ vide = pas de filtre).
+    """),
+)
+def get_qualites_professionnelles(filters: dict = Depends(set_endpoints_filters)):
+    sql_file_directory_part_2 = os.path.join("03_table_QualiteProfessionnelle", "qualites_professionnelles.pgsql")
+
+    result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
+
+    # tronquer la colonne "libelle" à 60 caractères pour chaque ligne, sinon le tableau s'affichera mal sur Open API
+    truncated_result = [(row[0], row[1][:60] if row[1] else row[1]) for row in result]
+
+    table = tabulate(truncated_result, headers=["nb occurences", "qualité professionnelle"], tablefmt="psql").replace("'", " ")
+    # note : on remplace les guillemets simples parce que ce qui se trouve entre 2 guillemets simples est écrit en vert sur Open API
+
+    return Response(content=table, media_type="text/plain")
+
+
+@app.get(
+    "/criteres_recruteurs/qualifications",
+    tags=[tag_all_offres],
+    summary="Niveaux de qualification professionnelle demandées par les recruteurs",
+    description=dedent("""\
+    Qualifications triées par nombre d'occurences (DESC).
+
+    Chaque champ est facultatif (champ vide = pas de filtre).
+    """),
+)
+def get_qualifications(filters: dict = Depends(set_endpoints_filters)):
+    sql_file_directory_part_2 = os.path.join("04_table_Qualification", "qualifications.pgsql")
+    result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
+
+    # tronquer la colonne "libelle" à 60 caractères pour chaque ligne, sinon le tableau s'affichera mal sur Open API
+    truncated_result = [(row[0], row[1][:60] if row[1] else row[1]) for row in result]
+
+    table = tabulate(truncated_result, headers=["nb occurences", "qualification"], tablefmt="psql").replace("'", " ")
+    # note : on remplace les guillemets simples parce que ce qui se trouve entre 2 guillemets simples est écrit en vert sur Open API
+
+    return Response(content=table, media_type="text/plain")
+
+
+@app.get(
+    "/criteres_recruteurs/formations",
+    tags=[tag_all_offres],
+    summary="Formations (domaines, nombre d'années d'études) demandées par les recruteurs",
+    description=dedent("""\
+    Formations triées :
+      - par nombre d'occurences (DESC), puis
+      - par code (ASC), puis
+      - par niveau (ASC)
+
+    Chaque champ est facultatif (champ vide = pas de filtre).
+    """),
+)
+def get_formations(filters: dict = Depends(set_endpoints_filters)):
+    sql_file_directory_part_2 = os.path.join("05_table_Formation", "formations.pgsql")
+    result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
+
+    # tronquer la colonne "libelle" à 60 caractères pour chaque ligne, sinon le tableau s'affichera mal sur Open API
+    truncated_result = [(row[0], row[1], row[2], row[3], row[4]) for row in result]
+
+    table = tabulate(truncated_result, headers=["nb occurences", "code", "domaine", "niveau", "commentaire", "code exigence"], tablefmt="psql").replace("'", " ")
     # note : on remplace les guillemets simples parce que ce qui se trouve entre 2 guillemets simples est écrit en vert sur Open API
 
     return Response(content=table, media_type="text/plain")
