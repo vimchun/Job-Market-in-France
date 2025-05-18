@@ -44,6 +44,23 @@ Si `enable_secondary_routes = 0`, les routes "secondaires" suivantes seront dés
 """
 
 
+def strip_accents(text):
+    """
+    Fonction qui remplace un char avec accent avec son équivalent sans accent.
+    Sert ici pour pouvoir trier sans tenir compte des accents.
+      (car "Île-de-France" est placé après "Occitanie" par exemple, mais on ne veut pas que ce soit le cas)
+    """
+    import unicodedata
+
+    return "".join(c for c in unicodedata.normalize("NFD", text) if unicodedata.category(c) != "Mn")
+
+
+# print(
+#     strip_accents("Île-de-France"),  ##==> Ile-de-France (la fonction remplace les accents)
+#     strip_accents("Saint-Cyr-l'École"),  ##==> Saint-Cyr-l'Ecole
+# )
+# app = FastAPI(
+
 app = FastAPI(
     title="API sur les offres d'emploi chez France Travail",
     description=dedent("""
@@ -58,12 +75,12 @@ app = FastAPI(
             "name": tag_all_offres,
             "description": "aaa",
         },
+        # {
+        #     "name": "Pour une offre d'emploi",
+        #     "description": "aaa2",
+        # },
         {
-            "name": "Pour une offre d'emploi",
-            "description": "aaa2",
-        },
-        {
-            "name": "Mapping nom<>code régional, départemental, postal, communal",
+            "name": tag_location_mapping_name_code,
             "description": "Donne la correspondance entre le <b>nom</b> d'une région et son <b>code</b><br> &nbsp; (idem pour les départements, les villes et les communes)",
         },
     ],
@@ -82,16 +99,17 @@ location_csv_file = os.path.join(
 
 df_location = pd.read_csv(
     location_csv_file,
-    dtype={
-        "code_insee": str,
-        "nom_commune": str,
-        "code_postal": str,
-        "nom_ville": str,
-        "code_departement": str,
-        "nom_departement": str,
-        "code_region": str,
-        "nom_region": str,
-    },
+    dtype=str,  # toutes les colonnes à str
+    # dtype={
+    #     "code_insee": str,
+    #     "nom_commune": str,
+    #     "code_postal": str,
+    #     "nom_ville": str,
+    #     "code_departement": str,
+    #     "nom_departement": str,
+    #     "code_region": str,
+    #     "nom_region": str,
+    # },
 )
 
 
@@ -330,6 +348,20 @@ def get_qualites_professionnelles(filters: dict = Depends(set_endpoints_filters)
     truncated_result = [(row[0], row[1][:60] if row[1] else row[1]) for row in result]
     table = tabulate(truncated_result, headers=["nb occurences", "qualité professionnelle"], tablefmt="psql").replace("'", " ")
 
+    return Response(content=table, media_type="text/plain")
+
+
+@app.get(
+    "/mapping_geographique/region",
+    tags=[tag_location_mapping_name_code],
+    summary="Mapping entre le nom de la région et de son code",
+)
+def get_mapping_region():
+    df_region = df_location[["nom_region", "code_region"]].drop_duplicates().copy()
+    df_region["nom_region_sans_accent"] = df_region["nom_region"].apply(strip_accents)
+    df_region_sorted = df_region.sort_values(by="nom_region_sans_accent")[["nom_region", "code_region"]]
+
+    table = tabulate(df_region_sorted.values.tolist(), headers=["Nom région", "Code région"], tablefmt="psql")
     return Response(content=table, media_type="text/plain")
 
 
