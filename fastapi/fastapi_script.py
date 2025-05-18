@@ -1,6 +1,12 @@
 # cd fastapi/  &&  uvicorn fastapi_script:app --reload
 # cd fastapi/  &&  uvicorn fastapi_script:app --reload  --log-level debug
 
+"""
+todo :
+supprimer les param noms : région département ville
+créer des routes pour avoir le mapping nom - code
+"""
+
 import os
 
 from datetime import datetime
@@ -20,6 +26,9 @@ init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
 
 tag_all_offres = "Pour toutes les offres d'emploi"
+tag_location_mapping_name_code = "Mapping nom <> code région, département, ville"
+
+message_on_endpoints_about_fields = "<u>Paramètres :</u> chaque champ est facultatif (champ vide = pas de filtre)."
 
 enable_secondary_routes = 0
 
@@ -37,7 +46,13 @@ Si `enable_secondary_routes = 0`, les routes "secondaires" suivantes seront dés
 
 app = FastAPI(
     title="API sur les offres d'emploi chez France Travail",
-    description="description à remplir",
+    description=dedent("""
+    - <u> Notes concernant les paramètres de localisation : </u>
+      <br> <br>
+      - Pour connaître `code_region`, `code_departement`, `code_postal` ou `code_insee`, lancer la requête associée sous le tag `{tag_location_mapping_name_code}`.
+      <br> <br>
+      - Un code postal peut avoir plusieurs code insee.
+        - Par exemple le code postal 78310 est partagé entre la commune de Coignières (code insee 78168), et la commune de Maurepas (code insee 78383)."""),
     openapi_tags=[
         {
             "name": tag_all_offres,
@@ -47,18 +62,10 @@ app = FastAPI(
             "name": "Pour une offre d'emploi",
             "description": "aaa2",
         },
-        # {"name": 'Table "Offre_Emploi"'},
-        # {"name": 'Table "Competence"'},
-        # {"name": 'Table "Experience"'},
-        # {"name": 'Table "Qualite_Professionnelle"'},
-        # {"name": 'Table "Qualification"'},
-        # {"name": 'Table "Formation"'},
-        # {"name": 'Table "Permis_Conduire"'},
-        # {"name": 'Table "Langue"'},
-        # {"name": 'Table "Localisation"'},
-        # {"name": 'Table "Entreprise"'},
-        # {"name": 'Table "Description_Offre"'},
-        # {"name": 'Table "Contrat"'},
+        {
+            "name": "Mapping nom<>code régional, départemental, postal, communal",
+            "description": "Donne la correspondance entre le <b>nom</b> d'une région et son <b>code</b><br> &nbsp; (idem pour les départements, les villes et les communes)",
+        },
     ],
 )
 
@@ -75,8 +82,16 @@ location_csv_file = os.path.join(
 
 df_location = pd.read_csv(
     location_csv_file,
-    usecols=["code_region", "nom_region", "code_departement", "nom_departement", "code_postal", "nom_ville"],
-    dtype={"code_region": str, "nom_region": str, "code_departement": str, "nom_departement": str, "code_postal": str, "nom_ville": str},
+    dtype={
+        "code_insee": str,
+        "nom_commune": str,
+        "code_postal": str,
+        "nom_ville": str,
+        "code_departement": str,
+        "nom_departement": str,
+        "code_region": str,
+        "nom_region": str,
+    },
 )
 
 
@@ -85,26 +100,17 @@ def set_endpoints_filters(
     metier_data: Optional[str] = Query(
         default=None,
         description=dedent("""
-        <b>Filtrer sur les métiers "Data Engineer", "Data Analyst" ou "Data Scientist".</b>\n
+        Filtrer sur les métiers "Data Engineer", "Data Analyst" ou "Data Scientist".\n
         &nbsp; <i> Valeurs possibles : `DE`, `DA` ou `DS` </i>"""),
     ),
     date_creation_min: Optional[str] = Query(
         default=None,
-        description="<b>Filtrer par date de création des offres.</b>  <br> &nbsp; <i> Par exemple, les offres à partir du `2025-04-28` (format `YYYY-MM-DD`) </i>",
+        description="Filtrer par date de création des offres (au format `YYYY-MM-DD`).  <br> &nbsp; <i> Par exemple, les offres à partir du `2025-04-28` </i>",
     ),
-    code_region: Optional[List[str]] = Query(
-        default=None,
-        description=dedent("""\
-            <b>Filtrer sur le code de la région</b>. <i> Valeurs possibles :\n
-            &nbsp; `11`(Île-de-France),`24`(Centre-Val de Loire),`27`(Bourgogne-Franche-Comté),`28`(Normandie),`32`(Hauts-de-France),`44`(Grand Est),\n
-            &nbsp; `52`(Pays de la Loire),`53`(Bretagne),`75`(Nouvelle-Aquitaine),`76`(Occitanie),`84`(Auvergne-Rhône-Alpes),`93`(Provence-Alpes-Côte d'Azur) </i>\n
-            """),
-    ),
-    nom_region: Optional[List[str]] = Query(default=None, description="<b>Filtrer sur le nom de la région.</b>"),
-    code_departement: Optional[List[str]] = Query(default=None, description="<b>Filtrer sur le code du département.</b>"),
-    nom_departement: Optional[List[str]] = Query(default=None, description="<b>Filtrer sur le nom du département.</b>"),
-    code_postal: Optional[List[str]] = Query(default=None, description="<b>Filtrer sur le code postal.</b>"),
-    nom_ville: Optional[List[str]] = Query(default=None, description="<b>Filtrer sur le nom de la ville.</b>"),
+    code_region: Optional[List[str]] = Query(default=None, description="Filtrer sur le code de la région."),
+    code_departement: Optional[List[str]] = Query(default=None, description="Filtrer sur le code du département."),
+    code_postal: Optional[List[str]] = Query(default=None, description="Filtrer sur le code postal."),
+    code_insee: Optional[List[str]] = Query(default=None, description="Filtrer sur le code insee."),
 ):
     # Validation de `metier_data`
     allowed_metier_data = {"DE", "DA", "DS", None}  # set
@@ -125,23 +131,11 @@ def set_endpoints_filters(
         if invalid_codes_region:
             raise HTTPException(status_code=400, detail=f"Les codes région {invalid_codes_region} sont invalides.")
 
-    # Validation de `nom_region`
-    if nom_region:
-        invalid_noms_region = [nr for nr in nom_region if nr not in df_location["nom_region"].values]
-        if invalid_noms_region:
-            raise HTTPException(status_code=400, detail=f"Les noms de région {invalid_noms_region} sont invalides.")
-
     # Validation de `code_departement`
     if code_departement:
         invalid_codes_departement = [cd for cd in code_departement if cd not in df_location["code_departement"].values]
         if invalid_codes_departement:
             raise HTTPException(status_code=400, detail=f"Les codes département {invalid_codes_departement} sont invalides.")
-
-    # Validation de `nom_departement`
-    if nom_departement:
-        invalid_noms_departement = [nr for nr in nom_departement if nr not in df_location["nom_departement"].values]
-        if invalid_noms_departement:
-            raise HTTPException(status_code=400, detail=f"Les noms de département {invalid_noms_departement} sont invalides.")
 
     # Validation de `code_postal`
     if code_postal:
@@ -149,21 +143,19 @@ def set_endpoints_filters(
         if invalid_codes_postal:
             raise HTTPException(status_code=400, detail=f"Les codes postaux {invalid_codes_postal} sont invalides.")
 
-    # Validation de `nom_ville`
-    if nom_ville:
-        invalid_noms_ville = [nv for nv in nom_ville if nv not in df_location["nom_ville"].values]
-        if invalid_noms_ville:
-            raise HTTPException(status_code=400, detail=f"Les noms de ville {invalid_noms_ville} sont invalides.")
+    # Validation de `code_insee`
+    if code_insee:
+        invalid_codes_insee = [ci for ci in code_insee if ci not in df_location["code_insee"].values]
+        if invalid_codes_insee:
+            raise HTTPException(status_code=400, detail=f"Les codes insee {invalid_codes_insee} sont invalides.")
 
     return {
         "metier_data": metier_data,
         "date_creation_min": date_creation_min,
         "code_region": code_region,
-        "nom_region": nom_region,
         "code_departement": code_departement,
-        "nom_departement": nom_departement,
         "code_postal": code_postal,
-        "nom_ville": nom_ville,
+        "code_insee": code_insee,
     }
 
 
@@ -173,11 +165,9 @@ def execute_modified_sql_request_with_filters(
     metier_data,
     date_creation_min,
     code_region,
-    nom_region,
     code_departement,
-    nom_departement,
     code_postal,
-    nom_ville,
+    code_insee,
     fetch="all",
 ):
     """
@@ -196,9 +186,9 @@ def execute_modified_sql_request_with_filters(
             sql_file_content = sql_file_content.replace("metier_data = 'placeholder_metier_data'", "1=1")
         else:
             sql_file_content = sql_file_content.replace("'placeholder_metier_data'", "%s")
-            print(f"avant : {params}")
-            params.append(metier_data)
-            print(f"après : {params}")
+            # print(f"avant : {params}")
+            # params.append(metier_data)
+            # print(f"après : {params}")
 
         # Filtrage par "date_creation_min"
         if date_creation_min is None:
@@ -215,14 +205,6 @@ def execute_modified_sql_request_with_filters(
             sql_file_content = sql_file_content.replace("placeholder_code_region", placeholders)
             params.extend(code_region)
 
-        # Filtrage par "nom_region"
-        if nom_region is None:
-            sql_file_content = sql_file_content.replace("AND nom_region IN (placeholder_nom_region)", "")
-        else:
-            placeholders = ", ".join(["%s"] * len(nom_region))
-            sql_file_content = sql_file_content.replace("placeholder_nom_region", placeholders)
-            params.extend(nom_region)
-
         # Filtrage par "code_departement"
         if code_departement is None:
             sql_file_content = sql_file_content.replace("AND code_departement IN (placeholder_code_departement)", "")
@@ -230,14 +212,6 @@ def execute_modified_sql_request_with_filters(
             placeholders = ", ".join(["%s"] * len(code_departement))
             sql_file_content = sql_file_content.replace("placeholder_code_departement", placeholders)
             params.extend(code_departement)
-
-        # Filtrage par "nom_departement"
-        if nom_departement is None:
-            sql_file_content = sql_file_content.replace("AND nom_departement IN (placeholder_nom_departement)", "")
-        else:
-            placeholders = ", ".join(["%s"] * len(nom_departement))
-            sql_file_content = sql_file_content.replace("placeholder_nom_departement", placeholders)
-            params.extend(nom_departement)
 
         # Filtrage par "code_postal"
         if code_postal is None:
@@ -247,13 +221,13 @@ def execute_modified_sql_request_with_filters(
             sql_file_content = sql_file_content.replace("placeholder_code_postal", placeholders)
             params.extend(code_postal)
 
-        # Filtrage par "nom_ville"
-        if nom_ville is None:
-            sql_file_content = sql_file_content.replace("AND nom_ville IN (placeholder_nom_ville)", "")
+        # Filtrage par "code_insee"
+        if code_insee is None:
+            sql_file_content = sql_file_content.replace("AND code_insee IN (placeholder_code_insee)", "")
         else:
-            placeholders = ", ".join(["%s"] * len(nom_ville))
-            sql_file_content = sql_file_content.replace("placeholder_nom_ville", placeholders)
-            params.extend(nom_ville)
+            placeholders = ", ".join(["%s"] * len(code_insee))
+            sql_file_content = sql_file_content.replace("placeholder_code_insee", placeholders)
+            params.extend(code_insee)
 
         modified_sql_file_content = sql_file_content
 
@@ -275,7 +249,7 @@ def execute_modified_sql_request_with_filters(
     "/statistiques/total_offres",
     tags=[tag_all_offres],
     summary="Nombre total d'offres d'emploi",
-    description="Chaque champ est facultatif (champ vide = pas de filtre).",
+    description=message_on_endpoints_about_fields,
 )
 def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
     sql_file_directory_part_2 = os.path.join("00_table_OffreEmploi", "total_offres.pgsql")
@@ -289,13 +263,14 @@ def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
     "/criteres_recruteurs/competences",
     tags=[tag_all_offres],
     summary="Compétences (techniques, managériales...) demandées par les recruteurs",
-    description=dedent("""
-    Compétences triées :
+    description=dedent(f"""
+    {message_on_endpoints_about_fields}
+
+    <u> Tri : </u>
       - par code exigence (<b>E</b>xigé d'abord, puis <b>S</b>ouhaité), puis
       - par nombre d'occurences (DESC), puis
       - par code (ASC)
 
-    Chaque champ est facultatif (champ vide = pas de filtre).
     """),
 )
 def get_competences(filters: dict = Depends(set_endpoints_filters)):
@@ -315,23 +290,21 @@ def get_competences(filters: dict = Depends(set_endpoints_filters)):
     "/criteres_recruteurs/experiences",
     tags=[tag_all_offres],
     summary="Expériences (études, diplôme, années expérience...) demandées par les recruteurs",
-    description=dedent("""\
-    Expériences triées :
+    description=dedent(f"""\
+    {message_on_endpoints_about_fields}
+
+    <u> Tri : </u>
       - par code exigence (<b>D</b>ébutant d'abord, <b>S</b>ouhaité, puis <b>E</b>xigé), puis
       - par nombre d'occurences (DESC), puis
       - par libellé (ASC).
 
-    Peut répondre aux questions :
-    - Est-ce qu'un diplôme est requis ?
-    - Nombre d'années d'études minimum ?
-    - Nombre d'années d'expérience minimum ?
-    - Expérience requise dans tel domaine ou tel secteur ?
-    - Expérience requis sur un poste similaire ?
-    - etc...
-
-    Chaque champ est facultatif (champ vide = pas de filtre).
+    <u> Peut répondre aux questions : </u>
+      - Nombre d'années d'études minimum ? Nombre d'années d'expérience minimum ?
+      - Expérience requise dans tel domaine ou tel secteur ? Expérience requis sur un poste similaire ?
+      - Est-ce qu'un diplôme est requis ? etc...
     """),
 )
+# Chaque champ est facultatif (champ vide = pas de filtre).
 def get_experiences(filters: dict = Depends(set_endpoints_filters)):
     sql_file_directory_part_2 = os.path.join("02_table_Experience", "experiences.pgsql")
     result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
@@ -345,10 +318,10 @@ def get_experiences(filters: dict = Depends(set_endpoints_filters)):
     "/criteres_recruteurs/qualites_professionnelles",
     tags=[tag_all_offres],
     summary="Qualités professionnelles demandées par les recruteurs",
-    description=dedent("""\
-    Qualités professionnelles triées par nombre d'occurences (DESC).
+    description=dedent(f"""\
+    {message_on_endpoints_about_fields}
 
-    Chaque champ est facultatif (champ vide = pas de filtre).
+    <u> Tri :</u> par nombre d'occurences (DESC).
     """),
 )
 def get_qualites_professionnelles(filters: dict = Depends(set_endpoints_filters)):
@@ -366,10 +339,10 @@ if enable_secondary_routes:
         "/criteres_recruteurs/qualifications",
         tags=[tag_all_offres],
         summary="Niveaux de qualification professionnelle demandés par les recruteurs",
-        description=dedent("""\
-        Qualifications triées par nombre d'occurences (DESC).
+        description=dedent(f"""\
+        {message_on_endpoints_about_fields}
 
-        Chaque champ est facultatif (champ vide = pas de filtre).
+        <u> Tri :</u> par nombre d'occurences (DESC).
         """),
     )
     def get_qualifications(filters: dict = Depends(set_endpoints_filters)):
@@ -384,14 +357,14 @@ if enable_secondary_routes:
         "/criteres_recruteurs/formations",
         tags=[tag_all_offres],
         summary="Formations (domaines, nombre d'années d'études) demandées par les recruteurs",
-        description=dedent("""\
-        Formations triées :
-        - par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis
-        - par nombre d'occurences (DESC), puis
-        - par code (ASC), puis
-        - par niveau (ASC)
+        description=dedent(f"""\
+        {message_on_endpoints_about_fields}
 
-        Chaque champ est facultatif (champ vide = pas de filtre).
+        <u> Tri : </u>
+          - par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis
+          - par nombre d'occurences (DESC), puis
+          - par code (ASC), puis
+          - par niveau (ASC)
         """),
     )
     def get_formations(filters: dict = Depends(set_endpoints_filters)):
@@ -405,13 +378,13 @@ if enable_secondary_routes:
         "/criteres_recruteurs/permis_conduire",
         tags=[tag_all_offres],
         summary="Permis de conduire demandés par les recruteurs",
-        description=dedent("""\
-        Permis de conduire triés :
-        - par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis
-        - par nombre d'occurences (DESC), puis
-        - par permis de conduire (ASC)
+        description=dedent(f"""\
+        {message_on_endpoints_about_fields}
 
-        Chaque champ est facultatif (champ vide = pas de filtre).
+        <u> Tri : </u>
+          - par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis
+          - par nombre d'occurences (DESC), puis
+          - par permis de conduire (ASC)
         """),
     )
     def get_permis_conduire(filters: dict = Depends(set_endpoints_filters)):
@@ -425,13 +398,13 @@ if enable_secondary_routes:
         "/criteres_recruteurs/langues",
         tags=[tag_all_offres],
         summary="Langues demandées par les recruteurs",
-        description=dedent("""\
-        Langues triés :
-        - par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis
-        - par nombre d'occurences (DESC), puis
-        - par langue (ASC)
+        description=dedent(f"""\
+        {message_on_endpoints_about_fields}
 
-        Chaque champ est facultatif (champ vide = pas de filtre).
+        <u> Tri : </u>
+          - par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis
+          - par nombre d'occurences (DESC), puis
+          - par langue (ASC)
         """),
     )
     def get_permis_conduire(filters: dict = Depends(set_endpoints_filters)):
