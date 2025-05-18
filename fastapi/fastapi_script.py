@@ -1,11 +1,6 @@
 # cd fastapi/  &&  uvicorn fastapi_script:app --reload
 # cd fastapi/  &&  uvicorn fastapi_script:app --reload  --log-level debug
 
-"""
-todo :
-supprimer les param noms : région département ville
-créer des routes pour avoir le mapping nom - code
-"""
 
 import os
 
@@ -26,7 +21,7 @@ init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
 
 tag_all_offres = "Pour toutes les offres d'emploi"
-tag_location_mapping_name_code = "Mapping nom <> code région, département, ville"
+tag_location_mapping_name_code = 'Mapping "nom <> code" pour les régions, départements, villes et communes'
 
 message_on_endpoints_about_fields = "<u>Paramètres :</u> chaque champ est facultatif (champ vide = pas de filtre)."
 
@@ -40,7 +35,7 @@ Si `enable_secondary_routes = 0`, les routes "secondaires" suivantes seront dés
   - "/criteres_recruteurs/permis_conduire",
   - "/criteres_recruteurs/langues",
 
-    (elles n'apportent pas d'information importante)
+    (elles n'apportent pas d'information importante, et polluent open api)
 """
 
 
@@ -66,22 +61,19 @@ def strip_accents(text):
 
 app = FastAPI(
     title="API sur les offres d'emploi chez France Travail",
-    description=dedent("""
+    description=dedent(f"""
     - <u> Notes concernant les paramètres de localisation : </u>
       <br> <br>
-      - Pour connaître `code_region`, `code_departement`, `code_postal` ou `code_insee`, lancer la requête associée sous le tag `{tag_location_mapping_name_code}`.
+      - Pour connaître `code_region`, `code_departement`, `code_postal` ou `code_insee` :
+        -  lancer la requête associée sous le tag `{tag_location_mapping_name_code}`.
       <br> <br>
-      - Un code postal peut avoir plusieurs code insee.
+      - Un code postal peut avoir plusieurs code insee :
         - Par exemple le code postal 78310 est partagé entre la commune de Coignières (code insee 78168), et la commune de Maurepas (code insee 78383)."""),
     openapi_tags=[
         {
             "name": tag_all_offres,
             "description": "aaa",
         },
-        # {
-        #     "name": "Pour une offre d'emploi",
-        #     "description": "aaa2",
-        # },
         {
             "name": tag_location_mapping_name_code,
             "description": "Donne la correspondance entre le <b>nom</b> d'une région et son <b>code</b><br> &nbsp; (idem pour les départements, les villes et les communes)",
@@ -374,17 +366,45 @@ def get_qualites_professionnelles(filters: dict = Depends(set_endpoints_filters)
     return Response(content=table, media_type="text/plain")
 
 
-@app.get(
-    "/mapping_geographique/region",
-    tags=[tag_location_mapping_name_code],
-    summary="Mapping entre le nom de la région et de son code",
-)
-def get_mapping_region():
-    df_region = df_location[["nom_region", "code_region"]].drop_duplicates().copy()
-    df_region["nom_region_sans_accent"] = df_region["nom_region"].apply(strip_accents)
-    df_region_sorted = df_region.sort_values(by="nom_region_sans_accent")[["nom_region", "code_region"]]
+def get_sorted_table_from_df(df, name, code):
+    """
+    Prend en entrée df_location, et deux de ses colonnes (nom+code) pour
+     retourner un tableau affichable en mode text/plain en response body de fastapi.
+    """
+    df_copy = df[[name, code]].drop_duplicates().copy()
+    df_copy["nom_sans_accent"] = df_copy[name].apply(strip_accents)
 
-    table = tabulate(df_region_sorted.values.tolist(), headers=["Nom région", "Code région"], tablefmt="psql")
+    # Forcer le code postal sur 5 digits pour avoir 02300 au lieu de 2300 (on a 2300 sur open api, mais pas en sortie de pandas et tabulate...)
+    #  (pas de pb pour le code insee bizarrement)
+    if code == "code_postal":
+        df_copy[code] = df_copy[code].astype(str).str.zfill(5)
+
+    df_sorted = df_copy.sort_values(by="nom_sans_accent")[[name, code]]
+
+    return tabulate(df_sorted.values.tolist(), headers=[name, code], tablefmt="psql")
+
+
+@app.get("/mapping_nom_code/region", tags=[tag_location_mapping_name_code], summary="Mapping entre le nom de la région et de son code")
+def get_mapping_region():
+    table = get_sorted_table_from_df(df_location, "nom_region", "code_region")
+    return Response(content=table, media_type="text/plain")
+
+
+@app.get("/mapping_nom_code/departement", tags=[tag_location_mapping_name_code], summary="Mapping entre le nom du département et de son code")
+def get_mapping_departement():
+    table = get_sorted_table_from_df(df_location, "nom_departement", "code_departement")
+    return Response(content=table, media_type="text/plain")
+
+
+@app.get("/mapping_nom_code/ville", tags=[tag_location_mapping_name_code], summary="Mapping entre le nom du ville et de son code")
+def get_mapping_ville():
+    table = get_sorted_table_from_df(df_location, "nom_ville", "code_postal")
+    return Response(content=table, media_type="text/plain")
+
+
+@app.get("/mapping_nom_code/commune", tags=[tag_location_mapping_name_code], summary="Mapping entre le nom de la commune et de son code")
+def get_mapping_commune():
+    table = get_sorted_table_from_df(df_location, "nom_commune", "code_insee")
     return Response(content=table, media_type="text/plain")
 
 
