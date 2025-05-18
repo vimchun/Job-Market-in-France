@@ -54,12 +54,15 @@ def strip_accents(text):
 
     return "".join(c for c in unicodedata.normalize("NFD", text) if unicodedata.category(c) != "Mn")
 
+    """
+    Ainsi, on aura :
 
-# print(
-#     strip_accents("Île-de-France"),  ##==> Ile-de-France (la fonction remplace les accents)
-#     strip_accents("Saint-Cyr-l'École"),  ##==> Saint-Cyr-l'Ecole
-# )
-# app = FastAPI(
+    print(
+        strip_accents("Île-de-France"),  ##==> Ile-de-France (la fonction remplace les accents)
+        strip_accents("Saint-Cyr-l'École"),  ##==> Saint-Cyr-l'Ecole
+    )
+    """
+
 
 app = FastAPI(
     title="API sur les offres d'emploi chez France Travail",
@@ -84,6 +87,8 @@ app = FastAPI(
             "description": "Donne la correspondance entre le <b>nom</b> d'une région et son <b>code</b><br> &nbsp; (idem pour les départements, les villes et les communes)",
         },
     ],
+    # pour désactiver la coloration syntaxique sinon dans une réponse de type text/plain, on peut avoir du blanc, du rouge, du vert, du orange suivant les chars...
+    swagger_ui_parameters={"syntaxHighlight": False},  # https://fastapi.tiangolo.com/ru/how-to/configure-swagger-ui/#disable-syntax-highlighting
 )
 
 
@@ -204,9 +209,6 @@ def execute_modified_sql_request_with_filters(
             sql_file_content = sql_file_content.replace("metier_data = 'placeholder_metier_data'", "1=1")
         else:
             sql_file_content = sql_file_content.replace("'placeholder_metier_data'", "%s")
-            # print(f"avant : {params}")
-            # params.append(metier_data)
-            # print(f"après : {params}")
 
         # Filtrage par "date_creation_min"
         if date_creation_min is None:
@@ -274,7 +276,7 @@ def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
     result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="one")
     total_offres = result[0] if result else 0
 
-    return Response(content=f"total: {total_offres:,} offres".replace(",", " "), media_type="text/plain")  # espace pour séparer les milliers
+    return Response(content=f"total: {total_offres:,} offres", media_type="text/plain")  # espace pour séparer les milliers
 
 
 @app.get(
@@ -298,8 +300,7 @@ def get_competences(filters: dict = Depends(set_endpoints_filters)):
     # tronquer la colonne "libelle" à 60 caractères pour chaque ligne, sinon le tableau s'affichera mal sur Open API
     truncated_result = [(row[0], row[1], row[2][:60] if row[2] else row[2], row[3]) for row in result]
 
-    table = tabulate(truncated_result, headers=["nb occurences", "code", "libelle", "code exigence"], tablefmt="psql").replace("'", " ")
-    # note : on remplace les guillemets simples parce que ce qui se trouve entre 2 guillemets simples est écrit en vert sur Open API
+    table = tabulate(truncated_result, headers=["nb occurences", "code", "libelle", "code exigence"], tablefmt="psql")
 
     return Response(content=table, media_type="text/plain")
 
@@ -327,7 +328,7 @@ def get_experiences(filters: dict = Depends(set_endpoints_filters)):
     sql_file_directory_part_2 = os.path.join("02_table_Experience", "experiences.pgsql")
     result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
     truncated_result = [(row[0], row[1], row[2][:60] if row[2] else row[2], row[3]) for row in result]
-    table = tabulate(truncated_result, headers=["nb occurences", "libelle", "commentaire", "code exigence"], tablefmt="psql").replace("'", " ")
+    table = tabulate(truncated_result, headers=["nb occurences", "libelle", "commentaire", "code exigence"], tablefmt="psql")
 
     return Response(content=table, media_type="text/plain")
 
@@ -346,7 +347,7 @@ def get_qualites_professionnelles(filters: dict = Depends(set_endpoints_filters)
     sql_file_directory_part_2 = os.path.join("03_table_QualiteProfessionnelle", "qualites_professionnelles.pgsql")
     result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
     truncated_result = [(row[0], row[1][:60] if row[1] else row[1]) for row in result]
-    table = tabulate(truncated_result, headers=["nb occurences", "qualité professionnelle"], tablefmt="psql").replace("'", " ")
+    table = tabulate(truncated_result, headers=["nb occurences", "qualité professionnelle"], tablefmt="psql")
 
     return Response(content=table, media_type="text/plain")
 
@@ -381,7 +382,7 @@ if enable_secondary_routes:
         sql_file_directory_part_2 = os.path.join("04_table_Qualification", "qualifications.pgsql")
         result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
         truncated_result = [(row[0], row[1][:60] if row[1] else row[1]) for row in result]
-        table = tabulate(truncated_result, headers=["nb occurences", "qualification"], tablefmt="psql").replace("'", " ")
+        table = tabulate(truncated_result, headers=["nb occurences", "qualification"], tablefmt="psql")
 
         return Response(content=table, media_type="text/plain")
 
@@ -402,7 +403,7 @@ if enable_secondary_routes:
     def get_formations(filters: dict = Depends(set_endpoints_filters)):
         sql_file_directory_part_2 = os.path.join("05_table_Formation", "formations.pgsql")
         result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
-        table = tabulate(result, headers=["nb occurences", "code", "domaine", "niveau", "commentaire", "code exigence"], tablefmt="psql").replace("'", " ")
+        table = tabulate(result, headers=["nb occurences", "code", "domaine", "niveau", "commentaire", "code exigence"], tablefmt="psql")
 
         return Response(content=table, media_type="text/plain")
 
@@ -422,7 +423,7 @@ if enable_secondary_routes:
     def get_permis_conduire(filters: dict = Depends(set_endpoints_filters)):
         sql_file_directory_part_2 = os.path.join("06_table_PermisConduire", "permis_conduire.pgsql")
         result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
-        table = tabulate(result, headers=["nb occurences", "permis de conduire", "code exigence"], tablefmt="psql").replace("'", " ")
+        table = tabulate(result, headers=["nb occurences", "permis de conduire", "code exigence"], tablefmt="psql")
 
         return Response(content=table, media_type="text/plain")
 
@@ -442,6 +443,6 @@ if enable_secondary_routes:
     def get_permis_conduire(filters: dict = Depends(set_endpoints_filters)):
         sql_file_directory_part_2 = os.path.join("07_table_Langue", "langues.pgsql")
         result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
-        table = tabulate(result, headers=["nb occurences", "langue", "code exigence"], tablefmt="psql").replace("'", " ")
+        table = tabulate(result, headers=["nb occurences", "langue", "code exigence"], tablefmt="psql")
 
         return Response(content=table, media_type="text/plain")
