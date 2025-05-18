@@ -25,6 +25,13 @@ tag_location_mapping_name_code = 'Mapping "nom <> code" pour les régions, dépa
 
 message_on_endpoints_about_fields = "<u>Paramètres :</u> chaque champ est facultatif (champ vide = pas de filtre)."
 
+description_metier_data = dedent("""
+        Filtrer sur les métiers "Data Engineer", "Data Analyst" ou "Data Scientist".\n
+        &nbsp; <i> Valeurs possibles : `DE`, `DA` ou `DS` </i>""")
+
+description_empty_field = "_(champ vide = pas de filtre)_"
+
+
 enable_secondary_routes = 0
 
 """
@@ -37,6 +44,34 @@ Si `enable_secondary_routes = 0`, les routes "secondaires" suivantes seront dés
 
     (elles n'apportent pas d'information importante, et polluent open api)
 """
+
+
+###### définitions de fonctions()
+
+
+def replace_tab_by_space(text):
+    """
+    Cette mini fonction est utilisée pour remplacer les tabulations par des espaces normales,
+     sinon on se retrouve lorsqu'on veut afficher un tableau avec des lignes inesthétiques de ce genre :
+
+    +-----------------+--------+--------------------------------------------------------------+-----------------+
+    |   nb occurences |   code | libelle                                                      | code exigence   |
+    |-----------------+--------+--------------------------------------------------------------+-----------------|
+    |               1 |        | Connaissances en base de données                             | E               |
+    |               1 |        | Benchmark                                                    | E               |
+    |               1 |        | -	Pratique C++,Python                                                              | E               |   <== pas esthétique
+    |               1 |        | azure                                                        | E               |
+    |               1 |        | -	Familier de Linux, QL, bus Can, windows visio                                                              | E               |   <== pas esthétique
+    |               1 |        | Intégration et de déploiement continu                        | E               |
+    |               1 |        | o	Parfaite connaissance du modèle OSI et particuli                                                              | E               |   <== pas esthétique
+    |               1 |        | Scripting                                                    | E               |
+    |               1 |        | PHP                                                          | E               |
+    |               1 |        | Capacité d'analyse / Esprit de synthèse                      | E               |
+    +-----------------+--------+--------------------------------------------------------------+-----------------+
+    """
+    import re
+
+    return re.sub(r"[\t]+", " ", text)  # Remplace tabulations par un espace
 
 
 def strip_accents(text):
@@ -112,12 +147,7 @@ df_location = pd.read_csv(
 
 # Fonction pour centraliser les filtres
 def set_endpoints_filters(
-    metier_data: Optional[str] = Query(
-        default=None,
-        description=dedent("""
-        Filtrer sur les métiers "Data Engineer", "Data Analyst" ou "Data Scientist".\n
-        &nbsp; <i> Valeurs possibles : `DE`, `DA` ou `DS` </i>"""),
-    ),
+    metier_data: Optional[str] = Query(default=None, description=description_metier_data),
     date_creation_min: Optional[str] = Query(
         default=None,
         description="Filtrer par date de création des offres (au format `YYYY-MM-DD`).  <br> &nbsp; <i> Par exemple, les offres à partir du `2025-04-28` </i>",
@@ -201,6 +231,7 @@ def execute_modified_sql_request_with_filters(
             sql_file_content = sql_file_content.replace("metier_data = 'placeholder_metier_data'", "1=1")
         else:
             sql_file_content = sql_file_content.replace("'placeholder_metier_data'", "%s")
+            params.append(metier_data)
 
         # Filtrage par "date_creation_min"
         if date_creation_min is None:
@@ -258,7 +289,7 @@ def execute_modified_sql_request_with_filters(
 
 
 @app.get(
-    "/statistiques/total_offres",
+    "/stats/total_offres",
     tags=[tag_all_offres],
     summary="Nombre total d'offres d'emploi",
     description=message_on_endpoints_about_fields,
@@ -268,32 +299,64 @@ def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
     result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="one")
     total_offres = result[0] if result else 0
 
-    return Response(content=f"total: {total_offres:,} offres", media_type="text/plain")  # espace pour séparer les milliers
+    return Response(content=f"total: {total_offres:,} offres".replace(",", " "), media_type="text/plain")  # espace pour séparer les milliers
 
 
-def replace_tab_by_space(text):
-    """
-    Cette mini fonction est utilisée pour remplacer les tabulations par des espaces normales,
-     sinon on se retrouve lorsqu'on veut afficher un tableau avec des lignes inesthétiques de ce genre :
+def fonction_local(pgsql_file, metier_data, localisation):
+    sql_file_directory_part_2 = os.path.join("08_table_Localisation", pgsql_file)
 
-    +-----------------+--------+--------------------------------------------------------------+-----------------+
-    |   nb occurences |   code | libelle                                                      | code exigence   |
-    |-----------------+--------+--------------------------------------------------------------+-----------------|
-    |               1 |        | Connaissances en base de données                             | E               |
-    |               1 |        | Benchmark                                                    | E               |
-    |               1 |        | -	Pratique C++,Python                                                              | E               |   <== pas esthétique
-    |               1 |        | azure                                                        | E               |
-    |               1 |        | -	Familier de Linux, QL, bus Can, windows visio                                                              | E               |   <== pas esthétique
-    |               1 |        | Intégration et de déploiement continu                        | E               |
-    |               1 |        | o	Parfaite connaissance du modèle OSI et particuli                                                              | E               |   <== pas esthétique
-    |               1 |        | Scripting                                                    | E               |
-    |               1 |        | PHP                                                          | E               |
-    |               1 |        | Capacité d'analyse / Esprit de synthèse                      | E               |
-    +-----------------+--------+--------------------------------------------------------------+-----------------+
-    """
-    import re
+    # with open(os.path.join(sql_file_directory_part_1, sql_file_directory_part_2), "r") as file:
+    with open(os.path.join(sql_file_directory_part_1, sql_file_directory_part_2), "r") as file:
+        sql_file_content = file.read()
 
-    return re.sub(r"[\t]+", " ", text)  # Remplace tabulations par un espace
+        params = []
+        # Filtrage par "metier_data"
+        if metier_data is None:
+            sql_file_content = sql_file_content.replace("metier_data = 'placeholder_metier_data'", "1=1")
+        else:
+            sql_file_content = sql_file_content.replace("'placeholder_metier_data'", "%s")
+            params.extend([metier_data] * 2)
+
+        modified_sql_file_content = sql_file_content
+
+        with psycopg2.connect(database="francetravail", host="localhost", user="mhh", password="mhh", port=5432) as conn:
+            with conn.cursor() as cursor:
+                print(f'\n{Fore.CYAN}===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :')
+                print(f"{Style.DIM}{modified_sql_file_content}")
+                print(f"{Fore.CYAN}===> paramètres :")
+                print(f"{Fore.CYAN}{Style.DIM}{params}")
+
+                try:
+                    cursor.execute(modified_sql_file_content, tuple(params))
+                    result = cursor.fetchall()
+                    result = [(row[0], row[1].replace("pourcent", "%"), row[2]) for row in result]
+                    # note : écrire % dans le fichier pgsql est problématique par rapport aux %s
+
+                except IndexError as e:
+                    raise ValueError(f"Nombre de paramètres insuffisant pour la requête SQL") from e
+
+                return tabulate(result, headers=["nb offres", "pourcentage", localisation], tablefmt="psql")
+
+
+@app.get("/stats/classement/region", tags=[tag_all_offres], summary="Classement des régions qui recrutent le plus", description="<u> Tri :</u> par nombre d'offres (DESC).")
+def get_regions_ranking(metier_data: Optional[str] = Query(default=None, description=description_metier_data + description_empty_field)):
+    table = fonction_local("classement_regions.pgsql", metier_data, "région")
+    return Response(content=table, media_type="text/plain")
+
+
+@app.get("/stats/classement/departement", tags=[tag_all_offres], summary="Classement des départements qui recrutent le plus (top 30)", description="<u> Tri :</u> par nombre d'offres (DESC).")
+def get_departements_ranking(metier_data: Optional[str] = Query(default=None, description=description_metier_data + description_empty_field)):
+    table = fonction_local("classement_departements.pgsql", metier_data, "département")
+    return Response(content=table, media_type="text/plain")
+
+
+@app.get("/stats/classement/ville", tags=[tag_all_offres], summary="Classement des villes qui recrutent le plus (top 30)", description="<u> Tri :</u> par nombre d'offres (DESC).")
+def get_villes_ranking(metier_data: Optional[str] = Query(default=None, description=description_metier_data + description_empty_field)):
+    table = fonction_local("classement_villes.pgsql", metier_data, "ville")
+    return Response(content=table, media_type="text/plain")
+
+
+##########################
 
 
 @app.get(
@@ -358,6 +421,17 @@ def get_experiences(filters: dict = Depends(set_endpoints_filters)):
     <u> Tri :</u> par nombre d'occurences (DESC).
     """),
 )
+def get_qualites_professionnelles(filters: dict = Depends(set_endpoints_filters)):
+    sql_file_directory_part_2 = os.path.join("03_table_QualiteProfessionnelle", "qualites_professionnelles.pgsql")
+    result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
+    table = tabulate(result, headers=["nb occurences", "qualité professionnelle"], tablefmt="psql")
+
+    return Response(content=table, media_type="text/plain")
+
+
+##################################
+
+
 def get_qualites_professionnelles(filters: dict = Depends(set_endpoints_filters)):
     sql_file_directory_part_2 = os.path.join("03_table_QualiteProfessionnelle", "qualites_professionnelles.pgsql")
     result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
