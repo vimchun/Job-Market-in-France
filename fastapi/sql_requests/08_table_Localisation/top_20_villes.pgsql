@@ -3,8 +3,8 @@ WITH total_offres AS (
         COUNT(*) AS total
     FROM
         descriptionoffre
-    WHERE
-        metier_data = 'placeholder_metier_data' -- placeholder which will be replaced on the FastAPI python script
+    -- WHERE
+        -- metier_data = 'placeholder_metier_data' -- placeholder which will be replaced on the FastAPI python script
         -- metier_data = 'DE' -- possible values : 'DE', 'DA' or 'DS' (if sql script is executed outside python script)
 )
     -- La CTE renvoie le nombre d'offres total pour 'DE', 'DA' ou 'DS' (constante)
@@ -25,5 +25,5 @@ WITH total_offres AS (
         , tof.total
     ORDER BY
         total_offres_ville DESC
-    LIMIT 15;
+    LIMIT 20;
 
