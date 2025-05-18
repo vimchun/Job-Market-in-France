@@ -21,6 +21,19 @@ init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
 tag_all_offres = "Pour toutes les offres d'emploi"
 
+enable_secondary_routes = 0
+
+"""
+Si `enable_secondary_routes = 0`, les routes "secondaires" suivantes seront désactivées :
+
+  - "/criteres_recruteurs/qualifications",
+  - "/criteres_recruteurs/formations",
+  - "/criteres_recruteurs/permis_conduire",
+  - "/criteres_recruteurs/langues",
+
+    (elles n'apportent pas d'information importante)
+"""
+
 
 app = FastAPI(
     title="API sur les offres d'emploi chez France Travail",
@@ -347,84 +360,83 @@ def get_qualites_professionnelles(filters: dict = Depends(set_endpoints_filters)
     return Response(content=table, media_type="text/plain")
 
 
-@app.get(
-    "/criteres_recruteurs/qualifications",
-    tags=[tag_all_offres],
-    summary="Niveaux de qualification professionnelle demandées par les recruteurs",
-    description=dedent("""\
-    Qualifications triées par nombre d'occurences (DESC).
+if enable_secondary_routes:
 
-    Chaque champ est facultatif (champ vide = pas de filtre).
-    """),
-)
-def get_qualifications(filters: dict = Depends(set_endpoints_filters)):
-    sql_file_directory_part_2 = os.path.join("04_table_Qualification", "qualifications.pgsql")
-    result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
-    truncated_result = [(row[0], row[1][:60] if row[1] else row[1]) for row in result]
-    table = tabulate(truncated_result, headers=["nb occurences", "qualification"], tablefmt="psql").replace("'", " ")
+    @app.get(
+        "/criteres_recruteurs/qualifications",
+        tags=[tag_all_offres],
+        summary="Niveaux de qualification professionnelle demandés par les recruteurs",
+        description=dedent("""\
+        Qualifications triées par nombre d'occurences (DESC).
 
-    return Response(content=table, media_type="text/plain")
+        Chaque champ est facultatif (champ vide = pas de filtre).
+        """),
+    )
+    def get_qualifications(filters: dict = Depends(set_endpoints_filters)):
+        sql_file_directory_part_2 = os.path.join("04_table_Qualification", "qualifications.pgsql")
+        result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
+        truncated_result = [(row[0], row[1][:60] if row[1] else row[1]) for row in result]
+        table = tabulate(truncated_result, headers=["nb occurences", "qualification"], tablefmt="psql").replace("'", " ")
 
+        return Response(content=table, media_type="text/plain")
 
-@app.get(
-    "/criteres_recruteurs/formations",
-    tags=[tag_all_offres],
-    summary="Formations (domaines, nombre d'années d'études) demandées par les recruteurs",
-    description=dedent("""\
-    Formations triées :
-      - par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis
-      - par nombre d'occurences (DESC), puis
-      - par code (ASC), puis
-      - par niveau (ASC)
+    @app.get(
+        "/criteres_recruteurs/formations",
+        tags=[tag_all_offres],
+        summary="Formations (domaines, nombre d'années d'études) demandées par les recruteurs",
+        description=dedent("""\
+        Formations triées :
+        - par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis
+        - par nombre d'occurences (DESC), puis
+        - par code (ASC), puis
+        - par niveau (ASC)
 
-    Chaque champ est facultatif (champ vide = pas de filtre).
-    """),
-)
-def get_formations(filters: dict = Depends(set_endpoints_filters)):
-    sql_file_directory_part_2 = os.path.join("05_table_Formation", "formations.pgsql")
-    result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
-    table = tabulate(result, headers=["nb occurences", "code", "domaine", "niveau", "commentaire", "code exigence"], tablefmt="psql").replace("'", " ")
+        Chaque champ est facultatif (champ vide = pas de filtre).
+        """),
+    )
+    def get_formations(filters: dict = Depends(set_endpoints_filters)):
+        sql_file_directory_part_2 = os.path.join("05_table_Formation", "formations.pgsql")
+        result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
+        table = tabulate(result, headers=["nb occurences", "code", "domaine", "niveau", "commentaire", "code exigence"], tablefmt="psql").replace("'", " ")
 
-    return Response(content=table, media_type="text/plain")
+        return Response(content=table, media_type="text/plain")
 
+    @app.get(
+        "/criteres_recruteurs/permis_conduire",
+        tags=[tag_all_offres],
+        summary="Permis de conduire demandés par les recruteurs",
+        description=dedent("""\
+        Permis de conduire triés :
+        - par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis
+        - par nombre d'occurences (DESC), puis
+        - par permis de conduire (ASC)
 
-@app.get(
-    "/criteres_recruteurs/permis_conduire",
-    tags=[tag_all_offres],
-    summary="Permis de conduire demandées par les recruteurs",
-    description=dedent("""\
-    Permis de conduire triés :
-      - par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis
-      - par nombre d'occurences (DESC)
-      - par  (ASC)
+        Chaque champ est facultatif (champ vide = pas de filtre).
+        """),
+    )
+    def get_permis_conduire(filters: dict = Depends(set_endpoints_filters)):
+        sql_file_directory_part_2 = os.path.join("06_table_PermisConduire", "permis_conduire.pgsql")
+        result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
+        table = tabulate(result, headers=["nb occurences", "permis de conduire", "code exigence"], tablefmt="psql").replace("'", " ")
 
-    Chaque champ est facultatif (champ vide = pas de filtre).
-    """),
-)
-def get_permis_conduire(filters: dict = Depends(set_endpoints_filters)):
-    sql_file_directory_part_2 = os.path.join("06_table_PermisConduire", "permis_conduire.pgsql")
-    result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
-    table = tabulate(result, headers=["nb occurences", "permis de conduire", "code exigence"], tablefmt="psql").replace("'", " ")
+        return Response(content=table, media_type="text/plain")
 
-    return Response(content=table, media_type="text/plain")
+    @app.get(
+        "/criteres_recruteurs/langues",
+        tags=[tag_all_offres],
+        summary="Langues demandées par les recruteurs",
+        description=dedent("""\
+        Langues triés :
+        - par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis
+        - par nombre d'occurences (DESC), puis
+        - par langue (ASC)
 
+        Chaque champ est facultatif (champ vide = pas de filtre).
+        """),
+    )
+    def get_permis_conduire(filters: dict = Depends(set_endpoints_filters)):
+        sql_file_directory_part_2 = os.path.join("07_table_Langue", "langues.pgsql")
+        result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
+        table = tabulate(result, headers=["nb occurences", "langue", "code exigence"], tablefmt="psql").replace("'", " ")
 
-@app.get(
-    "/criteres_recruteurs/langues",
-    tags=[tag_all_offres],
-    summary="Langues demandées par les recruteurs",
-    description=dedent("""\
-    Langues triés :
-      - par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis
-      - par nombre d'occurences (DESC)
-      - par langue (ASC)
-
-    Chaque champ est facultatif (champ vide = pas de filtre).
-    """),
-)
-def get_permis_conduire(filters: dict = Depends(set_endpoints_filters)):
-    sql_file_directory_part_2 = os.path.join("07_table_Langue", "langues.pgsql")
-    result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
-    table = tabulate(result, headers=["nb occurences", "langue", "code exigence"], tablefmt="psql").replace("'", " ")
-
-    return Response(content=table, media_type="text/plain")
+        return Response(content=table, media_type="text/plain")
