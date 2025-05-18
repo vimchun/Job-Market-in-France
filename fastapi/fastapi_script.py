@@ -279,6 +279,31 @@ def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
     return Response(content=f"total: {total_offres:,} offres", media_type="text/plain")  # espace pour séparer les milliers
 
 
+def replace_tab_by_space(text):
+    """
+    Cette mini fonction est utilisée pour remplacer les tabulations par des espaces normales,
+     sinon on se retrouve lorsqu'on veut afficher un tableau avec des lignes inesthétiques de ce genre :
+
+    +-----------------+--------+--------------------------------------------------------------+-----------------+
+    |   nb occurences |   code | libelle                                                      | code exigence   |
+    |-----------------+--------+--------------------------------------------------------------+-----------------|
+    |               1 |        | Connaissances en base de données                             | E               |
+    |               1 |        | Benchmark                                                    | E               |
+    |               1 |        | -	Pratique C++,Python                                                              | E               |   <== pas esthétique
+    |               1 |        | azure                                                        | E               |
+    |               1 |        | -	Familier de Linux, QL, bus Can, windows visio                                                              | E               |   <== pas esthétique
+    |               1 |        | Intégration et de déploiement continu                        | E               |
+    |               1 |        | o	Parfaite connaissance du modèle OSI et particuli                                                              | E               |   <== pas esthétique
+    |               1 |        | Scripting                                                    | E               |
+    |               1 |        | PHP                                                          | E               |
+    |               1 |        | Capacité d'analyse / Esprit de synthèse                      | E               |
+    +-----------------+--------+--------------------------------------------------------------+-----------------+
+    """
+    import re
+
+    return re.sub(r"[\t]+", " ", text)  # Remplace tabulations par un espace
+
+
 @app.get(
     "/criteres_recruteurs/competences",
     tags=[tag_all_offres],
@@ -297,8 +322,7 @@ def get_competences(filters: dict = Depends(set_endpoints_filters)):
     sql_file_directory_part_2 = os.path.join("01_table_Competence", "competences.pgsql")
     result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
 
-    # tronquer la colonne "libelle" à 60 caractères pour chaque ligne, sinon le tableau s'affichera mal sur Open API
-    truncated_result = [(row[0], row[1], row[2][:60] if row[2] else row[2], row[3]) for row in result]
+    truncated_result = [(row[0], row[1], replace_tab_by_space(row[2][:120]), row[3]) for row in result]
 
     table = tabulate(truncated_result, headers=["nb occurences", "code", "libelle", "code exigence"], tablefmt="psql")
 
@@ -327,8 +351,7 @@ def get_competences(filters: dict = Depends(set_endpoints_filters)):
 def get_experiences(filters: dict = Depends(set_endpoints_filters)):
     sql_file_directory_part_2 = os.path.join("02_table_Experience", "experiences.pgsql")
     result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
-    truncated_result = [(row[0], row[1], row[2][:60] if row[2] else row[2], row[3]) for row in result]
-    table = tabulate(truncated_result, headers=["nb occurences", "libelle", "commentaire", "code exigence"], tablefmt="psql")
+    table = tabulate(result, headers=["nb occurences", "libelle", "commentaire", "code exigence"], tablefmt="psql")
 
     return Response(content=table, media_type="text/plain")
 
@@ -346,8 +369,7 @@ def get_experiences(filters: dict = Depends(set_endpoints_filters)):
 def get_qualites_professionnelles(filters: dict = Depends(set_endpoints_filters)):
     sql_file_directory_part_2 = os.path.join("03_table_QualiteProfessionnelle", "qualites_professionnelles.pgsql")
     result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
-    truncated_result = [(row[0], row[1][:60] if row[1] else row[1]) for row in result]
-    table = tabulate(truncated_result, headers=["nb occurences", "qualité professionnelle"], tablefmt="psql")
+    table = tabulate(result, headers=["nb occurences", "qualité professionnelle"], tablefmt="psql")
 
     return Response(content=table, media_type="text/plain")
 
@@ -381,8 +403,7 @@ if enable_secondary_routes:
     def get_qualifications(filters: dict = Depends(set_endpoints_filters)):
         sql_file_directory_part_2 = os.path.join("04_table_Qualification", "qualifications.pgsql")
         result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
-        truncated_result = [(row[0], row[1][:60] if row[1] else row[1]) for row in result]
-        table = tabulate(truncated_result, headers=["nb occurences", "qualification"], tablefmt="psql")
+        table = tabulate(result, headers=["nb occurences", "qualification"], tablefmt="psql")
 
         return Response(content=table, media_type="text/plain")
 
