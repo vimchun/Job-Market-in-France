@@ -46,7 +46,7 @@ Si `enable_secondary_routes = 0`, les routes "secondaires" suivantes seront dés
 """
 
 
-###### définitions de fonctions()
+###### définitions de mini fonctions()
 
 
 def replace_tab_by_space(text):
@@ -129,20 +129,7 @@ location_csv_file = os.path.join(
     "code_name__city_department_region.csv",
 )
 
-df_location = pd.read_csv(
-    location_csv_file,
-    dtype=str,  # toutes les colonnes à str
-    # dtype={
-    #     "code_insee": str,
-    #     "nom_commune": str,
-    #     "code_postal": str,
-    #     "nom_ville": str,
-    #     "code_departement": str,
-    #     "nom_departement": str,
-    #     "code_region": str,
-    #     "nom_region": str,
-    # },
-)
+df_location = pd.read_csv(location_csv_file, dtype=str)  # toutes les colonnes à str
 
 
 # Fonction pour centraliser les filtres
@@ -208,18 +195,18 @@ def set_endpoints_filters(
 def execute_modified_sql_request_with_filters(
     sql_files_directory_part_2,
     metier_data,
-    date_creation_min,
-    code_region,
-    code_departement,
-    code_postal,
-    code_insee,
+    date_creation_min=None,
+    code_region=None,
+    code_departement=None,
+    code_postal=None,
+    code_insee=None,
     fetch="all",
 ):
     """
     Prend en entrée le fichier sql dont le chemin se termine par la paramètre "sql_files_directory_part_2"
-      et applique les filtres sur la requête SQL en fonction des paramètres fournis.
+      et applique les filtres en remplaçant les placeholders sur la requête SQL en fonction des paramètres fournis.
 
-    Retourne le contenu du fichier sql modifié, et les paramètres.
+    Exécute le fichier sql modifié.
     """
     params = []
 
@@ -302,57 +289,33 @@ def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
     return Response(content=f"total: {total_offres:,} offres".replace(",", " "), media_type="text/plain")  # espace pour séparer les milliers
 
 
-def fonction_local(pgsql_file, metier_data, localisation):
-    sql_file_directory_part_2 = os.path.join("08_table_Localisation", pgsql_file)
-
-    # with open(os.path.join(sql_file_directory_part_1, sql_file_directory_part_2), "r") as file:
-    with open(os.path.join(sql_file_directory_part_1, sql_file_directory_part_2), "r") as file:
-        sql_file_content = file.read()
-
-        params = []
-        # Filtrage par "metier_data"
-        if metier_data is None:
-            sql_file_content = sql_file_content.replace("metier_data = 'placeholder_metier_data'", "1=1")
-        else:
-            sql_file_content = sql_file_content.replace("'placeholder_metier_data'", "%s")
-            params.extend([metier_data] * 2)
-
-        modified_sql_file_content = sql_file_content
-
-        with psycopg2.connect(database="francetravail", host="localhost", user="mhh", password="mhh", port=5432) as conn:
-            with conn.cursor() as cursor:
-                print(f'\n{Fore.CYAN}===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :')
-                print(f"{Style.DIM}{modified_sql_file_content}")
-                print(f"{Fore.CYAN}===> paramètres :")
-                print(f"{Fore.CYAN}{Style.DIM}{params}")
-
-                try:
-                    cursor.execute(modified_sql_file_content, tuple(params))
-                    result = cursor.fetchall()
-                    result = [(row[0], row[1].replace("pourcent", "%"), row[2]) for row in result]
-                    # note : écrire % dans le fichier pgsql est problématique par rapport aux %s
-
-                except IndexError as e:
-                    raise ValueError(f"Nombre de paramètres insuffisant pour la requête SQL") from e
-
-                return tabulate(result, headers=["nb offres", "pourcentage", localisation], tablefmt="psql")
-
-
 @app.get("/stats/classement/region", tags=[tag_all_offres], summary="Classement des régions qui recrutent le plus", description="<u> Tri :</u> par nombre d'offres (DESC).")
 def get_regions_ranking(metier_data: Optional[str] = Query(default=None, description=description_metier_data + description_empty_field)):
-    table = fonction_local("classement_regions.pgsql", metier_data, "région")
+    sql_file_directory_part_2 = os.path.join("08_table_Localisation", "classement_regions.pgsql")
+    result = execute_modified_sql_request_with_filters(sql_files_directory_part_2=sql_file_directory_part_2, metier_data=metier_data, fetch="all")
+    result = [(row[0], row[1].replace("pourcent", "%"), row[2]) for row in result]  # note : écrire % dans le fichier pgsql est problématique par rapport aux %s
+    table = tabulate(result, headers=["nb offres", "pourcentage", "région"], tablefmt="psql")
+
     return Response(content=table, media_type="text/plain")
 
 
 @app.get("/stats/classement/departement", tags=[tag_all_offres], summary="Classement des départements qui recrutent le plus (top 30)", description="<u> Tri :</u> par nombre d'offres (DESC).")
 def get_departements_ranking(metier_data: Optional[str] = Query(default=None, description=description_metier_data + description_empty_field)):
-    table = fonction_local("classement_departements.pgsql", metier_data, "département")
+    sql_file_directory_part_2 = os.path.join("08_table_Localisation", "classement_departements.pgsql")
+    result = execute_modified_sql_request_with_filters(sql_files_directory_part_2=sql_file_directory_part_2, metier_data=metier_data, fetch="all")
+    result = [(row[0], row[1].replace("pourcent", "%"), row[2]) for row in result]  # note : écrire % dans le fichier pgsql est problématique par rapport aux %s
+    table = tabulate(result, headers=["nb offres", "pourcentage", "département"], tablefmt="psql")
+
     return Response(content=table, media_type="text/plain")
 
 
 @app.get("/stats/classement/ville", tags=[tag_all_offres], summary="Classement des villes qui recrutent le plus (top 30)", description="<u> Tri :</u> par nombre d'offres (DESC).")
 def get_villes_ranking(metier_data: Optional[str] = Query(default=None, description=description_metier_data + description_empty_field)):
-    table = fonction_local("classement_villes.pgsql", metier_data, "ville")
+    sql_file_directory_part_2 = os.path.join("08_table_Localisation", "classement_villes.pgsql")
+    result = execute_modified_sql_request_with_filters(sql_files_directory_part_2=sql_file_directory_part_2, metier_data=metier_data, fetch="all")
+    result = [(row[0], row[1].replace("pourcent", "%"), row[2]) for row in result]  # note : écrire % dans le fichier pgsql est problématique par rapport aux %s
+    table = tabulate(result, headers=["nb offres", "pourcentage", "ville"], tablefmt="psql")
+
     return Response(content=table, media_type="text/plain")
 
 
@@ -430,14 +393,6 @@ def get_qualites_professionnelles(filters: dict = Depends(set_endpoints_filters)
 
 
 ##################################
-
-
-def get_qualites_professionnelles(filters: dict = Depends(set_endpoints_filters)):
-    sql_file_directory_part_2 = os.path.join("03_table_QualiteProfessionnelle", "qualites_professionnelles.pgsql")
-    result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
-    table = tabulate(result, headers=["nb occurences", "qualité professionnelle"], tablefmt="psql")
-
-    return Response(content=table, media_type="text/plain")
 
 
 def get_sorted_table_from_df(df, name, code):
