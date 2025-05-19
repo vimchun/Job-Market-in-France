@@ -90,10 +90,11 @@ def strip_accents(text):
 app = FastAPI(
     title="API sur les offres d'emploi chez France Travail",
     description=dedent(f"""
-    - <u> Notes concernant les paramètres de localisation : </u>
+    - Notes concernant les paramètres de localisation `code_region`, `code_departement`, `code_postal` et `code_insee` :
       <br> <br>
-      - Pour connaître `code_region`, `code_departement`, `code_postal` ou `code_insee` :
-        -  lancer la requête associée sous le tag `{tag_location_mapping_name_code}`.
+      - Remplir ces champs est facultatif (pas de valeur = pas de filtre).
+      <br> <br>
+      - Pour connaître les valeurs possibles, lancer la requête associée sous le tag `{tag_location_mapping_name_code}`.
       <br> <br>
       - Un code postal peut avoir plusieurs code insee :
         - Par exemple le code postal 78310 est partagé entre la commune de Coignières (code insee 78168), et la commune de Maurepas (code insee 78383)."""),
@@ -104,7 +105,7 @@ app = FastAPI(
         },
         {
             "name": tag_location_mapping_name_code,
-            "description": "Donne la correspondance entre le <b>nom</b> d'une région et son <b>code</b><br> &nbsp; (idem pour les départements, les villes et les communes)",
+            "description": "Correspondance entre le <b>nom</b> et le <b>code</b><br> d'une région, département, ville, commune",
         },
     ],
     # pour désactiver la coloration syntaxique sinon dans une réponse de type text/plain, on peut avoir du blanc, du rouge, du vert, du orange suivant les chars...
@@ -273,7 +274,6 @@ def execute_modified_sql_request_with_filters(
     "/stats/total_offres",
     tags=[tag_all_offres],
     summary="Nombre total d'offres d'emploi",
-    description=message_on_endpoints_about_fields,
 )
 def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
     sql_file_directory_part_2 = os.path.join("00_table_OffreEmploi", "total_offres.pgsql")
@@ -329,14 +329,11 @@ def get_villes_ranking(
     "/criteres_recruteurs/competences",
     tags=[tag_all_offres],
     summary="Compétences (techniques, managériales...) demandées par les recruteurs",
-    description=dedent(f"""
-    {message_on_endpoints_about_fields}
-
+    description=dedent("""
     <u> Tri : </u>
       - par code exigence (<b>E</b>xigé d'abord, puis <b>S</b>ouhaité), puis
       - par nombre d'occurences (DESC), puis
       - par code (ASC)
-
     """),
 )
 def get_competences(filters: dict = Depends(set_endpoints_filters)):
@@ -354,9 +351,7 @@ def get_competences(filters: dict = Depends(set_endpoints_filters)):
     "/criteres_recruteurs/experiences",
     tags=[tag_all_offres],
     summary="Expériences (études, diplôme, années expérience...) demandées par les recruteurs",
-    description=dedent(f"""\
-    {message_on_endpoints_about_fields}
-
+    description=dedent("""\
     <u> Tri : </u>
       - par code exigence (<b>D</b>ébutant d'abord, <b>S</b>ouhaité, puis <b>E</b>xigé), puis
       - par nombre d'occurences (DESC), puis
@@ -380,11 +375,7 @@ def get_experiences(filters: dict = Depends(set_endpoints_filters)):
     "/criteres_recruteurs/qualites_professionnelles",
     tags=[tag_all_offres],
     summary="Qualités professionnelles demandées par les recruteurs",
-    description=dedent(f"""\
-    {message_on_endpoints_about_fields}
-
-    <u> Tri :</u> par nombre d'occurences (DESC).
-    """),
+    description="<u> Tri :</u> par nombre d'occurences (DESC).",
 )
 def get_qualites_professionnelles(filters: dict = Depends(set_endpoints_filters)):
     sql_file_directory_part_2 = os.path.join("03_table_QualiteProfessionnelle", "qualites_professionnelles.pgsql")
@@ -445,11 +436,7 @@ if enable_secondary_routes:
         "/criteres_recruteurs/qualifications",
         tags=[tag_all_offres],
         summary="Niveaux de qualification professionnelle demandés par les recruteurs",
-        description=dedent(f"""\
-        {message_on_endpoints_about_fields}
-
-        <u> Tri :</u> par nombre d'occurences (DESC).
-        """),
+        description="<u> Tri :</u> par nombre d'occurences (DESC).",
     )
     def get_qualifications(filters: dict = Depends(set_endpoints_filters)):
         sql_file_directory_part_2 = os.path.join("04_table_Qualification", "qualifications.pgsql")
@@ -462,9 +449,7 @@ if enable_secondary_routes:
         "/criteres_recruteurs/formations",
         tags=[tag_all_offres],
         summary="Formations (domaines, nombre d'années d'études) demandées par les recruteurs",
-        description=dedent(f"""\
-        {message_on_endpoints_about_fields}
-
+        description=dedent("""\
         <u> Tri : </u>
           - par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis
           - par nombre d'occurences (DESC), puis
@@ -483,9 +468,7 @@ if enable_secondary_routes:
         "/criteres_recruteurs/permis_conduire",
         tags=[tag_all_offres],
         summary="Permis de conduire demandés par les recruteurs",
-        description=dedent(f"""\
-        {message_on_endpoints_about_fields}
-
+        description=dedent("""\
         <u> Tri : </u>
           - par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis
           - par nombre d'occurences (DESC), puis
@@ -503,9 +486,7 @@ if enable_secondary_routes:
         "/criteres_recruteurs/langues",
         tags=[tag_all_offres],
         summary="Langues demandées par les recruteurs",
-        description=dedent(f"""\
-        {message_on_endpoints_about_fields}
-
+        description=dedent("""\
         <u> Tri : </u>
           - par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis
           - par nombre d'occurences (DESC), puis
