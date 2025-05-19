@@ -4,7 +4,6 @@
 
 import os
 
-from datetime import datetime
 from textwrap import dedent  # pour gérer les indentations
 from typing import List, Optional
 
@@ -25,12 +24,8 @@ tag_location_mapping_name_code = 'Mapping "nom <> code" pour les régions, dépa
 
 message_on_endpoints_about_fields = "<u>Paramètres :</u> chaque champ est facultatif (champ vide = pas de filtre)."
 
-description_metier_data = dedent("""
-        Filtrer sur les métiers "Data Engineer", "Data Analyst" ou "Data Scientist".\n
-        &nbsp; <i> Valeurs possibles : `DE`, `DA` ou `DS` </i>""")
-
+description_metier_data = """Filtrer sur le métier "Data Engineer" `DE`, "Data Analyst" `DA` ou "Data Scientist `DS` (`--` pour ne pas filtrer sur ces métiers)"""
 description_empty_field = "_(champ vide = pas de filtre)_"
-
 
 enable_secondary_routes = 0
 
@@ -131,13 +126,20 @@ location_csv_file = os.path.join(
 
 df_location = pd.read_csv(location_csv_file, dtype=str)  # toutes les colonnes à str
 
+from enum import Enum
+
+class MetierDataEnum(str, Enum):
+    DE = "DE"
+    DA = "DA"
+    DS = "DS"
+
 
 # Fonction pour centraliser les filtres
 def set_endpoints_filters(
-    metier_data: Optional[str] = Query(default=None, description=description_metier_data),
-    date_creation_min: Optional[str] = Query(
-        default=None,
-        description="Filtrer par date de création des offres (au format `YYYY-MM-DD`).  <br> &nbsp; <i> Par exemple, les offres à partir du `2025-04-28` </i>",
+    metier_data: Optional[MetierDataEnum] = Query(default=None, description=description_metier_data),
+    offres_dispo_only: Optional[bool] = Query(
+        default=False,
+        description="`True` pour filtrer sur les offres disponibles uniquement (disponibles au jour où l'extraction des données a eu lieu), `False` sinon.",
     ),
     code_region: Optional[List[str]] = Query(default=None, description="Filtrer sur le code de la région."),
     code_departement: Optional[List[str]] = Query(default=None, description="Filtrer sur le code du département."),
@@ -150,12 +152,9 @@ def set_endpoints_filters(
     if metier_data not in allowed_metier_data:
         raise HTTPException(status_code=400, detail=f"'metier_data' doit être vide ou valoir 'DE', 'DA' ou 'DS'")
 
-    # Validation de `date_creation_min`
-    if date_creation_min:
-        try:
-            datetime.strptime(date_creation_min, "%Y-%m-%d")
-        except ValueError:
-            raise HTTPException(status_code=400, detail="Format invalide pour 'date_creation_min' (attendu : YYYY-MM-DD)")
+    # Validation de `offres_dispo_only`
+    if offres_dispo_only not in (False, True):
+        raise HTTPException(status_code=400, detail=f"'offres_dispo_only' doit être un booléen.")
 
     # Validation de `code_region`
     if code_region:
@@ -183,7 +182,7 @@ def set_endpoints_filters(
 
     return {
         "metier_data": metier_data,
-        "date_creation_min": date_creation_min,
+        "offres_dispo_only": offres_dispo_only,
         "code_region": code_region,
         "code_departement": code_departement,
         "code_postal": code_postal,
@@ -195,7 +194,7 @@ def set_endpoints_filters(
 def execute_modified_sql_request_with_filters(
     sql_files_directory_part_2,
     metier_data,
-    date_creation_min=None,
+    offres_dispo_only=False,
     code_region=None,
     code_departement=None,
     code_postal=None,
@@ -220,12 +219,12 @@ def execute_modified_sql_request_with_filters(
             sql_file_content = sql_file_content.replace("'placeholder_metier_data'", "%s")
             params.append(metier_data)
 
-        # Filtrage par "date_creation_min"
-        if date_creation_min is None:
-            sql_file_content = sql_file_content.replace("AND date_creation >= 'placeholder_date_creation_min'", "")
+        # Filtrage par "offres_dispo_only"
+        if offres_dispo_only:
+            pass  # On garde le CTE et le JOIN entouré par des commentaires tels quels
         else:
-            sql_file_content = sql_file_content.replace("'placeholder_date_creation_min'", "%s")
-            params.append(date_creation_min)
+            # on commente (/* ... */) les parties suivantes :
+            sql_file_content = sql_file_content.replace("-- ** BEGIN__TO_KEEP_OR_NOT_ON_FASTAPI", "/*").replace("-- ** END__TO_KEEP_OR_NOT_ON_FASTAPI", "*/")
 
         # Filtrage par "code_region"
         if code_region is None:
