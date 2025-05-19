@@ -24,7 +24,8 @@ tag_location_mapping_name_code = 'Mapping "nom <> code" pour les régions, dépa
 
 message_on_endpoints_about_fields = "<u>Paramètres :</u> chaque champ est facultatif (champ vide = pas de filtre)."
 
-description_metier_data = """Filtrer sur le métier "Data Engineer" `DE`, "Data Analyst" `DA` ou "Data Scientist `DS` (`--` pour ne pas filtrer sur ces métiers)"""
+description_metier_data = 'Filtrer sur le métier "Data Engineer" `DE`, "Data Analyst" `DA` ou "Data Scientist `DS` (`--` pour ne pas filtrer sur ces métiers)'
+description_offres_dispo_only = "`True` pour filtrer sur les offres disponibles uniquement (disponibles au jour où l'extraction des données a eu lieu), `False` sinon."
 description_empty_field = "_(champ vide = pas de filtre)_"
 
 enable_secondary_routes = 0
@@ -53,15 +54,12 @@ def replace_tab_by_space(text):
     |   nb occurences |   code | libelle                                                      | code exigence   |
     |-----------------+--------+--------------------------------------------------------------+-----------------|
     |               1 |        | Connaissances en base de données                             | E               |
-    |               1 |        | Benchmark                                                    | E               |
     |               1 |        | -	Pratique C++,Python                                                              | E               |   <== pas esthétique
-    |               1 |        | azure                                                        | E               |
     |               1 |        | -	Familier de Linux, QL, bus Can, windows visio                                                              | E               |   <== pas esthétique
     |               1 |        | Intégration et de déploiement continu                        | E               |
     |               1 |        | o	Parfaite connaissance du modèle OSI et particuli                                                              | E               |   <== pas esthétique
     |               1 |        | Scripting                                                    | E               |
     |               1 |        | PHP                                                          | E               |
-    |               1 |        | Capacité d'analyse / Esprit de synthèse                      | E               |
     +-----------------+--------+--------------------------------------------------------------+-----------------+
     """
     import re
@@ -137,10 +135,7 @@ class MetierDataEnum(str, Enum):
 # Fonction pour centraliser les filtres
 def set_endpoints_filters(
     metier_data: Optional[MetierDataEnum] = Query(default=None, description=description_metier_data),
-    offres_dispo_only: Optional[bool] = Query(
-        default=False,
-        description="`True` pour filtrer sur les offres disponibles uniquement (disponibles au jour où l'extraction des données a eu lieu), `False` sinon.",
-    ),
+    offres_dispo_only: Optional[bool] = Query(default=False, description=description_offres_dispo_only),
     code_region: Optional[List[str]] = Query(default=None, description="Filtrer sur le code de la région."),
     code_departement: Optional[List[str]] = Query(default=None, description="Filtrer sur le code du département."),
     code_postal: Optional[List[str]] = Query(default=None, description="Filtrer sur le code postal."),
@@ -289,9 +284,12 @@ def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
 
 
 @app.get("/stats/classement/region", tags=[tag_all_offres], summary="Classement des régions qui recrutent le plus", description="<u> Tri :</u> par nombre d'offres (DESC).")
-def get_regions_ranking(metier_data: Optional[str] = Query(default=None, description=description_metier_data + description_empty_field)):
+def get_regions_ranking(
+    metier_data: Optional[MetierDataEnum] = Query(default=None, description=description_metier_data),
+    offres_dispo_only: Optional[bool] = Query(default=False, description=description_offres_dispo_only),
+):
     sql_file_directory_part_2 = os.path.join("08_table_Localisation", "classement_regions.pgsql")
-    result = execute_modified_sql_request_with_filters(sql_files_directory_part_2=sql_file_directory_part_2, metier_data=metier_data, fetch="all")
+    result = execute_modified_sql_request_with_filters(sql_files_directory_part_2=sql_file_directory_part_2, metier_data=metier_data, offres_dispo_only=offres_dispo_only, fetch="all")
     result = [(row[0], row[1].replace("pourcent", "%"), row[2]) for row in result]  # note : écrire % dans le fichier pgsql est problématique par rapport aux %s
     table = tabulate(result, headers=["nb offres", "pourcentage", "région"], tablefmt="psql")
 
@@ -299,9 +297,12 @@ def get_regions_ranking(metier_data: Optional[str] = Query(default=None, descrip
 
 
 @app.get("/stats/classement/departement", tags=[tag_all_offres], summary="Classement des départements qui recrutent le plus (top 30)", description="<u> Tri :</u> par nombre d'offres (DESC).")
-def get_departements_ranking(metier_data: Optional[str] = Query(default=None, description=description_metier_data + description_empty_field)):
+def get_departements_ranking(
+    metier_data: Optional[MetierDataEnum] = Query(default=None, description=description_metier_data),
+    offres_dispo_only: Optional[bool] = Query(default=False, description=description_offres_dispo_only),
+):
     sql_file_directory_part_2 = os.path.join("08_table_Localisation", "classement_departements.pgsql")
-    result = execute_modified_sql_request_with_filters(sql_files_directory_part_2=sql_file_directory_part_2, metier_data=metier_data, fetch="all")
+    result = execute_modified_sql_request_with_filters(sql_files_directory_part_2=sql_file_directory_part_2, metier_data=metier_data, offres_dispo_only=offres_dispo_only, fetch="all")
     result = [(row[0], row[1].replace("pourcent", "%"), row[2]) for row in result]  # note : écrire % dans le fichier pgsql est problématique par rapport aux %s
     table = tabulate(result, headers=["nb offres", "pourcentage", "département"], tablefmt="psql")
 
@@ -309,9 +310,12 @@ def get_departements_ranking(metier_data: Optional[str] = Query(default=None, de
 
 
 @app.get("/stats/classement/ville", tags=[tag_all_offres], summary="Classement des villes qui recrutent le plus (top 30)", description="<u> Tri :</u> par nombre d'offres (DESC).")
-def get_villes_ranking(metier_data: Optional[str] = Query(default=None, description=description_metier_data + description_empty_field)):
+def get_villes_ranking(
+    metier_data: Optional[MetierDataEnum] = Query(default=None, description=description_metier_data),
+    offres_dispo_only: Optional[bool] = Query(default=False, description=description_offres_dispo_only),
+):
     sql_file_directory_part_2 = os.path.join("08_table_Localisation", "classement_villes.pgsql")
-    result = execute_modified_sql_request_with_filters(sql_files_directory_part_2=sql_file_directory_part_2, metier_data=metier_data, fetch="all")
+    result = execute_modified_sql_request_with_filters(sql_files_directory_part_2=sql_file_directory_part_2, metier_data=metier_data, offres_dispo_only=offres_dispo_only, fetch="all")
     result = [(row[0], row[1].replace("pourcent", "%"), row[2]) for row in result]  # note : écrire % dans le fichier pgsql est problématique par rapport aux %s
     table = tabulate(result, headers=["nb offres", "pourcentage", "ville"], tablefmt="psql")
 
@@ -364,7 +368,6 @@ def get_competences(filters: dict = Depends(set_endpoints_filters)):
       - Est-ce qu'un diplôme est requis ? etc...
     """),
 )
-# Chaque champ est facultatif (champ vide = pas de filtre).
 def get_experiences(filters: dict = Depends(set_endpoints_filters)):
     sql_file_directory_part_2 = os.path.join("02_table_Experience", "experiences.pgsql")
     result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
