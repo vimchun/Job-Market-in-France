@@ -1,9 +1,9 @@
 # cd fastapi/  &&  uvicorn main:app --reload
 # cd fastapi/  &&  uvicorn main:app --reload  --log-level debug
 
-
 import os
 
+from enum import Enum
 from textwrap import dedent  # pour gérer les indentations
 from typing import List, Optional
 
@@ -133,7 +133,6 @@ print(f"Chargement du fichier CSV depuis : {location_csv_file}")
 
 df_location = pd.read_csv(location_csv_file, dtype=str)  # toutes les colonnes à str
 
-from enum import Enum
 
 class MetierDataEnum(str, Enum):
     DE = "DE"
@@ -344,12 +343,7 @@ def get_villes_ranking(
     "/criteres_recruteurs/competences",
     tags=[tag_all_offres],
     summary="Compétences (techniques, managériales...) demandées par les recruteurs",
-    description=dedent("""
-    <u> Tri : </u>
-      - par code exigence (<b>E</b>xigé d'abord, puis <b>S</b>ouhaité), puis
-      - par nombre d'occurences (DESC), puis
-      - par code (ASC)
-    """),
+    description="<u> Tri :</u> <b>1/</b> par code exigence (<b>E</b>xigé d'abord, puis <b>S</b>ouhaité), puis <b>2/</b> par nombre d'occurences (DESC), puis <b>3/</b> par code (ASC).",
 )
 def get_competences(filters: dict = Depends(set_endpoints_filters)):
     sql_file_directory_part_2 = os.path.join("01_table_Competence", "competences.pgsql")
@@ -367,15 +361,9 @@ def get_competences(filters: dict = Depends(set_endpoints_filters)):
     tags=[tag_all_offres],
     summary="Expériences (études, diplôme, années expérience...) demandées par les recruteurs",
     description=dedent("""\
-    <u> Tri : </u>
-      - par code exigence (<b>D</b>ébutant d'abord, <b>S</b>ouhaité, puis <b>E</b>xigé), puis
-      - par nombre d'occurences (DESC), puis
-      - par libellé (ASC).
+    <u> Tri :</u> <b>1/</b> par code exigence (<b>D</b>ébutant d'abord, <b>S</b>ouhaité, puis <b>E</b>xigé), puis <b>2/</b> par nombre d'occurences (DESC), puis <b>3/</b> par libellé (ASC).
 
-    <u> Peut répondre aux questions : </u>
-      - Nombre d'années d'études minimum ? Nombre d'années d'expérience minimum ?
-      - Expérience requise dans tel domaine ou tel secteur ? Expérience requis sur un poste similaire ?
-      - Est-ce qu'un diplôme est requis ? etc...
+    <u> Répond à :</u> Nombre d'années d'études ou d'expérience minimum ? Expérience requise dans tel domaine ou sur poste similaire ? Diplôme requis ? etc...
     """),
 )
 def get_experiences(filters: dict = Depends(set_endpoints_filters)):
@@ -464,13 +452,7 @@ if enable_secondary_routes:
         "/criteres_recruteurs/formations",
         tags=[tag_all_offres],
         summary="Formations (domaines, nombre d'années d'études) demandées par les recruteurs",
-        description=dedent("""\
-        <u> Tri : </u>
-          - par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis
-          - par nombre d'occurences (DESC), puis
-          - par code (ASC), puis
-          - par niveau (ASC)
-        """),
+        description="<u> Tri :</u> <b>1/</b> par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis <b>2/</b> par nombre d'occurences (DESC), puis <b>3/</b> par code (ASC), puis <b>4/</b> par niveau (ASC).",  # noqa
     )
     def get_formations(filters: dict = Depends(set_endpoints_filters)):
         sql_file_directory_part_2 = os.path.join("05_table_Formation", "formations.pgsql")
@@ -483,12 +465,7 @@ if enable_secondary_routes:
         "/criteres_recruteurs/permis_conduire",
         tags=[tag_all_offres],
         summary="Permis de conduire demandés par les recruteurs",
-        description=dedent("""\
-        <u> Tri : </u>
-          - par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis
-          - par nombre d'occurences (DESC), puis
-          - par permis de conduire (ASC)
-        """),
+        description="<u> Tri :</u> <b>1/</b> par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis <b>2/</b> par nombre d'occurences (DESC), puis <b>3/</b> par permis de conduire (ASC).",
     )
     def get_permis_conduire(filters: dict = Depends(set_endpoints_filters)):
         sql_file_directory_part_2 = os.path.join("06_table_PermisConduire", "permis_conduire.pgsql")
@@ -501,12 +478,7 @@ if enable_secondary_routes:
         "/criteres_recruteurs/langues",
         tags=[tag_all_offres],
         summary="Langues demandées par les recruteurs",
-        description=dedent("""\
-        <u> Tri : </u>
-          - par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis
-          - par nombre d'occurences (DESC), puis
-          - par langue (ASC)
-        """),
+        description="<u> Tri :</u> <b>1/</b> par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis <b>2/</b> par nombre d'occurences (DESC), puis <b>3/</b> par langue (ASC).",
     )
     def get_permis_conduire(filters: dict = Depends(set_endpoints_filters)):
         sql_file_directory_part_2 = os.path.join("07_table_Langue", "langues.pgsql")
