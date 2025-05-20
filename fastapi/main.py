@@ -1,5 +1,5 @@
-# cd fastapi/  &&  uvicorn fastapi_script:app --reload
-# cd fastapi/  &&  uvicorn fastapi_script:app --reload  --log-level debug
+# cd fastapi/  &&  uvicorn main:app --reload
+# cd fastapi/  &&  uvicorn main:app --reload  --log-level debug
 
 
 import os
@@ -117,11 +117,16 @@ sql_file_directory_part_1 = os.path.join(os.path.dirname(os.path.abspath(__file_
 
 location_csv_file = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
-    "..",
-    "api_extract__transform",
+    ## arborescence local
+    # "..",
+    # "api_extract__transform",
+    # "locations_information",
+    ## arborescence sur le conteneur avec le dossier spécifié par le Dockerfile
     "locations_information",
+    ## fichier
     "code_name__city_department_region.csv",
 )
+
 
 df_location = pd.read_csv(location_csv_file, dtype=str)  # toutes les colonnes à str
 
