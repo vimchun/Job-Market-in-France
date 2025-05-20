@@ -115,17 +115,19 @@ app = FastAPI(
 
 sql_file_directory_part_1 = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sql_requests")
 
-location_csv_file = os.path.join(
+# DEFAULT_CSV_PATH : valeur par défaut si la variable d’environnement n’existe pas
+DEFAULT_CSV_PATH = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
-    ## arborescence local
-    # "..",
-    # "api_extract__transform",
-    # "locations_information",
-    ## arborescence sur le conteneur avec le dossier spécifié par le Dockerfile
+    "..",
+    "api_extract__transform",
     "locations_information",
-    ## fichier
     "code_name__city_department_region.csv",
 )
+
+# variable "location_csv_file" écrasée par la valeur définie dans le Dockerfile si script exécuté dans le conteneur
+location_csv_file = os.getenv("LOCATION_CSV_PATH", DEFAULT_CSV_PATH)
+
+print(f"Chargement du fichier CSV depuis : {location_csv_file}")
 
 
 df_location = pd.read_csv(location_csv_file, dtype=str)  # toutes les colonnes à str
