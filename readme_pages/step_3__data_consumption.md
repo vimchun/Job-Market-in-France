@@ -2,9 +2,9 @@
 
 # 3. Consommation des données
 
-## 3a. Power BI
+## 3.a. Power BI
 
-### Connexion avec la base de données
+### Connexion avec la db
 
 - cf https://learn.microsoft.com/fr-fr/power-query/connectors/postgresql
 
@@ -158,7 +158,7 @@ Même chose pour le département de la `Lot` qui est placé en Lituanie, on ajou
 
 
 
-## 3b. Requêtes SQL
+## 3.b. Requêtes SQL
 
 ### Transformations pour écrire l'attribut "metier_data"
 

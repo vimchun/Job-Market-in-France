@@ -30,7 +30,7 @@ services:
       - DB_USER=mhh
       - DB_PASSWORD=mhh
     volumes:
-      # montage de volumes pour ne pas avoir à relance docker-compose après chaque modif
+      # montage de volumes pour ne pas avoir à relancer docker-compose après chaque modif
       - ./fastapi:/app  # pour avoir le "main.py" et tous les fichiers pgsql (que je modifie régulièrement en mode dev)
       - ./api_extract__transform/locations_information:/app/locations_information
     depends_on:
