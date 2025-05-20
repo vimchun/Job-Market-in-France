@@ -4,14 +4,13 @@
 
 ## 4.a. Création d'une API pour la db
 
-- FastAPI
+- Utilisation de `FastAPI`.
 
 - Pour les réponses, on utilisera la librairie `tabulate` avec `media_type="text/plain"` pour afficher un tableau qui facilitera la lecture, et qui diminuera le nombre de lignes des réponses.
 
 
 
 ## 4.b. Dockerisation de l'application et de la db PostGreSQL
-
 
 - Arborescence avec les éléments importants
 
