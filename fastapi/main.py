@@ -127,6 +127,7 @@ DEFAULT_CSV_PATH = os.path.join(
 # variable "location_csv_file" écrasée par la valeur définie dans le Dockerfile si script exécuté dans le conteneur
 location_csv_file = os.getenv("LOCATION_CSV_PATH", DEFAULT_CSV_PATH)
 
+
 print(f"Chargement du fichier CSV depuis : {location_csv_file}")
 
 
@@ -263,7 +264,14 @@ def execute_modified_sql_request_with_filters(
 
         modified_sql_file_content = sql_file_content
 
-        with psycopg2.connect(database="francetravail", host="localhost", user="mhh", password="mhh", port=5432) as conn:
+        # connexion en lien avec les variables définies dans le "docker-compose.yml" :
+        with psycopg2.connect(
+            host=os.getenv("DB_HOST", "localhost"),
+            port=os.getenv("DB_PORT", 5432),
+            database=os.getenv("DB_NAME", "francetravail"),
+            user=os.getenv("DB_USER", "mhh"),
+            password=os.getenv("DB_PASSWORD", "mhh"),
+        ) as conn:
             with conn.cursor() as cursor:
                 print(f'\n{Fore.CYAN}===> Requête SQL depuis le fichier "{sql_files_directory_part_2}" :')
                 print(f"{Style.DIM}{modified_sql_file_content}")
