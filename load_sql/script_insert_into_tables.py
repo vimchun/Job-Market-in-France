@@ -233,11 +233,14 @@ with psycopg2.connect(database="francetravail", host="localhost", user="mhh", pa
                     date_extraction = offre.get("dateExtraction")
                     date_premiere_ecriture = offre.get("datePremiereEcriture")
                     date_creation = offre.get("dateCreation").split("T")[0]  # inutile de récupérer l'heure
-                    date_actualisation = offre.get("dateActualisation").split("T")[0]  # inutile de récupérer l'heure
+
+                    date_actualisation_raw = offre.get("dateActualisation")  # rare cas où `"dateActualisation": null` (1 cas sur 50k à l'occurence 7, offre_id 6985803)
+                    date_actualisation = date_actualisation_raw.split("T")[0] if date_actualisation_raw else None
+
                     nombre_postes = offre.get("nombrePostes")
 
                     # print pour investigation si besoin :
-                    # print(offre_id, date_extraction, date_premiere_ecriture, date_creation, date_actualisation, nombre_postes, sep="\n-> ")
+                    # print(offre_id, date_extraction, date_premiere_ecriture, date_creation, date_actualisation, nombre_postes, "\n", sep="\n-> ")
 
                     fill_db(
                         db_name="OffreEmploi",
