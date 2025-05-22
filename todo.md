@@ -7,10 +7,15 @@
     - suppression offre
     - ajouter une route comme /healthcheck ou /status qui permet de vérifier que la base est connectée (test SELECT 1).
 
+  - airflow :
+    - lancer script 1 puis script 2 (fréquence à définir)
+
 
 ### P1
 
   - mettre en place dbt ?
+
+  - locations_information (point de montage (volume)) => à renommer en "locations_information_mount" ?
 
 
 ### P2
@@ -21,6 +26,7 @@
 
   - attribut `liste_mots_cles` : faisabilité regex sur le mot entier (exemple si on cherche le langage `R`)
 
+  - renommer les fichiers sql en anglais ?
 
 
 ### P3
