@@ -1,3 +1,6 @@
+# Pour lancer :
+#   docker-compose down  &&  docker-compose up --build (-d en mode détaché)
+
 version: "3.8"
 
 services:

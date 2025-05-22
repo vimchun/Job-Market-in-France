@@ -1,7 +1,5 @@
 # note :
 #  - contexte = dossier "Job_Market" dans le fichier "docker-compose.yml"
-#  - pour lancer :
-#    docker-compose down  &&  docker-compose up --build
 
 FROM python:3.12-slim
 

@@ -28,7 +28,7 @@ description_metier_data = 'Filtrer sur le métier "Data Engineer" `DE`, "Data An
 description_offres_dispo_only = "`True` pour filtrer sur les offres disponibles uniquement (disponibles au jour où l'extraction des données a eu lieu), `False` sinon."
 description_empty_field = "_(champ vide = pas de filtre)_"
 
-enable_secondary_routes = 0
+enable_secondary_routes = 1
 
 """
 Si `enable_secondary_routes = 0`, les routes "secondaires" suivantes seront désactivées :
@@ -93,15 +93,15 @@ app = FastAPI(
     - Notes concernant les paramètres de localisation `code_region`, `code_departement`, `code_postal` et `code_insee` :
       <br> <br>
       - Remplir ces champs est facultatif (pas de valeur = pas de filtre).
-      <br> <br>
-      - Pour connaître les valeurs possibles, lancer la requête associée sous le tag `{tag_location_mapping_name_code}`.
-      <br> <br>
-      - Un code postal peut avoir plusieurs code insee :
-        - Par exemple le code postal 78310 est partagé entre la commune de Coignières (code insee 78168), et la commune de Maurepas (code insee 78383)."""),
+      <br>
+      - Pour connaître les valeurs possibles, lancer la requête associée sous la partie `{tag_location_mapping_name_code}`.
+      <br>
+      - Un code postal peut avoir plusieurs codes insee (exemple : le code postal 78310 est partagé entre la commune de Coignières (code insee 78168), et la commune de Maurepas (code insee 78383)).
+      """),
     openapi_tags=[
         {
             "name": tag_all_offres,
-            "description": "aaa",
+            "description": "à compléter plus tard",
         },
         {
             "name": tag_location_mapping_name_code,
