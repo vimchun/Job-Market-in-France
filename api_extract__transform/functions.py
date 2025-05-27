@@ -83,6 +83,7 @@ def get_referentiel_appellations_rome(token):
         data = response.json()
         with open(file_path, "w", encoding="utf-8") as f:
             #     json.dump(data, f, ensure_ascii=False, indent=4)  # écrit le json, mais le formattage classique prend trop de place... le code suivant corrige le tir # noqa
+            # todo : à revoir, pourquoi ne pas initialiser une liste vide et faire des appends ?
             f.write("[\n")  # Ajouter un "[" pour "initialiser" le fichier json
             for i in range(len(data)):
                 f.write("    ")
