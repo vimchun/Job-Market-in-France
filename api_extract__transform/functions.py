@@ -83,6 +83,7 @@ def get_referentiel_appellations_rome(token):
         data = response.json()
         with open(file_path, "w", encoding="utf-8") as f:
             #     json.dump(data, f, ensure_ascii=False, indent=4)  # écrit le json, mais le formattage classique prend trop de place... le code suivant corrige le tir # noqa
+            # todo : à revoir, pourquoi ne pas initialiser une liste vide et faire des appends ?
             f.write("[\n")  # Ajouter un "[" pour "initialiser" le fichier json
             for i in range(len(data)):
                 f.write("    ")
@@ -1059,6 +1060,9 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
 
     # On remplace ["FRANCE", "France", "France entière"] par NaN
     df_lieu.loc[df_lieu.lieu_cas == "cas_5", "libelle"] = np.nan
+
+    # Dans de rare cas, CP setté à "Inconnu" précédemment
+    df_lieu.loc[df_lieu.lieu_cas == "cas_5", "code_postal"] = np.nan
 
     # Vérification qu'il n'y a pas d'autres cas que les cas 1, 2, 3, 4 et 5.
 

@@ -1,34 +1,42 @@
 # Reste à faire (ou pas)
 
-## important
+### P0
+
+  - fastapi idées :
+    - création offre (id offre obligatoire, mais doit être unique)
+    - suppression offre
+    - ajouter une route comme /healthcheck ou /status qui permet de vérifier que la base est connectée (test SELECT 1).
+
+  - airflow :
+    - lancer script 1 puis script 2 (fréquence à définir)
 
 
-## pas urgent
+### P1
+
+  - mettre en place dbt ?
+
+  - locations_information (point de montage (volume)) => à renommer en "locations_information_mount" ?
+
+
+### P2
+
+  - utiliser log au lieu de print ?
+
+  - script "2--script_insert_into_tables.py" => option pour ne prendre en compte que les dernières offres (pour que le script tourne plus vite)
+
+  - attribut `liste_mots_cles` : faisabilité regex sur le mot entier (exemple si on cherche le langage `R`)
+
+  - renommer les fichiers sql en anglais ?
+
+
+### P3
+
+  - pour la partie 1 :
+    - Fichier en format tableau avec le nom de la source, la technique utilisée, un échantillon des données
 
   - "1--create_csv_with_commune_departement_region_names.ipynb"
     => code Python pour télécharger les fichiers depuis le site de l'insee (extraction du .zip, etc...)
 
+  - transformation pour avoir les années d'exp. (table experience)
 
-  - attribut `liste_mots_cles` : faisabilité regex sur le mot entier (exemple si on cherche le langage `R`)
-
-
-  - mettre en place dbt ?
-
-
-  - script "2--script_insert_into_tables.py" => option pour ne prendre en compte que les dernières offres (pour que le script tourne plus vite)
-
-
-  - utiliser log au lieu de print ?
-
-
-  - pour la partie 1 :
-
-    - Fichier en format tableau avec le nom de la source, la technique utilisée, un échantillon des données
-
-
-  - faire un script qui vérifie qu'on a tout ce qu'il faut avant de déclencher les autres scripts (ex: vérifier que le conteneur postgresql tourne)
-
-
-## nice to have
-
-  1. transformation pour avoir les années d'exp. (table experience)
+  - export db ?

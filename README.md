@@ -10,9 +10,16 @@
 
   - [3. Consommation des données](readme_pages/step_3__data_consumption.md)
 
+  - [4. Création d'une API pour la db, dockerisation de cette application et de la db PostGreSQL](readme_pages/step_4__api.md)
+
 
 # Workflow du projet
 
-Voici un schéma récapitulatif des différentes étapes du projet :
+- Voici un schéma récapitulatif des différentes étapes du projet :
 
-![screenshot du workflow](readme_pages/screenshots/workflow.png)
+  ![screenshot du workflow](readme_pages/screenshots/workflow.png)
+
+
+# Arborescence du projet
+
+- à remplir avec commentaires
