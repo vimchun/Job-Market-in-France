@@ -2,9 +2,9 @@
 
 # 3. Consommation des données
 
-## 3a. Power BI
+## 3.a. Power BI
 
-### Connexion avec la base de données
+### Connexion avec la db
 
 - cf https://learn.microsoft.com/fr-fr/power-query/connectors/postgresql
 
@@ -158,13 +158,13 @@ Même chose pour le département de la `Lot` qui est placé en Lituanie, on ajou
 
 
 
-## 3b. Requêtes SQL
+## 3.b. Requêtes SQL
 
 ### Transformations pour écrire l'attribut "metier_data"
 
 - Pour identifier les offres de "Data Engineer" parmi toutes les offres récupérées, le premier réflexe serait de filtrer sur le rome_code `M1811` qui correspond à `Data engineer`, mais on se rend compte que les offres d'emploi associées ne sont pas toutes liées à ce poste.
 
-- On retrouve en effet des postes d'architecte, d'ingénieur base de données, de data analyst, de data manager, de technicien data center, etc... (voir résultats de la requête `sql_requests/1_requests/offers_DE_DA_DS/10--table_descriptionoffre__rome_M1811.pgsql`)
+- On retrouve en effet des postes d'architecte, d'ingénieur base de données, de data analyst, de data manager, de technicien data center, etc... (voir résultats de la requête `sql_requests/1_requests/offers_DE_DA_DS/10--table_descriptionoffre__rome_M1811.pgsql`)  # chemin à modifier
 
 - L'attribut `intitule_offre` de la table `DescriptionOffre` sera donc utilisé pour filtrer les offres voulues (ici : `Data Engineer`, `Data Analyst` et `Data Scientist`) grâce à des requêtes qui utilisent des regex, écrivant la valeur `DE`, `DA`, `DS` dans l'attribut `metier_data` (voir `sql_requests/0_transformations`).
 

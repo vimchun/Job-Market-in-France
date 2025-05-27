@@ -1,0 +1,43 @@
+# Pour lancer :
+#   docker-compose down  &&  docker-compose up --build (-d en mode détaché)
+
+version: "3.8"
+
+services:
+
+  # db
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres_container
+    environment:
+      POSTGRES_DB: francetravail
+      POSTGRES_USER: mhh
+      POSTGRES_PASSWORD: mhh
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_job_market:/var/lib/postgresql/data
+
+  # app
+  fastapi:
+    build:
+      context: .  # contexte = dossier "Job_Market" car fichier "code_name__city_department_region.csv" en dehors du dossier "fastapi"
+      dockerfile: fastapi/Dockerfile
+    container_name: app_fastapi
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=francetravail
+      - DB_USER=mhh
+      - DB_PASSWORD=mhh
+    volumes:
+      # utile en mode dev (montage de volumes pour ne pas avoir à relancer docker-compose après chaque modif)
+      - ./fastapi:/app  # pour avoir le "main.py" et tous les fichiers pgsql (que je modifie régulièrement en mode dev)
+      - ./api_extract__transform/locations_information:/app/locations_information
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data_job_market:
