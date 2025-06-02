@@ -1,5 +1,5 @@
-# Pour lancer :
-#   docker compose up airflow-init  (doit se terminer par "airflow-init exited with code 0")
+# Lancer le fichier "start_containers.sh" qui fait les commandes suivantes :
+#   docker compose up airflow-init
 #   docker compose up
 
 
