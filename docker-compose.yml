@@ -1,26 +1,21 @@
 # Pour lancer :
-#   docker compose up airflow-init
-#   docker compose down  &&  docker compose up --build (-d en mode détaché)  => new
+#   docker compose up airflow-init  (doit se terminer par "airflow-init exited with code 0")
+#   docker compose up
 
 
 x-airflow-common: &airflow-common
   image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.11.0}  # mai 2025 (https://hub.docker.com/r/apache/airflow/tags)
   environment: &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
-    # AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-    # AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
-    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://mhh:mhh@postgres/francetravail
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://mhh:mhh@postgres/francetravail
     AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://mhh:mhh@postgres/francetravail
     AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: QgAuQEkWr7OKnAlpozOZAk-pZFPt2m0pfsp5PLncOak=
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
-    AIRFLOW__CORE__LOAD_EXAMPLES: "true"
-    AIRFLOW__API__AUTH_BACKEND: "airflow.api.auth.backend.basic_auth"
-    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:- pymongo}
+    AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+    AIRFLOW__API__AUTH_BACKENDS: "airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session"
+    # _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:- pymongo}
   volumes:
-    # - ./dags:/opt/airflow/dags
-    # - ./logs:/opt/airflow/logs
-    # - ./plugins:/opt/airflow/plugins
     - ./airflow/dags:/opt/airflow/dags
     - ./airflow/logs:/opt/airflow/logs
     - ./airflow/plugins:/opt/airflow/plugins
@@ -38,7 +33,7 @@ services:
   # db
   postgres:
     image: postgres:16-alpine
-    container_name: postgres_container
+    container_name: postgres
     environment:
       POSTGRES_DB: francetravail
       POSTGRES_USER: mhh
@@ -58,7 +53,7 @@ services:
     build:
       context: .  # contexte = dossier "Job_Market" car fichier "code_name__city_department_region.csv" en dehors du dossier "fastapi"
       dockerfile: fastapi/Dockerfile
-    container_name: app_fastapi
+    container_name: fastapi
     ports:
       - "8000:8000"
     environment:
@@ -76,18 +71,23 @@ services:
 
   redis:
     image: redis:latest
+    container_name: redis
     ports:
       - 6379:6379
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 30s
-      retries: 50
+      retries: 10
     restart: always
 
   airflow-webserver:
+    container_name: airflow-webserver
     <<: *airflow-common
     command: webserver
+    environment:
+      <<: *airflow-common-env
+      AIRFLOW__WEBSERVER__WORKERS: 1  # moins de workers pour accélérer
     ports:
       - 8080:8080
     healthcheck:
@@ -98,6 +98,7 @@ services:
     restart: always
 
   airflow-scheduler:
+    container_name: airflow-scheduler
     <<: *airflow-common
     command: scheduler
     healthcheck:
@@ -112,6 +113,7 @@ services:
     restart: always
 
   airflow-worker:
+    container_name: airflow-worker
     <<: *airflow-common
     command: celery worker
     healthcheck:
@@ -124,16 +126,20 @@ services:
     restart: always
 
   airflow-init:
+    container_name: airflow-init
     <<: *airflow-common
     command: version
+    restart: "no" # pour éviter de redémarrer le service après un `docker compose up`
     environment:
       <<: *airflow-common-env
-      _AIRFLOW_DB_UPGRADE: "true"
+      _AIRFLOW_DB_MIGRATE: "true"
       _AIRFLOW_WWW_USER_CREATE: "true"
       _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
       _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
 
+
   flower:
+    container_name: flower
     <<: *airflow-common
     command: celery flower
     ports:
