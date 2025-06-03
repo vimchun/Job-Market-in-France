@@ -331,6 +331,7 @@ def remove_all_json_files(json_files_directory):
     return None
 
 
+@task
 def get_offres(token, code_appellation_libelle, filter_params):
     """
     A partir des appellations ROME décrites dans "code_appellation_libelle.yml", récupérer les offres de chaque appellation et les écrit dans un fichier json.
@@ -340,192 +341,203 @@ def get_offres(token, code_appellation_libelle, filter_params):
     Ne retourne rien.
     """
 
-    print("toto")
+    appellation = filter_params["appellation"]
 
-    # appellation = filter_params["appellation"]
+    for item in code_appellation_libelle:
+        if item["code"] == appellation:
+            libelle = item["libelle"]
+            break
 
-    # for item in code_appellation_libelle:
-    #     if item["code"] == appellation:
-    #         libelle = item["libelle"]
-    #         break
+    codes_list = [str(i["code"]) for i in code_appellation_libelle]
 
-    # codes_list = [str(i["code"]) for i in code_appellation_libelle]
+    if filter_params["appellation"] in codes_list:
+        print(f"{Fore.GREEN}== Récupération des offres ({appellation}: {libelle}) :")
+    else:
+        print(f"{Fore.GREEN}== Récupération des offres ({appellation}) :")
 
-    # if filter_params["appellation"] in codes_list:
-    #     print(f"{Fore.GREEN}== Récupération des offres ({appellation}: {libelle}) :")
-    # else:
-    #     print(f"{Fore.GREEN}== Récupération des offres ({appellation}) :")
+    url = "https://api.francetravail.io/partenaire/offresdemploi/v2/offres/search"
 
-    # url = "https://api.francetravail.io/partenaire/offresdemploi/v2/offres/search"
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "Content-Type": "application/json",
+    }
 
-    # headers = {
-    #     "Authorization": f"Bearer {token}",
-    #     "Content-Type": "application/json",
-    # }
+    #### Première requête pour voir combien d'offres sont disponibles
 
-    # #### Première requête pour voir combien d'offres sont disponibles
+    response = requests.get(url, headers=headers, params=filter_params)
 
-    # response = requests.get(url, headers=headers, params=filter_params)
+    print(f"{Fore.GREEN}==== Récupération des offres (requête 0), pour connaître le nombre d'offres :", end=" ")
 
-    # print(f"{Fore.GREEN}==== Récupération des offres (requête 0), pour connaître le nombre d'offres :", end=" ")
+    # print(
+    #     response,
+    #     response.headers.get("Content-Range"),  # exemple : "offres 0-0/9848"
+    #     int(response.headers.get("Content-Range").split("/")[-1]),
+    # )
 
-    # # print(
-    # #     response,
-    # #     response.headers.get("Content-Range"),  # exemple : "offres 0-0/9848"
-    # #     int(response.headers.get("Content-Range").split("/")[-1]),
-    # # )
+    max_offres = 0
+    output_file = ""
 
-    # max_offres = 0
-    # output_file = ""
+    if response.status_code in [200, 206]:
+        content_range = response.headers.get("Content-Range")
+        if content_range is not None:
+            max_offres = int(content_range.split("/")[-1])
 
-    # if response.status_code in [200, 206]:
-    #     content_range = response.headers.get("Content-Range")
-    #     if content_range is not None:
-    #         max_offres = int(content_range.split("/")[-1])
+        # output_file_path = os.path.join(current_directory, "outputs", "offres", "0--original_json_files_from_api")
+        output_file_path = os.path.join(current_directory, "..", "..", "data", "outputs", "offres", "0--original_json_files_from_api")
+        if filter_params["appellation"] in codes_list:
+            # output_file = os.path.join(current_directory, "outputs", "offres", "0--original_json_files_from_api", f"{appellation}_{libelle}.json")
+            output_file = os.path.join(output_file_path, f"{appellation}_{libelle}.json")
 
-    #     if filter_params["appellation"] in codes_list:
-    #         output_file = os.path.join(current_directory, "outputs", "offres", "0--original_json_files_from_api", f"{appellation}_{libelle}.json")
+        else:
+            # output_file = os.path.join(current_directory, "outputs", "offres", "0--original_json_files_from_api", f"{appellation}.json")
+            output_file = os.path.join(output_file_path, f"{appellation}.json")
 
-    #     else:
-    #         output_file = os.path.join(current_directory, "outputs", "offres", "0--original_json_files_from_api", f"{appellation}.json")
+        if os.path.exists(output_file):
+            os.remove(output_file)
 
-    #     if os.path.exists(output_file):
-    #         os.remove(output_file)
+    ###### réponse 200 : on peut déjà récupérer toutes les offres disponibles
+    if response.status_code == 200:
+        print(f"Status Code: {response.status_code}")
+        # print(response.headers.get("Content-Range"))
+        print(f"  => {Fore.CYAN}[{max_offres}]{Style.RESET_ALL} offres au total {Fore.YELLOW}--> écriture dans le fichier")
 
-    # ###### réponse 200 : on peut déjà récupérer toutes les offres disponibles
-    # if response.status_code == 200:
-    #     print(f"Status Code: {response.status_code}")
-    #     # print(response.headers.get("Content-Range"))
-    #     print(f"  => {Fore.CYAN}[{max_offres}]{Style.RESET_ALL} offres au total {Fore.YELLOW}--> écriture dans le fichier")
+        document_id = 0
 
-    #     document_id = 0
+        with open(output_file, "a", encoding="utf-8") as f:
+            f.write("[\n")  # Ajouter un "[" pour "initialiser" le fichier json
 
-    #     with open(output_file, "a", encoding="utf-8") as f:
-    #         f.write("[\n")  # Ajouter un "[" pour "initialiser" le fichier json
+            for obj in response.json()["resultats"]:  # Boucle for pour écrire uniquement les documents
+                json.dump(obj, f, ensure_ascii=False)
+                if document_id < max_offres - 1:
+                    f.write(",\n")  # Ajouter une virgule après chaque objet
+                else:
+                    f.write("\n")  # Pour le dernier document, on ne met pas de virgule, sinon le json n'est pas valide
+                document_id += 1
 
-    #         for obj in response.json()["resultats"]:  # Boucle for pour écrire uniquement les documents
-    #             json.dump(obj, f, ensure_ascii=False)
-    #             if document_id < max_offres - 1:
-    #                 f.write(",\n")  # Ajouter une virgule après chaque objet
-    #             else:
-    #                 f.write("\n")  # Pour le dernier document, on ne met pas de virgule, sinon le json n'est pas valide
-    #             document_id += 1
+            f.write("]")  # Clore le json en ajoutant un crochet fermant "]"
 
-    #         f.write("]")  # Clore le json en ajoutant un crochet fermant "]"
+        # Renommer les fichiers json en ajoutant le nombre d'offres dans le json
+        dir_path, file_name = os.path.split(output_file)  # Séparer le chemin et le nom du fichier
+        new_file_name = f"{file_name[:-5]}__{document_id}_offres.json"
+        # print(dir_path, file_name, new_file_name, sep="\n")  # utile si investigation
+        new_file_path = os.path.join(dir_path, new_file_name)  # Créer le chemin complet du nouveau fichier
+        os.rename(output_file, new_file_path)  # Renommer le fichier
 
-    #     # Renommer les fichiers json en ajoutant le nombre d'offres dans le json
-    #     dir_path, file_name = os.path.split(output_file)  # Séparer le chemin et le nom du fichier
-    #     new_file_name = f"{file_name[:-5]}__{document_id}_offres.json"
-    #     # print(dir_path, file_name, new_file_name, sep="\n")  # utile si investigation
-    #     new_file_path = os.path.join(dir_path, new_file_name)  # Créer le chemin complet du nouveau fichier
-    #     os.rename(output_file, new_file_path)  # Renommer le fichier
+    ###### réponse 206 : on doit faire plusieurs requêtes pour récupérer tous les documents (limité à 3150 documents)
+    elif response.status_code == 206:
+        print(f"Status Code: {response.status_code} (Réponse partielle)")
+        # print(response.headers.get("Content-Range"))
+        print(f"  => {Fore.CYAN}[{max_offres}]{Style.RESET_ALL} offres au total")
+        print(f"  => {Fore.CYAN}[{int(max_offres/150)+1}]{Style.RESET_ALL} requêtes nécessaires (avec 150 documents) pour tout récupérer", end="")
+        print(f" {Style.DIM} (limité à 21 requêtes, soit 3150 offres maximum)")  # (voir limitation du paramètre range)
 
-    # ###### réponse 206 : on doit faire plusieurs requêtes pour récupérer tous les documents (limité à 3150 documents)
-    # elif response.status_code == 206:
-    #     print(f"Status Code: {response.status_code} (Réponse partielle)")
-    #     # print(response.headers.get("Content-Range"))
-    #     print(f"  => {Fore.CYAN}[{max_offres}]{Style.RESET_ALL} offres au total")
-    #     print(f"  => {Fore.CYAN}[{int(max_offres/150)+1}]{Style.RESET_ALL} requêtes nécessaires (avec 150 documents) pour tout récupérer", end="")
-    #     print(f" {Style.DIM} (limité à 21 requêtes, soit 3150 offres maximum)")  # (voir limitation du paramètre range)
+        range_start = 0
+        range_end = 149
+        request_id = 1
+        filter_params["range"] = f"{range_start}-{range_end}"
 
-    #     range_start = 0
-    #     range_end = 149
-    #     request_id = 1
-    #     filter_params["range"] = f"{range_start}-{range_end}"
+        with open(output_file, "a", encoding="utf-8") as f:
+            f.write("[\n")  # Ajouter un "[" pour "initialiser" le fichier json
 
-    #     with open(output_file, "a", encoding="utf-8") as f:
-    #         f.write("[\n")  # Ajouter un "[" pour "initialiser" le fichier json
+            document_id = 0
 
-    #         document_id = 0
+            for _ in range(int(max_offres / 150) + 1):
+                print(f"{Fore.GREEN}==== Récupération des offres (requête {request_id}) :", end=" ")
+                response = requests.get(url, headers=headers, params=filter_params)
 
-    #         for _ in range(int(max_offres / 150) + 1):
-    #             print(f"{Fore.GREEN}==== Récupération des offres (requête {request_id}) :", end=" ")
-    #             response = requests.get(url, headers=headers, params=filter_params)
+                if response.status_code == 206:
+                    print(f"Status Code: {response.status_code}", end=", ")
 
-    #             if response.status_code == 206:
-    #                 print(f"Status Code: {response.status_code}", end=", ")
+                    # Boucle for pour écrire uniquement les documents
+                    for obj in response.json()["resultats"]:
+                        json.dump(obj, f, ensure_ascii=False)
+                        f.write(",\n")  # Ajouter une virgule après chaque objet
+                        document_id += 1
+                    print(f"{range_start}-{range_end}/{max_offres} {Fore.YELLOW}--> écriture dans le fichier (total: {document_id})")
+                elif response.status_code == 204:  # "No Content successful"
+                    # L'erreur 204 est dans un elif car pour cette erreur, "response.json()" renvoie l'erreur :
+                    #   "requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)"
+                    print(f"Status Code: {response.status_code}")
+                # else:
+                #     print(f"Status Code: {response.status_code}, {response.json()}")
+                else:
+                    # Pas de problème avec
+                    #   - Status Code: 400 ('La position de début doit être inférieure ou égale à 3000.')
+                    #   - Status Code: 500 ('Erreur technique. Veuillez contacter le support de francetravail.io.')
+                    # Ce qui pose problème avec Airflow : erreur 429 (too much requests), c'est 10 appels par seconde max
+                    try:
+                        print(f"Status Code: {response.status_code} ==> {response.json()}")
+                    except requests.exceptions.JSONDecodeError:
+                        # arrive
+                        print(f"Status Code: {response.status_code} ==> Réponse vide ou invalide")
+                        print(f"Texte brut de la réponse : {response.text}")
 
-    #                 # Boucle for pour écrire uniquement les documents
-    #                 for obj in response.json()["resultats"]:
-    #                     json.dump(obj, f, ensure_ascii=False)
-    #                     f.write(",\n")  # Ajouter une virgule après chaque objet
-    #                     document_id += 1
-    #                 print(f"{range_start}-{range_end}/{max_offres} {Fore.YELLOW}--> écriture dans le fichier (total: {document_id})")
-    #             elif response.status_code == 204:  # "No Content successful"
-    #                 # L'erreur 204 est dans un elif car pour cette erreur, "response.json()" renvoie l'erreur :
-    #                 #   "requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)"
-    #                 print(f"Status Code: {response.status_code}")
-    #             else:
-    #                 # Pas de problème avec
-    #                 #   - Status Code: 400 ('La position de début doit être inférieure ou égale à 3000.')
-    #                 #   - Status Code: 500 ('Erreur technique. Veuillez contacter le support de francetravail.io.')
-    #                 print(f"Status Code: {response.status_code}, {response.json()}")
-    #                 break
+                    break
 
-    #             range_start += 150
-    #             range_end += 150
-    #             filter_params["range"] = f"{range_start}-{range_end}"
-    #             request_id += 1
+                range_start += 150
+                range_end += 150
+                filter_params["range"] = f"{range_start}-{range_end}"
+                request_id += 1
 
-    #             # if request_id == 2:  # utile si besoin investigation
-    #             #     break
+                # if request_id == 2:  # utile si besoin investigation
+                #     break
 
-    #     """
-    #     A partir d'ici, on applique le principe du script "fix_invalid_json.py" :
-    #         - On a un json invalide jusqu'ici, de la forme suivante (simplifiée ici) :
+        """
+        A partir d'ici, on applique le principe du script "fix_invalid_json.py" :
+            - On a un json invalide jusqu'ici, de la forme suivante (simplifiée ici) :
 
-    #             ```
-    #             [
-    #             {"id": "188VMGQ", "intitule": "Data Engineer (H/F)"},
-    #             {"id": "188RQRZ", "intitule": "Responsable Data Studio F/H (H/F)"},
-    #             {"id": "188PNVQ", "intitule": "Maître du Jeu des ETL recherché pour notre Next Game"},
-    #                 // ligne vide
-    #             ```
+                ```
+                [
+                {"id": "188VMGQ", "intitule": "Data Engineer (H/F)"},
+                {"id": "188RQRZ", "intitule": "Responsable Data Studio F/H (H/F)"},
+                {"id": "188PNVQ", "intitule": "Maître du Jeu des ETL recherché pour notre Next Game"},
+                    // ligne vide
+                ```
 
-    #         - Et on va rendre ce json valide, et ainsi avoir
+            - Et on va rendre ce json valide, et ainsi avoir
 
-    #             ```
-    #             [
-    #             {"id": "188VMGQ", "intitule": "Data Engineer (H/F)"},
-    #             {"id": "188RQRZ", "intitule": "Responsable Data Studio F/H (H/F)"},
-    #             {"id": "188PNVQ", "intitule": "Maître du Jeu des ETL recherché pour notre Next Game"}
-    #             ]
-    #             ```
+                ```
+                [
+                {"id": "188VMGQ", "intitule": "Data Engineer (H/F)"},
+                {"id": "188RQRZ", "intitule": "Responsable Data Studio F/H (H/F)"},
+                {"id": "188PNVQ", "intitule": "Maître du Jeu des ETL recherché pour notre Next Game"}
+                ]
+                ```
 
-    #     """
-    #     # Ecrire le contenu de "invalid_json.json" dans "invalid_content"
-    #     with open(output_file, "r") as invalid:
-    #         invalid_content = invalid.read()
-    #         # print(invalid_content)
+        """
+        # Ecrire le contenu de "invalid_json.json" dans "invalid_content"
+        with open(output_file, "r") as invalid:
+            invalid_content = invalid.read()
+            # print(invalid_content)
 
-    #     # Ecrire le json valide dans "valid_content"
-    #     with open(output_file, "w") as valid:
-    #         valid_content = invalid_content[:-2] + "\n]"
-    #         valid.write(valid_content)
+        # Ecrire le json valide dans "valid_content"
+        with open(output_file, "w") as valid:
+            valid_content = invalid_content[:-2] + "\n]"
+            valid.write(valid_content)
 
-    #     # Ouvrir le fichier json valide pour vérifier qu'il est bien valide
-    #     with open(output_file, "r") as valid:
-    #         valid_content = valid.read()
-    #         try:
-    #             json.loads(valid_content)
-    #             print("Le json est bien valide.")
-    #         except json.JSONDecodeError as e:
-    #             print(f"Le json n'est pas valide :\n==> {e}")
+        # Ouvrir le fichier json valide pour vérifier qu'il est bien valide
+        with open(output_file, "r") as valid:
+            valid_content = valid.read()
+            try:
+                json.loads(valid_content)
+                print("Le json est bien valide.")
+            except json.JSONDecodeError as e:
+                print(f"Le json n'est pas valide :\n==> {e}")
 
-    #     # Renommer les fichiers json en ajoutant le nombre d'offres dans le json
-    #     dir_path, file_name = os.path.split(output_file)  # Séparer le chemin et le nom du fichier
-    #     new_file_name = f"{file_name[:-5]}__{document_id}_offres.json"
-    #     # print(dir_path, file_name, new_file_name, sep="\n")  # utile si investigation
-    #     new_file_path = os.path.join(dir_path, new_file_name)  # Créer le chemin complet du nouveau fichier
-    #     os.rename(output_file, new_file_path)  # Renommer le fichier
+        # Renommer les fichiers json en ajoutant le nombre d'offres dans le json
+        dir_path, file_name = os.path.split(output_file)  # Séparer le chemin et le nom du fichier
+        new_file_name = f"{file_name[:-5]}__{document_id}_offres.json"
+        # print(dir_path, file_name, new_file_name, sep="\n")  # utile si investigation
+        new_file_path = os.path.join(dir_path, new_file_name)  # Créer le chemin complet du nouveau fichier
+        os.rename(output_file, new_file_path)  # Renommer le fichier
 
-    # ###### autres cas
-    # elif response.status_code == 204:
-    #     print(f"Status Code : {response.status_code} : Aucune offre correspondante")
-    # else:
-    #     print(f"Status Code : {response.status_code} ==> {response.json()}")
+    ###### autres cas
+    elif response.status_code == 204:
+        print(f"Status Code : {response.status_code} : Aucune offre correspondante")
+    else:
+        print(f"Status Code : {response.status_code} ==> {response.json()}")
 
-    # print("")
+    print("")
 
     return None
 

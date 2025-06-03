@@ -24,6 +24,7 @@ from airflow import DAG
 from airflow.decorators import dag, task
 from airflow.operators.python import get_current_context
 from airflow.utils.dates import days_ago
+from airflow.utils.task_group import TaskGroup
 
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
@@ -65,6 +66,7 @@ current_directory = os.path.dirname(os.path.abspath(__file__))
 # credential_filename = os.path.join(current_directory, CREDENTIALS_FILE)
 credential_filename = os.path.join(current_directory, "..", "data", "resources", CREDENTIALS_FILE)
 codes_appellation_filename = os.path.join(current_directory, "..", "data", "resources", "code_appellation_libelle.yml")
+codes_appellation_filename_1 = os.path.join(current_directory, "..", "data", "resources", "code_appellation_libelle_1.yml")
 #
 # json_files_original_from_api_directory = os.path.join(current_directory, "outputs", "offres", "0--original_json_files_from_api")
 json_files_original_from_api_directory = os.path.join(current_directory, "..", "data", "outputs", "offres", "0--original_json_files_from_api")
@@ -78,6 +80,36 @@ with open(credential_filename, "r") as file:
 
 IDENTIFIANT_CLIENT = creds["API_FRANCE_TRAVAIL"]["IDENTIFIANT_CLIENT"]
 CLE_SECRETE = creds["API_FRANCE_TRAVAIL"]["CLE_SECRETE"]
+
+
+@dag(
+    dag_id="projet",
+    tags=["projet"],
+    schedule_interval=None,
+    # start_date=days_ago(0),
+)
+def my_dag():
+    with TaskGroup(group_id="setup_group", tooltip="xxx") as setup:
+        S3_token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)
+        S4_clean = remove_all_json_files(json_files_original_from_api_directory)
+
+    with TaskGroup(group_id="etl_group", tooltip="xxx") as setup:
+        with open(codes_appellation_filename_1, "r") as file:
+            content = yaml.safe_load(file)
+            code_appellation_libelle = content["code_appellation_libelle"]
+            codes_list = [i["code"] for i in code_appellation_libelle]
+
+            for code in codes_list:
+                S101 = get_offres(S3_token, code_appellation_libelle, filter_params={"appellation": code, "paysContinent": "01"})
+        # for code in codes_list:
+        #     get_offres(token, code_appellation_libelle, filter_params={"appellation": code, "paysContinent": "01"})
+        #     # Note : "paysContinent": "01" pour la France (non restreint à la métropôle)
+
+    # task_S3_token >> task_S4_clean
+
+
+my_dag = my_dag()
+
 
 # token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)
 
@@ -336,21 +368,3 @@ CLE_SECRETE = creds["API_FRANCE_TRAVAIL"]["CLE_SECRETE"]
 
 #     if launch_create_location_csv:
 #         create_csv__code_name__city_department_region()
-
-
-@dag(
-    dag_id="projet",
-    tags=["projet"],
-    schedule_interval=None,
-    # start_date=days_ago(0),
-)
-def my_dag():
-    # setup
-    task_S3_token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)
-    # group_task 1
-    task_S4_clean = remove_all_json_files(json_files_original_from_api_directory)
-
-    # task_S3_token >> task_S4_clean
-
-
-my_dag = my_dag()
