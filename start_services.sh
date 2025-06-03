@@ -1,7 +1,22 @@
 #!/bin/bash
 
+# notes :
+#
+#  - pour lancer le script :
+#    - "./script.sh true" pour build
+#    - "./script.sh" sinon
+#
+#  - pour investiguer : "docker compose logs -f"
+
 GREEN='\e[32m'
 NC='\e[0m' # Reset color
+
+#### Gestion du premier argument
+if [ "$1" == "true" ]; then
+    BUILD_IMAGES=true
+else
+    BUILD_IMAGES=false
+fi
 
 #### Exécution de "docker compose down"
 
@@ -23,7 +38,12 @@ fi
 #### Exécution de "docker compose up"
 
 echo -e "${GREEN}\n\n== Exécution de \"docker compose up\" ${NC}"
-docker compose up -d
+
+if [ "$BUILD_IMAGES" = true ]; then
+    docker compose up --build -d # si besoin de reconstruire l'image (si nouvelle lib dans le requirement.txt par exemple)
+else
+    docker compose up -d
+fi
 
 #### Attente jusqu'à ce que tous les conteneurs soient healthy
 
