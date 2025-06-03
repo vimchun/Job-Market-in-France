@@ -21,6 +21,7 @@ x-airflow-common: &airflow-common
     # _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:- pymongo}
   volumes:
     - ./airflow/dags:/opt/airflow/dags
+    - ./airflow/data:/opt/airflow/data
     - ./airflow/logs:/opt/airflow/logs
     - ./airflow/plugins:/opt/airflow/plugins
 
