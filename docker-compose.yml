@@ -1,10 +1,14 @@
-# Lancer le fichier "start_containers.sh" qui fait les commandes suivantes :
-#   docker compose up airflow-init
-#   docker compose up
-
+# Notes :
+#
+# - Lancer le fichier "start_containers.sh" qui fait les commandes suivantes :
+#     docker compose up airflow-init
+#     docker compose up
+#
+# - 2.11.0 date de mai 2025 (https://hub.docker.com/r/apache/airflow/tags)
 
 x-airflow-common: &airflow-common
-  image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.11.0}  # mai 2025 (https://hub.docker.com/r/apache/airflow/tags)
+  # image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.11.0}  # utilise l'image officielle
+  build: .   # build à partir du Dockerfile
   environment: &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://mhh:mhh@postgres/francetravail
