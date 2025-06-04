@@ -12,6 +12,8 @@
 
   - [4. Création d'une API pour la db, dockerisation de cette application et de la db PostGreSQL](readme_pages/step_4__api.md)
 
+  - [5. Intégration d'Airflow](readme_pages/step_5__airflow.md)
+
 
 # Workflow du projet
 
