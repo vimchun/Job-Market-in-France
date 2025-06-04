@@ -88,11 +88,9 @@ def my_dag():
     with TaskGroup(group_id="etl_group", tooltip="xxx") as etl:
         code_libelle_list = load_code_appellation_yaml_file()
         with TaskGroup(group_id="api_requests_group", tooltip="xxx") as api_requests:
-            get_offres.partial(
-                # "partial()" car token commun à toutes les tâches mappées
+            get_offres.partial(  # "partial()" car token commun à toutes les tâches mappées
                 token=S3_token,
-            ).expand(
-                # "expand()" car 1 task par valeur de la liste "code_libelle_list"
+            ).expand(  # "expand()" car 1 task par valeur de la liste "code_libelle_list"
                 code_libelle_list=code_libelle_list,
             )
 
