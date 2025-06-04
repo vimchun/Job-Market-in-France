@@ -20,15 +20,13 @@ import yaml
 
 from colorama import Fore, Style, init
 
-from airflow import DAG
-from airflow.decorators import dag, task
+from airflow.decorators import dag, task, task_group
 from airflow.operators.python import get_current_context
 from airflow.utils.dates import days_ago
 from airflow.utils.task_group import TaskGroup
 
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
-# from airflow.dags.utils.functions import (
 from utils.functions import (
     add_date_extract_attribute,
     add_date_premiere_ecriture_attribute,
@@ -40,6 +38,7 @@ from utils.functions import (
     get_referentiel_appellations_rome,
     get_referentiel_pays,
     keep_only_offres_from_metropole,
+    load_code_appellation_yaml_file,
     remove_all_json_files,
 )
 
@@ -63,17 +62,10 @@ launch_add_date_premiere_ecriture_attribute = 1
 SCOPES_OFFRES = "o2dsoffre api_offresdemploiv2"  # scopes définis dans https://francetravail.io/produits-partages/catalogue/offres-emploi/documentation#/
 CREDENTIALS_FILE = "api_credentials_minh.yml"  # à modifier selon qui lance le script
 current_directory = os.path.dirname(os.path.abspath(__file__))
-# credential_filename = os.path.join(current_directory, CREDENTIALS_FILE)
 credential_filename = os.path.join(current_directory, "..", "data", "resources", CREDENTIALS_FILE)
 codes_appellation_filename = os.path.join(current_directory, "..", "data", "resources", "code_appellation_libelle.yml")
-codes_appellation_filename_1 = os.path.join(current_directory, "..", "data", "resources", "code_appellation_libelle_1.yml")
-#
-# json_files_original_from_api_directory = os.path.join(current_directory, "outputs", "offres", "0--original_json_files_from_api")
 json_files_original_from_api_directory = os.path.join(current_directory, "..", "data", "outputs", "offres", "0--original_json_files_from_api")
-#
-# generated_json_files_directory = os.path.join(current_directory, "outputs", "offres", "1--generated_json_file")
 generated_json_files_directory = os.path.join(current_directory, "..", "data", "outputs", "offres", "1--generated_json_file")
-#
 
 with open(credential_filename, "r") as file:
     creds = yaml.safe_load(file)
@@ -93,26 +85,19 @@ def my_dag():
         S3_token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)
         S4_clean = remove_all_json_files(json_files_original_from_api_directory)
 
-    with TaskGroup(group_id="etl_group", tooltip="xxx") as setup:
-        with open(codes_appellation_filename_1, "r") as file:
-            content = yaml.safe_load(file)
-            code_appellation_libelle = content["code_appellation_libelle"]
-            codes_list = [i["code"] for i in code_appellation_libelle]
-
-            for code in codes_list:
-                S101 = get_offres(S3_token, code_appellation_libelle, filter_params={"appellation": code, "paysContinent": "01"})
-        # for code in codes_list:
-        #     get_offres(token, code_appellation_libelle, filter_params={"appellation": code, "paysContinent": "01"})
-        #     # Note : "paysContinent": "01" pour la France (non restreint à la métropôle)
-
-    # task_S3_token >> task_S4_clean
+    with TaskGroup(group_id="etl_group", tooltip="xxx") as etl:
+        code_libelle_list = load_code_appellation_yaml_file()
+        with TaskGroup(group_id="api_requests_group", tooltip="xxx") as api_requests:
+            get_offres.partial(
+                # "partial()" car token commun à toutes les tâches mappées
+                token=S3_token,
+            ).expand(
+                # "expand()" car 1 task par valeur de la liste "code_libelle_list"
+                code_libelle_list=code_libelle_list,
+            )
 
 
 my_dag = my_dag()
-
-
-# token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)
-
 
 # def functions_sequence(json_files_from_api_directory, generated_json_files_directory, json_filename):
 #     """

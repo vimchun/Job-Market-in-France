@@ -1,4 +1,5 @@
 code_appellation_libelle: # "libelle" associé au code en commentaire (spécifique à l'API France Travail)
+    #### métiers DE/DA/DS
     - code: '404278'
       libelle: 'Data_Engineer'
     - code: '404284'
@@ -9,6 +10,7 @@ code_appellation_libelle: # "libelle" associé au code en commentaire (spécifiq
       libelle: 'Data_Scientist'
     - code: '404274'
       libelle: 'Ingenieur_Data_Scientist'
+    #### autres métiers de la data
     - code: '38970'
       libelle: 'Data_Miner'
     - code: '38975'
@@ -19,7 +21,6 @@ code_appellation_libelle: # "libelle" associé au code en commentaire (spécifiq
       libelle: 'Analyste_Decisionnel_Business_Intelligence'
     - code: '404276'
       libelle: 'Architecte_Big_Data'
-
     - code: '404277'
       libelle: 'Big_Data_Engineer'
     - code: '404279'
@@ -40,7 +41,6 @@ code_appellation_libelle: # "libelle" associé au code en commentaire (spécifiq
       libelle: 'Responsable_Big_Data'
     - code: '404288'
       libelle: 'Developpeur_Data'
-
     - code: '404291'
       libelle: 'Data_Protection_Officer'
     - code: '404939'
@@ -59,9 +59,9 @@ code_appellation_libelle: # "libelle" associé au code en commentaire (spécifiq
       libelle: 'Explorateur_De_Donnees'
     - code: '38661'
       libelle: 'Developpeur_Decisionnel_BI'
+    #### élargissement avec d'autres métiers de la tech
     - code: '10944'
       libelle: 'Analyste_Developpeur'
-
     - code: '14148'
       libelle: 'Developpeur_Application'
     - code: '14153'
@@ -82,7 +82,6 @@ code_appellation_libelle: # "libelle" associé au code en commentaire (spécifiq
       libelle: 'Developpeur_Front_End'
     - code: '20728'
       libelle: 'Webmaster_Developpeur'
-
     - code: '38717'
       libelle: 'Developpeur_Jeux_Video'
     - code: '38745'
@@ -95,15 +94,14 @@ code_appellation_libelle: # "libelle" associé au code en commentaire (spécifiq
       libelle: 'Expert_Securite_Informatique'
     - code: '15885'
       libelle: 'Ingenieur_Securite_Informatique'
+    - code: '19178'
+      libelle: 'Responsable_Securite_SI'
     - code: '19180'
       libelle: 'Responsable_Securite_Informatique'
-    - code: '488822'
-      libelle: 'Ingenieur_DevOps'
     - code: '489121'
       libelle: 'Expert_Securite_Informatique'
     - code: '489123'
       libelle: 'Ingenieur_Cybersecurite_Datacenter'
-
     - code: '38834'
       libelle: 'Expert_Cybersecurite'
     - code: '404297'
@@ -124,4 +122,5 @@ code_appellation_libelle: # "libelle" associé au code en commentaire (spécifiq
       libelle: 'Analyste_Cybersecurite'
     - code: '488824'
       libelle: 'Devops'
-
+    - code: '488822'
+      libelle: 'Ingenieur_DevOps'

@@ -332,7 +332,30 @@ def remove_all_json_files(json_files_directory):
 
 
 @task
-def get_offres(token, code_appellation_libelle, filter_params):
+def load_code_appellation_yaml_file():
+    """
+    Charge le fichier dans "Job_Market/airflow/data/resources/code_appellation_libelle.yml"
+    Retourne une liste de dictionnaire de la forme :
+      [
+        {'code': '404278', 'libelle': 'Data_Engineer'},
+        {'code': '404284', 'libelle': 'Ingenieur_Donnees'},
+        {},
+        ...
+      ]
+    """
+    import yaml
+
+    codes_appellation_filename = os.path.join(current_directory, "..", "..", "data", "resources", "code_appellation_libelle.yml")
+
+    with open(codes_appellation_filename, "r") as file:
+        content = yaml.safe_load(file)
+        code_libelle_list = content["code_appellation_libelle"]
+
+    return code_libelle_list
+
+
+@task
+def get_offres(token, code_libelle_list):
     """
     A partir des appellations ROME décrites dans "code_appellation_libelle.yml", récupérer les offres de chaque appellation et les écrit dans un fichier json.
     Une requête retourne au maximum 150 offres (cf paramètres range), donc il faut en faire plusieurs s'il y a plus de 150 offres.
@@ -340,20 +363,10 @@ def get_offres(token, code_appellation_libelle, filter_params):
 
     Ne retourne rien.
     """
+    code_appellation = code_libelle_list["code"]
+    libelle = code_libelle_list["libelle"]
 
-    appellation = filter_params["appellation"]
-
-    for item in code_appellation_libelle:
-        if item["code"] == appellation:
-            libelle = item["libelle"]
-            break
-
-    codes_list = [str(i["code"]) for i in code_appellation_libelle]
-
-    if filter_params["appellation"] in codes_list:
-        print(f"{Fore.GREEN}== Récupération des offres ({appellation}: {libelle}) :")
-    else:
-        print(f"{Fore.GREEN}== Récupération des offres ({appellation}) :")
+    print(f"{Fore.GREEN}== Récupération des offres ({code_appellation}: {libelle}) :")
 
     url = "https://api.francetravail.io/partenaire/offresdemploi/v2/offres/search"
 
@@ -364,7 +377,8 @@ def get_offres(token, code_appellation_libelle, filter_params):
 
     #### Première requête pour voir combien d'offres sont disponibles
 
-    response = requests.get(url, headers=headers, params=filter_params)
+    params = {"appellation": code_appellation, "paysContinent": "01"}
+    response = requests.get(url, headers=headers, params=params)
 
     print(f"{Fore.GREEN}==== Récupération des offres (requête 0), pour connaître le nombre d'offres :", end=" ")
 
@@ -382,15 +396,8 @@ def get_offres(token, code_appellation_libelle, filter_params):
         if content_range is not None:
             max_offres = int(content_range.split("/")[-1])
 
-        # output_file_path = os.path.join(current_directory, "outputs", "offres", "0--original_json_files_from_api")
         output_file_path = os.path.join(current_directory, "..", "..", "data", "outputs", "offres", "0--original_json_files_from_api")
-        if filter_params["appellation"] in codes_list:
-            # output_file = os.path.join(current_directory, "outputs", "offres", "0--original_json_files_from_api", f"{appellation}_{libelle}.json")
-            output_file = os.path.join(output_file_path, f"{appellation}_{libelle}.json")
-
-        else:
-            # output_file = os.path.join(current_directory, "outputs", "offres", "0--original_json_files_from_api", f"{appellation}.json")
-            output_file = os.path.join(output_file_path, f"{appellation}.json")
+        output_file = os.path.join(output_file_path, f"{code_appellation}_{libelle}.json")
 
         if os.path.exists(output_file):
             os.remove(output_file)
@@ -434,7 +441,7 @@ def get_offres(token, code_appellation_libelle, filter_params):
         range_start = 0
         range_end = 149
         request_id = 1
-        filter_params["range"] = f"{range_start}-{range_end}"
+        params["range"] = f"{range_start}-{range_end}"
 
         with open(output_file, "a", encoding="utf-8") as f:
             f.write("[\n")  # Ajouter un "[" pour "initialiser" le fichier json
@@ -443,7 +450,12 @@ def get_offres(token, code_appellation_libelle, filter_params):
 
             for _ in range(int(max_offres / 150) + 1):
                 print(f"{Fore.GREEN}==== Récupération des offres (requête {request_id}) :", end=" ")
-                response = requests.get(url, headers=headers, params=filter_params)
+                response = requests.get(url, headers=headers, params=params)
+
+                if response.status_code == 429:
+                    print(f"{Fore.RED}Trop de requêtes (429), pause de 2 secondes...")
+                    time.sleep(2)
+                    continue  # on refait la requête
 
                 if response.status_code == 206:
                     print(f"Status Code: {response.status_code}", end=", ")
@@ -476,7 +488,7 @@ def get_offres(token, code_appellation_libelle, filter_params):
 
                 range_start += 150
                 range_end += 150
-                filter_params["range"] = f"{range_start}-{range_end}"
+                params["range"] = f"{range_start}-{range_end}"
                 request_id += 1
 
                 # if request_id == 2:  # utile si besoin investigation
