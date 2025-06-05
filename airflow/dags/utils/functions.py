@@ -22,7 +22,7 @@ current_directory = os.path.dirname(os.path.abspath(__file__))
 #### fonctions utilisées par airflow (décorateur @task)
 
 
-@task
+@task(task_id="S3_get_token")
 def get_bearer_token(client_id, client_secret, scope):
     """
     Récupère un Bearer Token grâce à l'API de France Travail.
@@ -62,7 +62,7 @@ def get_bearer_token(client_id, client_secret, scope):
         return None
 
 
-@task
+@task(task_id="S4_remove_all_json_files")
 def remove_all_json_files(json_files_directory):
     """
     Supprime tous les fichiers json du dossier spécifié
@@ -83,7 +83,7 @@ def remove_all_json_files(json_files_directory):
     return None
 
 
-@task
+@task(task_id="S5_load_yaml_file")
 def load_code_appellation_yaml_file():
     """
     Charge le fichier dans "Job_Market/airflow/data/resources/code_appellation_libelle.yml"
@@ -140,8 +140,8 @@ def throttled_get(url, headers=None, params=None, max_retries=10, retry_delay=2)
 
 
 # @task(pool="api_francetravail_pool", retries=3, retry_delay=timedelta(seconds=10))
-@task
-def get_offres(token, code_libelle_list):
+@task(task_id="A1_get_offers")
+def get_offers(token, code_libelle_list):
     """
     Récupére les offres de chaque appellation et les écrit dans un fichier json à partir des appellations ROME décrites dans "code_appellation_libelle.yml"
     Une requête retourne au maximum 150 offres (cf paramètres range), donc il faut en faire plusieurs s'il y a plus de 150 offres.

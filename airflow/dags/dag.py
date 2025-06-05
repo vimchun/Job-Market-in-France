@@ -34,7 +34,7 @@ from utils.functions import (
     concatenate_all_json_into_one,
     create_csv__code_name__city_department_region,
     get_bearer_token,
-    get_offres,
+    get_offers,
     get_referentiel_appellations_rome,
     get_referentiel_pays,
     keep_only_offres_from_metropole,
@@ -82,17 +82,23 @@ CLE_SECRETE = creds["API_FRANCE_TRAVAIL"]["CLE_SECRETE"]
 )
 def my_dag():
     with TaskGroup(group_id="setup_group", tooltip="xxx") as setup:
-        S3_token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)
-        S4_clean = remove_all_json_files(json_files_original_from_api_directory)
+        token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)
+        remove_jsons = remove_all_json_files(json_files_original_from_api_directory)
+        code_libelle_list = load_code_appellation_yaml_file()
 
     with TaskGroup(group_id="etl_group", tooltip="xxx") as etl:
-        code_libelle_list = load_code_appellation_yaml_file()
-        with TaskGroup(group_id="api_requests_group", tooltip="xxx") as api_requests:
-            get_offres.partial(  # "partial()" car token commun à toutes les tâches mappées
-                token=S3_token,
-            ).expand(  # "expand()" car 1 task par valeur de la liste "code_libelle_list"
-                code_libelle_list=code_libelle_list,
-            )
+        api_requests = get_offers.partial(  # "partial()" car token commun à toutes les tâches mappées
+            token=token,
+        ).expand(  # "expand()" car 1 task par valeur de la liste "code_libelle_list"
+            code_libelle_list=code_libelle_list,
+        )
+
+    # Ordonnancement des groupes et tâches
+    setup >> etl
+
+    [token, remove_jsons] >> code_libelle_list
+
+    code_libelle_list >> api_requests
 
 
 my_dag = my_dag()
