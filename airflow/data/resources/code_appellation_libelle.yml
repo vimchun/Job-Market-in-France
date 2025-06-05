@@ -124,3 +124,6 @@ code_appellation_libelle: # "libelle" associé au code en commentaire (spécifiq
       libelle: 'Devops'
     - code: '488822'
       libelle: 'Ingenieur_DevOps'
+    #### code de test qui a des chances de renvoyer peu d'offre (moins de 150 pour tout avoir en une requête)
+    - code: '11100'
+      libelle: 'Aquafortiste' # Graveur·euse sur cuivre à l'eau-forte
