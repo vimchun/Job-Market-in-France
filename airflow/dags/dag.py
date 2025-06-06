@@ -86,31 +86,45 @@ CLE_SECRETE = creds["API_FRANCE_TRAVAIL"]["CLE_SECRETE"]
 def my_dag():
     with TaskGroup(group_id="setup_group", tooltip="xxx") as setup:
         with TaskGroup(group_id="check_files_in_folders", tooltip="xxx") as check:
-            count_json_files_number(directory_path=generated_json_files_directory)
-            check_presence_yaml_file(file_path=codes_appellation_filename)
+            count_json_files_number(directory_path=generated_json_files_directory)  #### task S1
+            check_presence_yaml_file(file_path=codes_appellation_filename)  #### task S2
 
         with TaskGroup(group_id="after_checks", tooltip="xxx") as after_checks:
-            token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)
-            remove_all_json_files(json_files_original_from_api_directory)
-            code_libelle_list = load_code_appellation_yaml_file()
-            created_json_filename = create_name_for_concat_json_file()
+            remove_all_json_files(json_files_original_from_api_directory)  #### task S3
+            token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)  #### task S4
+            code_libelle_list = load_code_appellation_yaml_file()  #### task S5
+            created_json_filename = create_name_for_concat_json_file()  #### task S6
 
         check >> after_checks  # >> code_libelle_list
 
     with TaskGroup(group_id="etl_group", tooltip="xxx") as etl:
-        api_requests = get_offers.partial(  # "partial()" car token commun à toutes les tâches mappées
-            token=token,
-        ).expand(  # "expand()" car 1 task par valeur de la liste "code_libelle_list"
-            code_libelle_list=code_libelle_list,
+        api_requests = (
+            get_offers  #### task A1
+            # "partial()" car token commun à toutes les tâches mappées
+            .partial(token=token)
+            # "expand()" car 1 task par valeur de la liste "code_libelle_list"
+            .expand(code_libelle_list=code_libelle_list)
         )
 
-        all_json_in_one = concatenate_all_json_into_one(
+        all_json_in_one = concatenate_all_json_into_one(  #### task A2
             json_files_from_api_directory=json_files_original_from_api_directory,
             generated_json_file_directory=generated_json_files_directory,
             new_json_filename=created_json_filename,
         )
 
-        api_requests >> all_json_in_one
+        metropole = keep_only_offres_from_metropole(  #### task A3
+            json_files_directory=generated_json_files_directory,
+            json_filename=created_json_filename,
+            new_json_filename=created_json_filename,  # on écrase le fichier en entrée
+        )
+
+        add_location = add_location_attributes(  #### task A4
+            json_files_directory=generated_json_files_directory,
+            json_filename=created_json_filename,
+            new_json_filename=created_json_filename,  # on écrase le fichier en entrée
+        )
+
+        api_requests >> all_json_in_one >> metropole >> add_location
 
 
 my_dag = my_dag()

@@ -385,6 +385,7 @@ def concatenate_all_json_into_one(json_files_from_api_directory, generated_json_
 
     # print(df_concat)  # pour investigation
 
+    # todo: répétés plusieurs fois dans les fonctions suivantes donc à factoriser (ou ne le faire qu'à la fin ?)
     # On supprime les backslashs ajoutés par la méthode .to_json()
     with open(os.path.join(generated_json_file_directory, new_json_filename), "r", encoding="utf-8") as f:
         content = f.read()
@@ -496,6 +497,7 @@ def add_date_extract_attribute(json_files_directory, json_filename, new_json_fil
     return new_json_filename
 
 
+@task(task_id="A3_only_metropole")
 def keep_only_offres_from_metropole(json_files_directory, json_filename, new_json_filename):
     """
     Cette fonction écrase le json entré en paramètre, en ne conservant que les offres d'emploi de la France Métropolitaine.
@@ -566,6 +568,7 @@ def keep_only_offres_from_metropole(json_files_directory, json_filename, new_jso
     return new_json_filename, len(df_only_metropole)
 
 
+@task(task_id="A4_add_location_attrs")
 def add_location_attributes(json_files_directory, json_filename, new_json_filename):
     """
     Prend en entrée un fichier json généré avec les fonctions précédentes.
@@ -597,10 +600,7 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
     )
 
     df_insee = pd.read_csv(
-        os.path.join(
-            os.path.join(current_directory, "locations_information"),
-            "code_name__city_department_region.csv",
-        ),
+        os.path.join(os.path.join(current_directory, "..", "..", "data", "resources", "code_name__city_department_region.csv")),
         dtype=str,
     )
 
@@ -651,7 +651,11 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
 
     # Récupération code_postal avec geopy
 
-    geolocator = Nominatim(user_agent="my_geopy_app")
+    geolocator = Nominatim(user_agent="my_geopy_app", timeout=10)  # timeout=1 par défaut
+    # Notes :
+    #   - La tâche Airflow essaie de faire beaucoup de requêtes HTTP consécutives au service "Nominatim", ce qui peut amener à l'erreur :
+    #       ReadTimeoutError("HTTPSConnectionPool(host='nominatim.openstreetmap.org', port=443): Read timed out. (read timeout=1)")
+    #   - Donc on contourne en mettant "timeout=10".
 
     latitude_min = 42.3328  # Sud
     latitude_max = 51.0892  # Nord
@@ -684,8 +688,10 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
                 if location:
                     address = location.raw.get("address", {})
                     row["code_postal"] = address.get("postcode", "Inconnu")
+                    print(f"  --> offre {row['id']} : coordonnées gps {row['latitude']}, {row['longitude']} ==> code postal trouvée : {row['code_postal']}")
                 else:
                     row["code_postal"] = "Inconnu"
+                    print(f"  --> offre {row['id']} : coordonnées gps {row['latitude']}, {row['longitude']} ==> code postal NON trouvée")
                 break  # on sort de la boucle si succès
 
             except Exception as e:
