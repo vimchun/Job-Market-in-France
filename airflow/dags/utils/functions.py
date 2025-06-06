@@ -22,7 +22,68 @@ current_directory = os.path.dirname(os.path.abspath(__file__))
 #### fonctions utilisées par airflow (décorateur @task)
 
 
-@task(task_id="S3_get_token")
+@task(task_id="S1_check_nb_of_json_files")
+def count_json_files_number(directory_path):
+    """
+    Compte le nombre de json dans "directory_path".
+      - Si 0 ou 1, on continue le DAG.
+      - Sinon, on arrête le DAG avec une Exception.
+    """
+    json_files = [f for f in os.listdir(directory_path) if f.endswith(".json")]
+    count = len(json_files)
+    print(f'==> {count} fichier json dans "{directory_path}"')
+
+    if count <= 1:
+        print("0 ou 1 fichier json, on continue le DAG...")
+    else:
+        raise Exception(f"==> Au moins 2 fichiers json ({count}). On arrête le DAG.")
+
+    return json_files
+
+
+@task(task_id="S2_check_yaml_file_presence")
+def check_presence_yaml_file(file_path):
+    """
+    Vérifie la présence du fichier yaml "file_path".
+      - Si True, on continue le DAG.
+      - Sinon, on arrête le DAG avec une Exception.
+    """
+    if os.path.exists(file_path):
+        print(f'Le fichier yaml est bien présent ici : "{file_path}", on continue le DAG...')
+    else:
+        raise Exception(f"==> Le fichier yaml n'est pas présent dans ({file_path}). On arrête le DAG.")
+
+    return None
+
+
+@task(task_id="S3_remove_all_json_files")
+def remove_all_json_files(json_files_directory):
+    """
+    Supprime tous les fichiers json du dossier spécifié
+    """
+
+    for file in os.listdir(json_files_directory):
+        json_to_delete = os.path.join(json_files_directory, file)
+
+        # Vérifie si c'est un fichier et si son extension est .json
+        if os.path.isfile(json_to_delete) and file.endswith(".json"):
+            try:
+                os.remove(json_to_delete)
+            except Exception as e:
+                print(f"Erreur lors de la suppression de {json_to_delete}: {e}")
+
+    json_files = [f for f in os.listdir(json_files_directory) if f.endswith(".json")]
+    count = len(json_files)
+
+    if count == 0:
+        print(f"Après suppression, il reste {count} fichiers (OK).")
+    else:
+        raise Exception(f'Il reste au moins un fichier json dans le dossier "{json_files_directory}"')
+
+    return None
+
+
+@task(task_id="S4_get_token")
 def get_bearer_token(client_id, client_secret, scope):
     """
     Récupère un Bearer Token grâce à l'API de France Travail.
@@ -32,8 +93,8 @@ def get_bearer_token(client_id, client_secret, scope):
     - client_secret (str) : Clé secrète fournie par l'API de France Travail.
     - scope (str) : Liste des scopes séparés par des espaces, indiquant les permissions demandées.
 
-    Return :
-    - str : Le Bearer Token pour l'authentification des requêtes, ou None en cas d'erreur.
+    Retourne :
+    - Bearer Token (str) : pour l'authentification des requêtes, ou None en cas d'erreur.
     """
 
     print(f'{Fore.GREEN}\n==> Fonction "get_bearer_token()"\n')
@@ -60,27 +121,6 @@ def get_bearer_token(client_id, client_secret, scope):
         print(f"Erreur, Status Code: {response.status_code}\n")
         print(f"=> {response.json()}")
         return None
-
-
-@task(task_id="S4_remove_all_json_files")
-def remove_all_json_files(json_files_directory):
-    """
-    Supprime tous les fichiers json du dossier spécifié
-    """
-
-    print(f'{Fore.GREEN}\n==> Fonction "remove_all_json_files()"\n')
-
-    for file in os.listdir(json_files_directory):
-        json_to_delete = os.path.join(json_files_directory, file)
-
-        # Vérifie si c'est un fichier et si son extension est .json
-        if os.path.isfile(json_to_delete) and file.endswith(".json"):
-            try:
-                os.remove(json_to_delete)
-            except Exception as e:
-                print(f"Erreur lors de la suppression de {json_to_delete}: {e}")
-
-    return None
 
 
 @task(task_id="S5_load_yaml_file")

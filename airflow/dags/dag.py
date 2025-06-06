@@ -31,7 +31,9 @@ from utils.functions import (
     add_date_extract_attribute,
     add_date_premiere_ecriture_attribute,
     add_location_attributes,
+    check_presence_yaml_file,
     concatenate_all_json_into_one,
+    count_json_files_number,
     create_csv__code_name__city_department_region,
     get_bearer_token,
     get_offers,
@@ -82,9 +84,14 @@ CLE_SECRETE = creds["API_FRANCE_TRAVAIL"]["CLE_SECRETE"]
 )
 def my_dag():
     with TaskGroup(group_id="setup_group", tooltip="xxx") as setup:
-        token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)
-        remove_jsons = remove_all_json_files(json_files_original_from_api_directory)
-        code_libelle_list = load_code_appellation_yaml_file()
+        with TaskGroup(group_id="check_files_in_folders", tooltip="xxx") as check:
+            count_json_files_number(directory_path=generated_json_files_directory)
+            check_presence_yaml_file(file_path=codes_appellation_filename)
+
+        with TaskGroup(group_id="after_checks", tooltip="xxx") as after_checks:
+            token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)
+            remove_all_json_files(json_files_original_from_api_directory)
+            code_libelle_list = load_code_appellation_yaml_file()
 
     with TaskGroup(group_id="etl_group", tooltip="xxx") as etl:
         api_requests = get_offers.partial(  # "partial()" car token commun à toutes les tâches mappées
@@ -96,7 +103,8 @@ def my_dag():
     # Ordonnancement des groupes et tâches
     setup >> etl
 
-    [token, remove_jsons] >> code_libelle_list
+    # [count_jsons, myyaml] >> [token, remove_jsons] >> code_libelle_list
+    check >> after_checks  # >> code_libelle_list
 
     code_libelle_list >> api_requests
 
