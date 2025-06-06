@@ -35,6 +35,7 @@ from utils.functions import (
     concatenate_all_json_into_one,
     count_json_files_number,
     create_csv__code_name__city_department_region,
+    create_name_for_concat_json_file,
     get_bearer_token,
     get_offers,
     get_referentiel_appellations_rome,
@@ -92,6 +93,9 @@ def my_dag():
             token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)
             remove_all_json_files(json_files_original_from_api_directory)
             code_libelle_list = load_code_appellation_yaml_file()
+            created_json_filename = create_name_for_concat_json_file()
+
+        check >> after_checks  # >> code_libelle_list
 
     with TaskGroup(group_id="etl_group", tooltip="xxx") as etl:
         api_requests = get_offers.partial(  # "partial()" car token commun à toutes les tâches mappées
@@ -100,13 +104,13 @@ def my_dag():
             code_libelle_list=code_libelle_list,
         )
 
-    # Ordonnancement des groupes et tâches
-    setup >> etl
+        all_json_in_one = concatenate_all_json_into_one(
+            json_files_from_api_directory=json_files_original_from_api_directory,
+            generated_json_file_directory=generated_json_files_directory,
+            new_json_filename=created_json_filename,
+        )
 
-    # [count_jsons, myyaml] >> [token, remove_jsons] >> code_libelle_list
-    check >> after_checks  # >> code_libelle_list
-
-    code_libelle_list >> api_requests
+        api_requests >> all_json_in_one
 
 
 my_dag = my_dag()

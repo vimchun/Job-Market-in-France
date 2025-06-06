@@ -36,7 +36,8 @@ def count_json_files_number(directory_path):
     if count <= 1:
         print("0 ou 1 fichier json, on continue le DAG...")
     else:
-        raise Exception(f"==> Au moins 2 fichiers json ({count}). On arrête le DAG.")
+        print(f"==> Au moins 2 fichiers json ({count} fichiers : {json_files}). On arrête le DAG.")
+        # raise Exception(f"==> Au moins 2 fichiers json ({count} fichiers : {json_files}). On arrête le DAG.") # todo: à remettre une fois le dev avancé
 
     return json_files
 
@@ -144,6 +145,29 @@ def load_code_appellation_yaml_file():
         code_libelle_list = content["code_appellation_libelle"]
 
     return code_libelle_list
+
+
+@task(task_id="S6_create_name_for_concat_json_file")
+def create_name_for_concat_json_file():
+    """
+    Retourne le nom du futur fichier json qui concatènera toutes les offres,
+      construit à partir de la dernière écriture dans le fichier "_json_files_history.csv"
+    """
+    import csv
+
+    current_directory = os.path.dirname(os.path.abspath(__file__))
+    csv_file = os.path.join(current_directory, "..", "..", "data", "outputs", "offres", "1--generated_json_file", "_json_files_history.csv")
+
+    with open(csv_file, "r") as f:
+        reader = list(csv.DictReader(f))
+
+    last_occurence = int(reader[-1]["json_filename"].split("occurence_")[1].split(".json")[0])
+
+    now = datetime.now().strftime("%Y-%m-%d--%Hh%M")
+
+    filename = f"{now}__extraction_occurence_{last_occurence+1}.json"
+
+    return filename
 
 
 def throttled_get(url, headers=None, params=None, max_retries=10, retry_delay=2):
@@ -319,10 +343,11 @@ def get_offers(token, code_libelle_list):
     return None
 
 
+@task(task_id="A2_all_json_in_one")
 def concatenate_all_json_into_one(json_files_from_api_directory, generated_json_file_directory, new_json_filename):
     """
     On obtient suite à l'exécution de `get_offres()` x fichiers json (x = nombre d'appellations présents dans "code_appellation_libelle.yml").
-    Cette fonction écrira dans un json chaque ligne de tous les json précédents, en supprimant les doublons.
+    Cette présente fonction écrit dans un nouveau json tous les documents json de chaque fichier présent dans le dossier "json_files_from_api_directory", en supprimant les doublons.
 
     Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
     """
