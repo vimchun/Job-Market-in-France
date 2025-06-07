@@ -45,8 +45,8 @@ from utils.functions import (
     nb_json_on_setup_0_or_1,
     remove_all_json_files,
     special_jsons_concatenation,
-    test_a,
-    test_b,
+    # test_a,
+    # test_b,
 )
 
 #### "Partie paramétrable"
@@ -141,34 +141,41 @@ def my_dag():
         #     # date_to_insert="2025-03-02"  # pour écraser la valeur si l'attribut est existant dans le json
         # )
 
-        a = test_a()
-        # b = test_b()
-
         branch = nb_json_on_setup_0_or_1(count)  #### task A6
 
-        # add_date_first = add_date_premiere_ecriture_attribute(
-        #     json_files_directory=generated_json_files_directory,
-        #     json_filename=all_in_one_json,
-        #     new_json_filename=all_in_one_json,
-        #     date_to_insert=None,
-        #     overwrite_all_lines=False,
-        # )
+        api_requests >> all_json_in_one >> branch
 
-        jsons_concat = special_jsons_concatenation(generated_json_files_directory=generated_json_files_directory, json_filename="", new_json_filename="")
+        with TaskGroup(group_id="0_file_in_folder", tooltip="xxx") as file1:
+            add_date_first_0 = add_date_premiere_ecriture_attribute(  #### task A8_0
+                json_files_directory=generated_json_files_directory,
+                json_filename=all_in_one_json,
+                new_json_filename=all_in_one_json,
+                date_to_insert=None,
+                overwrite_all_lines=False,
+            )
+
+            branch >> add_date_first_0
+
+        with TaskGroup(group_id="1_file_in_folder", tooltip="xxx") as file1:
+            json_concat_filename = special_jsons_concatenation(generated_json_files_directory=generated_json_files_directory)  #### task A7
+
+            add_date_first_1 = add_date_premiere_ecriture_attribute(  #### task A8_1
+                json_files_directory=generated_json_files_directory,
+                json_filename=json_concat_filename,
+                new_json_filename=json_concat_filename,
+                date_to_insert=None,
+                overwrite_all_lines=False,
+            )
+
+            branch >> json_concat_filename >> add_date_first_1
 
         # api_requests >> all_json_in_one >> metropole >> add_location >> add_date_extract >> branch >> [add_date_first >> a, b]
         # api_requests >> all_json_in_one >> branch  # >> [a, b]
         # branch >> [a, b]
 
         # api_requests >> all_json_in_one >> metropole >> add_location >> add_date_extract >> branch
-        api_requests >> all_json_in_one >> branch
 
-        # si count = 0
         # branch >> add_date_first >> a
-        branch >> a
-
-        # si count = 1
-        branch >> jsons_concat  # >> add_date_first
 
 
 my_dag = my_dag()

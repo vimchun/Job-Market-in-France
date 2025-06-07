@@ -921,32 +921,34 @@ def add_date_extract_attribute(json_files_directory, json_filename, new_json_fil
     return new_json_filename
 
 
-@task(task_id="case_0_json")
-def test_a():
-    print("test a")
+# @task(task_id="case_0_json")
+# def test_a():
+#     print("test a")
 
 
-@task(task_id="case_1_json")
-def test_b():
-    print("test b")
+# @task(task_id="case_1_json")
+# def test_b():
+#     print("test b")
 
 
 @task.branch(task_id="A6_0_or_1_json_on_setup")
 def nb_json_on_setup_0_or_1(count):
-    print(count)
+    # print(count)  # pour investigation
     if count == 0:  # si 0 fichier json
-        print("0 fichier json")
-        return "etl_group.case_0_json"  # ne pas oublier le group_id (group_id.task_id)
+        # print("0 fichier json")  # pour investigation
+        return "etl_group.0_file_in_folder.A8_add_date_premiere_ecriture_attr"  # c'est le full_task_id (outer_group_id.inner_group_id.task_id)
     else:  # si 1 fichier json
-        print("1 fichier json")
-        return "etl_group.A7_special_jsons_concat"  # ne pas oublier le group_id (group_id.task_id)
+        # print("1 fichier json")  # pour investigation
+        return "etl_group.1_file_in_folder.A7_special_jsons_concat"  # c'est le full_task_id (outer_group_id.inner_group_id.task_id)
 
 
 @task(task_id="A7_special_jsons_concat")
-def special_jsons_concatenation(generated_json_files_directory, json_filename, new_json_filename):
+def special_jsons_concatenation(generated_json_files_directory):
     """
     Fait la concaténation spéciale entre le json existant et le nouveau json comme telle que décrit dans :
     "api_extract__transform/outputs/offres/1--generated_json_file/troubleshooting/concatenation_dateExtraction_datePremiereEcriture/notes.xlsx".
+
+    Retourne le nom du json qu'il reste dans le dossier, soit "new_json_file"
     """
 
     import shutil
@@ -1057,12 +1059,13 @@ def special_jsons_concatenation(generated_json_files_directory, json_filename, n
 
     os.makedirs(os.path.join(generated_json_files_directory, "archives"), exist_ok=True)
 
-    print("Déplacement de l'ancien fichier json dans le dossier \"archives\"")
+    print('Déplacement de l\'ancien fichier json dans le dossier "archives"')
     shutil.move(
         os.path.join(generated_json_files_directory, current_json_file),
         os.path.join(generated_json_files_directory, "archives"),
     )
 
+    return new_json_file
 
 
 @task(task_id="A10_write_to_history")
@@ -1074,7 +1077,7 @@ def write_to_history_csv_file():
     #     writer.writerow([new_json_file, len(df_concat)])
 
 
-@task(task_id="A8_add_date1eEcriture_attr")
+@task(task_id="A8_add_date_premiere_ecriture_attr")
 def add_date_premiere_ecriture_attribute(json_files_directory, json_filename, new_json_filename, date_to_insert=None, overwrite_all_lines=False):
     """
     Fonction qui charge le json et qui écrit dans un nouveau json : un nouvel attribut "datePremiereEcriture" avec la date désirée
