@@ -35,7 +35,7 @@ from utils.functions import (
     concatenate_all_json_into_one,
     count_json_files_number,
     create_csv__code_name__city_department_region,
-    create_name_for_concat_json_file,
+    # create_name_for_concat_json_file,
     get_bearer_token,
     get_offers,
     get_referentiel_appellations_rome,
@@ -44,6 +44,7 @@ from utils.functions import (
     load_code_appellation_yaml_file,
     nb_json_on_setup_0_or_1,
     remove_all_json_files,
+    special_jsons_concatenation,
     test_a,
     test_b,
 )
@@ -79,6 +80,10 @@ with open(credential_filename, "r") as file:
 IDENTIFIANT_CLIENT = creds["API_FRANCE_TRAVAIL"]["IDENTIFIANT_CLIENT"]
 CLE_SECRETE = creds["API_FRANCE_TRAVAIL"]["CLE_SECRETE"]
 
+now = datetime.now().strftime("%Y-%m-%d--%Hh%M")
+# all_in_one_json = f"{now}__all_in_one.json"
+all_in_one_json = "all_in_one.json"
+
 
 @dag(
     dag_id="projet",
@@ -90,13 +95,14 @@ def my_dag():
     with TaskGroup(group_id="setup_group", tooltip="xxx") as setup:
         with TaskGroup(group_id="check_files_in_folders", tooltip="xxx") as check:
             count = count_json_files_number(directory_path=generated_json_files_directory)  #### task S1
+            # count, existing_json_filename = count_json_files_number(directory_path=generated_json_files_directory)  #### task S1
             check_presence_yaml_file(file_path=codes_appellation_filename)  #### task S2
 
         with TaskGroup(group_id="after_checks", tooltip="xxx") as after_checks:
             remove_all_json_files(json_files_original_from_api_directory)  #### task S3
             token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)  #### task S4
             code_libelle_list = load_code_appellation_yaml_file()  #### task S5
-            created_json_filename = create_name_for_concat_json_file()  #### task S6
+            # created_json_filename = create_name_for_concat_json_file()  #### task S6
 
         check >> after_checks
 
@@ -112,37 +118,57 @@ def my_dag():
         all_json_in_one = concatenate_all_json_into_one(  #### task A2
             json_files_from_api_directory=json_files_original_from_api_directory,
             generated_json_file_directory=generated_json_files_directory,
-            new_json_filename=created_json_filename,
+            new_json_filename=all_in_one_json,
         )
 
         # metropole = keep_only_offres_from_metropole(  #### task A3
         #     json_files_directory=generated_json_files_directory,
-        #     json_filename=created_json_filename,
-        #     new_json_filename=created_json_filename,  # on écrase le fichier en entrée
+        #     json_filename=all_in_one_json,
+        #     new_json_filename=all_in_one_json,  # on écrase le fichier en entrée
         # )
 
         # add_location = add_location_attributes(  #### task A4
         #     json_files_directory=generated_json_files_directory,
-        #     json_filename=created_json_filename,
-        #     new_json_filename=created_json_filename,  # on écrase le fichier en entrée
+        #     json_filename=all_in_one_json,
+        #     new_json_filename=all_in_one_json,  # on écrase le fichier en entrée
         # )
 
         # add_date_extract = add_date_extract_attribute(  #### task A5
         #     json_files_directory=generated_json_files_directory,
-        #     json_filename=created_json_filename,
-        #     new_json_filename=created_json_filename,  # on écrase le fichier en entrée
+        #     json_filename=all_in_one_json,
+        #     new_json_filename=all_in_one_json,  # on écrase le fichier en entrée
         #     date_to_insert=None,  # "None" pour avoir la date du jour
         #     # date_to_insert="2025-03-02"  # pour écraser la valeur si l'attribut est existant dans le json
         # )
 
         a = test_a()
-        b = test_b()
+        # b = test_b()
 
-        branch = nb_json_on_setup_0_or_1(count)
+        branch = nb_json_on_setup_0_or_1(count)  #### task A6
 
-        # api_requests >> all_json_in_one >> metropole >> add_location >> add_date_extract
-        api_requests >> all_json_in_one >> branch  # >> [a, b]
-        branch >> [a, b]
+        # add_date_first = add_date_premiere_ecriture_attribute(
+        #     json_files_directory=generated_json_files_directory,
+        #     json_filename=all_in_one_json,
+        #     new_json_filename=all_in_one_json,
+        #     date_to_insert=None,
+        #     overwrite_all_lines=False,
+        # )
+
+        jsons_concat = special_jsons_concatenation(generated_json_files_directory=generated_json_files_directory, json_filename="", new_json_filename="")
+
+        # api_requests >> all_json_in_one >> metropole >> add_location >> add_date_extract >> branch >> [add_date_first >> a, b]
+        # api_requests >> all_json_in_one >> branch  # >> [a, b]
+        # branch >> [a, b]
+
+        # api_requests >> all_json_in_one >> metropole >> add_location >> add_date_extract >> branch
+        api_requests >> all_json_in_one >> branch
+
+        # si count = 0
+        # branch >> add_date_first >> a
+        branch >> a
+
+        # si count = 1
+        branch >> jsons_concat  # >> add_date_first
 
 
 my_dag = my_dag()

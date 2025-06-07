@@ -36,32 +36,10 @@ def count_json_files_number(directory_path):
     if count <= 1:
         print("0 ou 1 fichier json, on continue le DAG...")
     else:
-        print(f"==> Au moins 2 fichiers json ({count} fichiers : {json_files}). On arrête le DAG.")
-        # raise Exception(f"==> Au moins 2 fichiers json ({count} fichiers : {json_files}). On arrête le DAG.") # todo: à remettre une fois le dev avancé
+        # print(f"==> Au moins 2 fichiers json ({count} fichiers : {json_files}). On arrête le DAG.")
+        raise Exception(f"==> Au moins 2 fichiers json ({count} fichiers : {json_files}). On arrête le DAG.")  # todo: à remettre une fois le dev avancé
 
-    # return json_files
     return count
-
-
-@task(task_id="case_0_json")
-def test_a():
-    print("test a")
-
-
-@task(task_id="case_1_json")
-def test_b():
-    print("test b")
-
-
-@task.branch(task_id="0_or_1_json_on_setup")
-def nb_json_on_setup_0_or_1(count):
-    print(count)
-    if count:  # si 1 fichier json
-        print("1 fichier json")
-        return "etl_group.case_1_json"  # ne pas oublier le group_id
-    else:  # si 0 fichier json
-        print("0 fichier json")
-        return "etl_group.case_0_json"  # ne pas oublier le group_id
 
 
 @task(task_id="S2_check_yaml_file_presence")
@@ -169,27 +147,27 @@ def load_code_appellation_yaml_file():
     return code_libelle_list
 
 
-@task(task_id="S6_create_name_for_concat_json_file")
-def create_name_for_concat_json_file():
-    """
-    Retourne le nom du futur fichier json qui concatènera toutes les offres,
-      construit à partir de la dernière écriture dans le fichier "_json_files_history.csv"
-    """
-    import csv
+# @task(task_id="S6_create_name_for_concat_json_file")
+# def create_name_for_concat_json_file():
+#     """
+#     Retourne le nom du futur fichier json qui concatènera toutes les offres,
+#       construit à partir de la dernière écriture dans le fichier "_json_files_history.csv"
+#     """
+#     import csv
 
-    current_directory = os.path.dirname(os.path.abspath(__file__))
-    csv_file = os.path.join(current_directory, "..", "..", "data", "outputs", "offres", "1--generated_json_file", "_json_files_history.csv")
+#     current_directory = os.path.dirname(os.path.abspath(__file__))
+#     csv_file = os.path.join(current_directory, "..", "..", "data", "outputs", "offres", "1--generated_json_file", "_json_files_history.csv")
 
-    with open(csv_file, "r") as f:
-        reader = list(csv.DictReader(f))
+#     with open(csv_file, "r") as f:
+#         reader = list(csv.DictReader(f))
 
-    last_occurence = int(reader[-1]["json_filename"].split("occurence_")[1].split(".json")[0])
+#     last_occurence = int(reader[-1]["json_filename"].split("occurence_")[1].split(".json")[0])
 
-    now = datetime.now().strftime("%Y-%m-%d--%Hh%M")
+#     now = datetime.now().strftime("%Y-%m-%d--%Hh%M")
 
-    filename = f"{now}__extraction_occurence_{last_occurence+1}.json"
+#     filename = f"{now}__extraction_occurence_{last_occurence+1}.json"
 
-    return filename
+#     return filename
 
 
 def throttled_get(url, headers=None, params=None, max_retries=10, retry_delay=2):
@@ -897,7 +875,7 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
     return new_json_filename
 
 
-@task(task_id="A5_add_date_extract")
+@task(task_id="A5_add_dateExtraction_attr")
 def add_date_extract_attribute(json_files_directory, json_filename, new_json_filename, date_to_insert=None):
     """
     Fonction qui charge le json et qui écrit dans un nouveau json : un nouvel attribut "date_extraction" avec la date désirée
@@ -943,12 +921,166 @@ def add_date_extract_attribute(json_files_directory, json_filename, new_json_fil
     return new_json_filename
 
 
+@task(task_id="case_0_json")
+def test_a():
+    print("test a")
+
+
+@task(task_id="case_1_json")
+def test_b():
+    print("test b")
+
+
+@task.branch(task_id="A6_0_or_1_json_on_setup")
+def nb_json_on_setup_0_or_1(count):
+    print(count)
+    if count == 0:  # si 0 fichier json
+        print("0 fichier json")
+        return "etl_group.case_0_json"  # ne pas oublier le group_id (group_id.task_id)
+    else:  # si 1 fichier json
+        print("1 fichier json")
+        return "etl_group.A7_special_jsons_concat"  # ne pas oublier le group_id (group_id.task_id)
+
+
+@task(task_id="A7_special_jsons_concat")
+def special_jsons_concatenation(generated_json_files_directory, json_filename, new_json_filename):
+    """
+    Fait la concaténation spéciale entre le json existant et le nouveau json comme telle que décrit dans :
+    "api_extract__transform/outputs/offres/1--generated_json_file/troubleshooting/concatenation_dateExtraction_datePremiereEcriture/notes.xlsx".
+    """
+
+    import shutil
+
+    from pathlib import Path
+
+    now = datetime.now().strftime("%Y-%m-%d--%Hh%M")
+    json_file_in_generated_directory = [file for file in os.listdir(generated_json_files_directory) if file.endswith(".json")]
+
+    print(json_file_in_generated_directory)
+
+    """
+    Ici, on se retrouve normalement avec 2 fichiers jsons qu'on appellera par la suite :
+      - "current_json_file" : pour le json déjà existant (toutes les offres récupérées aux itérations précédentes)
+      - "new_json_file" : pour le json qui vient d'être créé (celui qui s'appelle "all_in_one.json")
+    """
+
+    #### current_json_file
+    # Pour récupérer le nom de "current_json_file", on supprime "all_in_one.json" de la liste "json_file_in_generated_directory"
+    json_file_in_generated_directory.remove("all_in_one.json")
+
+    current_json_file = json_file_in_generated_directory[0]  # exemple : 2025-04-02--15h52__extraction_occurence_1.json
+
+    print(current_json_file)
+
+    #### new_json_file : on renomme celui que la fonction "concatenate_all_json_into_one()" a créé (qui s'appellait "all_in_one.json")
+
+    # A partir du json "curren_json_file", on construit le nom du json "new_json_file"
+    # à supprimer : Création d'un nouveau json, créé à partir des nouvelles offres, avec de nouveaux appels API
+    occurence_number = int(Path(current_json_file).stem.split("extraction_occurence_")[1])  # note : stem pour récupérer le nom du fichier sans l'extension
+    new_json_file = f"{now}__extraction_occurence_{occurence_number+1}.json"
+
+    os.rename(
+        os.path.join(generated_json_files_directory, "all_in_one.json"),
+        os.path.join(generated_json_files_directory, new_json_file),
+    )
+
+    # print(
+    #     f'Il y a 1 fichier json dans le dossier "{generated_json_files_directory}"',
+    #     f' -> json_1 = "{Fore.YELLOW}{current_json_file}{Style.RESET_ALL}"',
+    #     "",
+    #     f"{Fore.RED}== Lancement de l'extraction occurence {occurence_number+1} ==",
+    #     f'Création de json_2 = "{Fore.YELLOW}{new_json_file}{Style.RESET_ALL}" à partir de nouvelles requêtes API, qui après traitement sera le seul json qui restera dans le dossier',
+    #     sep="\n",
+    # )
+    print(
+        f'Il y a 2 fichiers json dans le dossier "{generated_json_files_directory}"',
+        f' -> json_1 = "{Fore.YELLOW}{current_json_file}{Style.RESET_ALL}"',
+        "",
+        f' -> json_2 = "{Fore.YELLOW}{new_json_file}{Style.RESET_ALL}"',  # , à partir de nouvelles requêtes API, qui après traitement sera le seul json qui restera dans le dossier',
+        sep="\n",
+    )
+
+    print(f"{Fore.RED}\n==> Concaténation entre le json précédemment présent dans le dossier, et le json nouvellement créé\n")
+    df1 = pd.read_json(os.path.join(generated_json_files_directory, current_json_file), dtype=False)
+    df2 = pd.read_json(os.path.join(generated_json_files_directory, new_json_file), dtype=False)
+
+    #
+    intersection_ids = pd.merge(df1, df2, on="id")["id"].tolist()
+    df1_minus_intersection = df1[~df1.id.isin(intersection_ids)]  # c'est la "partie_1" dans "workflow_db_update.drawio"
+    df_concat = pd.concat([df1_minus_intersection, df2])  # concaténation de "partie_1" et "partie_2" (cf "workflow_db_update.drawio")
+
+    # print("df1", df1.datePremiereEcriture.value_counts())  # pour investigation
+    # print("df_concat", df_concat.datePremiereEcriture.value_counts())  # pour investigation
+
+    # Pour faire ce qui est décrit ici "api_extract__transform/outputs/offres/1--generated_json_file/troubleshooting/...
+    #   ...concatenation_dateExtraction_datePremiereEcriture/notes.xlsx" pour l'attribut "datePremiereEcriture".
+
+    # df_concat.loc[df_concat["id"].isin(df1["id"]), "datePremiereEcriture"] = df1["datePremiereEcriture"]  # pb si les 2 df n'ont pas les mêmes index
+
+    df_concat.set_index("id", inplace=True)
+    df1.set_index("id", inplace=True)
+
+    df_concat.loc[df1.index, "datePremiereEcriture"] = df1["datePremiereEcriture"]
+
+    df_concat.reset_index(inplace=True)
+
+    # print("df_concat après loc", df_concat.datePremiereEcriture.value_counts())  # pour investigation
+
+    # print(
+    #     "df1",
+    #     df1[["id", "datePremiereEcriture", "dateExtraction"]],
+    #     "df2",
+    #     df2[["id", "dateExtraction"]],
+    #     "df_concat",
+    #     df_concat,
+    #     sep="\n\n",
+    # )  # pour investigation
+
+    # Ecriture dans le fichier json
+    df_concat.to_json(
+        os.path.join(generated_json_files_directory, new_json_file),
+        orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
+        force_ascii=False,  # pour convertir les caractères spéciaux
+        indent=4,  # pour formatter la sortie
+    )
+
+    # On supprime les backslashs ajoutés par la méthode .to_json()
+    with open(os.path.join(generated_json_files_directory, new_json_file), "r", encoding="utf-8") as f:
+        content = f.read()
+
+        content = content.replace("\\/", "/")  # On remplace "\/" par "/"
+        content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
+
+        # On sauvegarde le fichier final sans les '\'
+        with open(os.path.join(generated_json_files_directory, new_json_file), "w", encoding="utf-8") as f:
+            f.write(content)
+
+    os.makedirs(os.path.join(generated_json_files_directory, "archives"), exist_ok=True)
+
+    print("Déplacement de l'ancien fichier json dans le dossier \"archives\"")
+    shutil.move(
+        os.path.join(generated_json_files_directory, current_json_file),
+        os.path.join(generated_json_files_directory, "archives"),
+    )
+
+
+
+@task(task_id="A10_write_to_history")
+def write_to_history_csv_file():
+    pass
+    # # Ecriture du nom du fichier et du nombre d'offres dans le fichier "_json_files_history.csv"
+    # with open(os.path.join(generated_json_files_directory, "_json_files_history.csv"), "a", newline="") as f:
+    #     writer = csv.writer(f)
+    #     writer.writerow([new_json_file, len(df_concat)])
+
+
+@task(task_id="A8_add_date1eEcriture_attr")
 def add_date_premiere_ecriture_attribute(json_files_directory, json_filename, new_json_filename, date_to_insert=None, overwrite_all_lines=False):
     """
     Fonction qui charge le json et qui écrit dans un nouveau json : un nouvel attribut "datePremiereEcriture" avec la date désirée
       (par défaut la date système pour avoir la date du jour)
 
-    Si le paramètre "overwrite_all_lines" est vrai, on écrase toutes les ligne de "datePremiereEcriture" avec "date_to_insert".
+    Si le paramètre "overwrite_all_lines" est True, on écrase toutes les ligne de "datePremiereEcriture" avec la valeur de "date_to_insert".
       Sinon, seulement les lignes où "datePremiereEcriture" sont vides seront remplies avec "date_to_insert".
 
     Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
