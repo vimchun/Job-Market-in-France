@@ -39,7 +39,29 @@ def count_json_files_number(directory_path):
         print(f"==> Au moins 2 fichiers json ({count} fichiers : {json_files}). On arrête le DAG.")
         # raise Exception(f"==> Au moins 2 fichiers json ({count} fichiers : {json_files}). On arrête le DAG.") # todo: à remettre une fois le dev avancé
 
-    return json_files
+    # return json_files
+    return count
+
+
+@task(task_id="case_0_json")
+def test_a():
+    print("test a")
+
+
+@task(task_id="case_1_json")
+def test_b():
+    print("test b")
+
+
+@task.branch(task_id="0_or_1_json_on_setup")
+def nb_json_on_setup_0_or_1(count):
+    print(count)
+    if count:  # si 1 fichier json
+        print("1 fichier json")
+        return "etl_group.case_1_json"  # ne pas oublier le group_id
+    else:  # si 0 fichier json
+        print("0 fichier json")
+        return "etl_group.case_0_json"  # ne pas oublier le group_id
 
 
 @task(task_id="S2_check_yaml_file_presence")

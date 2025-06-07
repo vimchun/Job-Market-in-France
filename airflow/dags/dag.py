@@ -42,7 +42,10 @@ from utils.functions import (
     get_referentiel_pays,
     keep_only_offres_from_metropole,
     load_code_appellation_yaml_file,
+    nb_json_on_setup_0_or_1,
     remove_all_json_files,
+    test_a,
+    test_b,
 )
 
 #### "Partie paramétrable"
@@ -86,7 +89,7 @@ CLE_SECRETE = creds["API_FRANCE_TRAVAIL"]["CLE_SECRETE"]
 def my_dag():
     with TaskGroup(group_id="setup_group", tooltip="xxx") as setup:
         with TaskGroup(group_id="check_files_in_folders", tooltip="xxx") as check:
-            count_json_files_number(directory_path=generated_json_files_directory)  #### task S1
+            count = count_json_files_number(directory_path=generated_json_files_directory)  #### task S1
             check_presence_yaml_file(file_path=codes_appellation_filename)  #### task S2
 
         with TaskGroup(group_id="after_checks", tooltip="xxx") as after_checks:
@@ -112,27 +115,34 @@ def my_dag():
             new_json_filename=created_json_filename,
         )
 
-        metropole = keep_only_offres_from_metropole(  #### task A3
-            json_files_directory=generated_json_files_directory,
-            json_filename=created_json_filename,
-            new_json_filename=created_json_filename,  # on écrase le fichier en entrée
-        )
+        # metropole = keep_only_offres_from_metropole(  #### task A3
+        #     json_files_directory=generated_json_files_directory,
+        #     json_filename=created_json_filename,
+        #     new_json_filename=created_json_filename,  # on écrase le fichier en entrée
+        # )
 
-        add_location = add_location_attributes(  #### task A4
-            json_files_directory=generated_json_files_directory,
-            json_filename=created_json_filename,
-            new_json_filename=created_json_filename,  # on écrase le fichier en entrée
-        )
+        # add_location = add_location_attributes(  #### task A4
+        #     json_files_directory=generated_json_files_directory,
+        #     json_filename=created_json_filename,
+        #     new_json_filename=created_json_filename,  # on écrase le fichier en entrée
+        # )
 
-        add_date_extract = add_date_extract_attribute(  #### task A5
-            json_files_directory=generated_json_files_directory,
-            json_filename=created_json_filename,
-            new_json_filename=created_json_filename,  # on écrase le fichier en entrée
-            date_to_insert=None,  # "None" pour avoir la date du jour
-            # date_to_insert="2025-03-02"  # pour écraser la valeur si l'attribut est existant dans le json
-        )
+        # add_date_extract = add_date_extract_attribute(  #### task A5
+        #     json_files_directory=generated_json_files_directory,
+        #     json_filename=created_json_filename,
+        #     new_json_filename=created_json_filename,  # on écrase le fichier en entrée
+        #     date_to_insert=None,  # "None" pour avoir la date du jour
+        #     # date_to_insert="2025-03-02"  # pour écraser la valeur si l'attribut est existant dans le json
+        # )
 
-        api_requests >> all_json_in_one >> metropole >> add_location >> add_date_extract
+        a = test_a()
+        b = test_b()
+
+        branch = nb_json_on_setup_0_or_1(count)
+
+        # api_requests >> all_json_in_one >> metropole >> add_location >> add_date_extract
+        api_requests >> all_json_in_one >> branch  # >> [a, b]
+        branch >> [a, b]
 
 
 my_dag = my_dag()
