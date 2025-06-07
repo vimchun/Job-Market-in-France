@@ -95,7 +95,7 @@ def my_dag():
             code_libelle_list = load_code_appellation_yaml_file()  #### task S5
             created_json_filename = create_name_for_concat_json_file()  #### task S6
 
-        check >> after_checks  # >> code_libelle_list
+        check >> after_checks
 
     with TaskGroup(group_id="etl_group", tooltip="xxx") as etl:
         api_requests = (
@@ -124,7 +124,15 @@ def my_dag():
             new_json_filename=created_json_filename,  # on écrase le fichier en entrée
         )
 
-        api_requests >> all_json_in_one >> metropole >> add_location
+        add_date_extract = add_date_extract_attribute(  #### task A5
+            json_files_directory=generated_json_files_directory,
+            json_filename=created_json_filename,
+            new_json_filename=created_json_filename,  # on écrase le fichier en entrée
+            date_to_insert=None,  # "None" pour avoir la date du jour
+            # date_to_insert="2025-03-02"  # pour écraser la valeur si l'attribut est existant dans le json
+        )
+
+        api_requests >> all_json_in_one >> metropole >> add_location >> add_date_extract
 
 
 my_dag = my_dag()
