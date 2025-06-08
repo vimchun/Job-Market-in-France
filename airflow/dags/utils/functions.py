@@ -31,10 +31,11 @@ def delete_all_in_one_json():
     (si ce fichier est existant, on peut se retrouver avec 2 fichiers json
       dans le dossier  "1--generated_json_file", ce qui pose problème).
     """
+    file_to_remove = os.path.join(current_directory, "..", "..", "data", "outputs", "offres", "1--generated_json_file", "all_in_one.json")
     try:
-        os.remove(os.path.join("..", "data", "outputs", "offres", "1--generated_json_file", "all_in_one.json"))
+        os.remove(file_to_remove)
     except FileNotFoundError:
-        print("Le fichier n'existe pas")
+        print(f"Le fichier n'existe pas : {file_to_remove}")
 
 
 def check_presence_file(file_path):
@@ -925,10 +926,10 @@ def nb_json_on_setup_0_or_1(count):
     # print(count)  # pour investigation
     if count == 0:  # si 0 fichier json
         # print("0 fichier json")  # pour investigation
-        return "etl_group.0_json_in_folder.A8_add_date_premiere_ecriture_attr"  # c'est le full_task_id (outer_group_id.inner_group_id.task_id)
+        return "etl_group.transforms_and_load_to_json.0_json_in_folder.A8_add_date_premiere_ecriture_attr"  # c'est le full_task_id (outer_group_id.inner_group_id.task_id)
     else:  # si 1 fichier json
         # print("1 fichier json")  # pour investigation
-        return "etl_group.1_json_in_folder.A7_special_jsons_concat"  # c'est le full_task_id (outer_group_id.inner_group_id.task_id)
+        return "etl_group.transforms_and_load_to_json.1_json_in_folder.A7_special_jsons_concat"  # c'est le full_task_id (outer_group_id.inner_group_id.task_id)
 
 
 @task(task_id="A7_special_jsons_concat")
