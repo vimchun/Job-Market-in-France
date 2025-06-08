@@ -13,6 +13,7 @@ from colorama import Fore, Style, init
 from geopy.geocoders import Nominatim
 
 from airflow.decorators import task
+from airflow.utils.trigger_rule import TriggerRule
 
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
@@ -147,63 +148,6 @@ def load_code_appellation_yaml_file():
     return code_libelle_list
 
 
-# @task(task_id="S6_create_name_for_concat_json_file")
-# def create_name_for_concat_json_file():
-#     """
-#     Retourne le nom du futur fichier json qui concatènera toutes les offres,
-#       construit à partir de la dernière écriture dans le fichier "_json_files_history.csv"
-#     """
-#     import csv
-
-#     current_directory = os.path.dirname(os.path.abspath(__file__))
-#     csv_file = os.path.join(current_directory, "..", "..", "data", "outputs", "offres", "1--generated_json_file", "_json_files_history.csv")
-
-#     with open(csv_file, "r") as f:
-#         reader = list(csv.DictReader(f))
-
-#     last_occurence = int(reader[-1]["json_filename"].split("occurence_")[1].split(".json")[0])
-
-#     now = datetime.now().strftime("%Y-%m-%d--%Hh%M")
-
-#     filename = f"{now}__extraction_occurence_{last_occurence+1}.json"
-
-#     return filename
-
-
-def throttled_get(url, headers=None, params=None, max_retries=10, retry_delay=2):
-    """
-    Fonction utile pour la fonction get_offres().
-
-    Effectue une requête GET avec gestion des erreurs de Status Code "429" ("too much requests").
-    Réessaie jusqu'à "max_retries" fois avec un délai "retry_delay" entre chaque tentative.
-
-    Paramètres :
-      - "url" : URL de l'API
-      - "headers" : dictionnaire d'en-têtes HTTP
-      - "params" : dictionnaire de paramètres GET
-      - "max_retries" : nombre maximum de tentatives
-      - "retry_delay" : délai entre chaque tentative en secondes
-
-    Retourne la réponse de la requête.
-
-    Notes :
-      - L'erreur "429" arrive assez fréquemment avec la parallélisation des tâches avec Airflow.
-      - Terme "thottled" car exprime la régulation des requêtes.
-    """
-
-    for attempt in range(1, max_retries + 1):
-        response = requests.get(url, headers=headers, params=params)
-
-        if response.status_code != 429:
-            return response
-
-        print(f"[safe_get] Erreur 429 — tentative {attempt}/{max_retries}, pause {retry_delay}s...")
-        time.sleep(retry_delay)
-
-    raise Exception(f"[safe_get] Échec après {max_retries} tentatives : erreur 429 persistante...")
-
-
-# @task(pool="api_francetravail_pool", retries=3, retry_delay=timedelta(seconds=10))
 @task(task_id="A1_get_offers")
 def get_offers(token, code_libelle_list):
     """
@@ -214,6 +158,38 @@ def get_offers(token, code_libelle_list):
 
     Ne retourne rien.
     """
+
+    def throttled_get(url, headers=None, params=None, max_retries=10, retry_delay=2):
+        """
+        Fonction utile pour la fonction get_offres().
+
+        Effectue une requête GET avec gestion des erreurs de Status Code "429" ("too much requests").
+        Réessaie jusqu'à "max_retries" fois avec un délai "retry_delay" entre chaque tentative.
+
+        Paramètres :
+        - "url" : URL de l'API
+        - "headers" : dictionnaire d'en-têtes HTTP
+        - "params" : dictionnaire de paramètres GET
+        - "max_retries" : nombre maximum de tentatives
+        - "retry_delay" : délai entre chaque tentative en secondes
+
+        Retourne la réponse de la requête.
+
+        Notes :
+        - L'erreur "429" arrive assez fréquemment avec la parallélisation des tâches avec Airflow.
+        - Terme "thottled" car exprime la régulation des requêtes.
+        """
+
+        for attempt in range(1, max_retries + 1):
+            response = requests.get(url, headers=headers, params=params)
+
+            if response.status_code != 429:
+                return response
+
+            print(f"[safe_get] Erreur 429 — tentative {attempt}/{max_retries}, pause {retry_delay}s...")
+            time.sleep(retry_delay)
+
+        raise Exception(f"[safe_get] Échec après {max_retries} tentatives : erreur 429 persistante...")
 
     # todo : créer un pool pour gérer le nombre de tâches en // ?
 
@@ -921,25 +897,15 @@ def add_date_extract_attribute(json_files_directory, json_filename, new_json_fil
     return new_json_filename
 
 
-# @task(task_id="case_0_json")
-# def test_a():
-#     print("test a")
-
-
-# @task(task_id="case_1_json")
-# def test_b():
-#     print("test b")
-
-
 @task.branch(task_id="A6_0_or_1_json_on_setup")
 def nb_json_on_setup_0_or_1(count):
     # print(count)  # pour investigation
     if count == 0:  # si 0 fichier json
         # print("0 fichier json")  # pour investigation
-        return "etl_group.0_file_in_folder.A8_add_date_premiere_ecriture_attr"  # c'est le full_task_id (outer_group_id.inner_group_id.task_id)
+        return "etl_group.0_json_in_folder.A8_add_date_premiere_ecriture_attr"  # c'est le full_task_id (outer_group_id.inner_group_id.task_id)
     else:  # si 1 fichier json
         # print("1 fichier json")  # pour investigation
-        return "etl_group.1_file_in_folder.A7_special_jsons_concat"  # c'est le full_task_id (outer_group_id.inner_group_id.task_id)
+        return "etl_group.1_json_in_folder.A7_special_jsons_concat"  # c'est le full_task_id (outer_group_id.inner_group_id.task_id)
 
 
 @task(task_id="A7_special_jsons_concat")
@@ -1068,15 +1034,6 @@ def special_jsons_concatenation(generated_json_files_directory):
     return new_json_file
 
 
-@task(task_id="A10_write_to_history")
-def write_to_history_csv_file():
-    pass
-    # # Ecriture du nom du fichier et du nombre d'offres dans le fichier "_json_files_history.csv"
-    # with open(os.path.join(generated_json_files_directory, "_json_files_history.csv"), "a", newline="") as f:
-    #     writer = csv.writer(f)
-    #     writer.writerow([new_json_file, len(df_concat)])
-
-
 @task(task_id="A8_add_date_premiere_ecriture_attr")
 def add_date_premiere_ecriture_attribute(json_files_directory, json_filename, new_json_filename, date_to_insert=None, overwrite_all_lines=False):
     """
@@ -1130,254 +1087,39 @@ def add_date_premiere_ecriture_attribute(json_files_directory, json_filename, ne
     return new_json_filename
 
 
-#### fonctions non utilisées par airflow (pas de décorateur @task), pas vraiment utile au projet mais peuvent servir
+@task(task_id="A9_rename_json_file")
+def rename_json_file(json_files_directory, json_filename, new_json_filename):
+    """Simple fonction qui renomme le fichier json"""
+    print(f'Renommage du json "{os.path.join(json_files_directory, json_filename)}" en "{os.path.join(json_files_directory, new_json_filename)}"')
+    os.rename(
+        os.path.join(json_files_directory, json_filename),
+        os.path.join(json_files_directory, new_json_filename),
+    )
 
 
-def get_referentiel_appellations_rome(token):
+@task(task_id="A10_write_to_history", trigger_rule=TriggerRule.NONE_FAILED_MIN_ONE_SUCCESS)
+def write_to_history_csv_file(generated_json_files_directory):  # , json_filename):
     """
-    https://francetravail.io/produits-partages/catalogue/offres-emploi/documentation#/api-reference/operations/recupererReferentielAppellations
-    Récupérer le référentiel des appellations ROME et les écrit dans un fichier json.
+    Ecriture du nom du fichier et du nombre d'offres dans le fichier "_json_files_history.csv" pour historique
+      avec le seul fichier json qu'il reste dans le dossier à ce stade
+
     Ne retourne rien.
-    Un "code" correspond à un "libelle", par exemple { "code": "404278", "libelle": "Data engineer" }
     """
-    print(f'{Fore.GREEN}\n==> Fonction "get_referentiel_appellations_rome()" :\n')
+    import csv
 
-    url = "https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/appellations"
+    json_file_in_generated_directory = [file for file in os.listdir(generated_json_files_directory) if file.endswith(".json")]
 
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json",
-    }
+    remaining_json_file = json_file_in_generated_directory[0]
 
-    response = requests.get(url, headers=headers)
+    df = pd.read_json(
+        os.path.join(generated_json_files_directory, remaining_json_file),
+        dtype=False,  # pour ne pas inférer les dtypes
+    )
 
-    if response.status_code == 200:
-        print(f"Status Code: {response.status_code}\n")
-        # print(f"Réponse de l'API: {json.dumps(response.json(), indent=4, ensure_ascii=False)}")
-        # ensure_ascii=False sinon on a des caractères non compréhensible (ex: Op\u00e9rateur)
+    print(len(df))
 
-        file_path = os.path.join(current_directory, "outputs", "referentiels", "appellations_rome.json")
-        data = response.json()
-        with open(file_path, "w", encoding="utf-8") as f:
-            #     json.dump(data, f, ensure_ascii=False, indent=4)  # écrit le json, mais le formattage classique prend trop de place... le code suivant corrige le tir # noqa
-            f.write("[\n")  # Ajouter un "[" pour "initialiser" le fichier json
-            for i in range(len(data)):
-                f.write("    ")
-                json.dump(data[i], f, ensure_ascii=False)
-                if i < len(data) - 1:  # Ajouter une virgule pour tous les documents sauf pour le dernier
-                    f.write(",\n")
-                else:
-                    f.write("\n")
-            f.write("]")  # Clore le json en ajoutant un crochet fermant "]"
-
-    else:
-        print(f"Erreur lors de la requête API: {response.status_code}\n")
-        print(response.text)
+    with open(os.path.join(generated_json_files_directory, "_json_files_history.csv"), "a", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow([remaining_json_file, len(df)])
 
     return None
-
-
-def get_referentiel_pays(token):
-    """
-    https://francetravail.io/produits-partages/catalogue/offres-emploi/documentation#/api-reference/operations/recupererReferentielPays
-    Récupérer le référentiel des pays et les écrit dans un fichier json.
-    Ne retourne rien.
-    Un "code" correspond à un "libelle", par exemple  { "code": "01", "libelle": "France" }
-    """
-    print(f'{Fore.GREEN}\n==> Fonction "get_referentiel_pays()"\n')
-
-    url = "https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/pays"
-
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json",
-    }
-
-    response = requests.get(url, headers=headers)
-
-    if response.status_code == 200:
-        print(f"Status Code: {response.status_code}\n")
-        # print(f"Réponse de l'API: {json.dumps(response.json(), indent=4, ensure_ascii=False)}")
-        # ensure_ascii=False sinon on a des caractères non compréhensible (ex: Op\u00e9rateur)
-
-        file_path = os.path.join(current_directory, "outputs", "referentiels", "pays.json")
-        data = response.json()
-        with open(file_path, "w", encoding="utf-8") as f:
-            # json.dump(data, f, ensure_ascii=False, indent=4) # écrit le json, mais le formattage classique prend trop de place... le code suivant corrige le tir # noqa
-            f.write("[\n")  # Ajouter un "[" pour "initialiser" le fichier json
-            for i in range(len(data)):
-                f.write("    ")
-                json.dump(data[i], f, ensure_ascii=False)
-                if i < len(data) - 1:  # Ajouter une virgule pour tous les documents sauf pour le dernier
-                    f.write(",\n")
-                else:
-                    f.write("\n")
-            f.write("]")  # Clore le json en ajoutant un crochet fermant "]"
-
-    else:
-        print(f"Erreur lors de la requête API: {response.status_code}\n")
-        print(response.text)
-
-    return None
-
-
-def create_csv__code_name__city_department_region():
-    """
-    Créé à partir du notebook "1--create_csv_codes__city_departement_region.ipynb".
-    Génère le fichier "Job_Market/api_extract__transform/locations_information/code_name__city_department_region" qui sert à récupérer les informations suivantes :
-
-        - code_insee
-        - nom_commune
-        - code_postal
-        - nom_ville
-        - code_departement
-        - nom_departement
-        - code_region
-        - nom_region
-
-    Ne retourne rien.
-    """
-
-    print(f'{Fore.GREEN}\n==> Fonction "create_csv__code_name__city_department_region()"\n')
-
-    # todo : ajouter la partie download / unzip des fichiers (pas urgent)
-
-    # Fichiers du lien_2
-    # ==================
-
-    current_directory = os.path.dirname(os.path.abspath(__file__))
-
-    files_directory = os.path.join(
-        current_directory,
-        "locations_information",
-        "archives",
-    )
-    file_commune = "v_commune_2024.csv"
-    file_departement = "v_departement_2024.csv"
-    file_region = "v_region_2024.csv"
-
-    # df_commune
-    # ==========
-
-    df_commune = pd.read_csv(
-        os.path.join(files_directory, "lien_2", file_commune),
-        usecols=["COM", "REG", "DEP", "LIBELLE"],
-    )
-
-    df_commune.rename(
-        {
-            "COM": "code_insee",
-            "REG": "code_region",
-            "DEP": "code_departement",
-            "LIBELLE": "nom_commune",
-        },
-        axis=1,
-        inplace=True,
-    )
-
-    # On ajoute une colonne nom_ville (idem que nom_commune sans les arrondissements pour Paris, Marseille et Lyon)
-    #  car on va préférer "Lyon" à "Lyon 1er Arrondissement" ou "Lyon 2e Arrondissement"...
-
-    df_commune["nom_ville"] = df_commune.apply(
-        lambda x: x.nom_commune.split(" ")[0] if "Arrondissement" in x.nom_commune else x.nom_commune,
-        axis=1,
-    )
-
-    df_departement = pd.read_csv(
-        os.path.join(files_directory, "lien_2", file_departement),
-        usecols=["DEP", "LIBELLE"],
-    )
-
-    df_departement.rename(
-        {"DEP": "code_departement", "LIBELLE": "nom_departement"},
-        axis=1,
-        inplace=True,
-    )
-
-    df_region = pd.read_csv(
-        os.path.join(files_directory, "lien_2", file_region),
-        usecols=["REG", "LIBELLE"],
-    )
-
-    df_region.rename(
-        {"REG": "code_region", "LIBELLE": "nom_region"},
-        axis=1,
-        inplace=True,
-    )
-
-    # On exclut les régions hors de la France Métropolitaine
-    df_region = df_region[~df_region.nom_region.isin(["Guadeloupe", "Martinique", "Guyane", "La Réunion", "Mayotte", "Corse"])]
-
-    # merging
-
-    df_lien_2 = df_commune.merge(df_departement, on="code_departement").merge(df_region, on="code_region")
-
-    # pour avoir code_region = 84 au lieu de 84.0 par exemple
-    df_lien_2.code_region = df_lien_2.code_region.astype(int).astype(str)
-
-    df_lien_2 = df_lien_2[
-        [
-            "code_insee",
-            "nom_commune",
-            "nom_ville",
-            "code_departement",
-            "nom_departement",
-            "code_region",
-            "nom_region",
-        ]
-    ]
-
-    # Fichier du lien_3
-    # =================
-
-    # Mapping code insee <> code postal
-
-    df_lien_3 = pd.read_csv(
-        os.path.join(files_directory, "lien_3", "cities.csv"),
-        usecols=["insee_code", "zip_code"],
-    )
-
-    df_lien_3.rename(
-        {"insee_code": "code_insee", "zip_code": "code_postal"},
-        axis=1,
-        inplace=True,
-    )
-
-    df_lien_3[df_lien_3.code_insee == "75056"]  # non disponible dans ce fichier, donc attention au merge
-
-    df_lien_3["code_postal"] = df_lien_3["code_postal"].astype(str)
-
-    # Merge des df des liens 2 et 3
-    # =============================
-
-    df = pd.merge(left=df_lien_2, right=df_lien_3, on="code_insee", how="left")
-    # left car tous les code_insee ne sont pas disponibles dans df_lien_3
-
-    df = df[
-        [
-            "code_insee",
-            "nom_commune",
-            "code_postal",
-            "nom_ville",
-            "code_departement",
-            "nom_departement",
-            "code_region",
-            "nom_region",
-        ]
-    ]
-
-    df["code_postal"] = df["code_postal"].str.zfill(5)
-
-    df = df.drop_duplicates(["code_insee", "code_postal"])
-
-    # Ecriture dans un fichier .csv
-    # =============================
-
-    df.to_csv(
-        os.path.join(
-            current_directory,
-            "locations_information",
-            "code_name__city_department_region.csv",
-        ),
-        index=False,  # pour ne pas écrire les index
-    )
