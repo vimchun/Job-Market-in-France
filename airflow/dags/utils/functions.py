@@ -23,6 +23,20 @@ current_directory = os.path.dirname(os.path.abspath(__file__))
 #### fonctions utilisées par airflow (décorateur @task)
 
 
+@task(task_id="S0_delete_all_in_one_json")
+def delete_all_in_one_json():
+    """
+    Simple fonction pour supprimer le fichier json "all_in_one.json" s'il existe.
+    Normalement, il n'est pas censé exister sauf dans des cas où le DAG est échoué en cours de route.
+    (si ce fichier est existant, on peut se retrouver avec 2 fichiers json
+      dans le dossier  "1--generated_json_file", ce qui pose problème).
+    """
+    try:
+        os.remove(os.path.join("..", "data", "outputs", "offres", "1--generated_json_file", "all_in_one.json"))
+    except FileNotFoundError:
+        print("Le fichier n'existe pas")
+
+
 @task(task_id="S1_check_nb_of_json_files")
 def count_json_files_number(directory_path):
     """
@@ -43,19 +57,28 @@ def count_json_files_number(directory_path):
     return count
 
 
-@task(task_id="S2_check_yaml_file_presence")
-def check_presence_yaml_file(file_path):
+def check_presence_file(file_path):
     """
     Vérifie la présence du fichier yaml "file_path".
       - Si True, on continue le DAG.
       - Sinon, on arrête le DAG avec une Exception.
     """
     if os.path.exists(file_path):
-        print(f'Le fichier yaml est bien présent ici : "{file_path}", on continue le DAG...')
+        print(f'Le fichier est bien présent ici : "{file_path}", on continue le DAG...')
     else:
         raise Exception(f"==> Le fichier yaml n'est pas présent dans ({file_path}). On arrête le DAG.")
 
     return None
+
+
+@task(task_id="S2_check_yaml_file_presence")
+def check_presence_yaml_file(file_path):
+    return check_presence_file(file_path)
+
+
+@task(task_id="S2_check_csv_file_presence")
+def check_presence_csv_file(file_path):
+    return check_presence_file(file_path)
 
 
 @task(task_id="S3_remove_all_json_files")

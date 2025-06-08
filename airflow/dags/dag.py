@@ -15,9 +15,11 @@ from utils.functions import (
     add_date_extract_attribute,
     add_date_premiere_ecriture_attribute,
     add_location_attributes,
+    check_presence_csv_file,
     check_presence_yaml_file,
     concatenate_all_json_into_one,
     count_json_files_number,
+    delete_all_in_one_json,
     get_bearer_token,
     get_offers,
     keep_only_offres_from_metropole,
@@ -37,6 +39,7 @@ credential_filename = os.path.join(current_directory, "..", "data", "resources",
 codes_appellation_filename = os.path.join(current_directory, "..", "data", "resources", "code_appellation_libelle.yml")
 json_files_original_from_api_directory = os.path.join(current_directory, "..", "data", "outputs", "offres", "0--original_json_files_from_api")
 generated_json_files_directory = os.path.join(current_directory, "..", "data", "outputs", "offres", "1--generated_json_file")
+location_csv_filename = os.path.join(os.path.join(current_directory, "..", "data", "resources", "code_name__city_department_region.csv"))
 
 with open(credential_filename, "r") as file:
     creds = yaml.safe_load(file)
@@ -56,16 +59,19 @@ all_in_one_json = "all_in_one.json"
 )
 def my_dag():
     with TaskGroup(group_id="setup_group", tooltip="xxx") as setup:
+        delete_json = delete_all_in_one_json()  #### task S0
+
         with TaskGroup(group_id="check_files_in_folders", tooltip="xxx") as check:
             count = count_json_files_number(directory_path=generated_json_files_directory)  #### task S1
             check_presence_yaml_file(file_path=codes_appellation_filename)  #### task S2
+            check_presence_csv_file(file_path=location_csv_filename)  #### task S2
 
         with TaskGroup(group_id="after_checks", tooltip="xxx") as after_checks:
             remove_all_json_files(json_files_original_from_api_directory)  #### task S3
             token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)  #### task S4
             code_libelle_list = load_code_appellation_yaml_file()  #### task S5
 
-        check >> after_checks
+        delete_json >> check >> after_checks
 
     with TaskGroup(group_id="etl_group", tooltip="xxx") as etl:
         api_requests = (
