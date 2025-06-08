@@ -59,17 +59,17 @@ all_in_one_json = "all_in_one.json"
 )
 def my_dag():
     with TaskGroup(group_id="setup_group", tooltip="xxx") as setup:
-        delete_json = delete_all_in_one_json()  #### task S0
+        delete_json = delete_all_in_one_json()  #### task S1
 
         with TaskGroup(group_id="check_files_in_folders", tooltip="xxx") as check:
-            count = count_json_files_number(directory_path=generated_json_files_directory)  #### task S1
-            check_presence_yaml_file(file_path=codes_appellation_filename)  #### task S2
             check_presence_csv_file(file_path=location_csv_filename)  #### task S2
+            check_presence_yaml_file(file_path=codes_appellation_filename)  #### task S2
+            count = count_json_files_number(directory_path=generated_json_files_directory)  #### task S2
 
         with TaskGroup(group_id="after_checks", tooltip="xxx") as after_checks:
             remove_all_json_files(json_files_original_from_api_directory)  #### task S3
-            token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)  #### task S4
-            code_libelle_list = load_code_appellation_yaml_file()  #### task S5
+            code_libelle_list = load_code_appellation_yaml_file()  #### task S3
+            token = get_bearer_token(client_id=IDENTIFIANT_CLIENT, client_secret=CLE_SECRETE, scope=SCOPES_OFFRES)  #### task S3
 
         delete_json >> check >> after_checks
 

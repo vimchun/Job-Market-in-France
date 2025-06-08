@@ -23,7 +23,7 @@ current_directory = os.path.dirname(os.path.abspath(__file__))
 #### fonctions utilisées par airflow (décorateur @task)
 
 
-@task(task_id="S0_delete_all_in_one_json")
+@task(task_id="S1_delete_all_in_one_json")
 def delete_all_in_one_json():
     """
     Simple fonction pour supprimer le fichier json "all_in_one.json" s'il existe.
@@ -37,7 +37,31 @@ def delete_all_in_one_json():
         print("Le fichier n'existe pas")
 
 
-@task(task_id="S1_check_nb_of_json_files")
+def check_presence_file(file_path):
+    """
+    Vérifie la présence du fichier yaml "file_path".
+      - Si True, on continue le DAG.
+      - Sinon, on arrête le DAG avec une Exception.
+    """
+    if os.path.exists(file_path):
+        print(f'Le fichier est bien présent ici : "{file_path}", on continue le DAG...')
+    else:
+        raise Exception(f"==> Le fichier yaml n'est pas présent dans ({file_path}). On arrête le DAG.")
+
+    return None
+
+
+@task(task_id="S2_check_csv_file_presence")
+def check_presence_csv_file(file_path):
+    return check_presence_file(file_path)
+
+
+@task(task_id="S2_check_yaml_file_presence")
+def check_presence_yaml_file(file_path):
+    return check_presence_file(file_path)
+
+
+@task(task_id="S2_check_nb_of_json_files")
 def count_json_files_number(directory_path):
     """
     Compte le nombre de json dans "directory_path".
@@ -55,30 +79,6 @@ def count_json_files_number(directory_path):
         raise Exception(f"==> Au moins 2 fichiers json ({count} fichiers : {json_files}). On arrête le DAG.")  # todo: à remettre une fois le dev avancé
 
     return count
-
-
-def check_presence_file(file_path):
-    """
-    Vérifie la présence du fichier yaml "file_path".
-      - Si True, on continue le DAG.
-      - Sinon, on arrête le DAG avec une Exception.
-    """
-    if os.path.exists(file_path):
-        print(f'Le fichier est bien présent ici : "{file_path}", on continue le DAG...')
-    else:
-        raise Exception(f"==> Le fichier yaml n'est pas présent dans ({file_path}). On arrête le DAG.")
-
-    return None
-
-
-@task(task_id="S2_check_yaml_file_presence")
-def check_presence_yaml_file(file_path):
-    return check_presence_file(file_path)
-
-
-@task(task_id="S2_check_csv_file_presence")
-def check_presence_csv_file(file_path):
-    return check_presence_file(file_path)
 
 
 @task(task_id="S3_remove_all_json_files")
@@ -108,7 +108,30 @@ def remove_all_json_files(json_files_directory):
     return None
 
 
-@task(task_id="S4_get_token")
+@task(task_id="S3_load_yaml_file")
+def load_code_appellation_yaml_file():
+    """
+    Charge le fichier dans "Job_Market/airflow/data/resources/code_appellation_libelle.yml"
+    Retourne une liste de dictionnaire de la forme :
+      [
+        {'code': '404278', 'libelle': 'Data_Engineer'},
+        {'code': '404284', 'libelle': 'Ingenieur_Donnees'},
+        {},
+        ...
+      ]
+    """
+    import yaml
+
+    codes_appellation_filename = os.path.join(current_directory, "..", "..", "data", "resources", "code_appellation_libelle.yml")
+
+    with open(codes_appellation_filename, "r") as file:
+        content = yaml.safe_load(file)
+        code_libelle_list = content["code_appellation_libelle"]
+
+    return code_libelle_list
+
+
+@task(task_id="S3_get_token")
 def get_bearer_token(client_id, client_secret, scope):
     """
     Récupère un Bearer Token grâce à l'API de France Travail.
@@ -146,29 +169,6 @@ def get_bearer_token(client_id, client_secret, scope):
         print(f"Erreur, Status Code: {response.status_code}\n")
         print(f"=> {response.json()}")
         return None
-
-
-@task(task_id="S5_load_yaml_file")
-def load_code_appellation_yaml_file():
-    """
-    Charge le fichier dans "Job_Market/airflow/data/resources/code_appellation_libelle.yml"
-    Retourne une liste de dictionnaire de la forme :
-      [
-        {'code': '404278', 'libelle': 'Data_Engineer'},
-        {'code': '404284', 'libelle': 'Ingenieur_Donnees'},
-        {},
-        ...
-      ]
-    """
-    import yaml
-
-    codes_appellation_filename = os.path.join(current_directory, "..", "..", "data", "resources", "code_appellation_libelle.yml")
-
-    with open(codes_appellation_filename, "r") as file:
-        content = yaml.safe_load(file)
-        code_libelle_list = content["code_appellation_libelle"]
-
-    return code_libelle_list
 
 
 @task(task_id="A1_get_offers")
@@ -1121,7 +1121,7 @@ def rename_json_file(json_files_directory, json_filename, new_json_filename):
 
 
 @task(task_id="A10_write_to_history", trigger_rule=TriggerRule.NONE_FAILED_MIN_ONE_SUCCESS)
-def write_to_history_csv_file(generated_json_files_directory):  # , json_filename):
+def write_to_history_csv_file(generated_json_files_directory):
     """
     Ecriture du nom du fichier et du nombre d'offres dans le fichier "_json_files_history.csv" pour historique
       avec le seul fichier json qu'il reste dans le dossier à ce stade
