@@ -17,10 +17,9 @@ from airflow.utils.trigger_rule import TriggerRule
 
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
-current_directory = os.path.dirname(os.path.abspath(__file__))
-
-
-#### fonctions utilisées par airflow (décorateur @task)
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+RESOURCES_DIR = os.path.join(CURRENT_DIR, "..", "..", "data", "resources")
+OUTPUTS_DIR = os.path.join(CURRENT_DIR, "..", "..", "data", "outputs")
 
 
 @task(task_id="S1_delete_all_in_one_json")
@@ -31,7 +30,7 @@ def delete_all_in_one_json():
     (si ce fichier est existant, on peut se retrouver avec 2 fichiers json
       dans le dossier  "1--generated_json_file", ce qui pose problème).
     """
-    file_to_remove = os.path.join(current_directory, "..", "..", "data", "outputs", "offres", "1--generated_json_file", "all_in_one.json")
+    file_to_remove = os.path.join(OUTPUTS_DIR, "offres", "1--generated_json_file", "all_in_one.json")
     try:
         os.remove(file_to_remove)
     except FileNotFoundError:
@@ -76,8 +75,7 @@ def count_json_files_number(directory_path):
     if count <= 1:
         print("0 ou 1 fichier json, on continue le DAG...")
     else:
-        # print(f"==> Au moins 2 fichiers json ({count} fichiers : {json_files}). On arrête le DAG.")
-        raise Exception(f"==> Au moins 2 fichiers json ({count} fichiers : {json_files}). On arrête le DAG.")  # todo: à remettre une fois le dev avancé
+        raise Exception(f"==> Au moins 2 fichiers json ({count} fichiers : {json_files}). On arrête le DAG.")
 
     return count
 
@@ -123,7 +121,7 @@ def load_code_appellation_yaml_file():
     """
     import yaml
 
-    codes_appellation_filename = os.path.join(current_directory, "..", "..", "data", "resources", "code_appellation_libelle.yml")
+    codes_appellation_filename = os.path.join(RESOURCES_DIR, "code_appellation_libelle.yml")
 
     with open(codes_appellation_filename, "r") as file:
         content = yaml.safe_load(file)
@@ -215,13 +213,10 @@ def get_offers(token, code_libelle_list):
 
         raise Exception(f"[safe_get] Échec après {max_retries} tentatives : erreur 429 persistante...")
 
-    # todo : créer un pool pour gérer le nombre de tâches en // ?
-
     code_appellation = code_libelle_list["code"]
     libelle = code_libelle_list["libelle"]
 
-    output_file_path = os.path.join(current_directory, "..", "..", "data", "outputs", "offres", "0--original_json_files_from_api")
-    output_file = os.path.join(output_file_path, f"{code_appellation}_{libelle}.json")
+    output_file = os.path.join(OUTPUTS_DIR, "offres", "0--original_json_files_from_api", f"{code_appellation}_{libelle}.json")
 
     if os.path.exists(output_file):
         os.remove(output_file)
@@ -491,9 +486,7 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
 
     print(f'{Fore.GREEN}\n==> Fonction "add_location_attributes()"\n')
 
-    # Chargement des fichiers
-    # =======================
-    current_directory = os.path.dirname(os.path.abspath(__file__))
+    #### Chargement des fichiers
 
     print(f"\n====> Chargement des fichiers\n")
 
@@ -503,7 +496,7 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
     )
 
     df_insee = pd.read_csv(
-        os.path.join(os.path.join(current_directory, "..", "..", "data", "resources", "code_name__city_department_region.csv")),
+        os.path.join(os.path.join(RESOURCES_DIR, "code_name__city_department_region.csv")),
         dtype=str,
     )
 
@@ -520,7 +513,7 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
     )
 
     #### Cas_1 : "code_insee" renseigné
-    # =================================
+
     # note : si commune = NAN, alors code_postal = NAN
 
     print(f'\n====> Cas_1 : "code_insee" renseigné\n')
@@ -548,7 +541,6 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
     # assert len(df_lieu[(df_lieu.lieu_cas == "cas_1") & (df_lieu.nom_ville.isna())]) == 0
 
     #### Cas_2 : "code_insee = NAN" (dans ce cas "code_postal = NAN"), mais coordonnées GPS renseignées
-    # =================================================================================================
 
     print(f'\n====> Cas_2 : "code_insee = NAN" (dans ce cas "code_postal = NAN"), mais coordonnées GPS renseignées\n')
 
@@ -665,7 +657,6 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
     # assert len(df_lieu[(df_lieu.lieu_cas == "cas_2") & (df_lieu.nom_departement.isna())]) == 0
 
     #### Cas_3 : "code_postal = code_insee = latitude = longitude = NAN", mais "libelle = 'numéro_département - nom_département'" </u>
-    # ================================================================================================================================
 
     print(f'\n====> Cas_3 : "code_postal = code_insee = latitude = longitude = NAN", mais "libelle = numéro_département - nom_département"\n')
 
@@ -704,7 +695,6 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
     # assert len(df_lieu[(df_lieu.lieu_cas == "cas_3") & (df_lieu.nom_departement.isna())]) == 0
 
     #### Cas_4 : "code_postal = code_insee = latitude = longitude = NAN", mais "libelle = nom_région"
-    # ===============================================================================================
 
     print(f'\n====> Cas_4 : "code_postal = code_insee = latitude = longitude = NAN", mais "libelle = nom_région"\n')
 
@@ -775,7 +765,6 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
     # assert len(df_lieu[(df_lieu.lieu_cas == "cas_4") & (df_lieu.nom_region.isna())]) == 0
 
     #### Cas_5 : "code_postal = code_insee = latitude = longitude = NAN", et "libelle = ("FRANCE"|"France"|"France entière")"
-    # =======================================================================================================================
 
     print(f'\n====> Cas_5 : "code_postal = code_insee = latitude = longitude = NAN", et "libelle = ("FRANCE"|"France"|"France entière")"\n')
 
@@ -800,7 +789,6 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
     # assert len(df_lieu[~df_lieu.lieu_cas.isin(["cas_1", "cas_2", "cas_3", "cas_4", "cas_5"])]) == 0  # != cas_1/2/3/4/5
 
     #### Update du df initial avec df_lieu
-    # ====================================
 
     # A la base, avec "df", on a pour l'attribut "lieuTravail"	les attributs suivants :
     # - libelle
@@ -851,8 +839,7 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
 
     df_final = pd.merge(left=df, right=df_lieu, on="id")
 
-    # Ecriture dans un fichier .json
-    # ==============================
+    #### Ecriture dans un fichier .json
 
     df_final.to_json(
         os.path.join(json_files_directory, new_json_filename),
