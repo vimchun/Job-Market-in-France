@@ -403,21 +403,9 @@ def concatenate_all_json_into_one(downloaded_jsons_from_api_directory, aggregate
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
         force_ascii=False,  # pour convertir les caractères spéciaux
         indent=4,  # pour formatter la sortie
-    )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs
+    )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs (on les supprimera à la fin du DAG)
 
     # print(df_concat)  # pour investigation
-
-    # todo: répétés plusieurs fois dans les fonctions suivantes donc à factoriser (ou ne le faire qu'à la fin ?)
-    # On supprime les backslashs ajoutés par la méthode .to_json()
-    with open(os.path.join(aggregated_json_directory, new_json_filename), "r", encoding="utf-8") as f:
-        content = f.read()
-
-        content = content.replace("\\/", "/")  # On remplace "\/" par "/"
-        content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
-
-        # On sauvegarde le fichier final sans les '\'
-        with open(os.path.join(aggregated_json_directory, new_json_filename), "w", encoding="utf-8") as f:
-            f.write(content)
 
     return new_json_filename
 
@@ -477,18 +465,7 @@ def keep_only_offres_from_metropole(aggregated_json_directory, json_filename, ne
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
         force_ascii=False,  # pour convertir les caractères spéciaux
         indent=4,  # pour formatter la sortie
-    )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs
-
-    # On supprime les backslashs ajoutés par la méthode .to_json()
-    with open(os.path.join(aggregated_json_directory, new_json_filename), "r", encoding="utf-8") as f:
-        content = f.read()
-
-        content = content.replace("\\/", "/")  # On remplace les "\/" par "/"
-        content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
-
-        # On sauvegarde le fichier final sans les '\'
-        with open(os.path.join(aggregated_json_directory, new_json_filename), "w", encoding="utf-8") as f:
-            f.write(content)
+    )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs (on les supprimera à la fin du DAG)
 
     return new_json_filename, len(df_only_metropole)
 
@@ -873,18 +850,7 @@ def add_location_attributes(aggregated_json_directory, json_filename, new_json_f
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
         force_ascii=False,  # pour convertir les caractères spéciaux
         indent=4,  # pour formatter la sortie
-    )
-
-    # On supprime les backslashs ajoutés par la méthode .to_json()
-    with open(os.path.join(aggregated_json_directory, new_json_filename), "r", encoding="utf-8") as f:
-        content = f.read()
-
-        content = content.replace("\\/", "/")  # On remplace "\/" par "/"
-        content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
-
-        # On sauvegarde le fichier final sans les '\'
-        with open(os.path.join(aggregated_json_directory, new_json_filename), "w", encoding="utf-8") as f:
-            f.write(content)
+    )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs (on les supprimera à la fin du DAG)
 
     return new_json_filename
 
@@ -917,20 +883,8 @@ def add_date_extract_attribute(aggregated_json_directory, json_filename, new_jso
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
         force_ascii=False,  # pour convertir les caractères spéciaux
         indent=4,  # pour formatter la sortie
-    )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs
-
+    )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs (on les supprimera à la fin du DAG)
     # print(df)  # pour investigation
-
-    # On supprime les backslashs ajoutés par la méthode .to_json()
-    with open(os.path.join(aggregated_json_directory, new_json_filename), "r", encoding="utf-8") as f:
-        content = f.read()
-
-        content = content.replace("\\/", "/")  # On remplace les "\/" par "/"
-        content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
-
-        # On sauvegarde le fichier final sans les '\'
-        with open(os.path.join(aggregated_json_directory, new_json_filename), "w", encoding="utf-8") as f:
-            f.write(content)
 
     return new_json_filename
 
@@ -1048,18 +1002,7 @@ def special_jsons_concatenation(aggregated_json_directory):
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
         force_ascii=False,  # pour convertir les caractères spéciaux
         indent=4,  # pour formatter la sortie
-    )
-
-    # On supprime les backslashs ajoutés par la méthode .to_json()
-    with open(os.path.join(aggregated_json_directory, new_json_file), "r", encoding="utf-8") as f:
-        content = f.read()
-
-        content = content.replace("\\/", "/")  # On remplace "\/" par "/"
-        content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
-
-        # On sauvegarde le fichier final sans les '\'
-        with open(os.path.join(aggregated_json_directory, new_json_file), "w", encoding="utf-8") as f:
-            f.write(content)
+    )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs (on les supprimera à la fin du DAG)
 
     os.makedirs(os.path.join(aggregated_json_directory, "archives"), exist_ok=True)
 
@@ -1111,7 +1054,7 @@ def add_date_premiere_ecriture_attribute(aggregated_json_directory, json_filenam
 
     # print(df)  # pour investigation
 
-    # On supprime les backslashs ajoutés par la méthode .to_json()
+    # On supprime les backslashs ajoutés par la méthode .to_json() [on le fait ici car c'est la dernière fonction]
     with open(os.path.join(aggregated_json_directory, new_json_filename), "r", encoding="utf-8") as f:
         content = f.read()
 

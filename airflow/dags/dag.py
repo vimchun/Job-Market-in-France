@@ -107,4 +107,4 @@ def my_dag():
         [file0, file1] >> write_history
 
 
-my_dag = my_dag()
+my_dag()
