@@ -1,15 +1,13 @@
 # Notes :
-# https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html
+# Inspiré de la doc Airflow : https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html
 #
-# - Lancer le fichier "start_containers.sh" qui fait les commandes suivantes :
+# - Lancer le fichier "start_containers.sh" qui en partie fait les commandes suivantes :
 #     docker compose up airflow-init
 #     docker compose up
-#
-# - 2.11.0 date de mai 2025 (https://hub.docker.com/r/apache/airflow/tags)
 
 x-airflow-common:
   &airflow-common
-  # image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.11.0}  # utilise l'image officielle
+  # image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.11.0}  # utilise l'image officielle (2.11.0 date de mai 2025 (https://hub.docker.com/r/apache/airflow/tags))
   # image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:3.0.1}
   build: .   # build à partir du Dockerfile
   environment:
@@ -18,15 +16,11 @@ x-airflow-common:
     AIRFLOW__CORE__AUTH_MANAGER: airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://mhh:mhh@postgres/francetravail
     AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://mhh:mhh@postgres/francetravail
-    # AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-    # AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
     AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ***REMOVED***
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
-    AIRFLOW__CORE__LOAD_EXAMPLES: "true"
+    AIRFLOW__CORE__LOAD_EXAMPLES: "false"
     AIRFLOW__CORE__EXECUTION_API_SERVER_URL: 'http://airflow-apiserver:8080/execution/'
-    # AIRFLOW__API__AUTH_BACKENDS: "airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session"
-    # AIRFLOW__CORE__AUTH_MANAGER: airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager  # à mettre
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
     # _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
     AIRFLOW_CONFIG: '/opt/airflow/config/airflow.cfg'
@@ -36,7 +30,6 @@ x-airflow-common:
     - ./airflow/logs:/opt/airflow/logs
     - ./airflow/config:/opt/airflow/config
     - ./airflow/plugins:/opt/airflow/plugins
-  # user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
@@ -48,10 +41,8 @@ x-airflow-common:
 
 services:
 
-  # db
   postgres:
     image: postgres:16-alpine
-    # image: postgres:13
     container_name: postgres
     environment:
       POSTGRES_DB: francetravail
@@ -63,15 +54,11 @@ services:
       - postgres_data_job_market:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U mhh -d francetravail"]
-      # interval: 5s
-      # timeout: 5s
-      # retries: 5
       interval: 10s
       retries: 5
       start_period: 5s
     restart: always
 
-  # app
   fastapi:
     build:
       context: .  # contexte = dossier "Job_Market" car fichier "code_name__city_department_region.csv" en dehors du dossier "fastapi"
@@ -94,41 +81,16 @@ services:
 
   redis:
     image: redis:latest
-    # Redis is limited to 7.2-bookworm due to licencing change
-    # https://redis.io/blog/redis-adopts-dual-source-available-licensing/
-    # image: redis:7.2-bookworm
     container_name: redis
-    # ports:
-    #   - 6379:6379
     expose:
       - 6379
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      # interval: 5s
-      # timeout: 30s
-      # retries: 10
       interval: 10s
       timeout: 30s
       retries: 50
       start_period: 30s
     restart: always
-
-  # airflow-webserver:
-  #   container_name: airflow-webserver
-  #   <<: *airflow-common
-  #   command: webserver
-  #   environment:
-  #     <<: *airflow-common-env
-  #     AIRFLOW__WEBSERVER__WORKERS: 1  # moins de workers pour accélérer
-  #   ports:
-  #     - 8080:8080
-  #   healthcheck:
-  #     test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
-  #     interval: 10s
-  #     timeout: 10s
-  #     retries: 5
-  #   restart: always
-
 
   airflow-apiserver:
     container_name: airflow-apiserver
@@ -153,15 +115,7 @@ services:
     <<: *airflow-common
     command: scheduler
     healthcheck:
-      # test:
-      #   [
-      #     "CMD-SHELL",
-      #     'airflow jobs check --job-type SchedulerJob --hostname "$${HOSTNAME}"',
-      #   ]
       test: ["CMD", "curl", "--fail", "http://localhost:8974/health"]
-      # interval: 10s
-      # timeout: 10s
-      # retries: 5
       interval: 30s
       timeout: 10s
       retries: 5
@@ -195,19 +149,13 @@ services:
     healthcheck:
       test:
         - "CMD-SHELL"
-        # - 'celery --app airflow.executors.celery_executor.app inspect ping -d "celery@$${HOSTNAME}"'
         - 'celery --app airflow.providers.celery.executors.celery_executor.app inspect ping -d "celery@$${HOSTNAME}" || celery --app airflow.executors.celery_executor.app inspect ping -d "celery@$${HOSTNAME}"'
-      # interval: 10s
-      # timeout: 10s
-      # retries: 5
       interval: 30s
       timeout: 10s
       retries: 5
       start_period: 30s
     environment:
       <<: *airflow-common-env
-      # Required to handle warm shutdown of the celery workers properly
-      # See https://airflow.apache.org/docs/docker-stack/entrypoint.html#signal-propagation
       DUMB_INIT_SETSID: "0"
     restart: always
     depends_on:
@@ -233,23 +181,11 @@ services:
       airflow-init:
         condition: service_completed_successfully
 
-  # airflow-init:
-  #   container_name: airflow-init
-  #   <<: *airflow-common
-  #   command: version
-  #   restart: "no" # pour éviter de redémarrer le service après un `docker compose up`
-  #   environment:
-  #     <<: *airflow-common-env
-  #     _AIRFLOW_DB_MIGRATE: "true"
-  #     _AIRFLOW_WWW_USER_CREATE: "true"
-  #     _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
-  #     _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
 
   airflow-init:
     container_name: airflow-init
     <<: *airflow-common
     entrypoint: /bin/bash
-    # yamllint disable rule:line-length
     command:
       - -c
       - |
@@ -328,7 +264,6 @@ services:
         echo
         ls -la /opt/airflow/{logs,dags,plugins,config}
 
-    # yamllint enable rule:line-length
     environment:
       <<: *airflow-common-env
       _AIRFLOW_DB_MIGRATE: 'true'
@@ -354,22 +289,6 @@ services:
     depends_on:
       <<: *airflow-common-depends-on
 
-  # flower:
-  #   container_name: flower
-  #   <<: *airflow-common
-  #   command: celery flower
-  #   ports:
-  #     - 5555:5555
-  #   healthcheck:
-  #     test: ["CMD", "curl", "--fail", "http://localhost:5555/"]
-  #     interval: 10s
-  #     timeout: 10s
-  #     retries: 5
-  #   restart: always
-
-  # You can enable flower by adding "--profile flower" option e.g. docker-compose --profile flower up
-  # or by explicitly targeted on the command line e.g. docker-compose up flower.
-  # See: https://docs.docker.com/compose/profiles/
   flower:
     container_name: flower
     <<: *airflow-common
