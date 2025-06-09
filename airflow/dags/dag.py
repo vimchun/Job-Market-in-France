@@ -2,8 +2,6 @@ import os
 
 from datetime import datetime
 
-import yaml
-
 from colorama import Fore, Style, init
 
 from airflow.decorators import dag
@@ -15,13 +13,15 @@ from utils.functions import (
     add_date_extract_attribute,
     add_date_premiere_ecriture_attribute,
     add_location_attributes,
-    check_presence_csv_file,
-    check_presence_yaml_file,
     concatenate_all_json_into_one,
     count_json_files_number,
     delete_all_in_one_json,
     get_bearer_token,
+    get_creds_from_yaml_file,
     get_offers,
+    is_existing_appellations_yaml_file,
+    is_existing_credentials_yaml_file,
+    is_existing_csv_file,
     keep_only_offres_from_metropole,
     load_code_appellation_yaml_file,
     nb_json_on_setup_0_or_1,
@@ -31,28 +31,19 @@ from utils.functions import (
     write_to_history_csv_file,
 )
 
-# Récupération des credentials données sur le site de FT, depuis un fichier yaml
-SCOPES_OFFRES = "o2dsoffre api_offresdemploiv2"  # scopes définis dans https://francetravail.io/produits-partages/catalogue/offres-emploi/documentation#/
-CREDENTIALS_FILENAME = "api_credentials_minh.yml"
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 RESOURCES_DIR = os.path.join(CURRENT_DIR, "..", "data", "resources")
 OUTPUTS_DIR = os.path.join(CURRENT_DIR, "..", "data", "outputs")
 
-CREDENTIAL_FILENAME = os.path.join(RESOURCES_DIR, CREDENTIALS_FILENAME)
-CODES_APPELLATION_FILENAME = os.path.join(RESOURCES_DIR, "code_appellation_libelle.yml")
-LOCATION_CSV_FILENAME = os.path.join(RESOURCES_DIR, "code_name__city_department_region.csv")
-
 DOWNLOADED_JSONS_FROM_API_DIR = os.path.join(OUTPUTS_DIR, "offres", "0--original_json_files_from_api")
 AGGREGATED_JSON_DIR = os.path.join(OUTPUTS_DIR, "offres", "1--generated_json_file")
 
-with open(CREDENTIAL_FILENAME, "r") as file:
-    creds = yaml.safe_load(file)
-
-IDENTIFIANT_CLIENT = creds["API_FRANCE_TRAVAIL"]["IDENTIFIANT_CLIENT"]
-CLE_SECRETE = creds["API_FRANCE_TRAVAIL"]["CLE_SECRETE"]
-
-now = datetime.now().strftime("%Y-%m-%d--%Hh%M")
+CREDENTIAL_FILENAME = os.path.join(RESOURCES_DIR, "api_credentials_minh.yml")
+CODES_APPELLATION_FILENAME = os.path.join(RESOURCES_DIR, "code_appellation_libelle.yml")
+LOCATION_CSV_FILENAME = os.path.join(RESOURCES_DIR, "code_name__city_department_region.csv")
 AGGREGATED_JSON_FILENAME = "all_in_one.json"
+
+SCOPES_OFFRES = "o2dsoffre api_offresdemploiv2"  # scopes définis dans https://francetravail.io/produits-partages/catalogue/offres-emploi/documentation#/
 
 
 @dag(
@@ -66,14 +57,16 @@ def my_dag():
         delete_json = delete_all_in_one_json()  #### task S1
 
         with TaskGroup(group_id="check_files_in_folders", tooltip="xxx") as check:
-            check_presence_csv_file(LOCATION_CSV_FILENAME)  #### task S2
-            check_presence_yaml_file(CODES_APPELLATION_FILENAME)  #### task S2
+            is_existing_csv_file(LOCATION_CSV_FILENAME)  #### task S2
+            is_existing_appellations_yaml_file(CODES_APPELLATION_FILENAME)  #### task S2
+            is_existing_credentials_yaml_file(CREDENTIAL_FILENAME)  #### task S2
             count = count_json_files_number(AGGREGATED_JSON_DIR)  #### task S2
 
         with TaskGroup(group_id="after_checks", tooltip="xxx") as after_checks:
             remove_all_json_files(DOWNLOADED_JSONS_FROM_API_DIR)  #### task S3
             code_libelle_list = load_code_appellation_yaml_file()  #### task S3
-            token = get_bearer_token(IDENTIFIANT_CLIENT, CLE_SECRETE, SCOPES_OFFRES)  #### task S3
+            dict_ = get_creds_from_yaml_file(CREDENTIAL_FILENAME)  #### task S3
+            token = get_bearer_token(dict_, SCOPES_OFFRES)  #### task S3
 
         delete_json >> check >> after_checks
 
@@ -95,7 +88,9 @@ def my_dag():
             api_requests >> all_json_in_one >> metropole >> add_location >> add_date_extract >> branch
 
             with TaskGroup(group_id="0_json_in_folder", tooltip="xxx") as file0:
+                now = datetime.now().strftime("%Y-%m-%d--%Hh%M")
                 new_json_filename = f"{now}__extraction_occurence_1.json"
+
                 add_date_first_0 = add_date_premiere_ecriture_attribute(AGGREGATED_JSON_DIR, AGGREGATED_JSON_FILENAME, AGGREGATED_JSON_FILENAME, None, False)  #### task A8
                 json_rename = rename_json_file(AGGREGATED_JSON_DIR, AGGREGATED_JSON_FILENAME, new_json_filename)  #### task A9
 

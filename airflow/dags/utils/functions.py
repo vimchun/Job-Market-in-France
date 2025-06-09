@@ -37,7 +37,7 @@ def delete_all_in_one_json():
         print(f"Le fichier n'existe pas : {file_to_remove}")
 
 
-def check_presence_file(file_path):
+def is_existing_file(file_path):
     """
     Vérifie la présence du fichier yaml "file_path".
       - Si True, on continue le DAG.
@@ -51,14 +51,19 @@ def check_presence_file(file_path):
     return None
 
 
-@task(task_id="S2_check_csv_file_presence")
-def check_presence_csv_file(file_path):
-    return check_presence_file(file_path)
+@task(task_id="S2_is_existing_csv_file")
+def is_existing_csv_file(file_path):
+    return is_existing_file(file_path)
 
 
-@task(task_id="S2_check_yaml_file_presence")
-def check_presence_yaml_file(file_path):
-    return check_presence_file(file_path)
+@task(task_id="S2_is_existing_appellation_yaml_file")
+def is_existing_appellations_yaml_file(file_path):
+    return is_existing_file(file_path)
+
+
+@task(task_id="S2_is_existing_credentials_yaml_file")
+def is_existing_credentials_yaml_file(file_path):
+    return is_existing_file(file_path)
 
 
 @task(task_id="S2_check_nb_of_json_files")
@@ -107,7 +112,7 @@ def remove_all_json_files(json_files_directory):
     return None
 
 
-@task(task_id="S3_load_yaml_file")
+@task(task_id="S3_load_appellations_yaml_file")
 def load_code_appellation_yaml_file():
     """
     Charge le fichier dans "Job_Market/airflow/data/resources/code_appellation_libelle.yml"
@@ -130,14 +135,32 @@ def load_code_appellation_yaml_file():
     return code_libelle_list
 
 
+@task(task_id="S3_get_creds_from_yaml_file")
+def get_creds_from_yaml_file(file_path):
+    """
+    Récupération des credentials données sur le site de FT depuis un fichier yaml
+    Retourne un dictionnaire utile pour la fonction "get_bearer_token()"
+    """
+    import yaml
+
+    with open(file_path, "r") as file:
+        creds = yaml.safe_load(file)
+
+    identifiant_client = creds["API_FRANCE_TRAVAIL"]["IDENTIFIANT_CLIENT"]
+    cle_secrete = creds["API_FRANCE_TRAVAIL"]["CLE_SECRETE"]
+
+    dict_ = {"identifiant_client": identifiant_client, "cle_secrete": cle_secrete}
+
+    return dict_
+
+
 @task(task_id="S3_get_token")
-def get_bearer_token(client_id, client_secret, scope):
+def get_bearer_token(dict_, scope):
     """
     Récupère un Bearer Token grâce à l'API de France Travail.
 
     Paramètres :
-    - client_id (str) : Identifiant client fourni par l'API de France Travail.
-    - client_secret (str) : Clé secrète fournie par l'API de France Travail.
+    - dict_ : ce que renvoie "get_creds_from_yaml_file()", par exemple : {"identifiant_client": "xxxxxxx", "cle_secrete": "yyyyyyyyyyyy"}
     - scope (str) : Liste des scopes séparés par des espaces, indiquant les permissions demandées.
 
     Retourne :
@@ -150,6 +173,10 @@ def get_bearer_token(client_id, client_secret, scope):
     url = "https://entreprise.francetravail.fr/connexion/oauth2/access_token"
     params = {"realm": "/partenaire"}
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
+
+    client_id = dict_["identifiant_client"]
+    client_secret = dict_["cle_secrete"]
+
     data = {
         "grant_type": "client_credentials",
         "client_id": client_id,
