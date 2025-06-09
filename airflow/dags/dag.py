@@ -49,7 +49,8 @@ SCOPES_OFFRES = "o2dsoffre api_offresdemploiv2"  # scopes définis dans https://
 @dag(
     dag_id="projet",
     tags=["projet"],
-    schedule_interval=None,
+    start_date=datetime(2025, 6, 1),  # ou une date dans le passé
+    # schedule_interval=None,
     # start_date=days_ago(0),
 )
 def my_dag():
