@@ -51,22 +51,22 @@ def is_existing_file(file_path):
     return None
 
 
-@task(task_id="S2_is_existing_csv_file")
+@task(task_id="S1_is_existing_csv_file")
 def is_existing_csv_file(file_path):
     return is_existing_file(file_path)
 
 
-@task(task_id="S2_is_existing_appellation_yaml_file")
+@task(task_id="S1_is_existing_appellation_yaml_file")
 def is_existing_appellations_yaml_file(file_path):
     return is_existing_file(file_path)
 
 
-@task(task_id="S2_is_existing_credentials_yaml_file")
+@task(task_id="S1_is_existing_credentials_yaml_file")
 def is_existing_credentials_yaml_file(file_path):
     return is_existing_file(file_path)
 
 
-@task(task_id="S2_check_nb_of_json_files")
+@task(task_id="S1_check_nb_of_json_files")
 def count_json_files_number(directory_path):
     """
     Compte le nombre de json dans "directory_path".
@@ -85,7 +85,7 @@ def count_json_files_number(directory_path):
     return count
 
 
-@task(task_id="S3_remove_all_json_files")
+@task(task_id="S2_remove_all_json_files")
 def remove_all_json_files(json_files_directory):
     """
     Supprime tous les fichiers json du dossier spécifié
@@ -112,7 +112,7 @@ def remove_all_json_files(json_files_directory):
     return None
 
 
-@task(task_id="S3_load_appellations_yaml_file")
+@task(task_id="S2_load_appellations_yaml_file")
 def load_code_appellation_yaml_file():
     """
     Charge le fichier dans "Job_Market/airflow/data/resources/code_appellation_libelle.yml"
@@ -135,7 +135,7 @@ def load_code_appellation_yaml_file():
     return code_libelle_list
 
 
-@task(task_id="S3_get_creds_from_yaml_file")
+@task(task_id="S2_get_creds_from_yaml_file")
 def get_creds_from_yaml_file(file_path):
     """
     Récupération des credentials données sur le site de FT depuis un fichier yaml
@@ -154,7 +154,7 @@ def get_creds_from_yaml_file(file_path):
     return dict_
 
 
-@task(task_id="S3_get_token")
+@task(task_id="S2_get_token")
 def get_bearer_token(dict_, scope):
     """
     Récupère un Bearer Token grâce à l'API de France Travail.
@@ -894,10 +894,10 @@ def nb_json_on_setup_0_or_1(count):
     # print(count)  # pour investigation
     if count == 0:  # si 0 fichier json
         # print("0 fichier json")  # pour investigation
-        return "etl_group.transforms_and_load_to_json.0_json_in_folder.A8_add_date_premiere_ecriture_attr"  # c'est le full_task_id (outer_group_id.inner_group_id.task_id)
+        return "ETL.transforms_and_load_to_json.0_json_in_folder.A8_add_date_premiere_ecriture_attr"  # c'est le full_task_id (outer_group_id.inner_group_id.task_id)
     else:  # si 1 fichier json
         # print("1 fichier json")  # pour investigation
-        return "etl_group.transforms_and_load_to_json.1_json_in_folder.A7_special_jsons_concat"  # c'est le full_task_id (outer_group_id.inner_group_id.task_id)
+        return "ETL.transforms_and_load_to_json.1_json_in_folder.A7_special_jsons_concat"  # c'est le full_task_id (outer_group_id.inner_group_id.task_id)
 
 
 @task(task_id="A7_special_jsons_concat")

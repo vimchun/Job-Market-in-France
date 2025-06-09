@@ -53,24 +53,27 @@ SCOPES_OFFRES = "o2dsoffre api_offresdemploiv2"  # scopes définis dans https://
     # start_date=days_ago(0),
 )
 def my_dag():
-    with TaskGroup(group_id="setup_group", tooltip="xxx") as setup:
-        delete_json = delete_all_in_one_json()  #### task S1
-
+    with TaskGroup(group_id="SETUP", tooltip="xxx") as setup:
         with TaskGroup(group_id="check_files_in_folders", tooltip="xxx") as check:
-            is_existing_csv_file(LOCATION_CSV_FILENAME)  #### task S2
-            is_existing_appellations_yaml_file(CODES_APPELLATION_FILENAME)  #### task S2
-            is_existing_credentials_yaml_file(CREDENTIAL_FILENAME)  #### task S2
-            count = count_json_files_number(AGGREGATED_JSON_DIR)  #### task S2
+            is_existing_csv_file(LOCATION_CSV_FILENAME)  #### task S1
+            is_existing_appellations_yaml_file(CODES_APPELLATION_FILENAME)  #### task S1
+            is_existing_credentials_yaml_file(CREDENTIAL_FILENAME)  #### task S1
+
+            delete_json = delete_all_in_one_json()  #### task S1
+            count = count_json_files_number(AGGREGATED_JSON_DIR)  #### task S1
+
+            delete_json >> count
 
         with TaskGroup(group_id="after_checks", tooltip="xxx") as after_checks:
-            remove_all_json_files(DOWNLOADED_JSONS_FROM_API_DIR)  #### task S3
-            code_libelle_list = load_code_appellation_yaml_file()  #### task S3
-            dict_ = get_creds_from_yaml_file(CREDENTIAL_FILENAME)  #### task S3
-            token = get_bearer_token(dict_, SCOPES_OFFRES)  #### task S3
+            remove_all_json_files(DOWNLOADED_JSONS_FROM_API_DIR)  #### task S2
+            code_libelle_list = load_code_appellation_yaml_file()  #### task S2
+            dict_ = get_creds_from_yaml_file(CREDENTIAL_FILENAME)  #### task S2
+            token = get_bearer_token(dict_, SCOPES_OFFRES)  #### task S2
 
-        delete_json >> check >> after_checks
+        # delete_json >> check >> after_checks
+        check >> after_checks
 
-    with TaskGroup(group_id="etl_group", tooltip="xxx") as etl:
+    with TaskGroup(group_id="ETL", tooltip="xxx") as etl:
         api_requests = get_offers.partial(token=token).expand(code_libelle_list=code_libelle_list)  #### task A1
         # notes : 1/ "partial()" car token commun à toutes les tâches mappées, 2/ "expand()" car 1 task par valeur de la liste "code_libelle_list"
 
