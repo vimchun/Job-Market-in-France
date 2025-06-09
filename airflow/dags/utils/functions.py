@@ -366,10 +366,10 @@ def get_offers(token, code_libelle_list):
 
 
 @task(task_id="A2_all_json_in_one")
-def concatenate_all_json_into_one(json_files_from_api_directory, generated_json_file_directory, new_json_filename):
+def concatenate_all_json_into_one(downloaded_jsons_from_api_directory, aggregated_json_directory, new_json_filename):
     """
     On obtient suite à l'exécution de `get_offres()` x fichiers json (x = nombre d'appellations présents dans "code_appellation_libelle.yml").
-    Cette présente fonction écrit dans un nouveau json tous les documents json de chaque fichier présent dans le dossier "json_files_from_api_directory", en supprimant les doublons.
+    Cette présente fonction écrit dans un nouveau json tous les documents json de chaque fichier présent dans le dossier "downloaded_jsons_from_api_directory", en supprimant les doublons.
 
     Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
     """
@@ -378,12 +378,12 @@ def concatenate_all_json_into_one(json_files_from_api_directory, generated_json_
 
     df_concat = pd.DataFrame()
 
-    for filename in os.listdir(json_files_from_api_directory):
+    for filename in os.listdir(downloaded_jsons_from_api_directory):
         if filename.endswith(".json"):  # and filename != concat_json_filename:  # traite aussi le cas du fichier sans extension
             print(filename)
             try:
                 # si le json est bien valide
-                with open(os.path.join(json_files_from_api_directory, filename), "r", encoding="utf-8") as file:
+                with open(os.path.join(downloaded_jsons_from_api_directory, filename), "r", encoding="utf-8") as file:
                     data = json.load(file)
                 df = pd.DataFrame(data)
                 df_concat = pd.concat([df_concat, df], ignore_index=True)
@@ -399,7 +399,7 @@ def concatenate_all_json_into_one(json_files_from_api_directory, generated_json_
     print(f"\n --> df_concat : {df_concat.shape[0]} offres, df_concat_drop_duplicates : {num_offres_without_duplicates} offres\n\n")
 
     df_concat.drop_duplicates(["id"]).to_json(
-        os.path.join(generated_json_file_directory, new_json_filename),
+        os.path.join(aggregated_json_directory, new_json_filename),
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
         force_ascii=False,  # pour convertir les caractères spéciaux
         indent=4,  # pour formatter la sortie
@@ -409,21 +409,21 @@ def concatenate_all_json_into_one(json_files_from_api_directory, generated_json_
 
     # todo: répétés plusieurs fois dans les fonctions suivantes donc à factoriser (ou ne le faire qu'à la fin ?)
     # On supprime les backslashs ajoutés par la méthode .to_json()
-    with open(os.path.join(generated_json_file_directory, new_json_filename), "r", encoding="utf-8") as f:
+    with open(os.path.join(aggregated_json_directory, new_json_filename), "r", encoding="utf-8") as f:
         content = f.read()
 
         content = content.replace("\\/", "/")  # On remplace "\/" par "/"
         content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
 
         # On sauvegarde le fichier final sans les '\'
-        with open(os.path.join(generated_json_file_directory, new_json_filename), "w", encoding="utf-8") as f:
+        with open(os.path.join(aggregated_json_directory, new_json_filename), "w", encoding="utf-8") as f:
             f.write(content)
 
     return new_json_filename
 
 
 @task(task_id="A3_only_metropole")
-def keep_only_offres_from_metropole(json_files_directory, json_filename, new_json_filename):
+def keep_only_offres_from_metropole(aggregated_json_directory, json_filename, new_json_filename):
     """
     Cette fonction écrase le json entré en paramètre, en ne conservant que les offres d'emploi de la France Métropolitaine.
     Elle ne conserve pas les offres de la Corse ni des DOMTOM.
@@ -435,7 +435,7 @@ def keep_only_offres_from_metropole(json_files_directory, json_filename, new_jso
     print(f'{Fore.GREEN}\n==> Fonction "keep_only_offres_from_metropole()"\n')
 
     df = pd.read_json(
-        os.path.join(json_files_directory, json_filename),
+        os.path.join(aggregated_json_directory, json_filename),
         dtype=False,  # pour ne pas inférer les dtypes
     )
 
@@ -473,28 +473,28 @@ def keep_only_offres_from_metropole(json_files_directory, json_filename, new_jso
     df_only_metropole = df[df["id"].isin(df_lieu_norm_metropole["id"])]
 
     df_only_metropole.to_json(
-        os.path.join(json_files_directory, new_json_filename),
+        os.path.join(aggregated_json_directory, new_json_filename),
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
         force_ascii=False,  # pour convertir les caractères spéciaux
         indent=4,  # pour formatter la sortie
     )  # fonctionne bien mais ajoute des backslashs pour échapper les slashs
 
     # On supprime les backslashs ajoutés par la méthode .to_json()
-    with open(os.path.join(json_files_directory, new_json_filename), "r", encoding="utf-8") as f:
+    with open(os.path.join(aggregated_json_directory, new_json_filename), "r", encoding="utf-8") as f:
         content = f.read()
 
         content = content.replace("\\/", "/")  # On remplace les "\/" par "/"
         content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
 
         # On sauvegarde le fichier final sans les '\'
-        with open(os.path.join(json_files_directory, new_json_filename), "w", encoding="utf-8") as f:
+        with open(os.path.join(aggregated_json_directory, new_json_filename), "w", encoding="utf-8") as f:
             f.write(content)
 
     return new_json_filename, len(df_only_metropole)
 
 
 @task(task_id="A4_add_location_attrs")
-def add_location_attributes(json_files_directory, json_filename, new_json_filename):
+def add_location_attributes(aggregated_json_directory, json_filename, new_json_filename):
     """
     Prend en entrée un fichier json généré avec les fonctions précédentes.
     Génère en sortie un fichier json avec en plus les nouveaux attributs suivants :
@@ -518,7 +518,7 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
     print(f"\n====> Chargement des fichiers\n")
 
     df = pd.read_json(
-        os.path.join(json_files_directory, json_filename),
+        os.path.join(aggregated_json_directory, json_filename),
         dtype=False,  # désactiver l'inférence des types
     )
 
@@ -869,28 +869,28 @@ def add_location_attributes(json_files_directory, json_filename, new_json_filena
     #### Ecriture dans un fichier .json
 
     df_final.to_json(
-        os.path.join(json_files_directory, new_json_filename),
+        os.path.join(aggregated_json_directory, new_json_filename),
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
         force_ascii=False,  # pour convertir les caractères spéciaux
         indent=4,  # pour formatter la sortie
     )
 
     # On supprime les backslashs ajoutés par la méthode .to_json()
-    with open(os.path.join(json_files_directory, new_json_filename), "r", encoding="utf-8") as f:
+    with open(os.path.join(aggregated_json_directory, new_json_filename), "r", encoding="utf-8") as f:
         content = f.read()
 
         content = content.replace("\\/", "/")  # On remplace "\/" par "/"
         content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
 
         # On sauvegarde le fichier final sans les '\'
-        with open(os.path.join(json_files_directory, new_json_filename), "w", encoding="utf-8") as f:
+        with open(os.path.join(aggregated_json_directory, new_json_filename), "w", encoding="utf-8") as f:
             f.write(content)
 
     return new_json_filename
 
 
 @task(task_id="A5_add_dateExtraction_attr")
-def add_date_extract_attribute(json_files_directory, json_filename, new_json_filename, date_to_insert=None):
+def add_date_extract_attribute(aggregated_json_directory, json_filename, new_json_filename, date_to_insert=None):
     """
     Fonction qui charge le json et qui écrit dans un nouveau json : un nouvel attribut "date_extraction" avec la date désirée
       (par défaut la date système pour avoir la date du jour)
@@ -905,7 +905,7 @@ def add_date_extract_attribute(json_files_directory, json_filename, new_json_fil
         date_to_insert = datetime.today().strftime("%Y-%m-%d")  # formatage en string 'YYYY-MM-DD'
 
     df = pd.read_json(
-        os.path.join(json_files_directory, json_filename),
+        os.path.join(aggregated_json_directory, json_filename),
         dtype=False,  # pour ne pas inférer les dtypes
     )
 
@@ -913,7 +913,7 @@ def add_date_extract_attribute(json_files_directory, json_filename, new_json_fil
     df["dateExtraction"] = df["dateExtraction"].dt.strftime("%Y-%m-%d")  # Formate les dates au format string 'YYYY-MM-DD'
 
     df.to_json(
-        os.path.join(json_files_directory, new_json_filename),
+        os.path.join(aggregated_json_directory, new_json_filename),
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
         force_ascii=False,  # pour convertir les caractères spéciaux
         indent=4,  # pour formatter la sortie
@@ -922,14 +922,14 @@ def add_date_extract_attribute(json_files_directory, json_filename, new_json_fil
     # print(df)  # pour investigation
 
     # On supprime les backslashs ajoutés par la méthode .to_json()
-    with open(os.path.join(json_files_directory, new_json_filename), "r", encoding="utf-8") as f:
+    with open(os.path.join(aggregated_json_directory, new_json_filename), "r", encoding="utf-8") as f:
         content = f.read()
 
         content = content.replace("\\/", "/")  # On remplace les "\/" par "/"
         content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
 
         # On sauvegarde le fichier final sans les '\'
-        with open(os.path.join(json_files_directory, new_json_filename), "w", encoding="utf-8") as f:
+        with open(os.path.join(aggregated_json_directory, new_json_filename), "w", encoding="utf-8") as f:
             f.write(content)
 
     return new_json_filename
@@ -947,7 +947,7 @@ def nb_json_on_setup_0_or_1(count):
 
 
 @task(task_id="A7_special_jsons_concat")
-def special_jsons_concatenation(generated_json_files_directory):
+def special_jsons_concatenation(aggregated_json_directory):
     """
     Fait la concaténation spéciale entre le json existant et le nouveau json comme telle que décrit dans :
     "api_extract__transform/outputs/offres/1--generated_json_file/troubleshooting/concatenation_dateExtraction_datePremiereEcriture/notes.xlsx".
@@ -960,7 +960,7 @@ def special_jsons_concatenation(generated_json_files_directory):
     from pathlib import Path
 
     now = datetime.now().strftime("%Y-%m-%d--%Hh%M")
-    json_file_in_generated_directory = [file for file in os.listdir(generated_json_files_directory) if file.endswith(".json")]
+    json_file_in_generated_directory = [file for file in os.listdir(aggregated_json_directory) if file.endswith(".json")]
 
     print(json_file_in_generated_directory)
 
@@ -986,8 +986,8 @@ def special_jsons_concatenation(generated_json_files_directory):
     new_json_file = f"{now}__extraction_occurence_{occurence_number+1}.json"
 
     os.rename(
-        os.path.join(generated_json_files_directory, "all_in_one.json"),
-        os.path.join(generated_json_files_directory, new_json_file),
+        os.path.join(aggregated_json_directory, "all_in_one.json"),
+        os.path.join(aggregated_json_directory, new_json_file),
     )
 
     # print(
@@ -999,7 +999,7 @@ def special_jsons_concatenation(generated_json_files_directory):
     #     sep="\n",
     # )
     print(
-        f'Il y a 2 fichiers json dans le dossier "{generated_json_files_directory}"',
+        f'Il y a 2 fichiers json dans le dossier "{aggregated_json_directory}"',
         f' -> json_1 = "{Fore.YELLOW}{current_json_file}{Style.RESET_ALL}"',
         "",
         f' -> json_2 = "{Fore.YELLOW}{new_json_file}{Style.RESET_ALL}"',  # , à partir de nouvelles requêtes API, qui après traitement sera le seul json qui restera dans le dossier',
@@ -1007,8 +1007,8 @@ def special_jsons_concatenation(generated_json_files_directory):
     )
 
     print(f"{Fore.RED}\n==> Concaténation entre le json précédemment présent dans le dossier, et le json nouvellement créé\n")
-    df1 = pd.read_json(os.path.join(generated_json_files_directory, current_json_file), dtype=False)
-    df2 = pd.read_json(os.path.join(generated_json_files_directory, new_json_file), dtype=False)
+    df1 = pd.read_json(os.path.join(aggregated_json_directory, current_json_file), dtype=False)
+    df2 = pd.read_json(os.path.join(aggregated_json_directory, new_json_file), dtype=False)
 
     #
     intersection_ids = pd.merge(df1, df2, on="id")["id"].tolist()
@@ -1044,36 +1044,36 @@ def special_jsons_concatenation(generated_json_files_directory):
 
     # Ecriture dans le fichier json
     df_concat.to_json(
-        os.path.join(generated_json_files_directory, new_json_file),
+        os.path.join(aggregated_json_directory, new_json_file),
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
         force_ascii=False,  # pour convertir les caractères spéciaux
         indent=4,  # pour formatter la sortie
     )
 
     # On supprime les backslashs ajoutés par la méthode .to_json()
-    with open(os.path.join(generated_json_files_directory, new_json_file), "r", encoding="utf-8") as f:
+    with open(os.path.join(aggregated_json_directory, new_json_file), "r", encoding="utf-8") as f:
         content = f.read()
 
         content = content.replace("\\/", "/")  # On remplace "\/" par "/"
         content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
 
         # On sauvegarde le fichier final sans les '\'
-        with open(os.path.join(generated_json_files_directory, new_json_file), "w", encoding="utf-8") as f:
+        with open(os.path.join(aggregated_json_directory, new_json_file), "w", encoding="utf-8") as f:
             f.write(content)
 
-    os.makedirs(os.path.join(generated_json_files_directory, "archives"), exist_ok=True)
+    os.makedirs(os.path.join(aggregated_json_directory, "archives"), exist_ok=True)
 
     print('Déplacement de l\'ancien fichier json dans le dossier "archives"')
     shutil.move(
-        os.path.join(generated_json_files_directory, current_json_file),
-        os.path.join(generated_json_files_directory, "archives"),
+        os.path.join(aggregated_json_directory, current_json_file),
+        os.path.join(aggregated_json_directory, "archives"),
     )
 
     return new_json_file
 
 
 @task(task_id="A8_add_date_premiere_ecriture_attr")
-def add_date_premiere_ecriture_attribute(json_files_directory, json_filename, new_json_filename, date_to_insert=None, overwrite_all_lines=False):
+def add_date_premiere_ecriture_attribute(aggregated_json_directory, json_filename, new_json_filename, date_to_insert=None, overwrite_all_lines=False):
     """
     Fonction qui charge le json et qui écrit dans un nouveau json : un nouvel attribut "datePremiereEcriture" avec la date désirée
       (par défaut la date système pour avoir la date du jour)
@@ -1089,7 +1089,7 @@ def add_date_premiere_ecriture_attribute(json_files_directory, json_filename, ne
     if date_to_insert is None:
         date_to_insert = datetime.today().strftime("%Y-%m-%d")  # formatage en string 'YYYY-MM-DD'
 
-    df = pd.read_json(os.path.join(json_files_directory, json_filename), dtype=False)  # pour ne pas inférer les dtypes
+    df = pd.read_json(os.path.join(aggregated_json_directory, json_filename), dtype=False)  # pour ne pas inférer les dtypes
 
     # Créer la colonne "datePremiereEcriture" avec des NaN si elle n'existe pas
     if "datePremiereEcriture" not in df.columns:
@@ -1103,7 +1103,7 @@ def add_date_premiere_ecriture_attribute(json_files_directory, json_filename, ne
         df["datePremiereEcriture"] = df["datePremiereEcriture"].fillna(date_to_insert)
 
     df.to_json(
-        os.path.join(json_files_directory, new_json_filename),
+        os.path.join(aggregated_json_directory, new_json_filename),
         orient="records",  # pour avoir une offre par document, sinon c'est toutes les offres dans un document
         force_ascii=False,  # pour convertir les caractères spéciaux
         indent=4,  # pour formatter la sortie
@@ -1112,31 +1112,31 @@ def add_date_premiere_ecriture_attribute(json_files_directory, json_filename, ne
     # print(df)  # pour investigation
 
     # On supprime les backslashs ajoutés par la méthode .to_json()
-    with open(os.path.join(json_files_directory, new_json_filename), "r", encoding="utf-8") as f:
+    with open(os.path.join(aggregated_json_directory, new_json_filename), "r", encoding="utf-8") as f:
         content = f.read()
 
         content = content.replace("\\/", "/")  # On remplace les "\/" par "/"
         content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
 
         # On sauvegarde le fichier final sans les '\'
-        with open(os.path.join(json_files_directory, new_json_filename), "w", encoding="utf-8") as f:
+        with open(os.path.join(aggregated_json_directory, new_json_filename), "w", encoding="utf-8") as f:
             f.write(content)
 
     return new_json_filename
 
 
 @task(task_id="A9_rename_json_file")
-def rename_json_file(json_files_directory, json_filename, new_json_filename):
+def rename_json_file(aggregated_json_directory, json_filename, new_json_filename):
     """Simple fonction qui renomme le fichier json"""
-    print(f'Renommage du json "{os.path.join(json_files_directory, json_filename)}" en "{os.path.join(json_files_directory, new_json_filename)}"')
+    print(f'Renommage du json "{os.path.join(aggregated_json_directory, json_filename)}" en "{os.path.join(aggregated_json_directory, new_json_filename)}"')
     os.rename(
-        os.path.join(json_files_directory, json_filename),
-        os.path.join(json_files_directory, new_json_filename),
+        os.path.join(aggregated_json_directory, json_filename),
+        os.path.join(aggregated_json_directory, new_json_filename),
     )
 
 
 @task(task_id="A10_write_to_history", trigger_rule=TriggerRule.NONE_FAILED_MIN_ONE_SUCCESS)
-def write_to_history_csv_file(generated_json_files_directory):
+def write_to_history_csv_file(aggregated_json_directory):
     """
     Ecriture du nom du fichier et du nombre d'offres dans le fichier "_json_files_history.csv" pour historique
       avec le seul fichier json qu'il reste dans le dossier à ce stade
@@ -1145,18 +1145,18 @@ def write_to_history_csv_file(generated_json_files_directory):
     """
     import csv
 
-    json_file_in_generated_directory = [file for file in os.listdir(generated_json_files_directory) if file.endswith(".json")]
+    json_file_in_generated_directory = [file for file in os.listdir(aggregated_json_directory) if file.endswith(".json")]
 
     remaining_json_file = json_file_in_generated_directory[0]
 
     df = pd.read_json(
-        os.path.join(generated_json_files_directory, remaining_json_file),
+        os.path.join(aggregated_json_directory, remaining_json_file),
         dtype=False,  # pour ne pas inférer les dtypes
     )
 
     print(len(df))
 
-    with open(os.path.join(generated_json_files_directory, "_json_files_history.csv"), "a", newline="") as f:
+    with open(os.path.join(aggregated_json_directory, "_json_files_history.csv"), "a", newline="") as f:
         writer = csv.writer(f)
         writer.writerow([remaining_json_file, len(df)])
 
