@@ -9,7 +9,10 @@ x-airflow-common:
   &airflow-common
   # image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.11.0}  # utilise l'image officielle (2.11.0 date de mai 2025 (https://hub.docker.com/r/apache/airflow/tags))
   # image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:3.0.1}
-  build: .   # build à partir du Dockerfile
+  # build: .   # build à partir du Dockerfile
+  build:
+    context: .
+    dockerfile: airflow-3.0.1/Dockerfile
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
@@ -43,7 +46,7 @@ services:
 
   postgres:
     image: postgres:16-alpine
-    container_name: postgres
+    container_name: postgres_3_0_1
     environment:
       POSTGRES_DB: francetravail
       POSTGRES_USER: mhh
@@ -63,7 +66,7 @@ services:
     build:
       context: .  # contexte = dossier "Job_Market" car fichier "code_name__city_department_region.csv" en dehors du dossier "fastapi"
       dockerfile: fastapi/Dockerfile
-    container_name: fastapi
+    container_name: fastapi_3_0_1
     ports:
       - "8000:8000"
     environment:
@@ -81,7 +84,7 @@ services:
 
   redis:
     image: redis:latest
-    container_name: redis
+    container_name: redis_3_0_1
     expose:
       - 6379
     healthcheck:
@@ -93,7 +96,7 @@ services:
     restart: always
 
   airflow-apiserver:
-    container_name: airflow-apiserver
+    container_name: airflow-apiserver_3_0_1
     <<: *airflow-common
     command: api-server
     ports:
@@ -111,7 +114,7 @@ services:
         condition: service_completed_successfully
 
   airflow-scheduler:
-    container_name: airflow-scheduler
+    container_name: airflow-scheduler_3_0_1
     <<: *airflow-common
     command: scheduler
     healthcheck:
@@ -127,7 +130,7 @@ services:
         condition: service_completed_successfully
 
   airflow-dag-processor:
-    container_name: airflow-dag-processor
+    container_name: airflow-dag-processor_3_0_1
     <<: *airflow-common
     command: dag-processor
     healthcheck:
@@ -143,7 +146,7 @@ services:
         condition: service_completed_successfully
 
   airflow-worker:
-    container_name: airflow-worker
+    container_name: airflow-worker_3_0_1
     <<: *airflow-common
     command: celery worker
     healthcheck:
@@ -166,7 +169,7 @@ services:
         condition: service_completed_successfully
 
   airflow-triggerer:
-    container_name: airflow-triggerer
+    container_name: airflow-triggerer_3_0_1
     <<: *airflow-common
     command: triggerer
     healthcheck:
@@ -183,7 +186,7 @@ services:
 
 
   airflow-init:
-    container_name: airflow-init
+    container_name: airflow-init_3_0_1
     <<: *airflow-common
     entrypoint: /bin/bash
     command:
@@ -274,7 +277,7 @@ services:
     user: "0:0"
 
   airflow-cli:
-    container_name: airflow-cli
+    container_name: airflow-cli_3_0_1
     <<: *airflow-common
     profiles:
       - debug
@@ -290,7 +293,7 @@ services:
       <<: *airflow-common-depends-on
 
   flower:
-    container_name: flower
+    container_name: flower_3_0_1
     <<: *airflow-common
     command: celery flower
     profiles:

@@ -1,0 +1,165 @@
+# Notes :
+#
+# - Lancer le fichier "start_containers.sh" qui fait les commandes suivantes :
+#     docker compose up airflow-init
+#     docker compose up
+#
+# - 2.11.0 date de mai 2025 (https://hub.docker.com/r/apache/airflow/tags)
+
+x-airflow-common: &airflow-common
+  # image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.11.0}  # utilise l'image officielle
+  # build: .   # build à partir du Dockerfile
+  build:
+    context: .
+    dockerfile: airflow-2.11.0/Dockerfile
+  environment: &airflow-common-env
+    AIRFLOW__CORE__EXECUTOR: CeleryExecutor
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://mhh:mhh@postgres/francetravail
+    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://mhh:mhh@postgres/francetravail
+    AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
+    AIRFLOW__CORE__FERNET_KEY: QgAuQEkWr7OKnAlpozOZAk-pZFPt2m0pfsp5PLncOak=
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
+    AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+    AIRFLOW__API__AUTH_BACKENDS: "airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session"
+    # _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:- pymongo}
+  volumes:
+    - ./airflow/dags:/opt/airflow/dags
+    - ./airflow/data:/opt/airflow/data
+    - ./airflow/logs:/opt/airflow/logs
+    - ./airflow/plugins:/opt/airflow/plugins
+
+  # user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
+  user: "${AIRFLOW_UID:-50000}:0"
+
+  depends_on:
+    redis:
+      condition: service_healthy
+    postgres:
+      condition: service_healthy
+
+
+services:
+
+  # db
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres_2_11_0
+    environment:
+      POSTGRES_DB: francetravail
+      POSTGRES_USER: mhh
+      POSTGRES_PASSWORD: mhh
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_job_market:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mhh -d francetravail"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # app
+  fastapi:
+    build:
+      context: .  # contexte = dossier "Job_Market" car fichier "code_name__city_department_region.csv" en dehors du dossier "fastapi"
+      dockerfile: fastapi/Dockerfile
+    container_name: fastapi_2_11_0
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=francetravail
+      - DB_USER=mhh
+      - DB_PASSWORD=mhh
+    volumes:
+      # utile en mode dev (montage de volumes pour ne pas avoir à relancer docker-compose après chaque modif)
+      - ./fastapi:/app  # pour avoir le "main.py" et tous les fichiers pgsql (que je modifie régulièrement en mode dev)
+      - ./api_extract__transform/locations_information:/app/locations_information
+    depends_on:
+      - postgres
+
+  redis:
+    image: redis:latest
+    container_name: redis_2_11_0
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 30s
+      retries: 10
+    restart: always
+
+  airflow-webserver:
+    container_name: airflow-webserver_2_11_0
+    <<: *airflow-common
+    command: webserver
+    environment:
+      <<: *airflow-common-env
+      AIRFLOW__WEBSERVER__WORKERS: 1  # moins de workers pour accélérer
+    ports:
+      - 8080:8080
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: always
+
+  airflow-scheduler:
+    container_name: airflow-scheduler_2_11_0
+    <<: *airflow-common
+    command: scheduler
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'airflow jobs check --job-type SchedulerJob --hostname "$${HOSTNAME}"',
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: always
+
+  airflow-worker:
+    container_name: airflow-worker_2_11_0
+    <<: *airflow-common
+    command: celery worker
+    healthcheck:
+      test:
+        - "CMD-SHELL"
+        - 'celery --app airflow.executors.celery_executor.app inspect ping -d "celery@$${HOSTNAME}"'
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: always
+
+  airflow-init:
+    container_name: airflow-init_2_11_0
+    <<: *airflow-common
+    command: version
+    restart: "no" # pour éviter de redémarrer le service après un `docker compose up`
+    environment:
+      <<: *airflow-common-env
+      _AIRFLOW_DB_MIGRATE: "true"
+      _AIRFLOW_WWW_USER_CREATE: "true"
+      _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
+      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
+
+
+  flower:
+    container_name: flower_2_11_0
+    <<: *airflow-common
+    command: celery flower
+    ports:
+      - 5555:5555
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:5555/"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: always
+
+volumes:
+  postgres_data_job_market:
