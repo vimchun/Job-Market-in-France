@@ -2,13 +2,6 @@ import os
 
 from datetime import datetime
 
-from colorama import Fore, Style, init
-
-from airflow.decorators import dag
-from airflow.utils.task_group import TaskGroup
-
-init(autoreset=True)  # pour colorama, inutile de reset si on colorie
-
 from utils.functions import (
     add_date_extract_attribute,
     add_date_premiere_ecriture_attribute,
@@ -31,6 +24,9 @@ from utils.functions import (
     write_to_history_csv_file,
 )
 
+from airflow.decorators import dag
+from airflow.utils.task_group import TaskGroup
+
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 RESOURCES_DIR = os.path.join(CURRENT_DIR, "..", "data", "resources")
 OUTPUTS_DIR = os.path.join(CURRENT_DIR, "..", "data", "outputs")
@@ -47,11 +43,10 @@ SCOPES_OFFRES = "o2dsoffre api_offresdemploiv2"  # scopes définis dans https://
 
 
 @dag(
-    dag_id="projet",
+    dag_id="projet_DE",
     tags=["projet"],
-    start_date=datetime(2025, 6, 1),  # important pour airflow 3.0.1 sinon on n'a pas la grid view
-    # schedule_interval=None,
-    # start_date=days_ago(0),
+    start_date=datetime(2025, 6, 1),  # param obligatoire pour airflow 3.0.1 sinon on n'a pas la grid view associée à ce DAG
+    # schedule_interval=None,  # ne pas mettre ce param pour airflow 3.0.1
 )
 def my_dag():
     with TaskGroup(group_id="SETUP", tooltip="xxx") as setup:
@@ -71,7 +66,6 @@ def my_dag():
             dict_ = get_creds_from_yaml_file(CREDENTIAL_FILENAME)  #### task S2
             token = get_bearer_token(dict_, SCOPES_OFFRES)  #### task S2
 
-        # delete_json >> check >> after_checks
         check >> after_checks
 
     with TaskGroup(group_id="ETL", tooltip="xxx") as etl:
@@ -89,7 +83,7 @@ def my_dag():
 
             branch = nb_json_on_setup_0_or_1(count)  #### task A6
 
-            api_requests >> all_json_in_one >> metropole >> add_location >> add_date_extract >> branch
+            all_json_in_one >> metropole >> add_location >> add_date_extract >> branch
 
             with TaskGroup(group_id="0_json_in_folder", tooltip="xxx") as file0:
                 now = datetime.now().strftime("%Y-%m-%d--%Hh%M")
@@ -98,17 +92,23 @@ def my_dag():
                 add_date_first_0 = add_date_premiere_ecriture_attribute(AGGREGATED_JSON_DIR, AGGREGATED_JSON_FILENAME, AGGREGATED_JSON_FILENAME, None, False)  #### task A8
                 json_rename = rename_json_file(AGGREGATED_JSON_DIR, AGGREGATED_JSON_FILENAME, new_json_filename)  #### task A9
 
-                branch >> add_date_first_0 >> json_rename
+                add_date_first_0 >> json_rename
 
             with TaskGroup(group_id="1_json_in_folder", tooltip="xxx") as file1:
                 json_concat_filename = special_jsons_concatenation(AGGREGATED_JSON_DIR)  #### task A7
                 add_date_first_1 = add_date_premiere_ecriture_attribute(AGGREGATED_JSON_DIR, json_concat_filename, json_concat_filename, None, False)  #### task A8
 
-                branch >> json_concat_filename >> add_date_first_1
+                json_concat_filename >> add_date_first_1
+
+            branch >> file0
+            branch >> file1
 
         write_history = write_to_history_csv_file(AGGREGATED_JSON_DIR)  #### task A10
 
+        api_requests >> tl
         [file0, file1] >> write_history
+
+    setup >> etl
 
 
 my_dag()
