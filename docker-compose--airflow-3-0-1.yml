@@ -108,10 +108,10 @@ services:
       retries: 5
       start_period: 30s
     restart: always
-    depends_on:
-      <<: *airflow-common-depends-on
-      airflow-init:
-        condition: service_completed_successfully
+    # depends_on:
+    #   <<: *airflow-common-depends-on
+    #   airflow-init:
+    #     condition: service_completed_successfully
 
   airflow-scheduler:
     container_name: airflow-scheduler_3_0_1
@@ -124,10 +124,10 @@ services:
       retries: 5
       start_period: 30s
     restart: always
-    depends_on:
-      <<: *airflow-common-depends-on
-      airflow-init:
-        condition: service_completed_successfully
+    # depends_on:
+    #   <<: *airflow-common-depends-on
+    #   airflow-init:
+    #     condition: service_completed_successfully
 
   airflow-dag-processor:
     container_name: airflow-dag-processor_3_0_1
@@ -140,10 +140,10 @@ services:
       retries: 5
       start_period: 30s
     restart: always
-    depends_on:
-      <<: *airflow-common-depends-on
-      airflow-init:
-        condition: service_completed_successfully
+    # depends_on:
+    #   <<: *airflow-common-depends-on
+    #   airflow-init:
+    #     condition: service_completed_successfully
 
   airflow-worker:
     container_name: airflow-worker_3_0_1
@@ -161,12 +161,12 @@ services:
       <<: *airflow-common-env
       DUMB_INIT_SETSID: "0"
     restart: always
-    depends_on:
-      <<: *airflow-common-depends-on
-      airflow-apiserver:
-        condition: service_healthy
-      airflow-init:
-        condition: service_completed_successfully
+    # depends_on:
+    #   <<: *airflow-common-depends-on
+    #   airflow-apiserver:
+    #     condition: service_healthy
+    #   airflow-init:
+    #     condition: service_completed_successfully
 
   airflow-triggerer:
     container_name: airflow-triggerer_3_0_1
@@ -179,10 +179,10 @@ services:
       retries: 5
       start_period: 30s
     restart: always
-    depends_on:
-      <<: *airflow-common-depends-on
-      airflow-init:
-        condition: service_completed_successfully
+    # depends_on:
+    #   <<: *airflow-common-depends-on
+    #   airflow-init:
+    #     condition: service_completed_successfully
 
 
   airflow-init:
@@ -289,8 +289,8 @@ services:
       - bash
       - -c
       - airflow
-    depends_on:
-      <<: *airflow-common-depends-on
+    # depends_on:
+    #   <<: *airflow-common-depends-on
 
   flower:
     container_name: flower_3_0_1
@@ -307,10 +307,10 @@ services:
       retries: 5
       start_period: 30s
     restart: always
-    depends_on:
-      <<: *airflow-common-depends-on
-      airflow-init:
-        condition: service_completed_successfully
+    # depends_on:
+    #   <<: *airflow-common-depends-on
+    #   airflow-init:
+    #     condition: service_completed_successfully
 
 volumes:
   postgres_data_job_market:
