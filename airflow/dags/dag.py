@@ -7,7 +7,7 @@ from utils.functions import (
     add_date_premiere_ecriture_attribute,
     add_location_attributes,
     concatenate_all_json_into_one,
-    count_json_files_number,
+    count_number_of_json_file,
     delete_all_in_one_json,
     get_bearer_token,
     get_creds_from_yaml_file,
@@ -43,7 +43,7 @@ SCOPES_OFFRES = "o2dsoffre api_offresdemploiv2"  # scopes définis dans https://
 
 
 @dag(
-    dag_id="projet_DE",
+    dag_id="projet_DE_v1",
     tags=["projet"],
     start_date=datetime(2025, 6, 1),  # param obligatoire pour airflow 3.0.1 sinon on n'a pas la grid view associée à ce DAG
     # schedule_interval=None,  # ne pas mettre ce param pour airflow 3.0.1
@@ -56,7 +56,7 @@ def my_dag():
             is_existing_credentials_yaml_file(CREDENTIAL_FILENAME)  #### task S1
 
             delete_json = delete_all_in_one_json()  #### task S1
-            count = count_json_files_number(AGGREGATED_JSON_DIR)  #### task S1
+            count = count_number_of_json_file(AGGREGATED_JSON_DIR)  #### task S1
 
             delete_json >> count
 

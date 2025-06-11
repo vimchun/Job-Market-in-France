@@ -66,8 +66,8 @@ def is_existing_credentials_yaml_file(file_path):
     return is_existing_file(file_path)
 
 
-@task(task_id="S1_check_nb_of_json_files")
-def count_json_files_number(directory_path):
+@task(task_id="S1_count_number_of_json_file")
+def count_number_of_json_file(directory_path):
     """
     Compte le nombre de json dans "directory_path".
       - Si 0 ou 1, on continue le DAG.
