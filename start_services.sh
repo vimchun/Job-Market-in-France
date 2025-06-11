@@ -2,6 +2,16 @@
 
 # notes :
 #
+#  Il y a 3 paramètres :
+#
+#    - param 1 : La version => les valeurs possibles sont "2.11.0" ou "3.0.1" ("2.11.0" par défaut)
+#
+#    - param 2 : Un booléen => si "true", pour supprimer les volumes lors du "docker compose down" ("false" par défaut)
+#                Si on passe d'une version à une autre, il vaut mieux activer ce paramètre (conflit possible).
+#
+#    - param 3 : Un booléen => si "true", pour activer l'option "--build" lors du "docker compose up" ("false" par défaut)
+#
+#
 #  - pour lancer le script :
 #
 #    ./script.sh 2.11.0 true    # pour Airflow 2.11.0 avec rebuild
@@ -29,10 +39,11 @@ CYAN='\e[36m'
 WHITE='\e[37m'
 NC='\e[0m' # Reset color
 
-#### Les 2 paramètres avec une valeur par défaut
+#### Les 3 paramètres avec une valeur par défaut
 
 TARGET_VERSION=${1:-"2.11.0"}
-BUILD_IMAGES=${2:-false}
+REMOVE_VOLUMES=${2:-false}
+BUILD_IMAGES=${3:-false}
 
 #### Si le première argument n'est pas "2.11.0" ou "3.0.1", on arrête le script
 
@@ -59,15 +70,32 @@ PROJECTS["3.0.1"]="airflow301"
 CURRENT_PROJECT=${PROJECTS[$CURRENT_VERSION]} # utilisé pour le "docker compose down"
 TARGET_PROJECT=${PROJECTS[$TARGET_VERSION]}   # utilisé pour le "docker compose up"
 
+# #### extra tasks
+
+# rm -rf airflow/logs/*
+
 #### Exécution de "docker compose down" (avec l'option --project-name)
 
 echo -e "${GREEN}\n\n== Exécution de \"docker compose down\" ${NC}"
 
 if [ -n "$CURRENT_PROJECT" ]; then # "-n" pour tester si le string n'est pas vide
+    echo "Arrêt et suppression de tous les conteneurs en exécution ou pas :"
+    # on arrête puis supprime tous les conteneurs en exécution et en arrêt pour que la future
+    #  commande "docker compose up airflow-init" s'exécute sans problème
+    docker stop $(docker ps -aq) && docker rm $(docker ps -aq) # la commande $() renvoie la liste des container ids
+
     echo "Arrêt de la version active ($CURRENT_VERSION) avec projet Docker Compose $CURRENT_PROJECT"
-    docker compose -p "$CURRENT_PROJECT" down --remove-orphans -v
+
+    if [ "$REMOVE_VOLUMES" = true ]; then
+        echo "docker compose down avec remove volume"
+        docker compose -p "$CURRENT_PROJECT" down --remove-orphans -v --rmi all
+    else
+        docker compose -p "$CURRENT_PROJECT" down --remove-orphans --rmi all
+    fi
     # "-p" utilisé donc pas besoin de spécifier "-f", si le projet a déjà été lancé auparavant avec un nom de projet
     # "-v" car la réinitialisation de la db Airflow peut permettre d'éviter certains pbs au setup
+    # "--rmi all" pour supprimer toutes les images utilisées par les services du fichier docker-compose.yml
+
 else
     echo "Aucune version active détectée."
 fi
@@ -152,6 +180,8 @@ while true; do
     sleep 5
 done
 
+# Notes investigation en vrac :
+
 # remarque lors de la migration airflow 2.11.0 vers 3.0.1 lors du lancement du script :
 # "Network job_market_default Resource is still in use" (lié au déploiement précédent avec la 2.11.0)
 # Il faut faire ce qui suit :
@@ -191,3 +221,10 @@ done
 # peut être utile de supprimer les logs dans airflow/logs
 # > docker compose -f docker-compose--airflow-3-0-1.yml up airflow-init
 # => supprimer les services qui empêchent l'exécution de cette commande
+
+# check si erreur au setup de la 3.1.0 :
+# docker exec -it airflow-init_3_0_1 bash
+# root@b73a5fd4c85a:/opt/airflow# airflow db check
+#   => doit répondre "INFO - Connection successful"
+
+# Parfois (3.1.0), le service worker ne se lance pas, du coup, on accès à la gui mais les tâches ne se lancent pas...
