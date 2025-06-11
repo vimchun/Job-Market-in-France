@@ -1,0 +1,230 @@
+#!/bin/bash
+
+# notes :
+#
+#  Il y a 3 paramètres :
+#
+#    - param 1 : La version => les valeurs possibles sont "2.11.0" ou "3.0.1" ("2.11.0" par défaut)
+#
+#    - param 2 : Un booléen => si "true", pour supprimer les volumes lors du "docker compose down" ("false" par défaut)
+#                Si on passe d'une version à une autre, il vaut mieux activer ce paramètre (conflit possible).
+#
+#    - param 3 : Un booléen => si "true", pour activer l'option "--build" lors du "docker compose up" ("false" par défaut)
+#
+#
+#  - pour lancer le script :
+#
+#    ./script.sh 2.11.0 true    # pour Airflow 2.11.0 avec rebuild
+#    ./script.sh 3.0.1          # pour Airflow 3.0.1 sans rebuild
+#
+#  - pour investiguer : "docker compose logs -f"
+
+# On veut pouvoir installer via "docker compose" soit la version 2.11.0 ou la version 3.0.1 d'Airflow
+#  (sachant que la 3.0.1 est relativement récente et qu'elle peut poser problème, par exemple : https://stackoverflow.com/q/79659430/25362602)
+#
+# On utilise un fichier ".current_airflow_version" pour déclarer la version actuellement en cours d'utilisation.
+# Ce fichier est nécessaire car lorsqu'on voudra faire un "docker compose down", il faudra qu'on sache quelle version est actuellement déployée
+#  pour arrêter les services associées (les services entre les versions Airflow citées ne sont pas les mêmes).
+# Ainsi, si la version 2.11.0 est actuellement installée, mais qu'on veut passer à la 3.0.1, on fera "docker compose -p [nom_projet_2_11_0] down",
+#  avant de faire "docker compose -p [nom_projet_3_0_1] up".
+
+#### Pour la coloration des prints
+
+GREEN='\e[32m'
+RED='\e[31m'
+YELLOW='\e[33m'
+BLUE='\e[34m'
+MAGENTA='\e[35m'
+CYAN='\e[36m'
+WHITE='\e[37m'
+NC='\e[0m' # Reset color
+
+#### Les 3 paramètres avec une valeur par défaut
+
+TARGET_VERSION=${1:-"2.11.0"}
+REMOVE_VOLUMES=${2:-false}
+BUILD_IMAGES=${3:-false}
+
+#### Si le première argument n'est pas "2.11.0" ou "3.0.1", on arrête le script
+
+if [[ "$TARGET_VERSION" != "2.11.0" && "$TARGET_VERSION" != "3.0.1" ]]; then
+    echo -e "\n\e[31mVersion cible non supportée : $TARGET_VERSION\e[0m"
+    echo "Versions supportées : 2.11.0, 3.0.1"
+    exit 1
+fi
+
+#### Récupérer la version d'airflow installée
+
+if [ -f .current_airflow_version ]; then # "-f" pour tester si le fichier existe
+    CURRENT_VERSION=$(cat .current_airflow_version)
+else
+    CURRENT_VERSION=""
+fi
+
+#### Définition des projets docker compose en fonction de la version
+
+declare -A PROJECTS # comme une déclaration de tableau python
+PROJECTS["2.11.0"]="airflow2110"
+PROJECTS["3.0.1"]="airflow301"
+
+CURRENT_PROJECT=${PROJECTS[$CURRENT_VERSION]} # utilisé pour le "docker compose down"
+TARGET_PROJECT=${PROJECTS[$TARGET_VERSION]}   # utilisé pour le "docker compose up"
+
+# #### extra tasks
+
+# rm -rf airflow/logs/*
+
+#### Exécution de "docker compose down" (avec l'option --project-name)
+
+echo -e "${GREEN}\n\n== Exécution de \"docker compose down\" ${NC}"
+
+if [ -n "$CURRENT_PROJECT" ]; then # "-n" pour tester si le string n'est pas vide
+    echo "Arrêt et suppression de tous les conteneurs en exécution ou pas :"
+    # on arrête puis supprime tous les conteneurs en exécution et en arrêt pour que la future
+    #  commande "docker compose up airflow-init" s'exécute sans problème
+    docker stop $(docker ps -aq) && docker rm $(docker ps -aq) # la commande $() renvoie la liste des container ids
+
+    echo "Arrêt de la version active ($CURRENT_VERSION) avec projet Docker Compose $CURRENT_PROJECT"
+
+    if [ "$REMOVE_VOLUMES" = true ]; then
+        echo "docker compose down avec remove volume"
+        docker compose -p "$CURRENT_PROJECT" down --remove-orphans -v --rmi all
+    else
+        docker compose -p "$CURRENT_PROJECT" down --remove-orphans --rmi all
+    fi
+    # "-p" utilisé donc pas besoin de spécifier "-f", si le projet a déjà été lancé auparavant avec un nom de projet
+    # "-v" car la réinitialisation de la db Airflow peut permettre d'éviter certains pbs au setup
+    # "--rmi all" pour supprimer toutes les images utilisées par les services du fichier docker-compose.yml
+
+else
+    echo "Aucune version active détectée."
+fi
+
+#### Construction du "$COMPOSE_FILE" avant exécution de 'docker compose up'
+
+if [[ "$TARGET_VERSION" == "2.11.0" ]]; then
+    COMPOSE_FILE="docker-compose--airflow-2-11-0.yml"
+    if [ -f .env ]; then # Il ne faut pas de fichier .env dans ce cas
+        echo "Suppression du fichier .env (inutile pour Airflow 2.11.0)"
+        rm .env
+    fi
+elif [[ "$TARGET_VERSION" == "3.0.1" ]]; then
+    COMPOSE_FILE="docker-compose--airflow-3-0-1.yml"
+    echo -e "AIRFLOW_UID=$(id -u)" >.env # Le fichier .env est nécéssaire dans ce cas
+else
+    echo "Version Airflow non supportée : $TARGET_VERSION"
+    exit 1
+fi
+
+#### Print des variables
+
+echo -e "${GREEN}\n\n== Print des variables ${NC}"
+
+echo -e "${MAGENTA}"
+echo -e "CURRENT_VERSION = ${CURRENT_VERSION}"
+echo -e "TARGET_VERSION = ${TARGET_VERSION}   [param 1]"
+echo -e ""
+echo -e "CURRENT_PROJECT = ${CURRENT_PROJECT}"
+echo -e "TARGET_PROJECT = ${TARGET_PROJECT}"
+echo -e ""
+echo -e "COMPOSE_FILE = ${COMPOSE_FILE}"
+echo -e "BUILD_IMAGES = ${BUILD_IMAGES}   [param 2]"
+echo -e "${NC}"
+
+#### Exécution de "docker compose up airflow-init"
+
+echo -e "${GREEN}\n\n== Exécution de \"docker compose up airflow-init\" ${NC}"
+
+docker compose -p "$TARGET_PROJECT" -f "$COMPOSE_FILE" up airflow-init # doit se terminer par "airflow-init exited with code 0"
+if [ $? -eq 0 ]; then
+    echo "Initialisation réussie."
+else
+    echo "Échec de l'initialisation."
+    exit 1
+fi
+
+#### Exécution de "docker compose up"
+
+echo -e "${GREEN}\n\n== Exécution de \"docker compose up\" ${NC}"
+
+if [ "$BUILD_IMAGES" = true ]; then
+    docker compose -p "$TARGET_PROJECT" -f "$COMPOSE_FILE" up --build -d # si besoin de reconstruire l'image (si nouvelle lib dans le requirement.txt par exemple)
+else
+    docker compose -p "$TARGET_PROJECT" -f "$COMPOSE_FILE" up -d
+fi
+
+# Enregistrer la version active
+echo "$TARGET_VERSION" >.current_airflow_version
+
+#### Attente jusqu'à ce que tous les conteneurs soient healthy
+
+echo -e "${GREEN}\n\n== Attente jusqu'à ce que tous les conteneurs soient healthy ${NC}"
+
+SECONDS_WAITED=0
+
+while true; do
+    UNHEALTHY=$(docker ps --filter "health=unhealthy" --format '{{.Names}}') # retourne les conteneurs "unhealthy"
+    STARTING=$(docker ps --filter "health=starting" --format '{{.Names}}')   # retourne les conteneurs "starting"
+
+    if [ -z "$UNHEALTHY" ] && [ -z "$STARTING" ]; then
+        echo -e "${GREEN} Tous les conteneurs sont healthy.${NC}"
+        break
+    fi
+
+    MINUTES=$((SECONDS_WAITED / 60))
+    SECONDS=$((SECONDS_WAITED % 60))
+
+    printf "\r+%dm%02ds : les conteneurs ne sont pas encore tous healthy..." "$MINUTES" "$SECONDS" # formatage des secondes sur 2 digits (\r pour réécrire la ligne)
+
+    SECONDS_WAITED=$((SECONDS_WAITED + 5))
+    sleep 5
+done
+
+# Notes investigation en vrac :
+
+# remarque lors de la migration airflow 2.11.0 vers 3.0.1 lors du lancement du script :
+# "Network job_market_default Resource is still in use" (lié au déploiement précédent avec la 2.11.0)
+# Il faut faire ce qui suit :
+#   > docker network rm job_market_default
+#       Error response from daemon: error while removing network: network job_market_default id dd473e2879f2f1dd1f58e86df954e9d67accce69bf2189323f0ff6adccf127f8 has active endpoints
+#   > docker rm $(docker network inspect job_market_default -f '{{range .Containers}}{{.Name}} {{end}}')
+#       Error response from daemon: cannot remove container "/flower": container is running: stop the container before removing or force remove
+#       Error response from daemon: cannot remove container "/redis": container is running: stop the container before removing or force remove
+#       Error response from daemon: cannot remove container "/postgres": container is running: stop the container before removing or force remove
+#   > docker stop postgres redis flower
+#   > docker network rm job_market_default
+#       job_market_default
+
+# Nettoyage réseau si nécessaire (optionnel)
+#NETWORK_NAME="job_market_default"
+#if docker network inspect "$NETWORK_NAME" &>/dev/null; then
+#    echo -e "${GREEN}\n\n== Nettoyage du réseau $NETWORK_NAME si possible ${NC}"
+#    docker network rm "$NETWORK_NAME" 2>/dev/null || echo "ℹ️  Réseau $NETWORK_NAME non supprimé (encore utilisé ?)"
+#fi
+
+# remarque lors du rollback airflow 3.0.1 vers 2.11.0 lors du lancement du script :
+# Error response from daemon: Conflict. The container name "/flower" is already in use by container "3a0b903e99c2667f9e5e4456429115519926ef3e34755aac3a77e416d72ec08f". You have to remove (or rename) that container to be able to reuse that name.
+# => docker rm -f flower
+
+# installation avec 2.11.0 :
+# > docker ps
+# CONTAINER ID   IMAGE                           COMMAND                  CREATED         STATUS                   PORTS                              NAMES
+# 21864f919b81   airflow2110-airflow-worker      "/usr/bin/dumb-init …"   5 minutes ago   Up 5 minutes (healthy)   8080/tcp                           airflow-worker
+# 30de0af49c23   airflow2110-flower              "/usr/bin/dumb-init …"   5 minutes ago   Up 5 minutes (healthy)   0.0.0.0:5555->5555/tcp, 8080/tcp   flower
+# 1d455b985939   airflow2110-airflow-scheduler   "/usr/bin/dumb-init …"   5 minutes ago   Up 5 minutes (healthy)   8080/tcp                           airflow-scheduler
+# 56d5f0e009b7   airflow2110-airflow-webserver   "/usr/bin/dumb-init …"   5 minutes ago   Up 5 minutes (healthy)   0.0.0.0:8080->8080/tcp             airflow-webserver
+# 9cf3c5e5e45d   airflow2110-fastapi             "uvicorn main:app --…"   5 minutes ago   Up 5 minutes             0.0.0.0:8000->8000/tcp             fastapi
+# f5679f27015a   postgres:16-alpine              "docker-entrypoint.s…"   6 minutes ago   Up 6 minutes (healthy)   0.0.0.0:5432->5432/tcp             postgres
+# 16bdc2dd31d1   redis:latest                    "docker-entrypoint.s…"   6 minutes ago   Up 6 minutes (healthy)   0.0.0.0:6379->6379/tcp             redis
+
+# migration vers 3.1.0 :
+# peut être utile de supprimer les logs dans airflow/logs
+# > docker compose -f docker-compose--airflow-3-0-1.yml up airflow-init
+# => supprimer les services qui empêchent l'exécution de cette commande
+
+# check si erreur au setup de la 3.1.0 :
+# docker exec -it airflow-init_3_0_1 bash
+# root@b73a5fd4c85a:/opt/airflow# airflow db check
+#   => doit répondre "INFO - Connection successful"
+
+# Parfois (3.1.0), le service worker ne se lance pas, du coup, on accès à la gui mais les tâches ne se lancent pas...
