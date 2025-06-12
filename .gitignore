@@ -16,7 +16,7 @@ airflow/data/outputs/offres/1--generated_json_file/archives/*.json
 airflow/data/outputs/offres/1--generated_json_file/*.json
 
 # temporairement le temps du dev
-airflow/data/outputs/offres/1--generated_json_file/_json_files_history.csv
+# airflow/data/outputs/offres/1--generated_json_file/_json_files_history.csv
 
 power_bi/archives_pbi
 node_modules
