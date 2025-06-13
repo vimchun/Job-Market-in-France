@@ -1,3 +1,4 @@
+import json
 import os
 
 from airflow import DAG
@@ -16,14 +17,26 @@ AGGREGATED_JSON_DIR = os.path.join(OUTPUTS_DIR, "offres", "1--generated_json_fil
 @task(task_id="is_only_one_json")
 def check_only_one_json_file_in_folder(folder):
     """
-    Retourne le nom du fichier json dans le dossier "folder" s'il n'y a qu'un fichier json dans ce dossier.
+    Retourne le chemin du nom du fichier json dans le dossier "folder" s'il n'y a qu'un fichier json dans ce dossier.
     Sinon, s'il y a 0 ou plusieurs fichiers json, on arrête le script.
     """
     json_files = [file for file in os.listdir(folder) if file.endswith(".json")]
     if len(json_files) == 1:
-        return json_files[0]
+        # return json_files[0]
+        return os.path.join(folder, json_files[0])
     else:
         raise Exception(f'Il y a {len(json_files)} fichier(s) json dans le dossier "{folder}": {json_files}')
+
+
+@task(task_id="load_json")
+def load_json(filename):
+    """
+    Charge simplement le json dans une variable
+    """
+    with open(filename, "r") as file:
+        offres_data = json.load(file)
+
+    return offres_data
 
 
 with DAG(
@@ -36,4 +49,5 @@ with DAG(
             task_id="create_all_tables_if_not_existing",
             sql=os.path.join("sql", "create_all_tables.sql"),
         )
-        json_file = check_only_one_json_file_in_folder(AGGREGATED_JSON_DIR)
+        json_file_path = check_only_one_json_file_in_folder(AGGREGATED_JSON_DIR)
+        load = load_json(json_file_path)
