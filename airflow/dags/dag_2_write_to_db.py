@@ -8,6 +8,12 @@ from airflow.decorators import task
 from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 from airflow.utils.task_group import TaskGroup
 
+"""
+Notes :
+  - Pour ce dag, on n'utilisera pas la fonction "fill_db()" comme on l'avait fait avant la mise en place d'Airflow.
+    - La raison principale est la lisibilité de la requête.
+"""
+
 conn_id = "my_pg"  # nom du "Connection ID" défini dans la GUI d'Airflow
 
 DB_PARAM = {"database": "francetravail", "host": "postgres_3_0_1", "user": "mhh", "password": "mhh", "port": 5432}  # note : "host" != "localhost"
@@ -43,73 +49,9 @@ def load_json(filename):
     return offres_data
 
 
-# def fill_db(db_name, attributes_tuple, on_conflict_string):
-def fill_db(db_name, attributes_tuple, on_conflict_string, cursor):
-    """
-    Crée et exécute la requête pour insérer les données dans la table "db_name".
-
-    Évite de devoir construire la requête, et de devoir dupliquer certaines informations comme les attributs.
-
-    Exemple dans le code suivant où on écrit l'attribut date_extraction 4 fois :
-
-        cursor.execute(
-            f'''--sql
-                INSERT INTO OffreEmploi (offre_id, date_extraction, date_creation, date_actualisation, nombre_postes)
-                VALUES (%s, %s, %s, %s, %s)
-                ON CONFLICT (offre_id) DO UPDATE SET
-                    date_extraction = EXCLUDED.date_extraction,
-                    date_creation = EXCLUDED.date_creation,
-                    date_actualisation = EXCLUDED.date_actualisation,
-                    nombre_postes = EXCLUDED.nombre_postes
-                ''',
-            (offre_id, date_extraction, date_creation, date_actualisation, nombre_postes),
-        )
-
-    Avec la fonction, on ne l'écrit plus qu'1 fois :
-
-        fill_db(
-            db_name="OffreEmploi",
-            attributes_tuple=(
-                "offre_id",
-                "date_extraction",
-                "date_creation",
-                "date_actualisation",
-                "nombre_postes",
-            ),
-            on_conflict_string=("offre_id"),
-        )
-
-    https://www.postgresql.org/docs/current/sql-insert.html
-
-    Ne retourne rien.
-    """
-
-    string_attributs = ", ".join(attributes_tuple)  # pour avoir "attribut1, attribut2, ..." sans les quotes
-    placeholders = ", ".join(["%s"] * len(attributes_tuple))  # pour avoir "%s, %s, ..." pour chaque valeur
-
-    query = f"""
-        INSERT INTO {db_name} ({string_attributs})
-        VALUES ({placeholders})
-        ON CONFLICT ({", ".join(on_conflict_string.split(" | "))})
-    """
-
-    # Déterminer les colonnes à mettre à jour (toutes sauf celles de la clé)
-    update_cols = [f"{attr} = EXCLUDED.{attr}" for attr in attributes_tuple if attr not in on_conflict_string.split(" | ")]
-
-    if update_cols:
-        query += f"""DO UPDATE SET {", ".join(update_cols)}"""
-    else:
-        query += "DO NOTHING"
-
-    cursor.execute(query, tuple(globals().get(attr) for attr in attributes_tuple))
-    # conn.commit()  # pas besoin car fait implicitement par la suite avec "with conn.cursor()"
-
-    return None
-
-
 @task(task_id="table_offre_emploi")
 def insert_into_offre_emploi(json_filename):
-    """ """
+    """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table OffreEmploi"""
 
     with psycopg2.connect(**DB_PARAM) as conn:
         with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
@@ -127,7 +69,6 @@ def insert_into_offre_emploi(json_filename):
                 # print pour investigation si besoin :
                 # print(offre_id, date_extraction, date_premiere_ecriture, date_creation, date_actualisation, nombre_postes, "\n", sep="\n-> ")
 
-
                 cursor.execute(
                     f"""--sql
                         INSERT INTO OffreEmploi (offre_id, date_extraction, date_premiere_ecriture, date_creation, date_actualisation, nombre_postes)
@@ -142,18 +83,77 @@ def insert_into_offre_emploi(json_filename):
                     (offre_id, date_extraction, date_premiere_ecriture, date_creation, date_actualisation, nombre_postes),
                 )
 
-                # fill_db(
-                #     db_name="OffreEmploi",
-                #     attributes_tuple=(
-                #         "offre_id",
-                #         "date_extraction",
-                #         "date_premiere_ecriture",
-                #         "date_creation",
-                #         "date_actualisation",
-                #         "nombre_postes",
-                #     ),
-                #     on_conflict_string=("offre_id"),
-                # )
+
+@task(task_id="table_contrat")
+def insert_into_contrat(json_filename):
+    """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Contrat"""
+
+    with psycopg2.connect(**DB_PARAM) as conn:
+        with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
+            for offre in json_filename:
+                offre_id = offre.get("id")
+
+                type_contrat = offre.get("typeContrat")
+                type_contrat_libelle = offre.get("typeContratLibelle")
+                duree_travail_libelle = offre.get("dureeTravailLibelle")
+                duree_travail_libelle_converti = offre.get("dureeTravailLibelleConverti")
+                nature_contrat = offre.get("natureContrat")
+                salaire_libelle = offre.get("salaire").get("libelle")
+                salaire_complement_1 = offre.get("salaire").get("complement1")
+                salaire_complement_2 = offre.get("salaire").get("complement2")
+                salaire_commentaire = offre.get("salaire").get("commentaire")
+                alternance = offre.get("alternance")
+                deplacement_code = offre.get("deplacementCode")
+                deplacement_libelle = offre.get("deplacementLibelle")
+                temps_travail = offre.get("complementExercice")
+                condition_specifique = offre.get("conditionExercice")
+
+                # print pour investigation si besoin :
+                # print(
+                #     offre_id, type_contrat, type_contrat_libelle, duree_travail_libelle, duree_travail_libelle_converti, nature_contrat,
+                #     salaire_libelle, salaire_complement_1, salaire_complement_2, salaire_commentaire,
+                #     alternance, deplacement_code, deplacement_libelle, temps_travail, condition_specifique,
+                #     sep="\n-> ",
+                # )  # fmt:off
+
+                cursor.execute(
+                    f"""--sql
+                        INSERT INTO Contrat (offre_id, type_contrat, type_contrat_libelle, duree_travail_libelle, duree_travail_libelle_converti, nature_contrat, salaire_libelle, salaire_complement_1, salaire_complement_2, salaire_commentaire, alternance, deplacement_code, deplacement_libelle, temps_travail, condition_specifique)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        ON CONFLICT (offre_id) DO UPDATE SET
+                            type_contrat = EXCLUDED.type_contrat,
+                            type_contrat_libelle = EXCLUDED.type_contrat_libelle,
+                            duree_travail_libelle = EXCLUDED.duree_travail_libelle,
+                            duree_travail_libelle_converti = EXCLUDED.duree_travail_libelle_converti,
+                            nature_contrat = EXCLUDED.nature_contrat,
+                            salaire_libelle = EXCLUDED.salaire_libelle,
+                            salaire_complement_1 = EXCLUDED.salaire_complement_1,
+                            salaire_complement_2 = EXCLUDED.salaire_complement_2,
+                            salaire_commentaire = EXCLUDED.salaire_commentaire,
+                            alternance = EXCLUDED.alternance,
+                            deplacement_code = EXCLUDED.deplacement_code,
+                            deplacement_libelle = EXCLUDED.deplacement_libelle,
+                            temps_travail = EXCLUDED.temps_travail,
+                            condition_specifique = EXCLUDED.condition_specifique
+                        """,
+                    (
+                        offre_id,
+                        type_contrat,
+                        type_contrat_libelle,
+                        duree_travail_libelle,
+                        duree_travail_libelle_converti,
+                        nature_contrat,
+                        salaire_libelle,
+                        salaire_complement_1,
+                        salaire_complement_2,
+                        salaire_commentaire,
+                        alternance,
+                        deplacement_code,
+                        deplacement_libelle,
+                        temps_travail,
+                        condition_specifique,
+                    ),
+                )
 
 
 with DAG(
@@ -172,3 +172,4 @@ with DAG(
     with TaskGroup(group_id="WRITE_TO_DATABASE", tooltip="xxx") as write:
         with TaskGroup(group_id="INSERT_TO_TABLES", tooltip="xxx") as insert:
             insert_into_offre_emploi(json_content)
+            insert_into_contrat(json_content)
