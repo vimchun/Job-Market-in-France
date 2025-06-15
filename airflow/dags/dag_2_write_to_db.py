@@ -8,12 +8,6 @@ from airflow.decorators import task
 from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 from airflow.utils.task_group import TaskGroup
 
-"""
-Notes :
-  - Pour ce dag, on n'utilisera pas la fonction "fill_db()" comme on l'avait fait avant la mise en place d'Airflow.
-    - La raison principale est la lisibilité de la requête.
-"""
-
 conn_id = "my_pg"  # nom du "Connection ID" défini dans la GUI d'Airflow
 
 DB_PARAM = {"database": "francetravail", "host": "postgres_3_0_1", "user": "mhh", "password": "mhh", "port": 5432}  # note : "host" != "localhost"
@@ -49,6 +43,74 @@ def load_json(filename):
     return offres_data
 
 
+def create_and_execute_insert_query(table_name: str, row_data: dict, conflict_columns: list, cursor):
+    """
+    https://www.postgresql.org/docs/current/sql-insert.html
+
+    Insère ou met à jour une ligne dans une table PostgreSQL.
+
+    Paramètres :
+      - table_name (str) : nom de la table
+      - row_data (dict) : données à insérer (clé = colonne, valeur = donnée)
+      - conflict_columns (list) : liste des colonnes utilisées pour "ON CONFLICT"
+      - cursor : cursor psycopg2
+
+
+    Exemple :
+
+        offre_id = "188VMCV"
+        date_extraction = "2025-06-15"
+        nombre_postes = 3
+
+        fill_db(
+            db_table="OffreEmploi",
+            row_data={
+                "offre_id": offre_id,
+                "date_extraction": date_extraction,
+                "nombre_postes": nombre_postes,
+            },
+            conflict_columns=["offre_id"],
+            cursor,
+        )
+
+                <==>
+
+        cursor.execute(
+            f'''--sql
+                INSERT INTO OffreEmploi (offre_id, date_extraction, nombre_postes)
+                VALUES (%s, %s, %s)
+                ON CONFLICT (offre_id) DO UPDATE SET
+                    date_extraction = EXCLUDED.date_extraction,
+                    nombre_postes = EXCLUDED.nombre_postes
+                ''',
+            (offre_id, date_extraction, nombre_postes),
+        )
+
+
+    Ne retourne rien
+    """
+
+    columns = list(row_data.keys())
+    values = list(row_data.values())
+
+    columns_str = ", ".join(columns)  # pour avoir "attribut1, attribut2, ..." sans les quotes
+    placeholders = ", ".join(["%s"] * len(columns))  # pour avoir "%s, %s, ..." (1* "%s" par colonne)
+
+    query = f"""
+        INSERT INTO {table_name} ({columns_str})
+        VALUES ({placeholders})
+        ON CONFLICT ({", ".join(conflict_columns)})
+    """
+
+    update_columns = [f"{col} = EXCLUDED.{col}" for col in columns if col not in conflict_columns]
+    if update_columns:
+        query += f" DO UPDATE SET {', '.join(update_columns)}"
+    else:
+        query += " DO NOTHING"
+
+    cursor.execute(query, values)
+
+
 @task(task_id="table_offre_emploi")
 def insert_into_offre_emploi(json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table OffreEmploi"""
@@ -69,18 +131,18 @@ def insert_into_offre_emploi(json_filename):
                 # print pour investigation si besoin :
                 # print(offre_id, date_extraction, date_premiere_ecriture, date_creation, date_actualisation, nombre_postes, "\n", sep="\n-> ")
 
-                cursor.execute(
-                    f"""--sql
-                        INSERT INTO OffreEmploi (offre_id, date_extraction, date_premiere_ecriture, date_creation, date_actualisation, nombre_postes)
-                        VALUES (%s, %s, %s, %s, %s, %s)
-                        ON CONFLICT (offre_id) DO UPDATE SET
-                            date_extraction = EXCLUDED.date_extraction,
-                            date_premiere_ecriture = EXCLUDED.date_premiere_ecriture,
-                            date_creation = EXCLUDED.date_creation,
-                            date_actualisation = EXCLUDED.date_actualisation,
-                            nombre_postes = EXCLUDED.nombre_postes
-                        """,
-                    (offre_id, date_extraction, date_premiere_ecriture, date_creation, date_actualisation, nombre_postes),
+                create_and_execute_insert_query(
+                    table_name="OffreEmploi",
+                    row_data={
+                        "offre_id": offre_id,
+                        "date_extraction": date_extraction,
+                        "date_premiere_ecriture": date_premiere_ecriture,
+                        "date_creation": date_creation,
+                        "date_actualisation": date_actualisation,
+                        "nombre_postes": nombre_postes,
+                    },
+                    conflict_columns=["offre_id"],
+                    cursor=cursor,
                 )
 
 
@@ -110,49 +172,31 @@ def insert_into_contrat(json_filename):
 
                 # print pour investigation si besoin :
                 # print(
-                #     offre_id, type_contrat, type_contrat_libelle, duree_travail_libelle, duree_travail_libelle_converti, nature_contrat,
-                #     salaire_libelle, salaire_complement_1, salaire_complement_2, salaire_commentaire,
-                #     alternance, deplacement_code, deplacement_libelle, temps_travail, condition_specifique,
-                #     sep="\n-> ",
+                #     offre_id, type_contrat, type_contrat_libelle, duree_travail_libelle, duree_travail_libelle_converti, nature_contrat, salaire_libelle,
+                #     salaire_complement_1, salaire_complement_2, salaire_commentaire, alternance, deplacement_code, deplacement_libelle, temps_travail, condition_specifique, sep="\n-> ",
                 # )  # fmt:off
 
-                cursor.execute(
-                    f"""--sql
-                        INSERT INTO Contrat (offre_id, type_contrat, type_contrat_libelle, duree_travail_libelle, duree_travail_libelle_converti, nature_contrat, salaire_libelle, salaire_complement_1, salaire_complement_2, salaire_commentaire, alternance, deplacement_code, deplacement_libelle, temps_travail, condition_specifique)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                        ON CONFLICT (offre_id) DO UPDATE SET
-                            type_contrat = EXCLUDED.type_contrat,
-                            type_contrat_libelle = EXCLUDED.type_contrat_libelle,
-                            duree_travail_libelle = EXCLUDED.duree_travail_libelle,
-                            duree_travail_libelle_converti = EXCLUDED.duree_travail_libelle_converti,
-                            nature_contrat = EXCLUDED.nature_contrat,
-                            salaire_libelle = EXCLUDED.salaire_libelle,
-                            salaire_complement_1 = EXCLUDED.salaire_complement_1,
-                            salaire_complement_2 = EXCLUDED.salaire_complement_2,
-                            salaire_commentaire = EXCLUDED.salaire_commentaire,
-                            alternance = EXCLUDED.alternance,
-                            deplacement_code = EXCLUDED.deplacement_code,
-                            deplacement_libelle = EXCLUDED.deplacement_libelle,
-                            temps_travail = EXCLUDED.temps_travail,
-                            condition_specifique = EXCLUDED.condition_specifique
-                        """,
-                    (
-                        offre_id,
-                        type_contrat,
-                        type_contrat_libelle,
-                        duree_travail_libelle,
-                        duree_travail_libelle_converti,
-                        nature_contrat,
-                        salaire_libelle,
-                        salaire_complement_1,
-                        salaire_complement_2,
-                        salaire_commentaire,
-                        alternance,
-                        deplacement_code,
-                        deplacement_libelle,
-                        temps_travail,
-                        condition_specifique,
-                    ),
+                create_and_execute_insert_query(
+                    table_name="Contrat",
+                    row_data={
+                        "offre_id": offre_id,
+                        "type_contrat": type_contrat,
+                        "type_contrat_libelle": type_contrat_libelle,
+                        "duree_travail_libelle": duree_travail_libelle,
+                        "duree_travail_libelle_converti": duree_travail_libelle_converti,
+                        "nature_contrat": nature_contrat,
+                        "salaire_libelle": salaire_libelle,
+                        "salaire_complement_1": salaire_complement_1,
+                        "salaire_complement_2": salaire_complement_2,
+                        "salaire_commentaire": salaire_commentaire,
+                        "alternance": alternance,
+                        "deplacement_code": deplacement_code,
+                        "deplacement_libelle": deplacement_libelle,
+                        "temps_travail": temps_travail,
+                        "condition_specifique": condition_specifique,
+                    },
+                    conflict_columns=["offre_id"],
+                    cursor=cursor,
                 )
 
 
