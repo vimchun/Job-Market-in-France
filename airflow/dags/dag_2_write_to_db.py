@@ -17,6 +17,8 @@ OUTPUTS_DIR = os.path.join(CURRENT_DIR, "..", "data", "outputs")
 
 AGGREGATED_JSON_DIR = os.path.join(OUTPUTS_DIR, "offres", "1--generated_json_file")
 
+sql_safe_null = "Ceci est un string qui figure nulle part dans le json pour pouvoir écrire les NULL sans doublon"  # ne peut pas être "-" car cette valeur peut exister
+
 
 @task(task_id="is_only_one_json")
 def check_only_one_json_file_in_folder(folder):
@@ -131,12 +133,7 @@ def insert_into_offre_emploi(json_filename):
 
                 # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
 
-                create_and_execute_insert_query(
-                    table_name="OffreEmploi",
-                    row_data=values_dict,
-                    conflict_columns=["offre_id"],
-                    cursor=cursor,
-                )
+                create_and_execute_insert_query(table_name="OffreEmploi", row_data=values_dict, conflict_columns=["offre_id"], cursor=cursor)
 
 
 @task(task_id="table_contrat")
@@ -166,12 +163,106 @@ def insert_into_contrat(json_filename):
 
                 # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
 
-                create_and_execute_insert_query(
-                    table_name="Contrat",
-                    row_data=values_dict,
-                    conflict_columns=["offre_id"],
-                    cursor=cursor,
-                )
+                create_and_execute_insert_query(table_name="Contrat", row_data=values_dict, conflict_columns=["offre_id"], cursor=cursor)
+
+
+@task(task_id="table_entreprise")
+def insert_into_entreprise(json_filename):
+    """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Entreprise"""
+
+    with psycopg2.connect(**DB_PARAM) as conn:
+        with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
+            for offre in json_filename:
+                values_dict = {
+                    "offre_id": offre.get("id"),
+                    "nom_entreprise": offre.get("entreprise").get("nom"),
+                    "description_entreprise": offre.get("entreprise").get("description"),
+                    "code_naf": offre.get("codeNAF"),
+                    "secteur_activite_libelle": offre.get("secteurActiviteLibelle"),
+                    "entreprise_adaptee": offre.get("entreprise").get("entrepriseAdaptee"),
+                }
+
+                # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
+
+                create_and_execute_insert_query(table_name="Entreprise", row_data=values_dict, conflict_columns=["offre_id"], cursor=cursor)
+
+
+@task(task_id="table_localisation")
+def insert_into_localisation(json_filename):
+    """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Localisation"""
+
+    with psycopg2.connect(**DB_PARAM) as conn:
+        with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
+            for offre in json_filename:
+                values_dict = {
+                    "offre_id": offre.get("id"),
+                    "code_insee": offre.get("code_insee"),
+                    "nom_commune": offre.get("nom_commune"),
+                    "code_postal": offre.get("code_postal"),
+                    "nom_ville": offre.get("nom_ville"),
+                    "code_departement": offre.get("code_departement"),
+                    "nom_departement": offre.get("nom_departement"),
+                    "code_region": offre.get("code_region"),
+                    "nom_region": offre.get("nom_region"),
+                    "lieu_cas": offre.get("lieu_cas"),
+                }
+
+                # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
+
+                create_and_execute_insert_query(table_name="Localisation", row_data=values_dict, conflict_columns=["offre_id"], cursor=cursor)
+
+
+@task(task_id="table_description_offre")
+def insert_into_description_offre(json_filename):
+    """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Description_Offre"""
+
+    with psycopg2.connect(**DB_PARAM) as conn:
+        with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
+            for offre in json_filename:
+                values_dict = {
+                    "offre_id": offre.get("id"),
+                    "intitule_offre": offre.get("intitule"),
+                    "description_offre": offre.get("description"),
+                    "nom_partenaire": offre.get("origineOffre").get("partenaires", [{}])[0].get("nom"),
+                    "rome_code": offre.get("romeCode"),
+                    "rome_libelle": offre.get("romeLibelle"),
+                    "appellation_rome": offre.get("appellationlibelle"),
+                    "difficile_a_pourvoir": offre.get("offresManqueCandidats"),
+                    "accessible_travailleurs_handicapes": offre.get("accessibleTH"),
+                }
+
+                # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
+
+                create_and_execute_insert_query(table_name="DescriptionOffre", row_data=values_dict, conflict_columns=["offre_id"], cursor=cursor)
+
+
+@task(task_id="table_competence")
+def insert_into_competence(json_filename):
+    """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Competence"""
+
+    with psycopg2.connect(**DB_PARAM) as conn:
+        with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
+            for offre in json_filename:
+                competences = offre.get("competences")  # ⛔ Attention on a une liste de compétences dans le json !!!
+
+                if competences:
+                    print("competence")
+                    for i in range(len(competences)):
+                        # /!\ note : il faut remplacer NULL par quelque chose (cas "competence_code = null")
+                        # /!\  (sinon risque d'écriture de doublon car "NULL != NULL selon la logique SQL")
+                        # /!\ à la suite de la boucle, on remplacera ces nouvelles valeurs par les "null"
+
+                        values_dict = {
+                            "competence_code": competences[i].get("code", 0),
+                            "competence_libelle": competences[i].get("libelle", sql_safe_null),
+                            "competence_code_exigence": competences[i].get("exigence", sql_safe_null),
+                        }
+
+                        # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
+
+                        create_and_execute_insert_query(
+                            table_name="Competence", row_data=values_dict, conflict_columns=["competence_code", "competence_libelle", "competence_code_exigence"], cursor=cursor
+                        )
 
 
 with DAG(
@@ -191,3 +282,7 @@ with DAG(
         with TaskGroup(group_id="INSERT_TO_TABLES", tooltip="xxx") as insert:
             insert_into_offre_emploi(json_content)
             insert_into_contrat(json_content)
+            insert_into_entreprise(json_content)
+            insert_into_localisation(json_content)
+            insert_into_description_offre(json_content)
+            insert_into_competence(json_content)
