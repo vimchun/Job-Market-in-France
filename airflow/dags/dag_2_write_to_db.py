@@ -118,29 +118,22 @@ def insert_into_offre_emploi(json_filename):
     with psycopg2.connect(**DB_PARAM) as conn:
         with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
             for offre in json_filename:
-                offre_id = offre.get("id")
-                date_extraction = offre.get("dateExtraction")
-                date_premiere_ecriture = offre.get("datePremiereEcriture")
-                date_creation = offre.get("dateCreation").split("T")[0]  # inutile de récupérer l'heure
-
                 date_actualisation_raw = offre.get("dateActualisation")  # rare cas où `"dateActualisation": null` (1 cas sur 50k à l'occurence 7, offre_id 6985803)
-                date_actualisation = date_actualisation_raw.split("T")[0] if date_actualisation_raw else None
 
-                nombre_postes = offre.get("nombrePostes")
+                values_dict = {
+                    "offre_id": offre.get("id"),
+                    "date_extraction": offre.get("dateExtraction"),
+                    "date_premiere_ecriture": offre.get("datePremiereEcriture"),
+                    "date_creation": offre.get("dateCreation").split("T")[0],  # inutile de récupérer l'heure
+                    "date_actualisation": date_actualisation_raw.split("T")[0] if date_actualisation_raw else None,
+                    "nombre_postes": offre.get("nombrePostes"),
+                }
 
-                # print pour investigation si besoin :
-                # print(offre_id, date_extraction, date_premiere_ecriture, date_creation, date_actualisation, nombre_postes, "\n", sep="\n-> ")
+                # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
 
                 create_and_execute_insert_query(
                     table_name="OffreEmploi",
-                    row_data={
-                        "offre_id": offre_id,
-                        "date_extraction": date_extraction,
-                        "date_premiere_ecriture": date_premiere_ecriture,
-                        "date_creation": date_creation,
-                        "date_actualisation": date_actualisation,
-                        "nombre_postes": nombre_postes,
-                    },
+                    row_data=values_dict,
                     conflict_columns=["offre_id"],
                     cursor=cursor,
                 )
@@ -153,48 +146,29 @@ def insert_into_contrat(json_filename):
     with psycopg2.connect(**DB_PARAM) as conn:
         with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
             for offre in json_filename:
-                offre_id = offre.get("id")
+                values_dict = {
+                    "offre_id": offre.get("id"),
+                    "type_contrat": offre.get("typeContrat"),
+                    "type_contrat_libelle": offre.get("typeContratLibelle"),
+                    "duree_travail_libelle": offre.get("dureeTravailLibelle"),
+                    "duree_travail_libelle_converti": offre.get("dureeTravailLibelleConverti"),
+                    "nature_contrat": offre.get("natureContrat"),
+                    "salaire_libelle": offre.get("salaire").get("libelle"),
+                    "salaire_complement_1": offre.get("salaire").get("complement1"),
+                    "salaire_complement_2": offre.get("salaire").get("complement2"),
+                    "salaire_commentaire": offre.get("salaire").get("commentaire"),
+                    "alternance": offre.get("alternance"),
+                    "deplacement_code": offre.get("deplacementCode"),
+                    "deplacement_libelle": offre.get("deplacementLibelle"),
+                    "temps_travail": offre.get("complementExercice"),
+                    "condition_specifique": offre.get("conditionExercice"),
+                }
 
-                type_contrat = offre.get("typeContrat")
-                type_contrat_libelle = offre.get("typeContratLibelle")
-                duree_travail_libelle = offre.get("dureeTravailLibelle")
-                duree_travail_libelle_converti = offre.get("dureeTravailLibelleConverti")
-                nature_contrat = offre.get("natureContrat")
-                salaire_libelle = offre.get("salaire").get("libelle")
-                salaire_complement_1 = offre.get("salaire").get("complement1")
-                salaire_complement_2 = offre.get("salaire").get("complement2")
-                salaire_commentaire = offre.get("salaire").get("commentaire")
-                alternance = offre.get("alternance")
-                deplacement_code = offre.get("deplacementCode")
-                deplacement_libelle = offre.get("deplacementLibelle")
-                temps_travail = offre.get("complementExercice")
-                condition_specifique = offre.get("conditionExercice")
-
-                # print pour investigation si besoin :
-                # print(
-                #     offre_id, type_contrat, type_contrat_libelle, duree_travail_libelle, duree_travail_libelle_converti, nature_contrat, salaire_libelle,
-                #     salaire_complement_1, salaire_complement_2, salaire_commentaire, alternance, deplacement_code, deplacement_libelle, temps_travail, condition_specifique, sep="\n-> ",
-                # )  # fmt:off
+                # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
 
                 create_and_execute_insert_query(
                     table_name="Contrat",
-                    row_data={
-                        "offre_id": offre_id,
-                        "type_contrat": type_contrat,
-                        "type_contrat_libelle": type_contrat_libelle,
-                        "duree_travail_libelle": duree_travail_libelle,
-                        "duree_travail_libelle_converti": duree_travail_libelle_converti,
-                        "nature_contrat": nature_contrat,
-                        "salaire_libelle": salaire_libelle,
-                        "salaire_complement_1": salaire_complement_1,
-                        "salaire_complement_2": salaire_complement_2,
-                        "salaire_commentaire": salaire_commentaire,
-                        "alternance": alternance,
-                        "deplacement_code": deplacement_code,
-                        "deplacement_libelle": deplacement_libelle,
-                        "temps_travail": temps_travail,
-                        "condition_specifique": condition_specifique,
-                    },
+                    row_data=values_dict,
                     conflict_columns=["offre_id"],
                     cursor=cursor,
                 )
