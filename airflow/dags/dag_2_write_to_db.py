@@ -34,15 +34,13 @@ def check_only_one_json_file_in_folder(folder):
         raise Exception(f'Il y a {len(json_files)} fichier(s) json dans le dossier "{folder}": {json_files}')
 
 
-@task(task_id="load_json")
 def load_json(filename):
     """
     Charge simplement le json
+    Cette fonction ne peut pas être une task, car xcom n'est pas conçu pour stocker des objects volumineux.
     """
     with open(filename, "r") as file:
-        offres_data = json.load(file)
-
-    return offres_data
+        return json.load(file)
 
 
 def create_and_execute_insert_query(table_name: str, row_data: dict, conflict_columns: list, cursor):
@@ -117,9 +115,11 @@ def create_and_execute_insert_query(table_name: str, row_data: dict, conflict_co
 def insert_into_offre_emploi(json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table OffreEmploi"""
 
+    offres = load_json(json_filename)
+
     with psycopg2.connect(**DB_PARAM) as conn:
         with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
-            for offre in json_filename:
+            for offre in offres:
                 date_actualisation_raw = offre.get("dateActualisation")  # rare cas où `"dateActualisation": null` (1 cas sur 50k à l'occurence 7, offre_id 6985803)
 
                 values_dict = {
@@ -140,9 +140,11 @@ def insert_into_offre_emploi(json_filename):
 def insert_into_contrat(json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Contrat"""
 
+    offres = load_json(json_filename)
+
     with psycopg2.connect(**DB_PARAM) as conn:
         with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
-            for offre in json_filename:
+            for offre in offres:
                 values_dict = {
                     "offre_id": offre.get("id"),
                     "type_contrat": offre.get("typeContrat"),
@@ -170,9 +172,11 @@ def insert_into_contrat(json_filename):
 def insert_into_entreprise(json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Entreprise"""
 
+    offres = load_json(json_filename)
+
     with psycopg2.connect(**DB_PARAM) as conn:
         with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
-            for offre in json_filename:
+            for offre in offres:
                 values_dict = {
                     "offre_id": offre.get("id"),
                     "nom_entreprise": offre.get("entreprise").get("nom"),
@@ -191,9 +195,11 @@ def insert_into_entreprise(json_filename):
 def insert_into_localisation(json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Localisation"""
 
+    offres = load_json(json_filename)
+
     with psycopg2.connect(**DB_PARAM) as conn:
         with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
-            for offre in json_filename:
+            for offre in offres:
                 values_dict = {
                     "offre_id": offre.get("id"),
                     "code_insee": offre.get("code_insee"),
@@ -216,9 +222,11 @@ def insert_into_localisation(json_filename):
 def insert_into_description_offre(json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Description_Offre"""
 
+    offres = load_json(json_filename)
+
     with psycopg2.connect(**DB_PARAM) as conn:
         with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
-            for offre in json_filename:
+            for offre in offres:
                 values_dict = {
                     "offre_id": offre.get("id"),
                     "intitule_offre": offre.get("intitule"),
@@ -240,9 +248,11 @@ def insert_into_description_offre(json_filename):
 def insert_into_competence(json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Competence"""
 
+    offres = load_json(json_filename)
+
     with psycopg2.connect(**DB_PARAM) as conn:
         with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
-            for offre in json_filename:
+            for offre in offres:
                 competences = offre.get("competences")  # ⛔ Attention on a une liste de compétences dans le json !!!
 
                 if competences:
@@ -276,13 +286,12 @@ with DAG(
             sql=os.path.join("sql", "create_all_tables.sql"),
         )
         json_file_path = check_only_one_json_file_in_folder(AGGREGATED_JSON_DIR)
-        json_content = load_json(json_file_path)
 
     with TaskGroup(group_id="WRITE_TO_DATABASE", tooltip="xxx") as write:
         with TaskGroup(group_id="INSERT_TO_TABLES", tooltip="xxx") as insert:
-            insert_into_offre_emploi(json_content)
-            insert_into_contrat(json_content)
-            insert_into_entreprise(json_content)
-            insert_into_localisation(json_content)
-            insert_into_description_offre(json_content)
-            insert_into_competence(json_content)
+            insert_into_offre_emploi(json_file_path)
+            insert_into_contrat(json_file_path)
+            insert_into_entreprise(json_file_path)
+            insert_into_localisation(json_file_path)
+            insert_into_description_offre(json_file_path)
+            insert_into_competence(json_file_path)
