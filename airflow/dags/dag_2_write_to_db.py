@@ -74,6 +74,12 @@ def split_large_json(filename):
     localisation = []
     description_offre = []
     competence = []
+    experience = []
+    formation = []
+
+    seen_competence = set()  # utilisation d'un "set" pour ne pas écrire de doublon dans le json (beaucoup de doublons ici sans l'attribut "offre_id")
+    seen_experience = set()  # utilisation d'un "set" pour ne pas écrire de doublon dans le json (beaucoup de doublons ici sans l'attribut "offre_id")
+    seen_formation = set()  # utilisation d'un "set" pour ne pas écrire de doublon dans le json (beaucoup de doublons ici sans l'attribut "offre_id")
 
     for offre in offres:
         offre_id = offre.get("id")
@@ -124,21 +130,6 @@ def split_large_json(filename):
             }
         )
 
-        #### pour "description_offre"
-        description_offre.append(
-            {
-                "offre_id": offre_id,
-                "intitule_offre": offre.get("intitule"),
-                "description_offre": offre.get("description"),
-                "nom_partenaire": offre.get("origineOffre").get("partenaires", [{}])[0].get("nom"),
-                "rome_code": offre.get("romeCode"),
-                "rome_libelle": offre.get("romeLibelle"),
-                "appellation_rome": offre.get("appellationlibelle"),
-                "difficile_a_pourvoir": offre.get("offresManqueCandidats"),
-                "accessible_travailleurs_handicapes": offre.get("accessibleTH"),
-            }
-        )
-
         #### pour "localisation"
         localisation.append(
             {
@@ -155,31 +146,96 @@ def split_large_json(filename):
             }
         )
 
+        #### pour "description_offre"
+        description_offre.append(
+            {
+                "offre_id": offre_id,
+                "intitule_offre": offre.get("intitule"),
+                "description_offre": offre.get("description"),
+                "nom_partenaire": offre.get("origineOffre").get("partenaires", [{}])[0].get("nom"),
+                "rome_code": offre.get("romeCode"),
+                "rome_libelle": offre.get("romeLibelle"),
+                "appellation_rome": offre.get("appellationlibelle"),
+                "difficile_a_pourvoir": offre.get("offresManqueCandidats"),
+                "accessible_travailleurs_handicapes": offre.get("accessibleTH"),
+            }
+        )
+
         #### pour "competence"
         competences = offre.get("competences")  # ⛔ Attention on a une liste de compétences dans le json !!!
 
         if competences:
-            # for c in competences:
             # /!\ note : il faut remplacer NULL par quelque chose (cas "competence_code = null")
             # /!\  (sinon risque d'écriture de doublon car "NULL != NULL selon la logique SQL")
             # /!\ à la suite de la boucle, on remplacera ces nouvelles valeurs par les "null"
 
-            seen = set()  # utilisation d'un "set" pour ne pas écrire de doublon dans le json (beaucoup de doublons ici sans l'attribut "offre_id")
+            # seen_competence = set()  # utilisation d'un "set" pour ne pas écrire de doublon dans le json (beaucoup de doublons ici sans l'attribut "offre_id")
 
             for c in competences:
-                triplet = (
+                values = (
                     c.get("code", 0),
                     c.get("libelle", sql_safe_null),
                     c.get("exigence", sql_safe_null),
                 )
 
-                if triplet not in seen:
-                    seen.add(triplet)
+                if values not in seen_competence:
+                    seen_competence.add(values)
                     competence.append(
                         {
-                            "competence_code": triplet[0],
-                            "competence_libelle": triplet[1],
-                            "competence_code_exigence": triplet[2],
+                            "competence_code": values[0],
+                            "competence_libelle": values[1],
+                            "competence_code_exigence": values[2],
+                        }
+                    )
+
+        #### pour "experience"
+        # /!\ note : il faut remplacer NULL par quelque chose (cas "competence_code = null")
+        # /!\  (sinon risque d'écriture de doublon car "NULL != NULL selon la logique SQL")
+        # /!\ à la suite de la boucle, on remplacera ces nouvelles valeurs par les "null"
+
+        # seen_experience = set()  # utilisation d'un "set" pour ne pas écrire de doublon dans le json (beaucoup de doublons ici sans l'attribut "offre_id")
+
+        values = (
+            offre.get("experienceLibelle") or sql_safe_null,
+            offre.get("experienceExige") or sql_safe_null,
+            offre.get("experienceCommentaire") or sql_safe_null,
+        )
+
+        if values not in seen_experience:
+            seen_experience.add(values)
+            experience.append(
+                {
+                    "experience_libelle": values[0],
+                    "experience_code_exigence": values[1],
+                    "experience_commentaire": values[2],
+                }
+            )
+
+        #### pour "formation"
+
+        formations = offre.get("formations", [{}])  # ⛔ Attention on a une liste de formations dans le json !!!
+
+        if formations:
+            # seen_formation = set()  # utilisation d'un "set" pour ne pas écrire de doublon dans le json (beaucoup de doublons ici sans l'attribut "offre_id")
+
+            for f in formations:
+                values = (
+                    f.get("codeFormation", 0),
+                    f.get("domaineLibelle", sql_safe_null),
+                    f.get("niveauLibelle", sql_safe_null),
+                    f.get("commentaire", sql_safe_null),
+                    f.get("exigence", sql_safe_null),
+                )
+
+                if values not in seen_formation:
+                    seen_formation.add(values)
+                    formation.append(
+                        {
+                            "formation_code": values[0],
+                            "formation_domaine_libelle": values[1],
+                            "formation_niveau_libelle": values[2],
+                            "formation_commentaire": values[3],
+                            "formation_code_exigence": values[4],
                         }
                     )
 
@@ -193,14 +249,20 @@ def split_large_json(filename):
     with open(os.path.join(SPLIT_JSONS_DIR, "entreprise.json"), "w") as f:
         json.dump(entreprise, f, ensure_ascii=False, indent=4)
 
-    with open(os.path.join(SPLIT_JSONS_DIR, "description_offre.json"), "w") as f:
-        json.dump(description_offre, f, ensure_ascii=False, indent=4)
-
     with open(os.path.join(SPLIT_JSONS_DIR, "localisation.json"), "w") as f:
         json.dump(localisation, f, ensure_ascii=False, indent=4)
 
+    with open(os.path.join(SPLIT_JSONS_DIR, "description_offre.json"), "w") as f:
+        json.dump(description_offre, f, ensure_ascii=False, indent=4)
+
     with open(os.path.join(SPLIT_JSONS_DIR, "competence.json"), "w") as f:
         json.dump(competence, f, ensure_ascii=False, indent=4)
+
+    with open(os.path.join(SPLIT_JSONS_DIR, "experience.json"), "w") as f:
+        json.dump(experience, f, ensure_ascii=False, indent=4)
+
+    with open(os.path.join(SPLIT_JSONS_DIR, "formation.json"), "w") as f:
+        json.dump(formation, f, ensure_ascii=False, indent=4)
 
 
 def load_json(filename):
@@ -420,15 +482,88 @@ def insert_into_competence(json_filename):
     with psycopg2.connect(**DB_PARAM) as conn:
         with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
             for offre in offres:
+                competence_code = offre.get("competence_code")
+                competence_libelle = offre.get("competence_libelle")
+                competence_code_exigence = offre.get("competence_code_exigence")
+
                 values_dict = {
-                    "competence_code": offre.get("competence_code"),
-                    "competence_libelle": offre.get("competence_libelle"),
-                    "competence_code_exigence": offre.get("competence_code_exigence"),
+                    "competence_code": competence_code,
+                    "competence_libelle": competence_libelle,
+                    "competence_code_exigence": competence_code_exigence,
                 }
 
                 # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
 
-                create_and_execute_insert_query(table_name="Competence", row_data=values_dict, conflict_columns=["competence_code", "competence_libelle", "competence_code_exigence"], cursor=cursor)
+                if all([i != sql_safe_null for i in [competence_code, competence_libelle, competence_code_exigence]]):
+                    create_and_execute_insert_query(
+                        table_name="Competence",
+                        row_data=values_dict,
+                        conflict_columns=["competence_code", "competence_libelle", "competence_code_exigence"],
+                        cursor=cursor,
+                    )
+
+
+@task(task_id="table_experience")
+def insert_into_experience(json_filename):
+    """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Experience"""
+
+    offres = load_json(json_filename)
+
+    with psycopg2.connect(**DB_PARAM) as conn:
+        with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
+            for offre in offres:
+                experience_libelle = offre.get("experience_libelle")
+                experience_code_exigence = offre.get("experience_code_exigence")
+                experience_commentaire = offre.get("experience_commentaire")
+
+                values_dict = {
+                    "experience_libelle": experience_libelle,
+                    "experience_code_exigence": experience_code_exigence,
+                    "experience_commentaire": experience_commentaire,
+                }
+
+                # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
+
+                if all([i != sql_safe_null for i in [experience_libelle, experience_code_exigence, experience_commentaire]]):
+                    create_and_execute_insert_query(
+                        table_name="Experience",
+                        row_data=values_dict,
+                        conflict_columns=["experience_libelle", "experience_code_exigence", "experience_commentaire"],
+                        cursor=cursor,
+                    )
+
+
+@task(task_id="table_formation")
+def insert_into_formation(json_filename):
+    """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Formation"""
+
+    offres = load_json(json_filename)
+
+    with psycopg2.connect(**DB_PARAM) as conn:
+        with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
+            for offre in offres:
+                formation_domaine_libelle = offre.get("formation_domaine_libelle")
+                formation_niveau_libelle = offre.get("formation_niveau_libelle")
+                formation_commentaire = offre.get("formation_commentaire")
+                formation_code_exigence = offre.get("formation_code_exigence")
+
+                values_dict = {
+                    "formation_code": offre.get("formation_code"),
+                    "formation_domaine_libelle": formation_domaine_libelle,
+                    "formation_niveau_libelle": formation_niveau_libelle,
+                    "formation_commentaire": formation_commentaire,
+                    "formation_code_exigence": formation_code_exigence,
+                }
+
+                # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
+
+                if all([i != sql_safe_null for i in [formation_domaine_libelle, formation_niveau_libelle, formation_commentaire, formation_code_exigence]]):
+                    create_and_execute_insert_query(
+                        table_name="Formation",
+                        row_data=values_dict,
+                        conflict_columns=["formation_code", "formation_domaine_libelle", "formation_niveau_libelle", "formation_commentaire", "formation_code_exigence"],
+                        cursor=cursor,
+                    )
 
 
 with DAG(
@@ -455,5 +590,7 @@ with DAG(
             insert_into_localisation(os.path.join(SPLIT_JSONS_DIR, "localisation.json"))
             insert_into_description_offre(os.path.join(SPLIT_JSONS_DIR, "description_offre.json"))
             insert_into_competence(os.path.join(SPLIT_JSONS_DIR, "competence.json"))
+            insert_into_experience(os.path.join(SPLIT_JSONS_DIR, "experience.json"))
+            insert_into_formation(os.path.join(SPLIT_JSONS_DIR, "formation.json"))
 
     setup >> write
