@@ -82,7 +82,6 @@ def split_large_json(filename):
         date_actualisation_raw = offre.get("dateActualisation")  # rare cas où `"dateActualisation": null` (1 cas sur 50k à l'occurence 7, offre_id 6985803)
         offre_emploi.append(
             {
-                # "offre_id": offre.get("id"),
                 "offre_id": offre_id,
                 "date_extraction": offre.get("dateExtraction"),
                 "date_premiere_ecriture": offre.get("datePremiereEcriture"),
@@ -95,7 +94,6 @@ def split_large_json(filename):
         #### pour "contrat"
         contrat.append(
             {
-                # "offre_id": offre.get("id"),
                 "offre_id": offre_id,
                 "type_contrat": offre.get("typeContrat"),
                 "type_contrat_libelle": offre.get("typeContratLibelle"),
@@ -117,7 +115,6 @@ def split_large_json(filename):
         #### pour "entreprise"
         entreprise.append(
             {
-                # "offre_id": offre.get("id"),
                 "offre_id": offre_id,
                 "nom_entreprise": offre.get("entreprise").get("nom"),
                 "description_entreprise": offre.get("entreprise").get("description"),
@@ -127,10 +124,9 @@ def split_large_json(filename):
             }
         )
 
-        #### pour "localisation"
-        entreprise.append(
+        #### pour "description_offre"
+        description_offre.append(
             {
-                # "offre_id": offre.get("id"),
                 "offre_id": offre_id,
                 "intitule_offre": offre.get("intitule"),
                 "description_offre": offre.get("description"),
@@ -143,18 +139,68 @@ def split_large_json(filename):
             }
         )
 
+        #### pour "localisation"
+        localisation.append(
+            {
+                "offre_id": offre_id,
+                "code_insee": offre.get("code_insee"),
+                "nom_commune": offre.get("nom_commune"),
+                "code_postal": offre.get("code_postal"),
+                "nom_ville": offre.get("nom_ville"),
+                "code_departement": offre.get("code_departement"),
+                "nom_departement": offre.get("nom_departement"),
+                "code_region": offre.get("code_region"),
+                "nom_region": offre.get("nom_region"),
+                "lieu_cas": offre.get("lieu_cas"),
+            }
+        )
+
+        #### pour "competence"
+        competences = offre.get("competences")  # ⛔ Attention on a une liste de compétences dans le json !!!
+
+        if competences:
+            # for c in competences:
+            # /!\ note : il faut remplacer NULL par quelque chose (cas "competence_code = null")
+            # /!\  (sinon risque d'écriture de doublon car "NULL != NULL selon la logique SQL")
+            # /!\ à la suite de la boucle, on remplacera ces nouvelles valeurs par les "null"
+
+            seen = set()  # utilisation d'un "set" pour ne pas écrire de doublon dans le json (beaucoup de doublons ici sans l'attribut "offre_id")
+
+            for c in competences:
+                triplet = (
+                    c.get("code", 0),
+                    c.get("libelle", sql_safe_null),
+                    c.get("exigence", sql_safe_null),
+                )
+
+                if triplet not in seen:
+                    seen.add(triplet)
+                    competence.append(
+                        {
+                            "competence_code": triplet[0],
+                            "competence_libelle": triplet[1],
+                            "competence_code_exigence": triplet[2],
+                        }
+                    )
+
     # Sauvegarde dans des "petits" fichiers json dédiés
     with open(os.path.join(SPLIT_JSONS_DIR, "offre_emploi.json"), "w") as f:
-        json.dump(offre_emploi, f)
+        json.dump(offre_emploi, f, ensure_ascii=False, indent=4)
 
     with open(os.path.join(SPLIT_JSONS_DIR, "contrat.json"), "w") as f:
-        json.dump(contrat, f)
+        json.dump(contrat, f, ensure_ascii=False, indent=4)
 
     with open(os.path.join(SPLIT_JSONS_DIR, "entreprise.json"), "w") as f:
-        json.dump(entreprise, f)
+        json.dump(entreprise, f, ensure_ascii=False, indent=4)
+
+    with open(os.path.join(SPLIT_JSONS_DIR, "description_offre.json"), "w") as f:
+        json.dump(description_offre, f, ensure_ascii=False, indent=4)
 
     with open(os.path.join(SPLIT_JSONS_DIR, "localisation.json"), "w") as f:
-        json.dump(localisation, f)
+        json.dump(localisation, f, ensure_ascii=False, indent=4)
+
+    with open(os.path.join(SPLIT_JSONS_DIR, "competence.json"), "w") as f:
+        json.dump(competence, f, ensure_ascii=False, indent=4)
 
 
 def load_json(filename):
@@ -332,16 +378,6 @@ def insert_into_localisation(json_filename):
                     "code_region": offre.get("code_region"),
                     "nom_region": offre.get("nom_region"),
                     "lieu_cas": offre.get("lieu_cas"),
-                    # "offre_id": offre.get("id"),
-                    # "code_insee": offre.get("code_insee"),
-                    # "nom_commune": offre.get("nom_commune"),
-                    # "code_postal": offre.get("code_postal"),
-                    # "nom_ville": offre.get("nom_ville"),
-                    # "code_departement": offre.get("code_departement"),
-                    # "nom_departement": offre.get("nom_departement"),
-                    # "code_region": offre.get("code_region"),
-                    # "nom_region": offre.get("nom_region"),
-                    # "lieu_cas": offre.get("lieu_cas"),
                 }
 
                 # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
@@ -359,15 +395,15 @@ def insert_into_description_offre(json_filename):
         with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
             for offre in offres:
                 values_dict = {
-                    "offre_id": offre.get("id"),
-                    "intitule_offre": offre.get("intitule"),
-                    "description_offre": offre.get("description"),
-                    "nom_partenaire": offre.get("origineOffre").get("partenaires", [{}])[0].get("nom"),
-                    "rome_code": offre.get("romeCode"),
-                    "rome_libelle": offre.get("romeLibelle"),
-                    "appellation_rome": offre.get("appellationlibelle"),
-                    "difficile_a_pourvoir": offre.get("offresManqueCandidats"),
-                    "accessible_travailleurs_handicapes": offre.get("accessibleTH"),
+                    "offre_id": offre.get("offre_id"),
+                    "intitule_offre": offre.get("intitule_offre"),
+                    "description_offre": offre.get("description_offre"),
+                    "nom_partenaire": offre.get("nom_partenaire"),
+                    "rome_code": offre.get("rome_code"),
+                    "rome_libelle": offre.get("rome_libelle"),
+                    "appellation_rome": offre.get("appellation_rome"),
+                    "difficile_a_pourvoir": offre.get("difficile_a_pourvoir"),
+                    "accessible_travailleurs_handicapes": offre.get("accessible_travailleurs_handicapes"),
                 }
 
                 # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
@@ -384,26 +420,15 @@ def insert_into_competence(json_filename):
     with psycopg2.connect(**DB_PARAM) as conn:
         with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
             for offre in offres:
-                competences = offre.get("competences")  # ⛔ Attention on a une liste de compétences dans le json !!!
+                values_dict = {
+                    "competence_code": offre.get("competence_code"),
+                    "competence_libelle": offre.get("competence_libelle"),
+                    "competence_code_exigence": offre.get("competence_code_exigence"),
+                }
 
-                if competences:
-                    print("competence")
-                    for i in range(len(competences)):
-                        # /!\ note : il faut remplacer NULL par quelque chose (cas "competence_code = null")
-                        # /!\  (sinon risque d'écriture de doublon car "NULL != NULL selon la logique SQL")
-                        # /!\ à la suite de la boucle, on remplacera ces nouvelles valeurs par les "null"
+                # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
 
-                        values_dict = {
-                            "competence_code": competences[i].get("code", 0),
-                            "competence_libelle": competences[i].get("libelle", sql_safe_null),
-                            "competence_code_exigence": competences[i].get("exigence", sql_safe_null),
-                        }
-
-                        # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
-
-                        create_and_execute_insert_query(
-                            table_name="Competence", row_data=values_dict, conflict_columns=["competence_code", "competence_libelle", "competence_code_exigence"], cursor=cursor
-                        )
+                create_and_execute_insert_query(table_name="Competence", row_data=values_dict, conflict_columns=["competence_code", "competence_libelle", "competence_code_exigence"], cursor=cursor)
 
 
 with DAG(
@@ -428,7 +453,7 @@ with DAG(
             insert_into_contrat(os.path.join(SPLIT_JSONS_DIR, "contrat.json"))
             insert_into_entreprise(os.path.join(SPLIT_JSONS_DIR, "entreprise.json"))
             insert_into_localisation(os.path.join(SPLIT_JSONS_DIR, "localisation.json"))
-            # insert_into_description_offre(json_file_path)
-            # insert_into_competence(json_file_path)
+            insert_into_description_offre(os.path.join(SPLIT_JSONS_DIR, "description_offre.json"))
+            insert_into_competence(os.path.join(SPLIT_JSONS_DIR, "competence.json"))
 
     setup >> write
