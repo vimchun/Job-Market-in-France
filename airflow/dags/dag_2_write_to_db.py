@@ -68,25 +68,18 @@ def split_large_json(filename):
     with open(filename, "r") as file:
         offres = json.load(file)
 
-    offre_emploi = []
-    contrat = []
-    entreprise = []
-    localisation = []
-    description_offre = []
-    competence = []
-    experience = []
-    formation = []
+    # initialisation de listes
+    (offreemploi, contrat, entreprise, localisation, descriptionoffre, competence, experience, formation, qualiteprofessionnelle, qualification, langue, permisconduire) = [[] for _ in range(12)]
 
-    seen_competence = set()  # utilisation d'un "set" pour ne pas écrire de doublon dans le json (beaucoup de doublons ici sans l'attribut "offre_id")
-    seen_experience = set()  # utilisation d'un "set" pour ne pas écrire de doublon dans le json (beaucoup de doublons ici sans l'attribut "offre_id")
-    seen_formation = set()  # utilisation d'un "set" pour ne pas écrire de doublon dans le json (beaucoup de doublons ici sans l'attribut "offre_id")
+    # utilisation d'un "set" pour ne pas écrire de doublon dans le json (beaucoup de doublons ici sans l'attribut "offre_id")
+    (seen_competence, seen_experience, seen_formation, seen_qualiteprofessionnelle, seen_qualification, seen_langue, seen_permisconduire) = [set() for _ in range(7)]
 
     for offre in offres:
         offre_id = offre.get("id")
 
-        #### pour "offre_emploi"
+        #### pour "offreemploi"
         date_actualisation_raw = offre.get("dateActualisation")  # rare cas où `"dateActualisation": null` (1 cas sur 50k à l'occurence 7, offre_id 6985803)
-        offre_emploi.append(
+        offreemploi.append(
             {
                 "offre_id": offre_id,
                 "date_extraction": offre.get("dateExtraction"),
@@ -146,8 +139,8 @@ def split_large_json(filename):
             }
         )
 
-        #### pour "description_offre"
-        description_offre.append(
+        #### pour "descriptionoffre"
+        descriptionoffre.append(
             {
                 "offre_id": offre_id,
                 "intitule_offre": offre.get("intitule"),
@@ -165,11 +158,8 @@ def split_large_json(filename):
         competences = offre.get("competences")  # ⛔ Attention on a une liste de compétences dans le json !!!
 
         if competences:
-            # /!\ note : il faut remplacer NULL par quelque chose (cas "competence_code = null")
-            # /!\  (sinon risque d'écriture de doublon car "NULL != NULL selon la logique SQL")
-            # /!\ à la suite de la boucle, on remplacera ces nouvelles valeurs par les "null"
-
-            # seen_competence = set()  # utilisation d'un "set" pour ne pas écrire de doublon dans le json (beaucoup de doublons ici sans l'attribut "offre_id")
+            # /!\ Il faut remplacer NULL par quelque chose (cas "competence_code = null")  (sinon risque d'écriture de doublon car "NULL != NULL selon la logique SQL")
+            # /!\  Par la suite, on remplacera ces nouvelles valeurs par les "null".
 
             for c in competences:
                 values = (
@@ -189,11 +179,8 @@ def split_large_json(filename):
                     )
 
         #### pour "experience"
-        # /!\ note : il faut remplacer NULL par quelque chose (cas "competence_code = null")
-        # /!\  (sinon risque d'écriture de doublon car "NULL != NULL selon la logique SQL")
-        # /!\ à la suite de la boucle, on remplacera ces nouvelles valeurs par les "null"
-
-        # seen_experience = set()  # utilisation d'un "set" pour ne pas écrire de doublon dans le json (beaucoup de doublons ici sans l'attribut "offre_id")
+        # /!\ Il faut remplacer NULL par quelque chose (cas "competence_code = null")  (sinon risque d'écriture de doublon car "NULL != NULL selon la logique SQL")
+        # /!\  Par la suite, on remplacera ces nouvelles valeurs par les "null".
 
         values = (
             offre.get("experienceLibelle") or sql_safe_null,
@@ -212,11 +199,11 @@ def split_large_json(filename):
             )
 
         #### pour "formation"
-
         formations = offre.get("formations", [{}])  # ⛔ Attention on a une liste de formations dans le json !!!
 
         if formations:
-            # seen_formation = set()  # utilisation d'un "set" pour ne pas écrire de doublon dans le json (beaucoup de doublons ici sans l'attribut "offre_id")
+            # /!\ Il faut remplacer NULL par quelque chose (cas "competence_code = null")  (sinon risque d'écriture de doublon car "NULL != NULL selon la logique SQL")
+            # /!\  Par la suite, on remplacera ces nouvelles valeurs par les "null".
 
             for f in formations:
                 values = (
@@ -239,39 +226,92 @@ def split_large_json(filename):
                         }
                     )
 
+        #### pour "qualiteprofessionnelle"
+        qualitesprofessionnelles = offre.get("qualitesProfessionnelles")  # ⛔ Attention on a une liste de qualités professionnelles dans le json !!!
+
+        if qualitesprofessionnelles:  # car on peut avoir dans le json "qualitesProfessionnelles": null
+            for q in qualitesprofessionnelles:
+                values = (
+                    q.get("libelle"),
+                    q.get("description"),
+                )
+                if values not in seen_qualiteprofessionnelle:
+                    seen_qualiteprofessionnelle.add(values)
+                    qualiteprofessionnelle.append(
+                        {
+                            "qualite_professionnelle_libelle": values[0],
+                            "qualite_professionnelle_description": values[1],
+                        }
+                    )
+
+        #### pour "qualification"
+        values = (
+            offre.get("qualificationCode"),
+            offre.get("qualificationLibelle"),
+        )
+        if values not in seen_qualification:
+            seen_qualification.add(values)
+            qualification.append(
+                {
+                    "qualification_code": values[0],
+                    "qualification_libelle": values[1],
+                }
+            )
+
+        #### pour "langue"
+        langues = offre.get("langues")  # ⛔ Attention on a une liste de langues dans le json !!!
+
+        if langues:
+            for l in langues:
+                values = (
+                    l.get("libelle"),
+                    l.get("exigence"),
+                )
+                if values not in seen_langue:
+                    seen_langue.add(values)
+                    langue.append(
+                        {
+                            "langue_libelle": values[0],
+                            "langue_code_exigence": values[1],
+                        }
+                    )
+
+        #### pour "permisconduire"
+        permisconduires = offre.get("permis")  # ⛔ Attention on a une liste de permisconduires dans le json !!!
+
+        if permisconduires:
+            for pc in permisconduires:
+                values = (
+                    pc.get("libelle"),
+                    pc.get("exigence"),
+                )
+                if values not in seen_permisconduire:
+                    seen_permisconduire.add(values)
+                    permisconduire.append(
+                        {
+                            "permis_libelle": values[0],
+                            "permis_code_exigence": values[1],
+                        }
+                    )
+
+    def write_json_file(folder, file, table_name):
+        """Fonction simple pour DRY quelques lignes"""
+        with open(os.path.join(folder, file), "w") as f:
+            json.dump(table_name, f, ensure_ascii=False, indent=4)
+
     # Sauvegarde dans des "petits" fichiers json dédiés
-    with open(os.path.join(SPLIT_JSONS_DIR, "offre_emploi.json"), "w") as f:
-        json.dump(offre_emploi, f, ensure_ascii=False, indent=4)
-
-    with open(os.path.join(SPLIT_JSONS_DIR, "contrat.json"), "w") as f:
-        json.dump(contrat, f, ensure_ascii=False, indent=4)
-
-    with open(os.path.join(SPLIT_JSONS_DIR, "entreprise.json"), "w") as f:
-        json.dump(entreprise, f, ensure_ascii=False, indent=4)
-
-    with open(os.path.join(SPLIT_JSONS_DIR, "localisation.json"), "w") as f:
-        json.dump(localisation, f, ensure_ascii=False, indent=4)
-
-    with open(os.path.join(SPLIT_JSONS_DIR, "description_offre.json"), "w") as f:
-        json.dump(description_offre, f, ensure_ascii=False, indent=4)
-
-    with open(os.path.join(SPLIT_JSONS_DIR, "competence.json"), "w") as f:
-        json.dump(competence, f, ensure_ascii=False, indent=4)
-
-    with open(os.path.join(SPLIT_JSONS_DIR, "experience.json"), "w") as f:
-        json.dump(experience, f, ensure_ascii=False, indent=4)
-
-    with open(os.path.join(SPLIT_JSONS_DIR, "formation.json"), "w") as f:
-        json.dump(formation, f, ensure_ascii=False, indent=4)
-
-
-def load_json(filename):
-    """
-    Charge simplement le json
-    Cette fonction ne peut pas être une task, car xcom n'est pas conçu pour stocker des objects volumineux.
-    """
-    with open(filename, "r") as file:
-        return json.load(file)
+    write_json_file(SPLIT_JSONS_DIR, "offreemploi.json", offreemploi)
+    write_json_file(SPLIT_JSONS_DIR, "contrat.json", contrat)
+    write_json_file(SPLIT_JSONS_DIR, "entreprise.json", entreprise)
+    write_json_file(SPLIT_JSONS_DIR, "localisation.json", localisation)
+    write_json_file(SPLIT_JSONS_DIR, "descriptionoffre.json", descriptionoffre)
+    write_json_file(SPLIT_JSONS_DIR, "competence.json", competence)
+    write_json_file(SPLIT_JSONS_DIR, "experience.json", experience)
+    write_json_file(SPLIT_JSONS_DIR, "formation.json", formation)
+    write_json_file(SPLIT_JSONS_DIR, "qualiteprofessionnelle.json", qualiteprofessionnelle)
+    write_json_file(SPLIT_JSONS_DIR, "qualification.json", qualification)
+    write_json_file(SPLIT_JSONS_DIR, "langue.json", langue)
+    write_json_file(SPLIT_JSONS_DIR, "permisconduire.json", permisconduire)
 
 
 def create_and_execute_insert_query(table_name: str, row_data: dict, conflict_columns: list, cursor):
@@ -342,11 +382,29 @@ def create_and_execute_insert_query(table_name: str, row_data: dict, conflict_co
     cursor.execute(query, values)
 
 
+# def load_json(filename):
+#     """
+#     Charge simplement le json
+#     Cette fonction ne peut pas être une task, car xcom n'est pas conçu pour stocker des objects volumineux.
+#     """
+#     with open(filename, "r") as file:
+#         return json.load(file)
+
+
+def load_json(folder, filename):
+    """
+    Charge simplement le json
+    Cette fonction ne peut pas être une task, car xcom n'est pas conçu pour stocker des objects volumineux.
+    """
+    with open(os.path.join(folder, filename), "r") as file:
+        return json.load(file)
+
+
 @task(task_id="table_offre_emploi")
-def insert_into_offre_emploi(json_filename):
+def insert_into_offreemploi(folder, json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table OffreEmploi"""
 
-    offres = load_json(json_filename)
+    offres = load_json(folder, json_filename)
 
     with psycopg2.connect(**DB_PARAM) as conn:
         with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
@@ -366,10 +424,10 @@ def insert_into_offre_emploi(json_filename):
 
 
 @task(task_id="table_contrat")
-def insert_into_contrat(json_filename):
+def insert_into_contrat(folder, json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Contrat"""
 
-    offres = load_json(json_filename)
+    offres = load_json(folder, json_filename)
 
     with psycopg2.connect(**DB_PARAM) as conn:
         with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
@@ -398,10 +456,10 @@ def insert_into_contrat(json_filename):
 
 
 @task(task_id="table_entreprise")
-def insert_into_entreprise(json_filename):
+def insert_into_entreprise(folder, json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Entreprise"""
 
-    offres = load_json(json_filename)
+    offres = load_json(folder, json_filename)
 
     with psycopg2.connect(**DB_PARAM) as conn:
         with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
@@ -421,10 +479,10 @@ def insert_into_entreprise(json_filename):
 
 
 @task(task_id="table_localisation")
-def insert_into_localisation(json_filename):
+def insert_into_localisation(folder, json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Localisation"""
 
-    offres = load_json(json_filename)
+    offres = load_json(folder, json_filename)
 
     with psycopg2.connect(**DB_PARAM) as conn:
         with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
@@ -448,10 +506,10 @@ def insert_into_localisation(json_filename):
 
 
 @task(task_id="table_description_offre")
-def insert_into_description_offre(json_filename):
-    """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Description_Offre"""
+def insert_into_description_offre(folder, json_filename):
+    """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table DescriptionOffre"""
 
-    offres = load_json(json_filename)
+    offres = load_json(folder, json_filename)
 
     with psycopg2.connect(**DB_PARAM) as conn:
         with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
@@ -474,10 +532,10 @@ def insert_into_description_offre(json_filename):
 
 
 @task(task_id="table_competence")
-def insert_into_competence(json_filename):
+def insert_into_competence(folder, json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Competence"""
 
-    offres = load_json(json_filename)
+    offres = load_json(folder, json_filename)
 
     with psycopg2.connect(**DB_PARAM) as conn:
         with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
@@ -504,10 +562,10 @@ def insert_into_competence(json_filename):
 
 
 @task(task_id="table_experience")
-def insert_into_experience(json_filename):
+def insert_into_experience(folder, json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Experience"""
 
-    offres = load_json(json_filename)
+    offres = load_json(folder, json_filename)
 
     with psycopg2.connect(**DB_PARAM) as conn:
         with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
@@ -534,10 +592,10 @@ def insert_into_experience(json_filename):
 
 
 @task(task_id="table_formation")
-def insert_into_formation(json_filename):
+def insert_into_formation(folder, json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Formation"""
 
-    offres = load_json(json_filename)
+    offres = load_json(folder, json_filename)
 
     with psycopg2.connect(**DB_PARAM) as conn:
         with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
@@ -566,6 +624,97 @@ def insert_into_formation(json_filename):
                     )
 
 
+@task(task_id="table_qualite_professionnelle")
+def insert_into_qualiteprofessionnelle(folder, json_filename):
+    """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table QualiteProfessionnelle"""
+
+    offres = load_json(folder, json_filename)
+
+    with psycopg2.connect(**DB_PARAM) as conn:
+        with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
+            for offre in offres:
+                values_dict = {
+                    "qualite_professionnelle_libelle": offre.get("qualite_professionnelle_libelle"),
+                    "qualite_professionnelle_description": offre.get("qualite_professionnelle_description"),
+                }
+
+                create_and_execute_insert_query(
+                    table_name="QualiteProfessionnelle",
+                    row_data=values_dict,
+                    conflict_columns=["qualite_professionnelle_libelle", "qualite_professionnelle_description"],
+                    cursor=cursor,
+                )
+
+
+@task(task_id="table_qualification")
+def insert_into_qualification(folder, json_filename):
+    """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Qualification"""
+
+    offres = load_json(folder, json_filename)
+
+    with psycopg2.connect(**DB_PARAM) as conn:
+        with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
+            for offre in offres:
+                qualification_code = offre.get("qualification_code")
+                qualification_libelle = offre.get("qualification_libelle")
+                values_dict = {
+                    "qualification_code": qualification_code,
+                    "qualification_libelle": qualification_libelle,
+                }
+
+                if (qualification_code is not None) or (qualification_libelle is not None):
+                    create_and_execute_insert_query(
+                        table_name="Qualification",
+                        row_data=values_dict,
+                        conflict_columns=["qualification_code", "qualification_libelle"],
+                        cursor=cursor,
+                    )
+
+
+@task(task_id="table_langue")
+def insert_into_langue(folder, json_filename):
+    """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Langue"""
+
+    offres = load_json(folder, json_filename)
+
+    with psycopg2.connect(**DB_PARAM) as conn:
+        with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
+            for offre in offres:
+                values_dict = {
+                    "langue_libelle": offre.get("langue_libelle"),
+                    "langue_code_exigence": offre.get("langue_code_exigence"),
+                }
+
+                create_and_execute_insert_query(
+                    table_name="Langue",
+                    row_data=values_dict,
+                    conflict_columns=["langue_libelle", "langue_code_exigence"],
+                    cursor=cursor,
+                )
+
+
+@task(task_id="table_permis_conduire")
+def insert_into_permisconduire(folder, json_filename):
+    """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Permis_Conduire"""
+
+    offres = load_json(folder, json_filename)
+
+    with psycopg2.connect(**DB_PARAM) as conn:
+        with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
+            for offre in offres:
+                values_dict = {
+                    "permis_libelle": offre.get("permis_libelle"),
+                    "permis_code_exigence": offre.get("permis_code_exigence"),
+                }
+
+                create_and_execute_insert_query(
+                    table_name="PermisConduire",
+                    row_data=values_dict,
+                    conflict_columns=["permis_libelle", "permis_code_exigence"],
+                    cursor=cursor,
+                )
+
+
 with DAG(
     dag_id="DAG_2_WRITE_TO_DB_v1",
     tags=["project"],
@@ -584,13 +733,16 @@ with DAG(
 
     with TaskGroup(group_id="WRITE_TO_DATABASE", tooltip="xxx") as write:
         with TaskGroup(group_id="INSERT_TO_TABLES", tooltip="xxx") as insert:
-            insert_into_offre_emploi(os.path.join(SPLIT_JSONS_DIR, "offre_emploi.json"))
-            insert_into_contrat(os.path.join(SPLIT_JSONS_DIR, "contrat.json"))
-            insert_into_entreprise(os.path.join(SPLIT_JSONS_DIR, "entreprise.json"))
-            insert_into_localisation(os.path.join(SPLIT_JSONS_DIR, "localisation.json"))
-            insert_into_description_offre(os.path.join(SPLIT_JSONS_DIR, "description_offre.json"))
-            insert_into_competence(os.path.join(SPLIT_JSONS_DIR, "competence.json"))
-            insert_into_experience(os.path.join(SPLIT_JSONS_DIR, "experience.json"))
-            insert_into_formation(os.path.join(SPLIT_JSONS_DIR, "formation.json"))
-
+            insert_into_offreemploi(SPLIT_JSONS_DIR, "offreemploi.json")
+            insert_into_contrat(SPLIT_JSONS_DIR, "contrat.json")
+            insert_into_entreprise(SPLIT_JSONS_DIR, "entreprise.json")
+            insert_into_localisation(SPLIT_JSONS_DIR, "localisation.json")
+            insert_into_description_offre(SPLIT_JSONS_DIR, "descriptionoffre.json")
+            insert_into_competence(SPLIT_JSONS_DIR, "competence.json")
+            insert_into_experience(SPLIT_JSONS_DIR, "experience.json")
+            insert_into_formation(SPLIT_JSONS_DIR, "formation.json")
+            insert_into_qualiteprofessionnelle(SPLIT_JSONS_DIR, "qualiteprofessionnelle.json")
+            insert_into_qualification(SPLIT_JSONS_DIR, "qualification.json")
+            insert_into_langue(SPLIT_JSONS_DIR, "langue.json")
+            insert_into_permisconduire(SPLIT_JSONS_DIR, "permisconduire.json")
     setup >> write
