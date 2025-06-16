@@ -20,8 +20,6 @@ OUTPUTS_DIR = os.path.join(CURRENT_DIR, "..", "data", "outputs")
 AGGREGATED_JSON_DIR = os.path.join(OUTPUTS_DIR, "offres", "1--generated_json_file")
 SPLIT_JSONS_DIR = os.path.join(AGGREGATED_JSON_DIR, "split_json_files")
 
-sql_safe_null = "Ceci est un string qui figure nulle part dans le json pour pouvoir écrire les NULL sans doublon"  # ne peut pas être "-" car cette valeur peut exister
-
 
 @task(task_id="check_only_one_json_in_folder")
 def check_only_one_json_file_in_folder(folder):
@@ -72,6 +70,7 @@ def split_large_json(filename):
     (offreemploi, contrat, entreprise, localisation, descriptionoffre, competence, experience, formation, qualiteprofessionnelle, qualification, langue, permisconduire) = [[] for _ in range(12)]
 
     # utilisation d'un "set" pour ne pas écrire de doublon dans le json (beaucoup de doublons ici sans l'attribut "offre_id")
+    # note : grâce à ces "sets", plus besoin d'utiliser de placeholder pour les placeholders par des NULLs, étant donné qu'on s'assure en amont qu'on n'a pas de doublon.
     (seen_competence, seen_experience, seen_formation, seen_qualiteprofessionnelle, seen_qualification, seen_langue, seen_permisconduire) = [set() for _ in range(7)]
 
     for offre in offres:
@@ -158,14 +157,11 @@ def split_large_json(filename):
         competences = offre.get("competences")  # ⛔ Attention on a une liste de compétences dans le json !!!
 
         if competences:
-            # /!\ Il faut remplacer NULL par quelque chose (cas "competence_code = null")  (sinon risque d'écriture de doublon car "NULL != NULL selon la logique SQL")
-            # /!\  Par la suite, on remplacera ces nouvelles valeurs par les "null".
-
             for c in competences:
                 values = (
                     c.get("code", 0),
-                    c.get("libelle", sql_safe_null),
-                    c.get("exigence", sql_safe_null),
+                    c.get("libelle", None),
+                    c.get("exigence", None),
                 )
 
                 if values not in seen_competence:
@@ -173,28 +169,25 @@ def split_large_json(filename):
                     competence.append(
                         {
                             "competence_code": values[0],
-                            "competence_libelle": values[1],
+                            "competence_libelle": values[1].strip() if values[1] else None,  # pour ne pas avoir les espaces "cachés" à droite
                             "competence_code_exigence": values[2],
                         }
                     )
 
         #### pour "experience"
-        # /!\ Il faut remplacer NULL par quelque chose (cas "competence_code = null")  (sinon risque d'écriture de doublon car "NULL != NULL selon la logique SQL")
-        # /!\  Par la suite, on remplacera ces nouvelles valeurs par les "null".
-
         values = (
-            offre.get("experienceLibelle") or sql_safe_null,
-            offre.get("experienceExige") or sql_safe_null,
-            offre.get("experienceCommentaire") or sql_safe_null,
+            offre.get("experienceLibelle", None),
+            offre.get("experienceExige", None),
+            offre.get("experienceCommentaire", None),
         )
 
         if values not in seen_experience:
             seen_experience.add(values)
             experience.append(
                 {
-                    "experience_libelle": values[0],
+                    "experience_libelle": values[0].strip() if values[0] else None,
                     "experience_code_exigence": values[1],
-                    "experience_commentaire": values[2],
+                    "experience_commentaire": values[2].strip() if values[2] else None,
                 }
             )
 
@@ -202,16 +195,13 @@ def split_large_json(filename):
         formations = offre.get("formations", [{}])  # ⛔ Attention on a une liste de formations dans le json !!!
 
         if formations:
-            # /!\ Il faut remplacer NULL par quelque chose (cas "competence_code = null")  (sinon risque d'écriture de doublon car "NULL != NULL selon la logique SQL")
-            # /!\  Par la suite, on remplacera ces nouvelles valeurs par les "null".
-
             for f in formations:
                 values = (
                     f.get("codeFormation", 0),
-                    f.get("domaineLibelle", sql_safe_null),
-                    f.get("niveauLibelle", sql_safe_null),
-                    f.get("commentaire", sql_safe_null),
-                    f.get("exigence", sql_safe_null),
+                    f.get("domaineLibelle", None),
+                    f.get("niveauLibelle", None),
+                    f.get("commentaire", None),
+                    f.get("exigence", None),
                 )
 
                 if values not in seen_formation:
@@ -219,9 +209,9 @@ def split_large_json(filename):
                     formation.append(
                         {
                             "formation_code": values[0],
-                            "formation_domaine_libelle": values[1],
-                            "formation_niveau_libelle": values[2],
-                            "formation_commentaire": values[3],
+                            "formation_domaine_libelle": values[1].strip() if values[1] else None,
+                            "formation_niveau_libelle": values[2].strip() if values[2] else None,
+                            "formation_commentaire": values[3].strip() if values[3] else None,
                             "formation_code_exigence": values[4],
                         }
                     )
@@ -552,13 +542,12 @@ def insert_into_competence(folder, json_filename):
 
                 # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
 
-                if all([i != sql_safe_null for i in [competence_code, competence_libelle, competence_code_exigence]]):
-                    create_and_execute_insert_query(
-                        table_name="Competence",
-                        row_data=values_dict,
-                        conflict_columns=["competence_code", "competence_libelle", "competence_code_exigence"],
-                        cursor=cursor,
-                    )
+                create_and_execute_insert_query(
+                    table_name="Competence",
+                    row_data=values_dict,
+                    conflict_columns=["competence_code", "competence_libelle", "competence_code_exigence"],
+                    cursor=cursor,
+                )
 
 
 @task(task_id="table_experience")
@@ -582,13 +571,12 @@ def insert_into_experience(folder, json_filename):
 
                 # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
 
-                if all([i != sql_safe_null for i in [experience_libelle, experience_code_exigence, experience_commentaire]]):
-                    create_and_execute_insert_query(
-                        table_name="Experience",
-                        row_data=values_dict,
-                        conflict_columns=["experience_libelle", "experience_code_exigence", "experience_commentaire"],
-                        cursor=cursor,
-                    )
+                create_and_execute_insert_query(
+                    table_name="Experience",
+                    row_data=values_dict,
+                    conflict_columns=["experience_libelle", "experience_code_exigence", "experience_commentaire"],
+                    cursor=cursor,
+                )
 
 
 @task(task_id="table_formation")
@@ -615,13 +603,12 @@ def insert_into_formation(folder, json_filename):
 
                 # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
 
-                if all([i != sql_safe_null for i in [formation_domaine_libelle, formation_niveau_libelle, formation_commentaire, formation_code_exigence]]):
-                    create_and_execute_insert_query(
-                        table_name="Formation",
-                        row_data=values_dict,
-                        conflict_columns=["formation_code", "formation_domaine_libelle", "formation_niveau_libelle", "formation_commentaire", "formation_code_exigence"],
-                        cursor=cursor,
-                    )
+                create_and_execute_insert_query(
+                    table_name="Formation",
+                    row_data=values_dict,
+                    conflict_columns=["formation_code", "formation_domaine_libelle", "formation_niveau_libelle", "formation_commentaire", "formation_code_exigence"],
+                    cursor=cursor,
+                )
 
 
 @task(task_id="table_qualite_professionnelle")
@@ -716,9 +703,8 @@ def insert_into_permisconduire(folder, json_filename):
 
 
 with DAG(
-    dag_id="DAG_2_WRITE_TO_DB_v1",
+    dag_id="DAG_2_WRITE_TO_DB_v2",
     tags=["project"],
-    start_date=datetime(2025, 6, 1),  # param obligatoire pour airflow 3.0.1 sinon on n'a pas la grid view associée à ce DAG
 ) as dag:
     with TaskGroup(group_id="SETUP", tooltip="xxx") as setup:
         create_tables = SQLExecuteQueryOperator(
@@ -732,17 +718,18 @@ with DAG(
         split_large_json(json_file_path)
 
     with TaskGroup(group_id="WRITE_TO_DATABASE", tooltip="xxx") as write:
-        with TaskGroup(group_id="INSERT_TO_TABLES", tooltip="xxx") as insert:
-            insert_into_offreemploi(SPLIT_JSONS_DIR, "offreemploi.json")
-            insert_into_contrat(SPLIT_JSONS_DIR, "contrat.json")
-            insert_into_entreprise(SPLIT_JSONS_DIR, "entreprise.json")
-            insert_into_localisation(SPLIT_JSONS_DIR, "localisation.json")
-            insert_into_description_offre(SPLIT_JSONS_DIR, "descriptionoffre.json")
-            insert_into_competence(SPLIT_JSONS_DIR, "competence.json")
-            insert_into_experience(SPLIT_JSONS_DIR, "experience.json")
-            insert_into_formation(SPLIT_JSONS_DIR, "formation.json")
+        with TaskGroup(group_id="INSERT_TO_TABLES__FACT_AND_DIMENSIONS_TABLES", tooltip="xxx") as insert:
+            # insert_into_offreemploi(SPLIT_JSONS_DIR, "offreemploi.json")
+            # insert_into_contrat(SPLIT_JSONS_DIR, "contrat.json")
+            # insert_into_entreprise(SPLIT_JSONS_DIR, "entreprise.json")
+            # insert_into_localisation(SPLIT_JSONS_DIR, "localisation.json")
+            # insert_into_description_offre(SPLIT_JSONS_DIR, "descriptionoffre.json")
+            # insert_into_competence(SPLIT_JSONS_DIR, "competence.json")
+            # insert_into_experience(SPLIT_JSONS_DIR, "experience.json")
+            # insert_into_formation(SPLIT_JSONS_DIR, "formation.json")
             insert_into_qualiteprofessionnelle(SPLIT_JSONS_DIR, "qualiteprofessionnelle.json")
             insert_into_qualification(SPLIT_JSONS_DIR, "qualification.json")
             insert_into_langue(SPLIT_JSONS_DIR, "langue.json")
             insert_into_permisconduire(SPLIT_JSONS_DIR, "permisconduire.json")
+
     setup >> write
