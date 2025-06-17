@@ -74,13 +74,14 @@ def split_large_json(filename):
         localisation,
         descriptionoffre,
         competence,
+        offre_competence,
         experience,
         formation,
         qualiteprofessionnelle,
         qualification,
         langue,
         permisconduire,
-    ) = [[] for _ in range(12)]
+    ) = [[] for _ in range(13)]
 
     # utilisation d'un "set" pour ne pas écrire de doublon dans le json (beaucoup de doublons ici sans l'attribut "offre_id")
     # note : grâce à ces "sets", plus besoin d'utiliser de placeholder pour les placeholders par des NULLs, étant donné qu'on s'assure en amont qu'on n'a pas de doublon.
@@ -181,7 +182,7 @@ def split_large_json(filename):
             }
         )
 
-        #### pour "competence"
+        #### pour "competence" / "offre_competence"
         competences = offre.get("competences")  # ⛔ Attention on a une liste de compétences dans le json !!!
 
         if competences:
@@ -192,6 +193,18 @@ def split_large_json(filename):
                     c.get("exigence", None),
                 )
 
+                #### pour "offre_competence"
+                offre_competence.append(
+                    {
+                        "offre_id": offre_id,
+                        "competence_code": values[0],
+                        "competence_libelle": strip_and_quote(values[1]),
+                        "competence_code_exigence": values[2],
+                        "date_extraction": offre.get("dateExtraction"),
+                    }
+                )
+
+                #### pour "competence"
                 if values not in seen_competence:
                     seen_competence.add(values)
                     competence.append(
@@ -324,6 +337,7 @@ def split_large_json(filename):
     write_json_file(SPLIT_JSONS_DIR, "localisation.json", localisation)
     write_json_file(SPLIT_JSONS_DIR, "descriptionoffre.json", descriptionoffre)
     write_json_file(SPLIT_JSONS_DIR, "competence.json", competence)
+    write_json_file(SPLIT_JSONS_DIR, "offre_competence.json", offre_competence)
     write_json_file(SPLIT_JSONS_DIR, "experience.json", experience)
     write_json_file(SPLIT_JSONS_DIR, "formation.json", formation)
     write_json_file(SPLIT_JSONS_DIR, "qualiteprofessionnelle.json", qualiteprofessionnelle)
@@ -428,7 +442,6 @@ def insert_into_offreemploi(folder, json_filename):
                 }
 
                 # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
-
                 create_and_execute_insert_query(table_name="OffreEmploi", row_data=values_dict, conflict_columns=["offre_id"], cursor=cursor)
 
 
@@ -460,7 +473,6 @@ def insert_into_contrat(folder, json_filename):
                 }
 
                 # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
-
                 create_and_execute_insert_query(table_name="Contrat", row_data=values_dict, conflict_columns=["offre_id"], cursor=cursor)
 
 
@@ -483,7 +495,6 @@ def insert_into_entreprise(folder, json_filename):
                 }
 
                 # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
-
                 create_and_execute_insert_query(table_name="Entreprise", row_data=values_dict, conflict_columns=["offre_id"], cursor=cursor)
 
 
@@ -510,7 +521,6 @@ def insert_into_localisation(folder, json_filename):
                 }
 
                 # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
-
                 create_and_execute_insert_query(table_name="Localisation", row_data=values_dict, conflict_columns=["offre_id"], cursor=cursor)
 
 
@@ -536,7 +546,6 @@ def insert_into_description_offre(folder, json_filename):
                 }
 
                 # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
-
                 create_and_execute_insert_query(table_name="DescriptionOffre", row_data=values_dict, conflict_columns=["offre_id"], cursor=cursor)
 
 
@@ -560,8 +569,163 @@ def insert_into_competence(folder, json_filename):
                 }
 
                 # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
-
                 create_and_execute_insert_query(table_name="Competence", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
+
+
+@task(task_id="table_offre_competence")
+def insert_into_offre_competence(folder, json_filename):  # todo : en cours
+    offres = load_json(folder, json_filename)
+
+    with psycopg2.connect(**DB_PARAM) as conn:
+        with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
+            for offre in offres:
+                offre_id = offre.get("offre_id")
+                competence_code = offre.get("competence_code")
+                competence_libelle = offre.get("competence_libelle")
+                competence_code_exigence = offre.get("competence_code_exigence")
+                date_extraction = offre.get("date_extraction")
+
+                # print pour investigation si besoin :
+                # print(offre_id, competence_code, competence_libelle, competence_code_exigence, sep="\n-> ")
+
+                # Récupérer competence_id
+                # query = """--sql
+                #             SELECT competence_id
+                #             FROM Competence
+                #             WHERE
+                #                 (competence_code IS NULL AND %s IS NULL OR competence_code = %s)
+                #                 AND (competence_libelle IS NULL AND %s IS NULL OR competence_libelle = %s)
+                #                 AND (competence_code_exigence IS NULL AND %s IS NULL OR competence_code_exigence = %s)
+                #         """
+                query = """--sql
+                            SELECT competence_id
+                            FROM Competence
+                            WHERE
+                                competence_code = %s
+                                AND competence_libelle = %s
+                                AND competence_code_exigence = %s
+                        """
+                cursor.execute(
+                    query,
+                    # (competence_code, competence_code, competence_libelle, competence_libelle, competence_code_exigence, competence_code_exigence),
+                    (
+                        competence_code,
+                        competence_libelle,
+                        competence_code_exigence,
+                    ),
+                )
+
+                competence_id = cursor.fetchone()[0]
+                # row = cursor.fetchone()
+                # if row:
+                #     competence_id = row[0]
+                # else:
+                #     competence_id = None
+
+                # print pour investigation si besoin :
+                # print(offre_id, competence_code, competence_libelle, competence_code_exigence, competence_id, sep="\n-> ")
+
+                # fill_db(
+                #     # db_name="Offre_Competence",
+                #     attributes_tuple=("offre_id", "competence_id", "date_extraction"),
+                #     on_conflict_string="offre_id | competence_id | date_extraction",
+                # )
+
+                values_dict = {
+                    "offre_id": offre_id,
+                    "competence_id": competence_id,
+                    "date_extraction": date_extraction,
+                    # "competence_code": competence_code,
+                    # "competence_libelle": competence_libelle,
+                    # "competence_code_exigence": competence_code_exigence,
+                }
+
+                # if competence_id != None:
+                # On ne veut pas écrire quelque chose comme : (188VMCV, null, 2025-03-02) car
+                #   "NotNullViolation: null value in column "competence_id" of relation "offre_competence" violates not-null constraint"
+                create_and_execute_insert_query(
+                    table_name="Offre_Competence",
+                    row_data=values_dict,
+                    conflict_columns=values_dict.keys(),
+                    cursor=cursor,
+                )
+
+            # On supprime les lignes où 1 offre_id est présente avec 2 competence_id différents :
+            # cursor.execute(f"""--sql
+            #             -- CTE pour afficher l'offre_id le plus récent s'il y a 1 offre_id avec plusieurs competence_id
+            #             WITH latest_offre_id AS (
+            #                 SELECT DISTINCT ON (offre_id)
+            #                     offre_id,
+            #                     competence_id,
+            #                     date_extraction
+            #                 FROM Offre_Competence
+            #                 ORDER BY offre_id, date_extraction DESC
+            #             )
+            #             DELETE FROM Offre_Competence
+            #             WHERE (offre_id, competence_id, date_extraction) NOT IN (
+            #                 SELECT offre_id, competence_id, date_extraction
+            #                 FROM latest_offre_id
+            #             );
+            #             """)
+
+            ######
+
+            # for offre in offres:
+            #     offre_id = offre.get("id")
+
+            #     competences = offre.get("competences")  # ⛔ Attention on a une liste de compétences dans le json !!!
+
+            #     if competences:
+            #         for i in range(len(competences)):
+            #             competence_code = competences[i].get("code")
+            #             competence_libelle = competences[i].get("libelle")
+            #             competence_code_exigence = competences[i].get("exigence")
+
+            #             # print pour investigation si besoin :
+            #             # print(offre_id, competence_code, competence_libelle, competence_code_exigence, sep="\n-> ")
+
+            #             # Récupérer competence_id
+            #             query = """
+            #                         SELECT competence_id
+            #                         FROM Competence
+            #                         WHERE
+            #                             (competence_code IS NULL AND %s IS NULL OR competence_code = %s)
+            #                             AND (competence_libelle IS NULL AND %s IS NULL OR competence_libelle = %s)
+            #                             AND (competence_code_exigence IS NULL AND %s IS NULL OR competence_code_exigence = %s)
+            #                     """
+            #             cursor.execute(
+            #                 query,
+            #                 (competence_code, competence_code, competence_libelle, competence_libelle, competence_code_exigence, competence_code_exigence),
+            #             )
+
+            #             competence_id = cursor.fetchone()[0]
+
+            #             # print pour investigation si besoin :
+            #             # print(offre_id, competence_code, competence_libelle, competence_code_exigence, competence_id, sep="\n-> ")
+
+            #             fill_db(
+            #                 db_name="Offre_Competence",
+            #                 attributes_tuple=("offre_id", "competence_id", "date_extraction"),
+            #                 on_conflict_string="offre_id | competence_id | date_extraction",
+            #             )
+
+            # # On supprime les lignes où 1 offre_id est présente avec 2 competence_id différents :
+            # cursor.execute(f"""--sql
+            #             -- CTE pour afficher l'offre_id le plus récent s'il y a 1 offre_id avec plusieurs competence_id
+            #             WITH latest_offre_id AS (
+            #                 SELECT DISTINCT ON (offre_id)
+            #                     offre_id,
+            #                     competence_id,
+            #                     date_extraction
+            #                 FROM Offre_Competence
+            #                 ORDER BY offre_id, date_extraction DESC
+            #             )
+            #             DELETE FROM Offre_Competence
+            #             WHERE (offre_id, competence_id, date_extraction) NOT IN (
+            #                 SELECT offre_id, competence_id, date_extraction
+            #                 FROM latest_offre_id
+            #             );
+            #             """)
 
 
 @task(task_id="table_experience")
@@ -584,8 +748,61 @@ def insert_into_experience(folder, json_filename):
                 }
 
                 # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
-
                 create_and_execute_insert_query(table_name="Experience", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
+
+
+def insert_into_offre_experience(folder, json_filename):  # todo : à traiter
+    #### table "Offre_Experience"
+
+    offres = load_json(folder, json_filename)
+
+    for offre in offres:
+        offre_id = offre.get("id")
+
+        experience_libelle = offre.get("experienceLibelle")
+        experience_code_exigence = offre.get("experienceExige")
+        experience_commentaire = offre.get("experienceCommentaire")
+        date_extraction = offre.get("dateExtraction")
+
+        # print pour investigation si besoin :
+        # print(offre_id, experience_libelle, experience_code_exigence, experience_commentaire, sep="\n-> ")
+
+        # Récupérer experience_id
+        query = """
+                    SELECT experience_id
+                    FROM Experience
+                    WHERE
+                        (experience_libelle IS NULL AND %s IS NULL OR experience_libelle = %s)
+                        AND (experience_code_exigence IS NULL AND %s IS NULL OR experience_code_exigence = %s)
+                        AND (experience_commentaire IS NULL AND %s IS NULL OR experience_commentaire = %s)
+                """
+
+        cursor.execute(query, (experience_libelle, experience_libelle, experience_code_exigence, experience_code_exigence, experience_commentaire, experience_commentaire))
+        experience_id = cursor.fetchone()[0]
+
+        fill_db(
+            db_name="Offre_Experience",
+            attributes_tuple=("offre_id", "experience_id", "date_extraction"),
+            on_conflict_string="offre_id | experience_id | date_extraction",
+        )
+
+    # On supprime les lignes où 1 offre_id est présente avec 2 experience_id différents :
+    cursor.execute(f"""--sql
+                -- CTE pour afficher l'offre_id le plus récent s'il y a 1 offre_id avec plusieurs experience_id
+                WITH latest_offre_id AS (
+                    SELECT DISTINCT ON (offre_id)
+                        offre_id,
+                        experience_id,
+                        date_extraction
+                    FROM Offre_Experience
+                    ORDER BY offre_id, date_extraction DESC
+                )
+                DELETE FROM Offre_Experience
+                WHERE (offre_id, experience_id, date_extraction) NOT IN (
+                    SELECT offre_id, experience_id, date_extraction
+                    FROM latest_offre_id
+                );
+                """)
 
 
 @task(task_id="table_formation")
@@ -611,8 +828,79 @@ def insert_into_formation(folder, json_filename):
                 }
 
                 # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
-
                 create_and_execute_insert_query(table_name="Formation", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
+
+
+def insert_into_offre_formation(folder, json_filename):  # todo : à traiter
+    #### table "Offre_Formation"
+
+    offres = load_json(folder, json_filename)
+
+    for offre in offres:
+        offre_id = offre.get("id")
+
+        formations = offre.get("formations", [{}])  # ⛔ Attention on a une liste de formations dans le json !!!
+
+        if formations:
+            for i in range(len(formations)):
+                formation_code = formations[i].get("codeFormation")
+                formation_domaine_libelle = formations[i].get("domaineLibelle")
+                formation_niveau_libelle = formations[i].get("niveauLibelle")
+                formation_commentaire = formations[i].get("commentaire")
+                formation_code_exigence = formations[i].get("exigence")
+
+                # Récupérer formation_id
+                query = """
+                            SELECT formation_id
+                            FROM Formation
+                            WHERE
+                                (formation_code IS NULL AND %s IS NULL OR formation_code = %s)
+                                AND (formation_domaine_libelle IS NULL AND %s IS NULL OR formation_domaine_libelle = %s)
+                                AND (formation_niveau_libelle IS NULL AND %s IS NULL OR formation_niveau_libelle = %s)
+                                AND (formation_commentaire IS NULL AND %s IS NULL OR formation_commentaire = %s)
+                                AND (formation_code_exigence IS NULL AND %s IS NULL OR formation_code_exigence = %s)
+                        """
+
+                cursor.execute(
+                            query,
+                            (
+                                formation_code, formation_code,
+                                formation_domaine_libelle, formation_domaine_libelle,
+                                formation_niveau_libelle, formation_niveau_libelle,
+                                formation_commentaire, formation_commentaire,
+                                formation_code_exigence, formation_code_exigence,
+                            ),
+                        )  # fmt: off
+
+                formation_id = cursor.fetchone()[0]
+
+                # print pour investigation si besoin :
+                # print(offre_id, formation_code, formation_domaine_libelle, formation_niveau_libelle,
+                #     formation_commentaire, formation_code_exigence, formation_id, sep="\n-> ", end="\n\n")  # fmt: off
+
+                fill_db(
+                    db_name="Offre_Formation",
+                    attributes_tuple=("offre_id", "formation_id", "date_extraction"),
+                    on_conflict_string="offre_id | formation_id | date_extraction",
+                )
+
+    # On supprime les lignes où 1 offre_id est présente avec 2 formation_id différents :
+    cursor.execute(f"""--sql
+                -- CTE pour afficher l'offre_id le plus récent s'il y a 1 offre_id avec plusieurs formation_id
+                WITH latest_offre_id AS (
+                    SELECT DISTINCT ON (offre_id)
+                        offre_id,
+                        formation_id,
+                        date_extraction
+                    FROM Offre_Formation
+                    ORDER BY offre_id, date_extraction DESC
+                )
+                DELETE FROM Offre_Formation
+                WHERE (offre_id, formation_id, date_extraction) NOT IN (
+                    SELECT offre_id, formation_id, date_extraction
+                    FROM latest_offre_id
+                );
+                """)
 
 
 @task(task_id="table_qualite_professionnelle")
@@ -630,6 +918,58 @@ def insert_into_qualiteprofessionnelle(folder, json_filename):
                 }
 
                 create_and_execute_insert_query(table_name="QualiteProfessionnelle", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
+
+
+def insert_into_offre_qualiteprofessionnelle(folder, json_filename):  # todo : à traiter
+    offres = load_json(folder, json_filename)
+
+    for offre in offres:
+        offre_id = offre.get("id")
+
+        qualites = offre.get("qualitesProfessionnelles")  # ⛔ Attention on a une liste de qualités professionnelles dans le json !!!
+
+        if qualites:  # car on peut avoir dans le json "qualitesProfessionnelles": null
+            for i in range(len(qualites)):
+                qualite_professionnelle_libelle = qualites[i].get("libelle")
+                qualite_professionnelle_description = qualites[i].get("description")
+
+                query = "WHERE qualite_professionnelle_libelle = %s AND qualite_professionnelle_description = %s"
+
+                # Récupérer qualite_professionnelle_id
+                query = """
+                            SELECT qualite_professionnelle_id
+                            FROM QualiteProfessionnelle
+                            WHERE
+                                (qualite_professionnelle_libelle IS NULL AND %s IS NULL OR qualite_professionnelle_libelle = %s)
+                                AND (qualite_professionnelle_description IS NULL AND %s IS NULL OR qualite_professionnelle_description = %s)
+                        """
+
+                cursor.execute(query, (qualite_professionnelle_libelle, qualite_professionnelle_libelle, qualite_professionnelle_description, qualite_professionnelle_description))
+                qualite_professionnelle_id = cursor.fetchone()[0]
+
+                fill_db(
+                    db_name="Offre_QualiteProfessionnelle",
+                    attributes_tuple=("offre_id", "qualite_professionnelle_id", "date_extraction"),
+                    on_conflict_string="offre_id | qualite_professionnelle_id | date_extraction",
+                )
+
+    # On supprime les lignes où 1 offre_id est présente avec 2 qualite_professionnelle_id différents :
+    cursor.execute(f"""--sql
+                -- CTE pour afficher l'offre_id le plus récent s'il y a 1 offre_id avec plusieurs qualite_professionnelle_id
+                WITH latest_offre_id AS (
+                    SELECT DISTINCT ON (offre_id)
+                        offre_id,
+                        qualite_professionnelle_id,
+                        date_extraction
+                    FROM Offre_QualiteProfessionnelle
+                    ORDER BY offre_id, date_extraction DESC
+                )
+                DELETE FROM Offre_QualiteProfessionnelle
+                WHERE (offre_id, qualite_professionnelle_id, date_extraction) NOT IN (
+                    SELECT offre_id, qualite_professionnelle_id, date_extraction
+                    FROM latest_offre_id
+                );
+                """)
 
 
 @task(task_id="table_qualification")
@@ -652,6 +992,60 @@ def insert_into_qualification(folder, json_filename):
                     create_and_execute_insert_query(table_name="Qualification", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
 
 
+def insert_into_offre_qualification(folder, json_filename):  # todo : à traiter
+    offres = load_json(folder, json_filename)
+
+    for offre in offres:
+        offre_id = offre.get("id")
+
+        qualification_code = offre.get("qualificationCode")
+        qualification_libelle = offre.get("qualificationLibelle")
+        date_extraction = offre.get("dateExtraction")
+
+        # print pour investigation si besoin :
+        # print(offre_id, qualification_code, qualification_libelle, sep="\n-->", end="\n\n")
+
+        if (qualification_code is not None) and (qualification_libelle is not None):
+            # récupérer qualification_code
+            query = """
+                        SELECT qualification_code
+                        FROM Qualification
+                        WHERE
+                            (qualification_code IS NULL AND %s IS NULL OR qualification_code = %s)
+                            AND (qualification_libelle IS NULL AND %s IS NULL OR qualification_libelle = %s)
+                    """
+
+            cursor.execute(query, (qualification_code, qualification_code, qualification_libelle, qualification_libelle))
+            qualification_code = cursor.fetchone()[0]
+
+            # print pour investigation si besoin :
+            # print(offre_id, qualification_code, qualification_libelle, sep="\n-->", end="\n\n")
+
+            fill_db(
+                db_name="Offre_Qualification",
+                attributes_tuple=("offre_id", "qualification_code", "date_extraction"),
+                on_conflict_string="offre_id | qualification_code | date_extraction",
+            )
+
+    # On supprime les lignes où 1 offre_id est présente avec 2 qualification_code différents :
+    cursor.execute(f"""--sql
+                -- CTE pour afficher l'offre_id le plus récent s'il y a 1 offre_id avec plusieurs qualification_code
+                WITH latest_offre_id AS (
+                    SELECT DISTINCT ON (offre_id)
+                        offre_id,
+                        qualification_code,
+                        date_extraction
+                    FROM offre_qualification
+                    ORDER BY offre_id, date_extraction DESC
+                )
+                DELETE FROM offre_qualification
+                WHERE (offre_id, qualification_code, date_extraction) NOT IN (
+                    SELECT offre_id, qualification_code, date_extraction
+                    FROM latest_offre_id
+                );
+                """)
+
+
 @task(task_id="table_langue")
 def insert_into_langue(folder, json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Langue"""
@@ -667,6 +1061,55 @@ def insert_into_langue(folder, json_filename):
                 }
 
                 create_and_execute_insert_query(table_name="Langue", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
+
+
+def insert_into_offre_langue(folder, json_filename):  # todo : à traiter
+    offres = load_json(folder, json_filename)
+
+    for offre in offres:
+        offre_id = offre.get("id")
+
+        langues = offre.get("langues")  # ⛔ Attention on a une liste de langues dans le json !!!
+
+        # print pour investigation si besoin :
+        # print(offre_id, langues, sep="\n-> ", end="\n\n")
+
+        if langues:
+            for i in range(len(langues)):
+                langue_libelle = langues[i].get("libelle")
+                langue_code_exigence = langues[i].get("exigence")
+
+                # Récupérer langue_id
+                query = """
+                            SELECT langue_id FROM Langue
+                            WHERE langue_libelle = %s AND langue_code_exigence = %s
+                        """
+                cursor.execute(query, (langue_libelle, langue_code_exigence))
+                langue_id = cursor.fetchone()[0]
+
+                fill_db(
+                    db_name="Offre_Langue",
+                    attributes_tuple=("offre_id", "langue_id", "date_extraction"),
+                    on_conflict_string="offre_id | langue_id | date_extraction",
+                )
+
+    # On supprime les lignes où 1 offre_id est présente avec 2 langue_id différents :
+    cursor.execute(f"""--sql
+                -- CTE pour afficher l'offre_id le plus récent s'il y a 1 offre_id avec plusieurs langue_id
+                WITH latest_offre_id AS (
+                    SELECT DISTINCT ON (offre_id)
+                        offre_id,
+                        langue_id,
+                        date_extraction
+                    FROM Offre_Langue
+                    ORDER BY offre_id, date_extraction DESC
+                )
+                DELETE FROM Offre_Langue
+                WHERE (offre_id, langue_id, date_extraction) NOT IN (
+                    SELECT offre_id, langue_id, date_extraction
+                    FROM latest_offre_id
+                );
+                """)
 
 
 @task(task_id="table_permis_conduire")
@@ -686,8 +1129,54 @@ def insert_into_permisconduire(folder, json_filename):
                 create_and_execute_insert_query(table_name="PermisConduire", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
 
 
+def insert_into_offre_permisconduire(folder, json_filename):  # todo : à traiter
+    offres = load_json(folder, json_filename)
+
+    for offre in offres:
+        offre_id = offre.get("id")
+
+        permisconduires = offre.get("permis")  # ⛔ Attention on a une liste de permisconduires dans le json !!!
+
+        if permisconduires:
+            for i in range(len(permisconduires)):
+                permis_libelle = permisconduires[i].get("libelle")
+                permis_code_exigence = permisconduires[i].get("exigence")
+
+                # Récupérer permis_id
+                query = """
+                            SELECT permis_id FROM permisconduire
+                            WHERE permis_libelle = %s AND permis_code_exigence = %s
+                        """
+                cursor.execute(query, (permis_libelle, permis_code_exigence))
+                permis_id = cursor.fetchone()[0]
+
+                fill_db(
+                    db_name="Offre_PermisConduire",
+                    attributes_tuple=("offre_id", "permis_id", "date_extraction"),
+                    on_conflict_string="offre_id | permis_id | date_extraction",
+                )
+
+    # On supprime les lignes où 1 offre_id est présente avec 2 permis_id différents :
+    cursor.execute(f"""--sql
+                -- CTE pour afficher l'offre_id le plus récent s'il y a 1 offre_id avec plusieurs permis_id
+                WITH latest_offre_id AS (
+                    SELECT DISTINCT ON (offre_id)
+                        offre_id,
+                        permis_id,
+                        date_extraction
+                    FROM Offre_PermisConduire
+                    ORDER BY offre_id, date_extraction DESC
+                )
+                DELETE FROM Offre_PermisConduire
+                WHERE (offre_id, permis_id, date_extraction) NOT IN (
+                    SELECT offre_id, permis_id, date_extraction
+                    FROM latest_offre_id
+                );
+                """)
+
+
 with DAG(
-    dag_id="DAG_2_WRITE_TO_DB_v4",
+    dag_id="DAG_2_WRITE_TO_DB_v5",
     tags=["project"],
 ) as dag:
     with TaskGroup(group_id="SETUP", tooltip="xxx") as setup:
@@ -706,18 +1195,21 @@ with DAG(
     with TaskGroup(group_id="WRITE_TO_DATABASE", tooltip="xxx") as write:
         with TaskGroup(group_id="INSERT_TO_FACT_AND_DIMENSIONS_TABLES", tooltip="xxx") as fact_dims:
             insert_into_offreemploi(SPLIT_JSONS_DIR, "offreemploi.json")
-            insert_into_contrat(SPLIT_JSONS_DIR, "contrat.json")
-            insert_into_entreprise(SPLIT_JSONS_DIR, "entreprise.json")
-            insert_into_localisation(SPLIT_JSONS_DIR, "localisation.json")
-            insert_into_description_offre(SPLIT_JSONS_DIR, "descriptionoffre.json")
-            insert_into_competence(SPLIT_JSONS_DIR, "competence.json")
-            insert_into_experience(SPLIT_JSONS_DIR, "experience.json")
-            insert_into_formation(SPLIT_JSONS_DIR, "formation.json")
-            insert_into_qualiteprofessionnelle(SPLIT_JSONS_DIR, "qualiteprofessionnelle.json")
-            insert_into_qualification(SPLIT_JSONS_DIR, "qualification.json")
-            insert_into_langue(SPLIT_JSONS_DIR, "langue.json")
-            insert_into_permisconduire(SPLIT_JSONS_DIR, "permisconduire.json")
-        with TaskGroup(group_id="INSERT_TO_JUNCTION_TABLES", tooltip="xxx") as junction:
-            pass
+            #         insert_into_contrat(SPLIT_JSONS_DIR, "contrat.json")
+            #         insert_into_entreprise(SPLIT_JSONS_DIR, "entreprise.json")
+            #         insert_into_localisation(SPLIT_JSONS_DIR, "localisation.json")
+            #         insert_into_description_offre(SPLIT_JSONS_DIR, "descriptionoffre.json")
+            c1 = insert_into_competence(SPLIT_JSONS_DIR, "competence.json")
+            #         insert_into_experience(SPLIT_JSONS_DIR, "experience.json")
+            #         insert_into_formation(SPLIT_JSONS_DIR, "formation.json")
+            #         insert_into_qualiteprofessionnelle(SPLIT_JSONS_DIR, "qualiteprofessionnelle.json")
+            #         insert_into_qualification(SPLIT_JSONS_DIR, "qualification.json")
+            #         insert_into_langue(SPLIT_JSONS_DIR, "langue.json")
+            #         insert_into_permisconduire(SPLIT_JSONS_DIR, "permisconduire.json")
+            # with TaskGroup(group_id="INSERT_TO_JUNCTION_TABLES", tooltip="xxx") as junction:
+            c2 = insert_into_offre_competence(SPLIT_JSONS_DIR, "offre_competence.json")
+
+            c1 >> c2
+        # fact_dims >> junction
 
     setup >> write
