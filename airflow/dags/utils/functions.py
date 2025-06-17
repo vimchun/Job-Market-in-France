@@ -1007,10 +1007,14 @@ def special_jsons_concatenation(aggregated_json_directory):
     os.makedirs(os.path.join(aggregated_json_directory, "archives"), exist_ok=True)
 
     print('Déplacement de l\'ancien fichier json dans le dossier "archives"')
-    shutil.move(
-        os.path.join(aggregated_json_directory, current_json_file),
-        os.path.join(aggregated_json_directory, "archives"),
-    )
+
+    source = os.path.join(aggregated_json_directory, current_json_file)
+    destination = os.path.join(aggregated_json_directory, "archives", current_json_file)
+
+    if os.path.exists(destination):
+        os.remove(destination)  # supprime le fichier existant s'il existe déjà
+
+    shutil.move(source, destination)
 
     return new_json_file
 
