@@ -726,15 +726,17 @@ with DAG(
     tags=["project"],
 ) as dag:
     with TaskGroup(group_id="SETUP", tooltip="xxx") as setup:
+        json_file_path = check_only_one_json_file_in_folder(AGGREGATED_JSON_DIR)
+        remove = remove_all_split_jsons(SPLIT_JSONS_DIR)
+
         create_tables = SQLExecuteQueryOperator(
             conn_id=conn_id,
             task_id="create_all_tables_if_not_existing",
             sql=os.path.join("sql", "create_all_tables.sql"),
         )
-        json_file_path = check_only_one_json_file_in_folder(AGGREGATED_JSON_DIR)
+        split_json = split_large_json(json_file_path)
 
-        remove_all_split_jsons(SPLIT_JSONS_DIR)
-        split_large_json(json_file_path)
+        json_file_path >> remove >> [create_tables, split_json]
 
     with TaskGroup(group_id="WRITE_TO_DATABASE", tooltip="xxx") as write:
         with TaskGroup(group_id="INSERT_TO_TABLES__FACT_AND_DIMENSIONS_TABLES", tooltip="xxx") as insert:
