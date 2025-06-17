@@ -561,12 +561,7 @@ def insert_into_competence(folder, json_filename):
 
                 # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
 
-                create_and_execute_insert_query(
-                    table_name="Competence",
-                    row_data=values_dict,
-                    conflict_columns=["competence_code", "competence_libelle", "competence_code_exigence"],
-                    cursor=cursor,
-                )
+                create_and_execute_insert_query(table_name="Competence", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
 
 
 @task(task_id="table_experience")
@@ -590,12 +585,7 @@ def insert_into_experience(folder, json_filename):
 
                 # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
 
-                create_and_execute_insert_query(
-                    table_name="Experience",
-                    row_data=values_dict,
-                    conflict_columns=["experience_libelle", "experience_code_exigence", "experience_commentaire"],
-                    cursor=cursor,
-                )
+                create_and_execute_insert_query(table_name="Experience", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
 
 
 @task(task_id="table_formation")
@@ -622,12 +612,7 @@ def insert_into_formation(folder, json_filename):
 
                 # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
 
-                create_and_execute_insert_query(
-                    table_name="Formation",
-                    row_data=values_dict,
-                    conflict_columns=["formation_code", "formation_domaine_libelle", "formation_niveau_libelle", "formation_commentaire", "formation_code_exigence"],
-                    cursor=cursor,
-                )
+                create_and_execute_insert_query(table_name="Formation", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
 
 
 @task(task_id="table_qualite_professionnelle")
@@ -644,12 +629,7 @@ def insert_into_qualiteprofessionnelle(folder, json_filename):
                     "qualite_professionnelle_description": offre.get("qualite_professionnelle_description"),
                 }
 
-                create_and_execute_insert_query(
-                    table_name="QualiteProfessionnelle",
-                    row_data=values_dict,
-                    conflict_columns=["qualite_professionnelle_libelle", "qualite_professionnelle_description"],
-                    cursor=cursor,
-                )
+                create_and_execute_insert_query(table_name="QualiteProfessionnelle", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
 
 
 @task(task_id="table_qualification")
@@ -669,12 +649,7 @@ def insert_into_qualification(folder, json_filename):
                 }
 
                 if (qualification_code is not None) or (qualification_libelle is not None):
-                    create_and_execute_insert_query(
-                        table_name="Qualification",
-                        row_data=values_dict,
-                        conflict_columns=["qualification_code", "qualification_libelle"],
-                        cursor=cursor,
-                    )
+                    create_and_execute_insert_query(table_name="Qualification", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
 
 
 @task(task_id="table_langue")
@@ -691,12 +666,7 @@ def insert_into_langue(folder, json_filename):
                     "langue_code_exigence": offre.get("langue_code_exigence"),
                 }
 
-                create_and_execute_insert_query(
-                    table_name="Langue",
-                    row_data=values_dict,
-                    conflict_columns=["langue_libelle", "langue_code_exigence"],
-                    cursor=cursor,
-                )
+                create_and_execute_insert_query(table_name="Langue", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
 
 
 @task(task_id="table_permis_conduire")
@@ -713,16 +683,11 @@ def insert_into_permisconduire(folder, json_filename):
                     "permis_code_exigence": offre.get("permis_code_exigence"),
                 }
 
-                create_and_execute_insert_query(
-                    table_name="PermisConduire",
-                    row_data=values_dict,
-                    conflict_columns=["permis_libelle", "permis_code_exigence"],
-                    cursor=cursor,
-                )
+                create_and_execute_insert_query(table_name="PermisConduire", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
 
 
 with DAG(
-    dag_id="DAG_2_WRITE_TO_DB_v3",
+    dag_id="DAG_2_WRITE_TO_DB_v4",
     tags=["project"],
 ) as dag:
     with TaskGroup(group_id="SETUP", tooltip="xxx") as setup:
@@ -739,7 +704,7 @@ with DAG(
         json_file_path >> remove >> [create_tables, split_json]
 
     with TaskGroup(group_id="WRITE_TO_DATABASE", tooltip="xxx") as write:
-        with TaskGroup(group_id="INSERT_TO_TABLES__FACT_AND_DIMENSIONS_TABLES", tooltip="xxx") as insert:
+        with TaskGroup(group_id="INSERT_TO_FACT_AND_DIMENSIONS_TABLES", tooltip="xxx") as fact_dims:
             insert_into_offreemploi(SPLIT_JSONS_DIR, "offreemploi.json")
             insert_into_contrat(SPLIT_JSONS_DIR, "contrat.json")
             insert_into_entreprise(SPLIT_JSONS_DIR, "entreprise.json")
@@ -752,5 +717,7 @@ with DAG(
             insert_into_qualification(SPLIT_JSONS_DIR, "qualification.json")
             insert_into_langue(SPLIT_JSONS_DIR, "langue.json")
             insert_into_permisconduire(SPLIT_JSONS_DIR, "permisconduire.json")
+        with TaskGroup(group_id="INSERT_TO_JUNCTION_TABLES", tooltip="xxx") as junction:
+            pass
 
     setup >> write
