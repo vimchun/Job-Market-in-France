@@ -45,7 +45,7 @@ def remove_all_split_jsons(folder):
             try:
                 os.remove(file_to_delete)
             except Exception as e:
-                print(f"Erreur lors de la suppression de {file_to_delete}: {e}")
+                logging.error(f"Erreur lors de la suppression de {file_to_delete}: {e}")
 
     return None
 
@@ -492,7 +492,7 @@ def load_json(folder, filename):
         return json.load(file)
 
 
-@task(task_id="table_offre_emploi")
+@task(task_id="OffreEmploi")
 def insert_into_offreemploi(folder, json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table OffreEmploi"""
 
@@ -514,7 +514,7 @@ def insert_into_offreemploi(folder, json_filename):
                 create_and_execute_insert_query(table_name="OffreEmploi", row_data=values_dict, conflict_columns=["offre_id"], cursor=cursor)
 
 
-@task(task_id="table_contrat")
+@task(task_id="Contrat")
 def insert_into_contrat(folder, json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Contrat"""
 
@@ -545,7 +545,7 @@ def insert_into_contrat(folder, json_filename):
                 create_and_execute_insert_query(table_name="Contrat", row_data=values_dict, conflict_columns=["offre_id"], cursor=cursor)
 
 
-@task(task_id="table_entreprise")
+@task(task_id="Entreprise")
 def insert_into_entreprise(folder, json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Entreprise"""
 
@@ -567,7 +567,7 @@ def insert_into_entreprise(folder, json_filename):
                 create_and_execute_insert_query(table_name="Entreprise", row_data=values_dict, conflict_columns=["offre_id"], cursor=cursor)
 
 
-@task(task_id="table_localisation")
+@task(task_id="Localisation")
 def insert_into_localisation(folder, json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Localisation"""
 
@@ -593,7 +593,7 @@ def insert_into_localisation(folder, json_filename):
                 create_and_execute_insert_query(table_name="Localisation", row_data=values_dict, conflict_columns=["offre_id"], cursor=cursor)
 
 
-@task(task_id="table_description_offre")
+@task(task_id="DescriptionOffre")
 def insert_into_description_offre(folder, json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table DescriptionOffre"""
 
@@ -618,7 +618,7 @@ def insert_into_description_offre(folder, json_filename):
                 create_and_execute_insert_query(table_name="DescriptionOffre", row_data=values_dict, conflict_columns=["offre_id"], cursor=cursor)
 
 
-@task(task_id="table_competence")
+@task(task_id="Competence")
 def insert_into_competence(folder, json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Competence"""
 
@@ -641,8 +641,9 @@ def insert_into_competence(folder, json_filename):
                 create_and_execute_insert_query(table_name="Competence", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
 
 
-@task(task_id="table_offre_competence")
+@task(task_id="Offre_Competence")
 def insert_into_offre_competence(folder, json_filename):
+    """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Offre_Competence"""
     offres = load_json(folder, json_filename)
 
     with psycopg2.connect(**DB_PARAM) as conn:
@@ -700,7 +701,7 @@ def insert_into_offre_competence(folder, json_filename):
                             """)
 
 
-@task(task_id="table_experience")
+@task(task_id="Experience")
 def insert_into_experience(folder, json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Experience"""
 
@@ -723,8 +724,9 @@ def insert_into_experience(folder, json_filename):
                 create_and_execute_insert_query(table_name="Experience", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
 
 
-@task(task_id="table_offre_experience")
+@task(task_id="Offre_Experience")
 def insert_into_offre_experience(folder, json_filename):
+    """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Offre_Experience"""
     offres = load_json(folder, json_filename)
 
     with psycopg2.connect(**DB_PARAM) as conn:
@@ -794,7 +796,7 @@ def insert_into_offre_experience(folder, json_filename):
                             """)
 
 
-@task(task_id="table_formation")
+@task(task_id="Formation")
 def insert_into_formation(folder, json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Formation"""
 
@@ -820,8 +822,9 @@ def insert_into_formation(folder, json_filename):
                 create_and_execute_insert_query(table_name="Formation", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
 
 
-@task(task_id="table_offre_formation")
+@task(task_id="Offre_Formation")
 def insert_into_offre_formation(folder, json_filename):
+    """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Offre_Formation"""
     offres = load_json(folder, json_filename)
 
     with psycopg2.connect(**DB_PARAM) as conn:
@@ -886,7 +889,7 @@ def insert_into_offre_formation(folder, json_filename):
                                """)
 
 
-@task(task_id="table_qualite_professionnelle")
+@task(task_id="QualiteProfessionnelle")
 def insert_into_qualiteprofessionnelle(folder, json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table QualiteProfessionnelle"""
 
@@ -903,8 +906,9 @@ def insert_into_qualiteprofessionnelle(folder, json_filename):
                 create_and_execute_insert_query(table_name="QualiteProfessionnelle", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
 
 
-@task(task_id="table_offre_qualiteprofessionnelle")
+@task(task_id="Offre_QualiteProfessionnelle")
 def insert_into_offre_qualiteprofessionnelle(folder, json_filename):
+    """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Offre_QualiteProfessionnelle"""
     offres = load_json(folder, json_filename)
 
     with psycopg2.connect(**DB_PARAM) as conn:
@@ -961,7 +965,7 @@ def insert_into_offre_qualiteprofessionnelle(folder, json_filename):
                             """)
 
 
-@task(task_id="table_qualification")
+@task(task_id="Qualification")
 def insert_into_qualification(folder, json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Qualification"""
 
@@ -981,8 +985,10 @@ def insert_into_qualification(folder, json_filename):
                     create_and_execute_insert_query(table_name="Qualification", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
 
 
-@task(task_id="table_offre_qualification")
+@task(task_id="Offre_Qualification")
 def insert_into_offre_qualification(folder, json_filename):
+    """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Offre_Qualification"""
+
     offres = load_json(folder, json_filename)
 
     with psycopg2.connect(**DB_PARAM) as conn:
@@ -1020,7 +1026,7 @@ def insert_into_offre_qualification(folder, json_filename):
                             """)
 
 
-@task(task_id="table_langue")
+@task(task_id="Langue")
 def insert_into_langue(folder, json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Langue"""
 
@@ -1037,8 +1043,10 @@ def insert_into_langue(folder, json_filename):
                 create_and_execute_insert_query(table_name="Langue", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
 
 
-@task(task_id="table_permis_langue")
-def insert_into_offre_langue(folder, json_filename):  # todo : en cours
+@task(task_id="Offre_Langue")
+def insert_into_offre_langue(folder, json_filename):
+    """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Offre_Langue"""
+
     offres = load_json(folder, json_filename)
 
     with psycopg2.connect(**DB_PARAM) as conn:
@@ -1093,7 +1101,7 @@ def insert_into_offre_langue(folder, json_filename):  # todo : en cours
                         """)
 
 
-@task(task_id="table_permis_conduire")
+@task(task_id="PermisConduire")
 def insert_into_permisconduire(folder, json_filename):
     """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Permis_Conduire"""
 
@@ -1110,8 +1118,9 @@ def insert_into_permisconduire(folder, json_filename):
                 create_and_execute_insert_query(table_name="PermisConduire", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
 
 
-@task(task_id="table_offre_permisconduire")
-def insert_into_offre_permisconduire(folder, json_filename):  # todo : en cours
+@task(task_id="Offre_PermisConduire")
+def insert_into_offre_permisconduire(folder, json_filename):
+    """Récupération des valeurs depuis le "json_filename" et écriture en base de données dans la table Offre_PermisConduire"""
     offres = load_json(folder, json_filename)
 
     with psycopg2.connect(**DB_PARAM) as conn:
@@ -1168,11 +1177,8 @@ def insert_into_offre_permisconduire(folder, json_filename):  # todo : en cours
 
 keep_generated_split_jsons = 1  # (mode dev) False pour ne pas supprimer les jsons splittés générés
 
-with DAG(
-    dag_id="DAG_2_WRITE_TO_DB_v6",
-    tags=["project"],
-) as dag:
-    with TaskGroup(group_id="SETUP", tooltip="xxx") as setup:
+with DAG(dag_id="DAG_2_WRITE_TO_DATABASE", tags=["project"]):
+    with TaskGroup(group_id="SETUP") as setup:
         json_file_path = check_only_one_json_file_in_folder(AGGREGATED_JSON_DIR)
 
         if keep_generated_split_jsons:
@@ -1189,14 +1195,16 @@ with DAG(
 
             json_file_path >> remove >> [create_tables, split_json]
 
-    with TaskGroup(group_id="INSERT_INTO_TABLES_WITHOUT_JUNCTION", tooltip="xxx") as without_junction:
+    with TaskGroup(group_id="INSERT_INTO_TABLES_WITHOUT_JUNCTION") as without_junction:
+        """ "INSERT INTO" pour les tables qui n'ont pas de tables de liaison """
         insert_into_offreemploi(SPLIT_JSONS_DIR, "offreemploi.json")
         insert_into_contrat(SPLIT_JSONS_DIR, "contrat.json")
         insert_into_entreprise(SPLIT_JSONS_DIR, "entreprise.json")
         insert_into_localisation(SPLIT_JSONS_DIR, "localisation.json")
         insert_into_description_offre(SPLIT_JSONS_DIR, "descriptionoffre.json")
 
-    with TaskGroup(group_id="WRITE_INTO_TABLES_WITH_JUNCTION", tooltip="xxx") as with_junction:
+    with TaskGroup(group_id="INSERT_INTO_TABLES_WITH_JUNCTION", tooltip="xxx") as with_junction:
+        """ "INSERT INTO" pour les tables qui ont un lieu avec une table de liaison : tables de dimension d'abord, tables de liaison après """
         t201 = insert_into_competence(SPLIT_JSONS_DIR, "competence.json")
         t202 = insert_into_experience(SPLIT_JSONS_DIR, "experience.json")
         t203 = insert_into_formation(SPLIT_JSONS_DIR, "formation.json")
@@ -1213,7 +1221,6 @@ with DAG(
         t306 = insert_into_offre_langue(SPLIT_JSONS_DIR, "offre_langue.json")
         t307 = insert_into_offre_permisconduire(SPLIT_JSONS_DIR, "offre_permisconduire.json")
 
-        # t100 >> [t201, t202, t203, t204, t205, t206, t207]
         t201 >> t301
         t202 >> t302
         t203 >> t303
@@ -1221,8 +1228,5 @@ with DAG(
         t205 >> t305
         t206 >> t306
         t207 >> t307
-
-    # fact >> dimensions >> junctions
-    # dimensions >> junctions
 
     setup >> without_junction >> with_junction
