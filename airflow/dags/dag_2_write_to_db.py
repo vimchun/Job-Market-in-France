@@ -71,7 +71,7 @@ def split_large_json(filename):
     experience, offre_experience = [], []
     formation, offre_formation = [], []
     qualiteprofessionnelle, offre_qualiteprofessionnelle = [], []
-    qualification = []
+    qualification, offre_qualification = [], []
     langue = []
     permisconduire = []
 
@@ -304,11 +304,21 @@ def split_large_json(filename):
                         }
                     )
 
-        #### pour "qualification"
+        #### pour "qualification" / "offre_qualification"
         values = (
             offre.get("qualificationCode"),
             offre.get("qualificationLibelle"),
         )
+        # pour "offre_qualification"
+        offre_qualification.append(
+            {
+                "offre_id": offre_id,
+                "qualification_code": values[0],
+                "date_extraction": offre.get("dateExtraction"),
+            }
+        )
+
+        # pour "qualification"
         if values not in seen_qualification:
             seen_qualification.add(values)
             qualification.append(
@@ -374,6 +384,7 @@ def split_large_json(filename):
     write_json_file(SPLIT_JSONS_DIR, "qualiteprofessionnelle.json", qualiteprofessionnelle)
     write_json_file(SPLIT_JSONS_DIR, "offre_qualiteprofessionnelle.json", offre_qualiteprofessionnelle)
     write_json_file(SPLIT_JSONS_DIR, "qualification.json", qualification)
+    write_json_file(SPLIT_JSONS_DIR, "offre_qualification.json", offre_qualification)
     write_json_file(SPLIT_JSONS_DIR, "langue.json", langue)
     write_json_file(SPLIT_JSONS_DIR, "permisconduire.json", permisconduire)
 
@@ -631,6 +642,7 @@ def insert_into_offre_competence(folder, json_filename):
                     competence_id = result[0]
                 else:
                     logging.error(f"Aucune correspondance pour : {competence_code} | {competence_libelle} | {competence_code_exigence}")
+                    continue
 
                 offre_id = offre.get("offre_id")
                 date_extraction = offre.get("date_extraction")
@@ -724,6 +736,7 @@ def insert_into_offre_experience(folder, json_filename):
                         experience_id = result[0]
                     else:
                         logging.error(f"Aucune correspondance pour : {experience_libelle} | {experience_code_exigence} | {experience_commentaire}")
+                        continue
 
                     offre_id = offre.get("offre_id")
                     date_extraction = offre.get("date_extraction")
@@ -815,6 +828,7 @@ def insert_into_offre_formation(folder, json_filename):
                         formation_id = result[0]
                     else:
                         logging.error(f"Aucune correspondance pour : {formation_code} | {formation_domaine_libelle} | {formation_niveau_libelle} | {formation_commentaire} | {formation_code_exigence}")
+                        continue
 
                     offre_id = offre.get("offre_id")
                     date_extraction = offre.get("date_extraction")
@@ -889,6 +903,7 @@ def insert_into_offre_qualiteprofessionnelle(folder, json_filename):
                     qualite_professionnelle_id = result[0]
                 else:
                     logging.error(f"Aucune correspondance pour : {qualite_professionnelle_libelle} | {qualite_professionnelle_description}")
+                    continue
 
                 offre_id = offre.get("offre_id")
                 date_extraction = offre.get("date_extraction")
@@ -940,58 +955,43 @@ def insert_into_qualification(folder, json_filename):
                     create_and_execute_insert_query(table_name="Qualification", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
 
 
-def insert_into_offre_qualification(folder, json_filename):  # todo : à traiter
+@task(task_id="table_offre_qualification")
+def insert_into_offre_qualification(folder, json_filename):
     offres = load_json(folder, json_filename)
 
-    for offre in offres:
-        offre_id = offre.get("id")
+    with psycopg2.connect(**DB_PARAM) as conn:
+        with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
+            for offre in offres:
+                offre_id = offre.get("offre_id")
+                qualification_code = offre.get("qualification_code")
+                date_extraction = offre.get("date_extraction")
 
-        qualification_code = offre.get("qualificationCode")
-        qualification_libelle = offre.get("qualificationLibelle")
-        date_extraction = offre.get("dateExtraction")
+                values_dict = {
+                    "offre_id": offre_id,
+                    "qualification_code": qualification_code,
+                    "date_extraction": date_extraction,
+                }
 
-        # print pour investigation si besoin :
-        # print(offre_id, qualification_code, qualification_libelle, sep="\n-->", end="\n\n")
+                if qualification_code:
+                    create_and_execute_insert_query(table_name="Offre_Qualification", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
 
-        if (qualification_code is not None) and (qualification_libelle is not None):
-            # récupérer qualification_code
-            query = """
-                        SELECT qualification_code
-                        FROM Qualification
-                        WHERE
-                            (qualification_code IS NULL AND %s IS NULL OR qualification_code = %s)
-                            AND (qualification_libelle IS NULL AND %s IS NULL OR qualification_libelle = %s)
-                    """
-
-            cursor.execute(query, (qualification_code, qualification_code, qualification_libelle, qualification_libelle))
-            qualification_code = cursor.fetchone()[0]
-
-            # print pour investigation si besoin :
-            # print(offre_id, qualification_code, qualification_libelle, sep="\n-->", end="\n\n")
-
-            fill_db(
-                db_name="Offre_Qualification",
-                attributes_tuple=("offre_id", "qualification_code", "date_extraction"),
-                on_conflict_string="offre_id | qualification_code | date_extraction",
-            )
-
-    # On supprime les lignes où 1 offre_id est présente avec 2 qualification_code différents :
-    cursor.execute(f"""--sql
-                -- CTE pour afficher l'offre_id le plus récent s'il y a 1 offre_id avec plusieurs qualification_code
-                WITH latest_offre_id AS (
-                    SELECT DISTINCT ON (offre_id)
-                        offre_id,
-                        qualification_code,
-                        date_extraction
-                    FROM offre_qualification
-                    ORDER BY offre_id, date_extraction DESC
-                )
-                DELETE FROM offre_qualification
-                WHERE (offre_id, qualification_code, date_extraction) NOT IN (
-                    SELECT offre_id, qualification_code, date_extraction
-                    FROM latest_offre_id
-                );
-                """)
+            # On supprime les lignes où 1 offre_id est présente avec 2 qualification_code différents :
+            cursor.execute(f"""--sql
+                                -- CTE pour afficher l'offre_id le plus récent s'il y a 1 offre_id avec plusieurs qualification_code
+                                WITH latest_offre_id AS (
+                                    SELECT DISTINCT ON (offre_id)
+                                        offre_id,
+                                        qualification_code,
+                                        date_extraction
+                                    FROM offre_qualification
+                                    ORDER BY offre_id, date_extraction DESC
+                                )
+                                DELETE FROM offre_qualification
+                                WHERE (offre_id, qualification_code, date_extraction) NOT IN (
+                                    SELECT offre_id, qualification_code, date_extraction
+                                    FROM latest_offre_id
+                                );
+                            """)
 
 
 @task(task_id="table_langue")
@@ -1123,22 +1123,28 @@ def insert_into_offre_permisconduire(folder, json_filename):  # todo : à traite
                 """)
 
 
+keep_generated_split_jsons = 0  # (mode dev) False pour ne pas supprimer les jsons splittés générés
+
 with DAG(
     dag_id="DAG_2_WRITE_TO_DB_v6",
     tags=["project"],
 ) as dag:
     with TaskGroup(group_id="SETUP", tooltip="xxx") as setup:
         json_file_path = check_only_one_json_file_in_folder(AGGREGATED_JSON_DIR)
-        remove = remove_all_split_jsons(SPLIT_JSONS_DIR)  # à commenter pour accélérer les tests (il faut que les jsons splittés soient générés)
+
+        if keep_generated_split_jsons:
+            remove = remove_all_split_jsons(SPLIT_JSONS_DIR)
 
         create_tables = SQLExecuteQueryOperator(
             conn_id=conn_id,
             task_id="create_all_tables_if_not_existing",
             sql=os.path.join("sql", "create_all_tables.sql"),
         )
-        split_json = split_large_json(json_file_path)  # à commenter pour accélérer les tests (il faut que les jsons splittés soient générés)
 
-        json_file_path >> remove >> [create_tables, split_json]  # à commenter pour accélérer les tests (il faut que les jsons splittés soient générés)
+        if keep_generated_split_jsons:
+            split_json = split_large_json(json_file_path)
+
+            json_file_path >> remove >> [create_tables, split_json]
 
     with TaskGroup(group_id="WRITE_TO_DATABASE", tooltip="xxx") as write:
         # with TaskGroup(group_id="INSERT_TO_FACT_TABLES", tooltip="xxx") as fact:
@@ -1154,19 +1160,21 @@ with DAG(
         t202 = insert_into_experience(SPLIT_JSONS_DIR, "experience.json")
         t203 = insert_into_formation(SPLIT_JSONS_DIR, "formation.json")
         t204 = insert_into_qualiteprofessionnelle(SPLIT_JSONS_DIR, "qualiteprofessionnelle.json")
-        #         insert_into_qualification(SPLIT_JSONS_DIR, "qualification.json")
-        #         insert_into_langue(SPLIT_JSONS_DIR, "langue.json")
-        #         insert_into_permisconduire(SPLIT_JSONS_DIR, "permisconduire.json")
+        t205 = insert_into_qualification(SPLIT_JSONS_DIR, "qualification.json")
+        # insert_into_langue(SPLIT_JSONS_DIR, "langue.json")
+        # insert_into_permisconduire(SPLIT_JSONS_DIR, "permisconduire.json")
         t301 = insert_into_offre_competence(SPLIT_JSONS_DIR, "offre_competence.json")
         t302 = insert_into_offre_experience(SPLIT_JSONS_DIR, "offre_experience.json")
         t303 = insert_into_offre_formation(SPLIT_JSONS_DIR, "offre_formation.json")
         t304 = insert_into_offre_qualiteprofessionnelle(SPLIT_JSONS_DIR, "offre_qualiteprofessionnelle.json")
+        t305 = insert_into_offre_qualification(SPLIT_JSONS_DIR, "offre_qualification.json")
 
-        t100 >> [t201, t202, t203, t204]
+        t100 >> [t201, t202, t203, t204, t205]
         t201 >> t301
         t202 >> t302
         t203 >> t303
         t204 >> t304
+        t205 >> t305
 
     # fact >> dimensions >> junctions
     # dimensions >> junctions
