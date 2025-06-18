@@ -9,15 +9,12 @@ import pandas as pd
 import requests
 import unidecode
 
-from colorama import Fore, Style, init  # todo : à retirer (pas compatible avec airflow)
 from geopy.geocoders import Nominatim
 
 from airflow import DAG
 from airflow.decorators import task
 from airflow.utils.task_group import TaskGroup
 from airflow.utils.trigger_rule import TriggerRule
-
-init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 RESOURCES_DIR = os.path.join(CURRENT_DIR, "..", "data", "resources")
@@ -179,7 +176,7 @@ def get_bearer_token(dict_, scope):
     - Bearer Token (str) : pour l'authentification des requêtes, ou None en cas d'erreur.
     """
 
-    print(f'{Fore.GREEN}\n==> Fonction "get_bearer_token()"\n')
+    print(f'\n==> Fonction "get_bearer_token()"\n')
 
     # paramètres décrits ici https://francetravail.io/produits-partages/documentation/utilisation-api-france-travail/generer-access-token
     url = "https://entreprise.francetravail.fr/connexion/oauth2/access_token"
@@ -262,7 +259,7 @@ def get_offers(token, code_libelle_list):
 
     offers_data = []
 
-    print(f"{Fore.GREEN}== Récupération des offres ({code_appellation}: {libelle}) :")
+    print(f"== Récupération des offres ({code_appellation}: {libelle}) :")
 
     #### Première requête pour voir combien d'offres sont disponibles
 
@@ -272,7 +269,7 @@ def get_offers(token, code_libelle_list):
 
     response = throttled_get(url, headers=headers, params=params, max_retries=10, retry_delay=2)
 
-    print(f"{Fore.GREEN}==== Récupération des offres (requête 0), pour connaître le nombre d'offres :", end=" ")
+    print(f"==== Récupération des offres (requête 0), pour connaître le nombre d'offres :", end=" ")
 
     # print(response, int(response.headers.get("Content-Range").split("/")[-1]))  # pour investigation
     # print(response.headers.get("Content-Range"))  # exemple : "offres 0-0/9848"  # pour investigation
@@ -288,7 +285,7 @@ def get_offers(token, code_libelle_list):
     if response.status_code == 200:
         print(f"Status Code: {response.status_code}")
         # print(response.headers.get("Content-Range"))
-        print(f"  => {Fore.CYAN}[{max_offres}]{Style.RESET_ALL} offres au total {Fore.YELLOW}--> écriture dans le fichier")
+        print(f"  => [{max_offres}] offres au total --> écriture dans le fichier")
 
         document_id = 0
 
@@ -300,9 +297,9 @@ def get_offers(token, code_libelle_list):
     elif response.status_code == 206:
         print(f"Status Code: {response.status_code} (Réponse partielle)")
         # print(response.headers.get("Content-Range"))
-        print(f"  => {Fore.CYAN}[{max_offres}]{Style.RESET_ALL} offres au total")
-        print(f"  => {Fore.CYAN}[{int(max_offres/150)+1}]{Style.RESET_ALL} requêtes nécessaires (avec 150 documents) pour tout récupérer", end="")
-        print(f" {Style.DIM} (limité à 21 requêtes, soit 3150 offres maximum)")  # (voir limitation du paramètre range)
+        print(f"  => [{max_offres}] offres au total")
+        print(f"  => [{int(max_offres/150)+1}] requêtes nécessaires (avec 150 documents) pour tout récupérer", end="")
+        print(f"  (limité à 21 requêtes, soit 3150 offres maximum)")  # (voir limitation du paramètre range)
 
         range_start = 0
         range_end = 149
@@ -312,7 +309,7 @@ def get_offers(token, code_libelle_list):
         document_id = 0
 
         for _ in range(int(max_offres / 150) + 1):
-            print(f"{Fore.GREEN}==== Récupération des offres (requête {request_id}) :", end=" ")
+            print(f"==== Récupération des offres (requête {request_id}) :", end=" ")
             response = throttled_get(url, headers=headers, params=params, max_retries=10, retry_delay=2)
 
             if response.status_code == 206:
@@ -321,7 +318,7 @@ def get_offers(token, code_libelle_list):
                 for obj in response.json()["resultats"]:
                     offers_data.append(obj)
                     document_id += 1
-                print(f"{range_start}-{range_end}/{max_offres} {Fore.YELLOW}--> écriture dans le fichier (total: {document_id})")
+                print(f"{range_start}-{range_end}/{max_offres} --> écriture dans le fichier (total: {document_id})")
 
             else:
                 """
@@ -386,7 +383,7 @@ def concatenate_all_json_into_one(downloaded_jsons_from_api_directory, aggregate
     Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
     """
 
-    print(f'{Fore.GREEN}\n==> Fonction "concatenate_all_into_one()"\n')
+    print(f'\n==> Fonction "concatenate_all_into_one()"\n')
 
     df_concat = pd.DataFrame()
 
@@ -401,11 +398,11 @@ def concatenate_all_json_into_one(downloaded_jsons_from_api_directory, aggregate
                 df_concat = pd.concat([df_concat, df], ignore_index=True)
 
             except json.JSONDecodeError as e:
-                print(f"{Fore.RED}Erreur 1 lors du chargement du fichier JSON {filename} : {e}")
+                print(f"Erreur 1 lors du chargement du fichier JSON {filename} : {e}")
             except FileNotFoundError:
-                print(f'{Fore.RED}Le fichier "{filename}" n\'a pas été trouvé.')
+                print(f'Le fichier "{filename}" n\'a pas été trouvé.')
             except Exception as e:
-                print(f"{Fore.RED}Une erreur inattendue s'est produite : {e}")
+                print(f"Une erreur inattendue s'est produite : {e}")
 
     num_offres_without_duplicates = len(df_concat.drop_duplicates(["id"]))
     print(f"\n --> df_concat : {df_concat.shape[0]} offres, df_concat_drop_duplicates : {num_offres_without_duplicates} offres\n\n")
@@ -432,7 +429,7 @@ def keep_only_offres_from_metropole(aggregated_json_directory, json_filename, ne
      et aussi le nombre de ligne du DataFrame (si on en a besoin pour renommer le fichier, mais on ne le fera pas conformément au workflow)
     """
 
-    print(f'{Fore.GREEN}\n==> Fonction "keep_only_offres_from_metropole()"\n')
+    print(f'\n==> Fonction "keep_only_offres_from_metropole()"\n')
 
     df = pd.read_json(
         os.path.join(aggregated_json_directory, json_filename),
@@ -500,7 +497,7 @@ def add_location_attributes(aggregated_json_directory, json_filename, new_json_f
     Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
     """
 
-    print(f'{Fore.GREEN}\n==> Fonction "add_location_attributes()"\n')
+    print(f'\n==> Fonction "add_location_attributes()"\n')
 
     #### Chargement des fichiers
 
@@ -876,7 +873,7 @@ def add_date_extract_attribute(aggregated_json_directory, json_filename, new_jso
     Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
     """
 
-    print(f'{Fore.GREEN}\n==> Fonction "add_date_extract_attribute()"\n')
+    print(f'\n==> Fonction "add_date_extract_attribute()"\n')
 
     if date_to_insert is None:
         # date_to_insert = datetime.today().date()  # .date() pour ne pas avoir l'heure
@@ -958,21 +955,21 @@ def special_jsons_concatenation(aggregated_json_directory):
 
     # print(
     #     f'Il y a 1 fichier json dans le dossier "{generated_json_files_directory}"',
-    #     f' -> json_1 = "{Fore.YELLOW}{current_json_file}{Style.RESET_ALL}"',
+    #     f' -> json_1 = "{current_json_file}"',
     #     "",
-    #     f"{Fore.RED}== Lancement de l'extraction occurence {occurence_number+1} ==",
-    #     f'Création de json_2 = "{Fore.YELLOW}{new_json_file}{Style.RESET_ALL}" à partir de nouvelles requêtes API, qui après traitement sera le seul json qui restera dans le dossier',
+    #     f"== Lancement de l'extraction occurence {occurence_number+1} ==",
+    #     f'Création de json_2 = "{new_json_file}" à partir de nouvelles requêtes API, qui après traitement sera le seul json qui restera dans le dossier',
     #     sep="\n",
     # )
     print(
         f'Il y a 2 fichiers json dans le dossier "{aggregated_json_directory}"',
-        f' -> json_1 = "{Fore.YELLOW}{current_json_file}{Style.RESET_ALL}"',
+        f' -> json_1 = "{current_json_file}"',
         "",
-        f' -> json_2 = "{Fore.YELLOW}{new_json_file}{Style.RESET_ALL}"',  # , à partir de nouvelles requêtes API, qui après traitement sera le seul json qui restera dans le dossier',
+        f' -> json_2 = "{new_json_file}"',  # , à partir de nouvelles requêtes API, qui après traitement sera le seul json qui restera dans le dossier',
         sep="\n",
     )
 
-    print(f"{Fore.RED}\n==> Concaténation entre le json précédemment présent dans le dossier, et le json nouvellement créé\n")
+    print(f"\n==> Concaténation entre le json précédemment présent dans le dossier, et le json nouvellement créé\n")
     df1 = pd.read_json(os.path.join(aggregated_json_directory, current_json_file), dtype=False)
     df2 = pd.read_json(os.path.join(aggregated_json_directory, new_json_file), dtype=False)
 
@@ -1018,7 +1015,7 @@ def special_jsons_concatenation(aggregated_json_directory):
 
     os.makedirs(os.path.join(aggregated_json_directory, "archives"), exist_ok=True)
 
-    print('Déplacement de l\'ancien fichier json dans le dossier "archives"')  # todo : copier le nouveau json dans le dossier "archives"
+    print('Déplacement de l\'ancien fichier json dans le dossier "archives"')
 
     source = os.path.join(aggregated_json_directory, current_json_file)
     destination = os.path.join(aggregated_json_directory, "archives", current_json_file)
@@ -1027,6 +1024,13 @@ def special_jsons_concatenation(aggregated_json_directory):
         os.remove(destination)  # supprime le fichier existant s'il existe déjà
 
     shutil.move(source, destination)
+
+    print('Copie du nouveau fichier json dans le dossier "archives"')
+
+    source = os.path.join(aggregated_json_directory, new_json_file)
+    destination = os.path.join(aggregated_json_directory, "archives", new_json_file)
+
+    shutil.copy(source, destination)
 
     return new_json_file
 
@@ -1043,7 +1047,7 @@ def add_date_premiere_ecriture_attribute(aggregated_json_directory, json_filenam
     Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
     """
 
-    print(f'{Fore.GREEN}\n==> Fonction "add_date_premiere_ecriture_attribute()"\n')
+    print(f'\n==> Fonction "add_date_premiere_ecriture_attribute()"\n')
 
     if date_to_insert is None:
         date_to_insert = datetime.today().strftime("%Y-%m-%d")  # formatage en string 'YYYY-MM-DD'
