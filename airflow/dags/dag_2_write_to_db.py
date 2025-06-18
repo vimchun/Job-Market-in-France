@@ -2,8 +2,6 @@ import json
 import logging
 import os
 
-from datetime import datetime
-
 import psycopg2
 
 from airflow import DAG
@@ -68,23 +66,14 @@ def split_large_json(filename):
         offres = json.load(file)
 
     # initialisation de listes
-    (
-        offreemploi,
-        contrat,
-        entreprise,
-        localisation,
-        descriptionoffre,
-        competence,
-        offre_competence,
-        experience,
-        offre_experience,
-        formation,
-        offre_formation,
-        qualiteprofessionnelle,
-        qualification,
-        langue,
-        permisconduire,
-    ) = [[] for _ in range(15)]
+    offreemploi = []  # pour la table de fait
+    contrat, entreprise, localisation, descriptionoffre, competence, offre_competence = [], [], [], [], [], []  # pour les tables de dimension sans table de fait
+    experience, offre_experience = [], []
+    formation, offre_formation = [], []
+    qualiteprofessionnelle, offre_qualiteprofessionnelle = [], []
+    qualification = []
+    langue = []
+    permisconduire = []
 
     # utilisation d'un "set" pour ne pas écrire de doublon dans le json (beaucoup de doublons ici sans l'attribut "offre_id")
     # note : grâce à ces "sets", plus besoin d'utiliser de placeholder pour les placeholders par des NULLs, étant donné qu'on s'assure en amont qu'on n'a pas de doublon.
@@ -286,7 +275,7 @@ def split_large_json(filename):
                         }
                     )
 
-        #### pour "qualiteprofessionnelle"
+        #### pour "qualiteprofessionnelle" / "offre_qualiteprofessionnelle"
         qualitesprofessionnelles = offre.get("qualitesProfessionnelles")  # ⛔ Attention on a une liste de qualités professionnelles dans le json !!!
 
         if qualitesprofessionnelles:  # car on peut avoir dans le json "qualitesProfessionnelles": null
@@ -295,6 +284,17 @@ def split_large_json(filename):
                     q.get("libelle"),
                     q.get("description"),
                 )
+                # pour "offre_qualiteprofessionnelle"
+                offre_qualiteprofessionnelle.append(
+                    {
+                        "offre_id": offre_id,
+                        "qualite_professionnelle_libelle": strip_and_quote(values[0]),
+                        "qualite_professionnelle_description": strip_and_quote(values[1]),
+                        "date_extraction": offre.get("dateExtraction"),
+                    }
+                )
+
+                # pour "qualiteprofessionnelle"
                 if values not in seen_qualiteprofessionnelle:
                     seen_qualiteprofessionnelle.add(values)
                     qualiteprofessionnelle.append(
@@ -372,6 +372,7 @@ def split_large_json(filename):
     write_json_file(SPLIT_JSONS_DIR, "formation.json", formation)
     write_json_file(SPLIT_JSONS_DIR, "offre_formation.json", offre_formation)
     write_json_file(SPLIT_JSONS_DIR, "qualiteprofessionnelle.json", qualiteprofessionnelle)
+    write_json_file(SPLIT_JSONS_DIR, "offre_qualiteprofessionnelle.json", offre_qualiteprofessionnelle)
     write_json_file(SPLIT_JSONS_DIR, "qualification.json", qualification)
     write_json_file(SPLIT_JSONS_DIR, "langue.json", langue)
     write_json_file(SPLIT_JSONS_DIR, "permisconduire.json", permisconduire)
@@ -862,56 +863,61 @@ def insert_into_qualiteprofessionnelle(folder, json_filename):
                 create_and_execute_insert_query(table_name="QualiteProfessionnelle", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
 
 
-def insert_into_offre_qualiteprofessionnelle(folder, json_filename):  # todo : à traiter
+@task(task_id="table_offre_qualiteprofessionnelle")
+def insert_into_offre_qualiteprofessionnelle(folder, json_filename):
     offres = load_json(folder, json_filename)
 
-    for offre in offres:
-        offre_id = offre.get("id")
+    with psycopg2.connect(**DB_PARAM) as conn:
+        with conn.cursor() as cursor:  # pas besoin de faire conn.commit()
+            for offre in offres:
+                qualite_professionnelle_libelle = offre.get("qualite_professionnelle_libelle")
+                qualite_professionnelle_description = offre.get("qualite_professionnelle_description")
 
-        qualites = offre.get("qualitesProfessionnelles")  # ⛔ Attention on a une liste de qualités professionnelles dans le json !!!
-
-        if qualites:  # car on peut avoir dans le json "qualitesProfessionnelles": null
-            for i in range(len(qualites)):
-                qualite_professionnelle_libelle = qualites[i].get("libelle")
-                qualite_professionnelle_description = qualites[i].get("description")
-
-                query = "WHERE qualite_professionnelle_libelle = %s AND qualite_professionnelle_description = %s"
-
-                # Récupérer qualite_professionnelle_id
-                query = """
+                # requête pour récupérer qualite_professionnelle_id
+                query = """--sql
                             SELECT qualite_professionnelle_id
                             FROM QualiteProfessionnelle
                             WHERE
-                                (qualite_professionnelle_libelle IS NULL AND %s IS NULL OR qualite_professionnelle_libelle = %s)
-                                AND (qualite_professionnelle_description IS NULL AND %s IS NULL OR qualite_professionnelle_description = %s)
+                                qualite_professionnelle_libelle = %s
+                                AND qualite_professionnelle_description = %s
                         """
 
-                cursor.execute(query, (qualite_professionnelle_libelle, qualite_professionnelle_libelle, qualite_professionnelle_description, qualite_professionnelle_description))
-                qualite_professionnelle_id = cursor.fetchone()[0]
+                cursor.execute(query, (qualite_professionnelle_libelle, qualite_professionnelle_description))
 
-                fill_db(
-                    db_name="Offre_QualiteProfessionnelle",
-                    attributes_tuple=("offre_id", "qualite_professionnelle_id", "date_extraction"),
-                    on_conflict_string="offre_id | qualite_professionnelle_id | date_extraction",
-                )
+                result = cursor.fetchone()
+                if result:
+                    qualite_professionnelle_id = result[0]
+                else:
+                    logging.error(f"Aucune correspondance pour : {qualite_professionnelle_libelle} | {qualite_professionnelle_description}")
 
-    # On supprime les lignes où 1 offre_id est présente avec 2 qualite_professionnelle_id différents :
-    cursor.execute(f"""--sql
-                -- CTE pour afficher l'offre_id le plus récent s'il y a 1 offre_id avec plusieurs qualite_professionnelle_id
-                WITH latest_offre_id AS (
-                    SELECT DISTINCT ON (offre_id)
-                        offre_id,
-                        qualite_professionnelle_id,
-                        date_extraction
-                    FROM Offre_QualiteProfessionnelle
-                    ORDER BY offre_id, date_extraction DESC
-                )
-                DELETE FROM Offre_QualiteProfessionnelle
-                WHERE (offre_id, qualite_professionnelle_id, date_extraction) NOT IN (
-                    SELECT offre_id, qualite_professionnelle_id, date_extraction
-                    FROM latest_offre_id
-                );
-                """)
+                offre_id = offre.get("offre_id")
+                date_extraction = offre.get("date_extraction")
+
+                values_dict = {
+                    "offre_id": offre_id,
+                    "qualite_professionnelle_id": qualite_professionnelle_id,
+                    "date_extraction": date_extraction,
+                }
+
+                create_and_execute_insert_query(table_name="Offre_QualiteProfessionnelle", row_data=values_dict, conflict_columns=values_dict.keys(), cursor=cursor)
+
+            # On supprime les lignes où 1 offre_id est présente avec 2 qualite_professionnelle_id différents :
+            cursor.execute(f"""--sql
+                               -- CTE pour afficher l'offre_id le plus récent s'il y a 1 offre_id avec plusieurs qualite_professionnelle_id
+                               WITH latest_offre_id AS (
+                                   SELECT DISTINCT ON (offre_id)
+                                       offre_id,
+                                       qualite_professionnelle_id,
+                                       date_extraction
+                                   FROM Offre_QualiteProfessionnelle
+                                   ORDER BY offre_id, date_extraction DESC
+                               )
+                               DELETE FROM Offre_QualiteProfessionnelle
+                               WHERE (offre_id, qualite_professionnelle_id, date_extraction) NOT IN (
+                                   SELECT offre_id, qualite_professionnelle_id, date_extraction
+                                   FROM latest_offre_id
+                               );
+                            """)
 
 
 @task(task_id="table_qualification")
@@ -1123,16 +1129,16 @@ with DAG(
 ) as dag:
     with TaskGroup(group_id="SETUP", tooltip="xxx") as setup:
         json_file_path = check_only_one_json_file_in_folder(AGGREGATED_JSON_DIR)
-        remove = remove_all_split_jsons(SPLIT_JSONS_DIR)
+        remove = remove_all_split_jsons(SPLIT_JSONS_DIR)  # à commenter pour accélérer les tests (il faut que les jsons splittés soient générés)
 
         create_tables = SQLExecuteQueryOperator(
             conn_id=conn_id,
             task_id="create_all_tables_if_not_existing",
             sql=os.path.join("sql", "create_all_tables.sql"),
         )
-        split_json = split_large_json(json_file_path)
+        split_json = split_large_json(json_file_path)  # à commenter pour accélérer les tests (il faut que les jsons splittés soient générés)
 
-        json_file_path >> remove >> [create_tables, split_json]
+        json_file_path >> remove >> [create_tables, split_json]  # à commenter pour accélérer les tests (il faut que les jsons splittés soient générés)
 
     with TaskGroup(group_id="WRITE_TO_DATABASE", tooltip="xxx") as write:
         # with TaskGroup(group_id="INSERT_TO_FACT_TABLES", tooltip="xxx") as fact:
@@ -1143,21 +1149,24 @@ with DAG(
         #         insert_into_localisation(SPLIT_JSONS_DIR, "localisation.json")
         #         insert_into_description_offre(SPLIT_JSONS_DIR, "descriptionoffre.json")
         t100 = insert_into_offreemploi(SPLIT_JSONS_DIR, "offreemploi.json")
+
         t201 = insert_into_competence(SPLIT_JSONS_DIR, "competence.json")
         t202 = insert_into_experience(SPLIT_JSONS_DIR, "experience.json")
         t203 = insert_into_formation(SPLIT_JSONS_DIR, "formation.json")
-        #         insert_into_qualiteprofessionnelle(SPLIT_JSONS_DIR, "qualiteprofessionnelle.json")
+        t204 = insert_into_qualiteprofessionnelle(SPLIT_JSONS_DIR, "qualiteprofessionnelle.json")
         #         insert_into_qualification(SPLIT_JSONS_DIR, "qualification.json")
         #         insert_into_langue(SPLIT_JSONS_DIR, "langue.json")
         #         insert_into_permisconduire(SPLIT_JSONS_DIR, "permisconduire.json")
         t301 = insert_into_offre_competence(SPLIT_JSONS_DIR, "offre_competence.json")
         t302 = insert_into_offre_experience(SPLIT_JSONS_DIR, "offre_experience.json")
         t303 = insert_into_offre_formation(SPLIT_JSONS_DIR, "offre_formation.json")
+        t304 = insert_into_offre_qualiteprofessionnelle(SPLIT_JSONS_DIR, "offre_qualiteprofessionnelle.json")
 
-        t100 >> [t201, t202, t203]
+        t100 >> [t201, t202, t203, t204]
         t201 >> t301
         t202 >> t302
         t203 >> t303
+        t204 >> t304
 
     # fact >> dimensions >> junctions
     # dimensions >> junctions
