@@ -1234,11 +1234,6 @@ with DAG(dag_id="DAG_2_WRITE_TO_DATABASE", tags=["project"]):
         Deuxième set de transformations par requête SQL
         (le premier set de transformations étant fait côté Python dans le DAG 1)
         """
-        t0 = SQLExecuteQueryOperator(
-            conn_id=conn_id,
-            task_id="add_columns",
-            sql=os.path.join("sql", "transformation_0_add_columns.sql"),
-        )
 
         t1 = SQLExecuteQueryOperator(
             conn_id=conn_id,
@@ -1270,6 +1265,6 @@ with DAG(dag_id="DAG_2_WRITE_TO_DATABASE", tags=["project"]):
             sql=os.path.join("sql", "transformation_5_update__table_descriptionoffre__column__liste_mots_cles.sql"),
         )
 
-        t0 >> [t1, t2, t3, t4] >> t5
+        [t1, t2, t3, t4] >> t5
 
     setup >> without_junction >> with_junction >> transformations
