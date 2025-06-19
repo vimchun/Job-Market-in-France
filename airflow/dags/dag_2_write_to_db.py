@@ -1205,28 +1205,71 @@ with DAG(dag_id="DAG_2_WRITE_TO_DATABASE", tags=["project"]):
 
     with TaskGroup(group_id="INSERT_INTO_TABLES_WITH_JUNCTION", tooltip="xxx") as with_junction:
         """ "INSERT INTO" pour les tables qui ont un lieu avec une table de liaison : tables de dimension d'abord, tables de liaison après """
-        t201 = insert_into_competence(SPLIT_JSONS_DIR, "competence.json")
-        t202 = insert_into_experience(SPLIT_JSONS_DIR, "experience.json")
-        t203 = insert_into_formation(SPLIT_JSONS_DIR, "formation.json")
-        t204 = insert_into_qualiteprofessionnelle(SPLIT_JSONS_DIR, "qualiteprofessionnelle.json")
-        t205 = insert_into_qualification(SPLIT_JSONS_DIR, "qualification.json")
-        t206 = insert_into_langue(SPLIT_JSONS_DIR, "langue.json")
-        t207 = insert_into_permisconduire(SPLIT_JSONS_DIR, "permisconduire.json")
+        i1 = insert_into_competence(SPLIT_JSONS_DIR, "competence.json")
+        i2 = insert_into_experience(SPLIT_JSONS_DIR, "experience.json")
+        i3 = insert_into_formation(SPLIT_JSONS_DIR, "formation.json")
+        i4 = insert_into_qualiteprofessionnelle(SPLIT_JSONS_DIR, "qualiteprofessionnelle.json")
+        i5 = insert_into_qualification(SPLIT_JSONS_DIR, "qualification.json")
+        i6 = insert_into_langue(SPLIT_JSONS_DIR, "langue.json")
+        i7 = insert_into_permisconduire(SPLIT_JSONS_DIR, "permisconduire.json")
 
-        t301 = insert_into_offre_competence(SPLIT_JSONS_DIR, "offre_competence.json")
-        t302 = insert_into_offre_experience(SPLIT_JSONS_DIR, "offre_experience.json")
-        t303 = insert_into_offre_formation(SPLIT_JSONS_DIR, "offre_formation.json")
-        t304 = insert_into_offre_qualiteprofessionnelle(SPLIT_JSONS_DIR, "offre_qualiteprofessionnelle.json")
-        t305 = insert_into_offre_qualification(SPLIT_JSONS_DIR, "offre_qualification.json")
-        t306 = insert_into_offre_langue(SPLIT_JSONS_DIR, "offre_langue.json")
-        t307 = insert_into_offre_permisconduire(SPLIT_JSONS_DIR, "offre_permisconduire.json")
+        j1 = insert_into_offre_competence(SPLIT_JSONS_DIR, "offre_competence.json")
+        j2 = insert_into_offre_experience(SPLIT_JSONS_DIR, "offre_experience.json")
+        j3 = insert_into_offre_formation(SPLIT_JSONS_DIR, "offre_formation.json")
+        j4 = insert_into_offre_qualiteprofessionnelle(SPLIT_JSONS_DIR, "offre_qualiteprofessionnelle.json")
+        j5 = insert_into_offre_qualification(SPLIT_JSONS_DIR, "offre_qualification.json")
+        j6 = insert_into_offre_langue(SPLIT_JSONS_DIR, "offre_langue.json")
+        j7 = insert_into_offre_permisconduire(SPLIT_JSONS_DIR, "offre_permisconduire.json")
 
-        t201 >> t301
-        t202 >> t302
-        t203 >> t303
-        t204 >> t304
-        t205 >> t305
-        t206 >> t306
-        t207 >> t307
+        i1 >> j1
+        i2 >> j2
+        i3 >> j3
+        i4 >> j4
+        i5 >> j5
+        i6 >> j6
+        i7 >> j7
 
-    setup >> without_junction >> with_junction
+    with TaskGroup(group_id="TRANSFORMATIONS") as transformations:
+        """
+        Deuxième set de transformations par requête SQL
+        (le premier set de transformations étant fait côté Python dans le DAG 1)
+        """
+        t0 = SQLExecuteQueryOperator(
+            conn_id=conn_id,
+            task_id="add_columns",
+            sql=os.path.join("sql", "transformation_0_add_columns.sql"),
+        )
+
+        t1 = SQLExecuteQueryOperator(
+            conn_id=conn_id,
+            task_id="update_descriptionoffre_metier_data_DE",
+            sql=os.path.join("sql", "transformation_1_update__table_descriptionoffre__column__metier_data__DE.sql"),
+        )
+
+        t2 = SQLExecuteQueryOperator(
+            conn_id=conn_id,
+            task_id="update_descriptionoffre_metier_data_DA",
+            sql=os.path.join("sql", "transformation_2_update__table_descriptionoffre__column__metier_data__DA.sql"),
+        )
+
+        t3 = SQLExecuteQueryOperator(
+            conn_id=conn_id,
+            task_id="update_descriptionoffre_metier_data_DS",
+            sql=os.path.join("sql", "transformation_3_update__table_descriptionoffre__column__metier_data__DS.sql"),
+        )
+
+        t4 = SQLExecuteQueryOperator(
+            conn_id=conn_id,
+            task_id="update_contrat_salaires_min_max",
+            sql=os.path.join("sql", "transformation_4_update__table_contrat__columns__salaire_min__salaire_max.sql"),
+        )
+
+        t5 = SQLExecuteQueryOperator(
+            conn_id=conn_id,
+            task_id="update_descriptionoffre_column_liste_mots_cles",
+            sql=os.path.join("sql", "transformation_5_update__table_descriptionoffre__column__liste_mots_cles.sql"),
+        )
+
+        t0 >> [t1, t2, t3, t4] >> t5
+
+    setup >> without_junction >> with_junction >> transformations
