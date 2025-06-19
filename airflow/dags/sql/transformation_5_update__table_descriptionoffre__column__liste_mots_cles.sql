@@ -2,6 +2,9 @@
 -- UPDATE DescriptionOffre
 -- SET liste_mots_cles = NULL;
 --
+ALTER TABLE descriptionoffre -- liste
+    ADD COLUMN IF NOT EXISTS liste_mots_cles TEXT[];
+
 WITH liste_mots_cles AS (
     SELECT
         UNNEST(ARRAY[

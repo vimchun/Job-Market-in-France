@@ -6,6 +6,9 @@
 --     descriptionoffre
 ------------
 -- Code pour mettre à jour les offres DA (attribut "metier_data")
+ALTER TABLE descriptionoffre
+    ADD COLUMN IF NOT EXISTS metier_data VARCHAR(2);
+
 UPDATE
     descriptionoffre
 SET

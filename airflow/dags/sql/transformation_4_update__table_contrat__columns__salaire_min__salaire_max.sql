@@ -5,6 +5,10 @@
 --     SET
 --         salaire_min = NULL
 --         , salaire_max = NULL;
+ALTER TABLE contrat
+    ADD COLUMN IF NOT EXISTS salaire_min INTEGER ,
+    ADD COLUMN IF NOT EXISTS salaire_max INTEGER;
+
 WITH constante (
     seuil_salaire_mensuel_min
     , seuil_salaire_mensuel_max
