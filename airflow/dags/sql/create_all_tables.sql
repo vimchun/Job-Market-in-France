@@ -1,25 +1,6 @@
 -- Suppression avec CASCADE pour prendre en compte les clés étrangères
-DROP TABLE IF EXISTS  -- todo : à supprimer à la fin du dev
-    Offre_Competence,
-    Offre_Experience,
-    Offre_Formation,
-    Offre_QualiteProfessionnelle,
-    Offre_Qualification,
-    Offre_Langue,
-    Offre_PermisConduire,
-    PermisConduire,
-    Langue,
-    Qualification,
-    QualiteProfessionnelle,
-    Formation,
-    Experience,
-    Competence,
-    Localisation,
-    DescriptionOffre,
-    Entreprise,
-    Contrat,
-    OffreEmploi CASCADE;
-
+-- todo : à supprimer à la fin du dev
+DROP TABLE IF EXISTS Offre_Competence , Offre_Experience , Offre_Formation , Offre_QualiteProfessionnelle , Offre_Qualification , Offre_Langue , Offre_PermisConduire , PermisConduire , Langue , Qualification , QualiteProfessionnelle , Formation , Experience , Competence , Localisation , DescriptionOffre , Entreprise , Contrat , OffreEmploi CASCADE;
 
 -------------------
 -- table de fait --
@@ -110,7 +91,7 @@ CREATE TABLE IF NOT EXISTS Offre_Competence (
     offre_id VARCHAR(7) NOT NULL
     , competence_id INTEGER NOT NULL
     , date_extraction DATE
-    , PRIMARY KEY (offre_id , competence_id, date_extraction)
+    , PRIMARY KEY (offre_id , competence_id , date_extraction)
     , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id) ON DELETE CASCADE
     , FOREIGN KEY (competence_id) REFERENCES Competence (competence_id) ON DELETE CASCADE
 );
@@ -130,7 +111,7 @@ CREATE TABLE IF NOT EXISTS Offre_Experience (
     offre_id VARCHAR(7) NOT NULL
     , experience_id INTEGER NOT NULL
     , date_extraction DATE
-    , PRIMARY KEY (offre_id , experience_id, date_extraction)
+    , PRIMARY KEY (offre_id , experience_id , date_extraction)
     , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id) ON DELETE CASCADE
     , FOREIGN KEY (experience_id) REFERENCES Experience (experience_id) ON DELETE CASCADE
 );
@@ -152,7 +133,7 @@ CREATE TABLE IF NOT EXISTS Offre_Formation (
     offre_id VARCHAR(7) NOT NULL
     , formation_id INTEGER NOT NULL
     , date_extraction DATE
-    , PRIMARY KEY (offre_id , formation_id, date_extraction)
+    , PRIMARY KEY (offre_id , formation_id , date_extraction)
     , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id) ON DELETE CASCADE
     , FOREIGN KEY (formation_id) REFERENCES Formation (formation_id) ON DELETE CASCADE
 );
@@ -171,7 +152,7 @@ CREATE TABLE IF NOT EXISTS Offre_QualiteProfessionnelle (
     offre_id VARCHAR(7) NOT NULL
     , qualite_professionnelle_id INTEGER NOT NULL
     , date_extraction DATE
-    , PRIMARY KEY (offre_id , qualite_professionnelle_id, date_extraction)
+    , PRIMARY KEY (offre_id , qualite_professionnelle_id , date_extraction)
     , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id) ON DELETE CASCADE
     , FOREIGN KEY (qualite_professionnelle_id) REFERENCES QualiteProfessionnelle (qualite_professionnelle_id) ON DELETE CASCADE
 );
@@ -189,7 +170,7 @@ CREATE TABLE IF NOT EXISTS Offre_Qualification (
     offre_id VARCHAR(7) NOT NULL
     , qualification_code INTEGER NOT NULL
     , date_extraction DATE
-    , PRIMARY KEY (offre_id , qualification_code, date_extraction)
+    , PRIMARY KEY (offre_id , qualification_code , date_extraction)
     , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id) ON DELETE CASCADE
     , FOREIGN KEY (qualification_code) REFERENCES Qualification (qualification_code) ON DELETE CASCADE
 );
@@ -208,7 +189,7 @@ CREATE TABLE IF NOT EXISTS Offre_Langue (
     offre_id VARCHAR(7) NOT NULL
     , langue_id INTEGER NOT NULL
     , date_extraction DATE
-    , PRIMARY KEY (offre_id , langue_id, date_extraction)
+    , PRIMARY KEY (offre_id , langue_id , date_extraction)
     , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id) ON DELETE CASCADE
     , FOREIGN KEY (langue_id) REFERENCES Langue (langue_id) ON DELETE CASCADE
 );
@@ -227,7 +208,7 @@ CREATE TABLE IF NOT EXISTS Offre_PermisConduire (
     offre_id VARCHAR(7) NOT NULL
     , permis_id INTEGER NOT NULL
     , date_extraction DATE
-    , PRIMARY KEY (offre_id , permis_id, date_extraction)
+    , PRIMARY KEY (offre_id , permis_id , date_extraction)
     , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id) ON DELETE CASCADE
     , FOREIGN KEY (permis_id) REFERENCES PermisConduire (permis_id) ON DELETE CASCADE
 );
