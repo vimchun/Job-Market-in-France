@@ -1,5 +1,26 @@
 #!/bin/bash
 
+# Script d'automatisation Docker pour Airflow
+#
+# Exécute les commandes suivantes :
+#  - docker compose down
+#  - docker compose up airflow-init
+#  - docker compose up
+#
+#
+# Accepte 2 paramètres :
+#
+#   - $1 : supprimer les volumes (true|false) lors du "docker compose down"
+#          (false par défaut)
+#          ⚠️ efface les données dont la base 'francetravail'
+#
+#   - $2 : rebuild de l'image apache/airflow:3.0.x défini dans le Dockerfile (true|false) lors du "docker compose up"
+#          (false par défaut)
+#
+#
+# Exemple d'exécution :
+#   ./scripts/docker_compose_down_up.sh true true
+
 #### Pour la coloration des prints
 
 GREEN='\e[32m'
@@ -30,13 +51,12 @@ echo -e "${NC}"
 #### Exécution de "docker compose down"
 echo -e "${GREEN}\n\n== Exécution de \"docker compose down\" ${NC}"
 
-echo "Arrêt et suppression de tous les conteneurs en exécution ou pas :"
-# on arrête puis supprime tous les conteneurs en exécution et en arrêt pour que la future
-#  commande "docker compose up airflow-init" s'exécute sans problème
-# docker stop $(docker ps -aq)
-# docker rm $(docker ps -aq) # la commande $() renvoie la liste des container ids
-docker ps -aq | xargs -r docker stop
-docker ps -aq | xargs -r docker rm
+#### pas besoin si on ne travaille que sur une version ? (à vérifier pour les prochaines versions d'airflow)
+## echo "Arrêt et suppression de tous les conteneurs en exécution ou pas :"
+## # on arrête puis supprime tous les conteneurs en exécution et en arrêt pour que la future
+## #  commande "docker compose up airflow-init" s'exécute sans problème
+## docker ps -aq | xargs -r docker stop
+## docker ps -aq | xargs -r docker rm
 
 if [ "$REMOVE_VOLUMES" = true ]; then
     echo "docker compose down avec remove volume"
