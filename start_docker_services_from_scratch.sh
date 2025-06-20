@@ -1,33 +1,5 @@
 #!/bin/bash
 
-# notes :
-#
-#  Il y a 3 paramètres :
-#
-#    - param 1 : La version => les valeurs possibles sont "2.11.0" ou "3.0.1" ("2.11.0" par défaut)
-#
-#    - param 2 : Un booléen => si "true", pour supprimer les volumes lors du "docker compose down" ("false" par défaut)
-#                Si on passe d'une version à une autre, il vaut mieux activer ce paramètre (conflit possible).
-#
-#    - param 3 : Un booléen => si "true", pour activer l'option "--build" lors du "docker compose up" ("false" par défaut)
-#
-#
-#  - pour lancer le script :
-#
-#    ./script.sh 2.11.0 true    # pour Airflow 2.11.0 avec rebuild
-#    ./script.sh 3.0.1          # pour Airflow 3.0.1 sans rebuild
-#
-#  - pour investiguer : "docker compose logs -f"
-
-# On veut pouvoir installer via "docker compose" soit la version 2.11.0 ou la version 3.0.1 d'Airflow
-#  (sachant que la 3.0.1 est relativement récente et qu'elle peut poser problème, par exemple : https://stackoverflow.com/q/79659430/25362602)
-#
-# On utilise un fichier ".current_airflow_version" pour déclarer la version actuellement en cours d'utilisation.
-# Ce fichier est nécessaire car lorsqu'on voudra faire un "docker compose down", il faudra qu'on sache quelle version est actuellement déployée
-#  pour arrêter les services associées (les services entre les versions Airflow citées ne sont pas les mêmes).
-# Ainsi, si la version 2.11.0 est actuellement installée, mais qu'on veut passer à la 3.0.1, on fera "docker compose -p [nom_projet_2_11_0] down",
-#  avant de faire "docker compose -p [nom_projet_3_0_1] up".
-
 #### Pour la coloration des prints
 
 GREEN='\e[32m'
@@ -39,107 +11,54 @@ CYAN='\e[36m'
 WHITE='\e[37m'
 NC='\e[0m' # Reset color
 
-#### Les 3 paramètres avec une valeur par défaut
+#### Variables
+COMPOSE_FILE="docker-compose.yml"
 
-TARGET_VERSION=${1:-"2.11.0"}
-REMOVE_VOLUMES=${2:-false}
-BUILD_IMAGES=${3:-false}
+#### Les 2 paramètres avec une valeur par défaut
 
-#### Si le première argument n'est pas "2.11.0" ou "3.0.1", on arrête le script
+REMOVE_VOLUMES=${1:-false} # attention, ça supprime les données, dont la db francetravail
+BUILD_IMAGES=${2:-false}
 
-if [[ "$TARGET_VERSION" != "2.11.0" && "$TARGET_VERSION" != "3.0.1" ]]; then
-    echo -e "\n\e[31mVersion cible non supportée : $TARGET_VERSION\e[0m"
-    echo "Versions supportées : 2.11.0, 3.0.1"
-    exit 1
-fi
-
-#### Récupérer la version d'airflow installée
-
-if [ -f .current_airflow_version ]; then # "-f" pour tester si le fichier existe
-    CURRENT_VERSION=$(cat .current_airflow_version)
-else
-    CURRENT_VERSION=""
-fi
-
-#### Définition des projets docker compose en fonction de la version
-
-declare -A PROJECTS # comme une déclaration de tableau python
-PROJECTS["2.11.0"]="airflow2110"
-PROJECTS["3.0.1"]="airflow301"
-
-CURRENT_PROJECT=${PROJECTS[$CURRENT_VERSION]} # utilisé pour le "docker compose down"
-TARGET_PROJECT=${PROJECTS[$TARGET_VERSION]}   # utilisé pour le "docker compose up"
-
-# #### extra tasks
-
-# rm -rf airflow/logs/*
-
-#### Exécution de "docker compose down" (avec l'option --project-name)
-
-echo -e "${GREEN}\n\n== Exécution de \"docker compose down\" ${NC}"
-
-if [ -n "$CURRENT_PROJECT" ]; then # "-n" pour tester si le string n'est pas vide
-    echo "Arrêt et suppression de tous les conteneurs en exécution ou pas :"
-    # on arrête puis supprime tous les conteneurs en exécution et en arrêt pour que la future
-    #  commande "docker compose up airflow-init" s'exécute sans problème
-    docker stop $(docker ps -aq) && docker rm $(docker ps -aq) # la commande $() renvoie la liste des container ids
-
-    echo "Arrêt de la version active ($CURRENT_VERSION) avec projet Docker Compose $CURRENT_PROJECT"
-
-    if [ "$REMOVE_VOLUMES" = true ]; then
-        echo "docker compose down avec remove volume"
-        docker compose -p "$CURRENT_PROJECT" down --remove-orphans -v --rmi all
-    else
-        docker compose -p "$CURRENT_PROJECT" down --remove-orphans --rmi all
-    fi
-    # "-p" utilisé donc pas besoin de spécifier "-f", si le projet a déjà été lancé auparavant avec un nom de projet
-    # "-v" car la réinitialisation de la db Airflow peut permettre d'éviter certains pbs au setup
-    # "--rmi all" pour supprimer toutes les images utilisées par les services du fichier docker-compose.yml
-
-else
-    echo "Aucune version active détectée."
-fi
-
-#### Construction du "$COMPOSE_FILE" avant exécution de 'docker compose up'
-
-if [[ "$TARGET_VERSION" == "2.11.0" ]]; then
-    COMPOSE_FILE="docker-compose--airflow-2-11-0.yml"
-    if [ -f .env ]; then # Il ne faut pas de fichier .env dans ce cas
-        echo "Suppression du fichier .env (inutile pour Airflow 2.11.0)"
-        rm .env
-    fi
-elif [[ "$TARGET_VERSION" == "3.0.1" ]]; then
-    COMPOSE_FILE="docker-compose--airflow-3-0-1.yml"
-    echo -e "AIRFLOW_UID=$(id -u)" >.env # Le fichier .env est nécéssaire dans ce cas
-else
-    echo "Version Airflow non supportée : $TARGET_VERSION"
-    exit 1
-fi
-
-#### Print des variables
-
-echo -e "${GREEN}\n\n== Print des variables ${NC}"
+echo -e "${GREEN}\n\n== Print des variables et paramètres ${NC}"
 
 echo -e "${MAGENTA}"
-echo -e "CURRENT_VERSION = ${CURRENT_VERSION}"
-echo -e "TARGET_VERSION = ${TARGET_VERSION}   [param 1]"
-echo -e ""
-echo -e "CURRENT_PROJECT = ${CURRENT_PROJECT}"
-echo -e "TARGET_PROJECT = ${TARGET_PROJECT}"
-echo -e ""
 echo -e "COMPOSE_FILE = ${COMPOSE_FILE}"
-echo -e "BUILD_IMAGES = ${BUILD_IMAGES}   [param 2]"
+echo -e "[param 1] REMOVE_VOLUMES = ${REMOVE_VOLUMES}"
+echo -e "[param 2] BUILD_IMAGES = ${BUILD_IMAGES}"
 echo -e "${NC}"
+
+#### Exécution de "docker compose down"
+echo -e "${GREEN}\n\n== Exécution de \"docker compose down\" ${NC}"
+
+echo "Arrêt et suppression de tous les conteneurs en exécution ou pas :"
+# on arrête puis supprime tous les conteneurs en exécution et en arrêt pour que la future
+#  commande "docker compose up airflow-init" s'exécute sans problème
+# docker stop $(docker ps -aq)
+# docker rm $(docker ps -aq) # la commande $() renvoie la liste des container ids
+docker ps -aq | xargs -r docker stop
+docker ps -aq | xargs -r docker rm
+
+if [ "$REMOVE_VOLUMES" = true ]; then
+    echo "docker compose down avec remove volume"
+    docker compose -f "$COMPOSE_FILE" down --remove-orphans -v --rmi all
+else
+    echo "docker compose down sans remove volume"
+    docker compose -f "$COMPOSE_FILE" down --remove-orphans --rmi all
+fi
+# "-v" car la réinitialisation de la db Airflow peut permettre d'éviter certains pbs au setup
+# "--rmi all" pour supprimer toutes les images utilisées par les services du fichier docker-compose.yml
+
+echo -e "AIRFLOW_UID=$(id -u)" >.env # Le fichier .env est nécéssaire dans ce cas
 
 #### Exécution de "docker compose up airflow-init"
 
 echo -e "${GREEN}\n\n== Exécution de \"docker compose up airflow-init\" ${NC}"
 
-docker compose -p "$TARGET_PROJECT" -f "$COMPOSE_FILE" up airflow-init # doit se terminer par "airflow-init exited with code 0"
-if [ $? -eq 0 ]; then
-    echo "Initialisation réussie."
+docker compose -f "$COMPOSE_FILE" up airflow-init
+if [ $? -eq 0 ]; then # doit se terminer par "airflow-init exited with code 0"
+    echo "Initialisation réussie"
 else
-    echo "Échec de l'initialisation."
+    echo "Échec de l'initialisation"
     exit 1
 fi
 
@@ -148,13 +67,10 @@ fi
 echo -e "${GREEN}\n\n== Exécution de \"docker compose up\" ${NC}"
 
 if [ "$BUILD_IMAGES" = true ]; then
-    docker compose -p "$TARGET_PROJECT" -f "$COMPOSE_FILE" up --build -d # si besoin de reconstruire l'image (si nouvelle lib dans le requirement.txt par exemple)
+    docker compose -f "$COMPOSE_FILE" up --build -d # si besoin de reconstruire l'image (si nouvelle lib dans le requirement.txt par exemple)
 else
-    docker compose -p "$TARGET_PROJECT" -f "$COMPOSE_FILE" up -d
+    docker compose -f "$COMPOSE_FILE" up -d
 fi
-
-# Enregistrer la version active
-echo "$TARGET_VERSION" >.current_airflow_version
 
 #### Attente jusqu'à ce que tous les conteneurs soient healthy
 
