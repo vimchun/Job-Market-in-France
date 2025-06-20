@@ -9,9 +9,9 @@ from airflow.decorators import task
 from airflow.providers.common.sql.operators.sql import SQLExecuteQueryOperator
 from airflow.utils.task_group import TaskGroup
 
-conn_id = "my_pg"  # nom du "Connection ID" défini dans la GUI d'Airflow
+conn_id = "ma_connexion"  # nom du "Connection ID" défini dans la GUI d'Airflow
 
-DB_PARAM = {"database": "francetravail", "host": "postgres_3_0_1", "user": "mhh", "password": "mhh", "port": 5432}  # note : "host" != "localhost"
+DB_PARAM = {"database": "francetravail", "host": "postgres", "user": "mhh", "password": "mhh", "port": 5432}  # note : "host" != "localhost"
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUTS_DIR = os.path.join(CURRENT_DIR, "..", "data", "outputs")
