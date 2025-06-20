@@ -58,32 +58,32 @@ Développements et tests sous :
 
 ## Getting started
 
-Clone
+- Clone le projet.
 
-Lancer script : `./scripts/docker_compose_down_up.sh`
-
-Définir la connexion dans la gui (todo : peut être fait par script ?)
-https://airflow.apache.org/docs/apache-airflow/stable/cli-and-env-variables-ref.html#connections
-https://airflow.apache.org/docs/apache-airflow/2.0.1/howto/connection.html#creating-a-connection-from-the-cli
+- Mettre en place la configuration docker :
 
 
-(fait en 3.0.1)
+```bash
+  # Pour initialiser Airflow et démarrer les services docker :
+  #  (peut prendre du temps à avoir les services fonctionnels)
+  ./scripts/docker_compose_down_up.sh
 
-Pour le `dag_id="dag_2_write_to_db"`, il faut définir dans la GUI une connexion Postgres, comme suit :
 
-`Admin` > `Connections` > `Add Connection` :
+  # Pour redémarrer tous les services
+  ./scripts/restart_all_docker_services.sh
+  ```
 
-  - Connection ID     : ma_connexion
-  - Connection Type   : postgres
-  - Standard Fieds
-    - Host            : postgres  (note : c'est le nom du conteneur du service postgres, voir le fichier `docker-compose.yml`)
-    - Login           : mhh
-    - Password        : mhh
-    - Port            : 5432
-    - Database        : francetravail
+- Créer la connexion `postgres` :
 
+```bash
+  ./scripts/create_postgres_connection_on_airflow.sh
+  ```
+
+- On pourra vérifier que la connexion est bien crée via la GUI comme montré sur le screenshot suivant :
 
   ![airflow_edit_connection](readme_files/screenshots/airflow_gui_edit_connection.png)
+
+   (si la connexion n'est pas bien définie, alors le `DAG 2` posera problème)
 
 
 ## Arborescence du projet
