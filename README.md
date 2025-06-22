@@ -53,7 +53,7 @@ todo : à faire fin juillet pour la soutenance
 Développements et tests sous :
   - Windows 11 + WSL + Docker Desktop
   - Environnement virtuel, Python 3.12.9 (04/02/2025)
-  - Airflow 3.0.1 (12/05/2025), https://github.com/apache/airflow/releases
+  - Airflow 3.0.2 (xx/xx/2025), https://github.com/apache/airflow/releases
 
 
 ## Getting started
@@ -79,7 +79,7 @@ Développements et tests sous :
   ./scripts/create_postgres_connection_on_airflow.sh
   ```
 
-- On pourra vérifier que la connexion est bien crée via la GUI comme montré sur le screenshot suivant :
+- On pourra vérifier que la connexion est bien créée via la GUI comme montré sur le screenshot suivant :
 
   ![airflow_edit_connection](readme_files/screenshots/airflow_gui_edit_connection.png)
 
@@ -133,36 +133,41 @@ Notes : Il aurait été mieux de créer une connexion depuis un DAG, pour ne pas
     => Erreur rencontrée : `sqlalchemy.exc.ArgumentError: Could not parse SQLAlchemy URL from string 'airflow-db-not-allowed:///'`
 
 
-## Arborescence du projet
+## Arborescence du projet sans la partie liée à la conf Docker
 
-todo : faire à la fin du projet
-
-
-
-## Configuration Docker
-
-Le fichier `docker-compose.yml` décrit les différents services déployés : `postgres`, `fastapi`, `redis`, `airflow-apiserver`, `airflow-scheduler`, `airflow-dag-processor`, `airflow-worker`, `airflow-triggerer`, `airflow-init`, `airflow-cli`, `flower`.
-
-
-- Arborescence avec les éléments liés à la dockerisation :
+todo : revoir à la fin du projet
 
   ```bash
   .
-  ├── airflow/                                        # application airflow
+  ├── airflow/                                        # application Airflow
   │   ├── config                                      # contient le fichier fichier de conf "airflow.cfg"
   │   ├── dags                                        # contient "DAG 1" et "DAG 2"
   │   ├── data
   │   │   ├── outputs                                 # contient les jsons récupérés par API, et le json qui les aggrège avec les transformations Python
   │   │   └── resources                               # contient les différents fichiers nécessaires au lancement du DAG 1
   │   ├── logs                                        # contient les logs des DAGs
-  │   ├── plugins                                     # contient les plugins (dossier non utilisé pour le moment)
-  │   ├── requirements.txt                            # dépendances nécessaires pour le Dockerfile
-  │   └── Dockerfile                                  # construction du conteneur Airflow
+  │   └── plugins                                     # contient les plugins (dossier non utilisé pour le moment)
   │  
   ├── fastapi/                                        # application FastAPI
   │   ├── sql_requests                                # requêtes SQL utilisées par le script fastapi
   │   ├── locations_information                       # point de montage (volume)  # todo : à renommer en "locations_information_mount" ?
-  │   ├── main.py                                     # script fastapi
+  │   └── main.py                                     # script fastapi
+  ```
+
+
+## Configuration Docker
+
+Le fichier `docker-compose.yml` décrit les différents services déployés : `postgres`, `fastapi`, `redis`, `airflow-apiserver`, `airflow-scheduler`, `airflow-dag-processor`, `airflow-worker`, `airflow-triggerer`, `airflow-init`, `airflow-cli`, `flower`.
+
+- Arborescence avec les éléments liés à la dockerisation :
+
+  ```bash
+  .
+  ├── airflow/                                        # application Airflow
+  │   ├── requirements.txt                            # dépendances nécessaires pour le Dockerfile
+  │   └── Dockerfile                                  # construction du conteneur Airflow
+  │  
+  ├── fastapi/                                        # application FastAPI
   │   ├── requirements.txt                            # dépendances nécessaires pour le Dockerfile
   │   └── Dockerfile                                  # construction du conteneur FastAPI
   │  
@@ -189,9 +194,9 @@ Le fichier `docker-compose.yml` décrit les différents services déployés : `p
 ## Avant Airflow
 
 Avant d'appliquer Airflow au projet, 2 scripts python étaient nécessaires.
-Pour résumer et simplifier ce qu'il faisait ("simplifier" ici car ces scripts ont été remplacés par des DAGs qu'on détaillera après) :
-  - le premier récupérait les données de France Travail, faisait des transformations, et chargeait les offres d'emploi dans un json
-  - le second crée lit le json puis écrit les offres d'emploi dans la base de données, et effectue un deuxième lot de transformations à partir de fichier sql.
+Pour résumer et simplifier ce qu'ils faisaient ("simplifier" ici car ces scripts ont été remplacés par des DAGs qu'on détaillera après) :
+  - Le premier récupérait les données de France Travail, faisait des transformations, et chargeait les offres d'emploi dans un json.
+  - Le second lisait le json puis écrivait les offres d'emploi dans la base de données, et effectuait un deuxième lot de transformations à partir de fichier sql.
 
   ![screenshot du workflow](readme_files/screenshots/workflow.png)
 
@@ -200,7 +205,7 @@ Reprendre ces scripts pour avoir Airflow dans le projet a été bénéfique :
   - amélioration des fonctions définis
   - code plus compréhensible : factorisation de code, changement des noms de variables, revue des commentaires
   - meilleure façon d'écrire les offres d'emploi dans le json
-  - meilleure gestion des cas d'erreur, et gestion d'erreur auquel on n'était pas confronté auparavant (exemple avec la parallélisation des requêtes et les erreurs 429 `too much requests`)
+  - meilleure gestion des cas d'erreur, et gestion d'erreur auquel on n'était pas confronté auparavant (exemple avec la parallélisation des requêtes et les erreurs 429 `Too much requests`)
   - simplification des requêtes sql
 
 
@@ -211,12 +216,10 @@ Les bénéfices d'Airflow sur ce projet sont multiples et évidents :
   - avoir une vision claire du workflow complet à travers la vue Graph du DAG
   - voir quelle fonction pose problème d'un coup d'oeil en cas d'échec et voir les logs associés à la tâche en échec
   - lancer le workflow complet à la fréquence désirée (par exemple, tous les jours à 20h)
-  - et surtout paralléliser certaines tâches, donc gain de temps
-
-Ici, ce dernier point permet un gain de temps considérable :
-  - requêtes API pour récupérér les offres d'emploi pour x métiers en parallèle,
-  - requêtes SQL pour remplir x tables en parallèle,
-  - requêtes SQL pour effectuer x transformation.
+  - et surtout obtenir un gain de temps avec la parallélisation de certaines tâches :
+    - requêtes API pour récupérér les offres d'emploi pour x métiers en parallèle,
+    - requêtes SQL pour remplir x tables en parallèle,
+    - requêtes SQL pour effectuer x transformations en parallèle.
 
 
 ## Version utilisée
