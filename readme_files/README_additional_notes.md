@@ -1,0 +1,476 @@
+# Transformations des données en amont
+
+## Transformations des données en amont (côté Python)
+
+### Conservation des offres en France Métropolitaine uniquement
+
+- On va dans ce projet se focaliser sur les offres en France Métropolitaine.
+
+  - Pour supprimer les offres en dehors de la métropôle, on se basera sur le numéro du département, qui est à 3 chiffres pour les DOM-TOM, et égales à `2A` ou `2B` pour la Corse.
+
+    - Dans ce cas, on supprimera les offres en DOM-TOM et en Corse avec la regex `^(\d{3}|2(A|B))\s-\s`.
+
+  - L'attribut `libelle` donne l'information lorsque qu'une offre se retrouve dans le `cas_3` (voir partie ci-dessous), c'est-à-dire lorsque `libelle` est de la forme "<département> - <nom_du_département>", par exemple : `971 - Guadeloupe`, `974 - Réunion`, `2A - Corse du Sud`, `2B - BASTIA`.
+
+
+### Ajout des attributs de localisation des offres (noms et codes des villes, départements, départements et régions)
+
+- Le screenshot suivant (issu du fichier `step_1__location_cases.xlsx`) résume la partie décrite ci-dessous :
+
+  ![cas avec les attributs de localisation](screenshots/location_attributes_cases.png)
+
+
+
+- On a dû générer le fichier `api_extract__transform/locations_information/code_name__city_department_region.csv` pour pouvoir catégoriser les cas décrits ci-après, et ainsi récupérer les attributs `nom_ville`, `nom_commune`, `code_departement`, `nom_departement`, `code_region`, `nom_region`.
+
+    - [todo: écrire le .py + préciser le nom du script]
+
+  - Ce fichier csv :
+    - a été généré à partir de 4 fichiers récupérés sur le site de l'insee et sur data.gouv :
+
+      - `v_commune_2024.csv`, `v_departement_2024.csv` et `v_region_2024.csv` (https://www.insee.fr/fr/information/7766585)
+      - `cities.csv` (https://www.data.gouv.fr/fr/datasets/villes-de-france/)
+
+    - donne le mapping entre :
+
+      - `code_insee` et `nom_commune`
+      - `code_postal` et `nom_ville`
+      - `code_departement` et `nom_departement`
+      - `code_region` et `nom_region`
+
+
+- Pour les offres récupérées, l'attribut `lieuTravail` peut renseigner les champs suivants `libelle`, `latitude`, `longitude`, `code_postal` et `code_insee`.
+
+  - Ces champs peuvent permettre de retrouver la ville, le département et/ou la région d'une offre d'emploi.
+
+- Dans les cas décrits par la suite, on part du cas le plus favorable au cas le plus défavorable.
+
+- Pour exemple, les cas suivants donneront une idée de pourcentage d'offres pour chacun des cas, à partir du json disponible en archive : "api_extract__transform/outputs/_archives/2025-03-02--exemples-jsons-et-json-concatenated/2025-03-02--18h36__extraction_occurence_1.json", qui contient 13 639 offres.
+
+- Pour catégoriser les offres, on va écrire pour chacune des offres si elle est dans le `cas_1`, dans le `cas_2`, etc... dans une colonne dédiée (`lieu_cas`).
+
+
+#### Cas_1 : "code_insee" renseigné
+
+- Dans ce cas, on peut récupérer la ville, le département, et la région.
+
+  - Sur le json archivé, c'est le cas pour 12 118 offres sur 13 639, soit 88.85% des offres.
+
+- Notes :
+  - dans ce cas, il se peut que `code_postal` ne soit pas renseigné
+  - si `code_insee = NAN`, alors `code_postal = NAN` aussi (donc la colonne code_postal n'est pas utile pour retrouver la ville)
+
+
+##### Ajout des attributs de localisation
+
+- On a donc le code commune.
+- A partir du fichier `codes_city_department_region_names.csv`, on ajoute la ville, le département, et la région.
+
+
+#### Cas_2 : "code_insee = NAN" (dans ce cas "code_postal = NAN"), mais coordonnées GPS renseignées
+
+- Dans ce cas, on peut récupérer la ville, le département, et la région.
+
+  - Sur le json archivé, c'est le cas pour 191 offres sur 13 639, soit 1.40% des offres.
+
+- Ici, il y a 2 sous-cas :
+  - soit les coordonnées GPS sont corrects,
+  - soit la valeur de la latitude et la valeur de la longitude sont inversées.
+
+- On va se baser sur https://fr.wikipedia.org/wiki/Liste_de_points_extr%C3%AAmes_de_la_France pour trouver les variations des coordonnées GPS en France Métropolitaine.
+
+- En effet :
+  - le point le plus au nord : (51° 05′ 21″ N, 2° 32′ 43″ E)
+  - le point le plus au sud : (42° 19′ 58″ N, 2° 31′ 58″ E)
+  - le point le plus à l'est : (48° 58′ 02″ N, 8° 13′ 50″ E)
+  - le point le plus à l'ouest : (48° 24′ 46″ N, 4° 47′ 44″ O)
+
+
+- En convertissant ces coordonnées en valeur décimale, on trouve les fourchettes suivantes pour la latitude et la longitude de la France Métropolitaine :
+
+  - Latitude : 42,3328 (Sud) -> 51,0892 (Nord)
+  - Longitude : -4,7956 (Ouest) -> 8,2306 (Est)
+
+
+- Pour vérifier si la latitude a été inversée avec la longitude :
+  - on vérifie si la latitude renseignée est bien comprise entre 42.3328 et 51.0892,
+    - si oui, ça correspond à une latitude de la France Métropolitaine,
+    - si non, on vérifie que la valeur renseignée pour la longitude l'est bien
+      - si oui, on inversera la valeur de la latitude avec la valeur de la longitude.
+
+
+##### Ajout des attributs de localisation
+
+- La lib geopy permet de retrouver plusieurs informations (`city`, `city_district`, `postcode`, `suburb`, `municipality`, `state`, `town`...), mais tous ces attributs ne sont pas toujours disponibles...
+  - En revanche, l'information qui semble toujours être retourné est le code postal.
+
+- A partir du code postal, on ajoute la ville, le département et la région.
+
+
+- Parfois le code postal retourné par geopy n'est pas présent dans le fichier `code_name__city_department_region.csv` (et donc non présent dans https://www.data.gouv.fr/fr/datasets/villes-de-france/, ni sur https://www.data.gouv.fr/fr/datasets/base-officielle-des-codes-postaux/).
+
+  - Par exemple, sur le json archivé, c'est le cas pour 4 offres où geopy renvoit les codes postaux "34009", "06205", "57045", "13030".
+
+  - Dans ce cas, on va prendre les 2 premiers digits du code postal pour avoir le département, et récupérer la région.
+
+
+- Notes :
+
+  - C'est assez long (~5 minutes pour 191 offres) car la méthode `geolocator.reverse()` fait une requête http pour chaque offre.
+
+  - Geopy retourne un code postal, mais ce code postal peut être associé à plusieurs villes.
+    - Par conséquent, si une offre renseigne le code postal 78310, elle peut être soit à Coignières soit à Maurepas, qui partagent le même code postal, ce qu'on ne peut pas deviner.
+    - Cela ne pose pas vraiment problème, étant donné qu'en général plusieurs villes qui ont le même code postal sont relativement proches/voisines.
+
+
+
+#### Cas_3 : "code_postal = code_insee = latitude = longitude = NAN", mais "libelle = 'numéro_département - nom_département'"
+
+- Dans ce cas, on ne peut pas retrouver la ville, mais on peut retrouver le département, et par conséquent la région.
+
+  - Sur le json archivé, c'est le cas pour 804 offres sur 13 639, soit 5.89% des offres.
+
+
+
+##### Ajout des attributs de localisation
+
+- Dans ce cas, on a par exemple `libelle = 75 - Paris (Dept.)`, donc on va extraire le code du département dans la colonne `code_departement`, et récupérer `nom_departement`, `code_region` et `nom_region` à partir du fichier `code_name__city_department_region.csv`.
+
+
+
+#### Cas_4 : "code_postal = code_insee = latitude = longitude = NAN", mais "libelle = nom_région"
+
+- Dans ce cas, on a que la région, et on ne peut donc pas avoir la ville ni le département.
+
+  - Sur le json archivé, c'est le cas pour 54 offres sur 13 639, soit 0.39% des offres.
+
+
+- A noter que le nom de la région n'est pas toujours homogène, par exemple, on peut avoir "Ile-de-France" et "Île-de-France" (i avec ou sans accent circonflexe), ce qui est traité dans le script.
+
+
+##### Ajout des attributs de localisation
+
+Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code_name__city_department_region.csv`.
+
+
+#### Cas_5 : "code_postal = code_insee = latitude = longitude = NAN", et "libelle = ("FRANCE"|"France"|"France entière")"
+
+- C'est le cas le plus défavorable qui ne permet pas de retrouver la ville, le département ni la région.
+
+  - Sur le json archivé, c'est le cas pour 252 offres sur 13 639, soit 1.85% des offres.
+
+
+- On pourrait aller plus loin, et tenter de retrouver l'information dans l'intitulé ou la description de l'offre d'emploi, mais on ne le fera pas ici.
+
+
+# Airflow
+
+
+## Création "automatique" de connexion Postgres
+
+Notes : Il aurait été mieux de créer une connexion depuis un DAG, pour ne pas avoir à exécuter le script `scripts/create_postgres_connection_on_airflow.sh`, mais il ne semble pas possible de le faire sur Airflow 3 (à creuser).
+
+  - création de la connexion via la librairie `Connection`
+
+    ```py
+    from airflow import DAG, settings
+    from airflow.models.connection import Connection
+    from airflow.operators.python import PythonOperator
+
+
+    def create_postgres_conn(**kwargs):
+        session = settings.Session()
+        print("Session created")
+        connections = session.query(Connection)
+        print("Connections listed")
+        if not kwargs["conn_id"] in [connection.conn_id for connection in connections]:
+            conn = Connection(conn_id=kwargs["conn_id"], conn_type="postgres", host="postgres", login="airflow", password="airflow", schema="airflow")
+            session.add(conn)
+            session.commit()
+            print("Connection Created")
+        else:
+            print("Connection already exists")
+        session.close()
+
+
+    with DAG(dag_id="dag_1") as dag:
+        create_conn = PythonOperator(task_id="try_create_connection_with_session", python_callable=create_postgres_conn, op_kwargs={"conn_id": "postgres"})
+    ```
+
+    => Erreur rencontrée : `RuntimeError: Direct database access via the ORM is not allowed in Airflow 3.0`
+
+
+  - création de la connexion via la librairie `BashOperator`
+
+    ```py
+    from airflow import DAG
+    from airflow.operators.bash import BashOperator
+
+    with DAG(dag_id="dag_2") as dag:
+        create_conn = BashOperator(
+            task_id="try_create_connection_with_bashop",
+            bash_command='airflow connections add "ma_connexion" --conn-uri "postgres://mhh:mhh@postgres:5432/francetravail"',
+        )
+    ```
+    => Erreur rencontrée : `sqlalchemy.exc.ArgumentError: Could not parse SQLAlchemy URL from string 'airflow-db-not-allowed:///'`
+
+
+## SQLExecuteQueryOperator vs PostgresOperator
+
+Notes concernant l'erreur :
+
+  ```bash
+      from airflow.operators.postgres_operator import PostgresOperator
+  ModuleNotFoundError: No module named 'airflow.operators.postgres_operator'
+  ```
+
+  causé par :
+
+    ```python
+    from airflow.operators.postgres_operator import PostgresOperator
+    ```
+
+Après s'être connecté sur le conteneur "worker" :
+
+  ```bash
+  default@0ab352f980fd:/opt/airflow$ pip list | grep apache-airflow-providers-postgres
+  apache-airflow-providers-postgres         6.1.3
+  ```
+
+=> https://airflow.apache.org/docs/apache-airflow-providers-postgres/6.1.3/
+
+
+Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6.2.0/changelog.html#
+
+  ```md
+  à partir de la 6.0.0 :
+  Remove airflow.providers.postgres.operators.postgres.PostgresOperator. Please use airflow.providers.common.sql.operators.sql.SQLExecuteQueryOperator instead.
+  ```
+
+
+Conclusion : `PostgresOperator` est deprecated au profil de `SQLExecuteQueryOperator` avec la version `apache-airflow-providers-postgres` utilisée (6.1.3).
+C'est ce qu'il faudra pour l'exécution des requêtes SQL.
+
+  ```bash
+  default@0ab352f980fd:/opt/airflow$ cat /home/airflow/.local/lib/python3.12/site-packages/airflow/providers/common/sql/operators/sql.py  |  grep SQLExecuteQueryOperator
+  class SQLExecuteQueryOperator(BaseSQLOperator):
+  ```
+
+
+
+
+# Chargement des données dans une base de données relationnelle
+
+## Mise à jour de la base de données après récupération de nouvelles offres
+
+### Evolution de "qualification_code"
+
+- Certaines offres voient la valeur de l'attribut `qualification_code` évoluer, par exemple :
+
+  - `offre_id = 188LLXS` (`intitule = Technicien de gestion de données sur équipement (H/F)`) :
+    - lors de `date_extraction = 2025-03-02` : `qualification_code = 7`
+    - lors de `date_extraction = 2025-04-05` : `qualification_code = 8`
+
+  - `offre_id = 186XNDD` (`intitule = Coach sportif(ve) (H/F)`) :
+    - lors de `date_extraction = 2025-03-02` : `qualification_code = 6`
+    - lors de `date_extraction = 2025-04-05` : `qualification_code = 7`
+
+
+- Avec l'attribut `date_extraction` qui vient de la table `OffreEmploi`, on n'a pas moyen de savoir quelle ligne parmi les suivantes sont les plus récentes, car pour chaque mise à jour, l'attribut `date_extraction` est mis à jour et prend la valeur `2025-04-05`.
+
+  | offre_id | qualification_code | date_extraction |
+  | -------- | ------------------ | --------------- |
+  | 188LLXS  | 7                  | 2025-04-05      |
+  | 188LLXS  | 8                  | 2025-04-05      |
+  | 186XNDD  | 6                  | 2025-04-05      |
+  | 186XNDD  | 7                  | 2025-04-05      |
+
+
+- Ce qui nous intéresse est d'avoir la date d'extraction réelle :
+
+  | offre_id | qualification_code | date_extraction |
+  | -------- | ------------------ | --------------- |
+  | 188LLXS  | 7                  | 2025-03-02      |
+  | 188LLXS  | 8                  | 2025-04-05      |
+  | 186XNDD  | 6                  | 2025-03-02      |
+  | 186XNDD  | 7                  | 2025-04-05      |
+
+pour ne garder que le `qualification_code` le plus récent si 1 offre_id est présente avec 2 qualification_code différents :
+
+  | offre_id | qualification_code | date_extraction |
+  | -------- | ------------------ | --------------- |
+  | 188LLXS  | 8                  | 2025-04-05      |
+  | 186XNDD  | 7                  | 2025-04-05      |
+
+
+- Il faut donc ajouter `date_extraction` dans la table `offre_qualification`.
+
+
+### Evolution de "experienceExige" et "experienceLibelle"
+
+Même problématique avec certaines offres qui voient la valeur de l'attribut `experienceExige` et leur `experienceLibelle` évoluer, par exemple :
+
+  - `offre_id = 1316532` (`intitule = Administrateur linux (H/F)`) :
+
+    - lors de `date_extraction = 2025-03-02` : `experienceExige = E` et `experienceLibelle = Expérience exigée de 3 An(s)` (par exemple `experience_id = 6`)
+
+    - lors de `date_extraction = 2025-04-05` : `experienceExige = D` et `experienceLibelle = Débutant accepté` (par exemple `experience_id = 2`)
+
+
+
+# Consommation des données
+
+## Power BI
+
+### Connexion avec la db
+
+- cf https://learn.microsoft.com/fr-fr/power-query/connectors/postgresql
+
+- `Blank report`
+
+- `Get data` > `PostgreSQL database` > `connect`
+
+  - fenêtre `PostgreSQL database` :
+    - `Server : localhost`
+    - `Database : francetravail`
+    - `Data Connectivity mode : Import`
+      - Notes :
+        - Import → Charge toutes les données en mémoire de Power BI.
+        - DirectQuery → Interroge PostgreSQL en temps réel sans stocker les données localement.
+    - `Advanced options` : pas touché
+
+  - fenêtre `localhost;francetravail` :
+    - `User name : mhh`
+    - `Password : mhh`
+    - `Select which level to apply these settings to : localhost`
+
+
+  - fenêtre `Encryption Support` :
+
+    - `We were unable to connect to the data source using an encrypted connection. To access this data source using an unencrypted connection, click OK.` => On valide.
+
+  - fenêtre `Navigator`, où on peut sélectionner les 19 tables.
+
+    - On sélectionne tout, puis `Load`.
+
+      - fenêtre `Processing Queries` (Determining automatic transformations...)
+
+        - On peut `Skip`, ce qu'on va faire après une dizaine de minutes, car ça bloque sur la table `formation` (pourtant, toutes les autres tables sont bien validées, et on arrive bien à voir le contenu de la table `formation` par une requête sql)
+
+        - Note : on n'a pas cette fenêtre la deuxième fois (Power BI avait crashé quand j'ai voulu sauvegardé la première fois)
+
+          - fenêtre `Load` (qui finit par bien aboutir)
+
+
+### Model view
+
+- Onglet `model view` : on voit bien les 19 tables, on doit refaire les liens créés automatiquement.
+
+  - On procède comme le diagramme UML qu'on a défini (voir `load_sql/UML.drawio`)
+
+
+- On masque les colonnes non utilisées.
+
+- Paramétrer `Cross-filter direction = Both` pour certains liens est nécessaire pour la data viz.
+
+
+
+### Table view
+
+- Création table de date
+
+- Création de colonnes :
+  - Date Différence = DATEDIFF('Offre Emploi'[Date Création], 'Offre Emploi'[Date Actualisation], DAY)
+
+
+### Transformations sur Power BI
+
+#### Renommage de toutes les colonnes
+
+- C'est juste pour Power BI.
+
+- On renomme les colonnes avoir des noms plus facile à lire dans les rapports comme :
+
+  - `Offre ID` (au lieu de `offre_id`)
+  - `Durée Travail Libellé` (au lieu de `duree_travail_libelle`)
+
+
+#### Attribut "Liste Mots-Clés"
+
+- Exemple de valeur pour une offre : `{etl,git,"power bi",python,sql,tableau}`
+
+- On supprime les accolades et les guillemets.
+  - ce qui donne pour l'exemple : `etl,git,power bi,python,sql,tableau`
+
+- On éclate la colonne en faisant `Split Column` > `By delimiter` (Split into Rows)
+  - l'offre est donc splittée sur 6 lignes avec un seul mot-clé dans la colonne `Liste Mots Clés`
+
+
+#### Ajout de variables avec le nom des villes, départements et région modifiés pour la data viz
+
+##### Ajout de la variable "Nom Ville Modifié"
+
+- Dans le `report view` / carte mondiale, on a des villes françaises qui sont situées dans d'autres pays, par exemple :
+
+  - offre_id = `2083056` dans la ville `Cologne` (code postal 32 430) en région Occitanie, département Gers  => placé en Allemagne (NOK, car on est censé avoir que des offres en France)
+
+    ![Cologne en Allemagne](screenshots/power_bi/city_Cologne_in_Germany.png)
+
+
+  - offre_id = `2757953` dans la ville `La Réunion` (code postal 47 700) en région Nouvelle-Aquitaine, département Lot-et-Garonne  => placé en France (OK)
+
+    ![Cologne en France](screenshots/power_bi/city_Cologne_in_France.png)
+
+
+- Comme vu dans le dernier screenshot, pour avoir les villes placées en France, on définit une colonne `Nom Ville Modifié` avec le nom de la ville suffixé avec `, France` (par exemple `Cologne, France`).
+
+
+##### Ajout de la variable "Nom Département Modifié"
+
+Même chose pour le département de la `Lot` qui est placé en Lituanie, on ajoute une colonne qui suffixera le nom du département avec `, France` :
+
+  - Département `Lot` en Lituanie :
+
+    ![Département "Lot" en Lituanie](screenshots/power_bi/department_Lot_in_Lithuania.png)
+
+
+  - Département `Lot` en France :
+
+    ![Département "Lot" en France](screenshots/power_bi/department_Lot_in_France.png)
+
+
+##### Ajout de la variable "Nom Région Modifié"
+
+- Quand on affiche la carte du monde avec les régions de la France, on constate que 2 régions (la Bretagne et l'Occitanie) ne sont pas complètement coloriées comme les autres régions :
+
+  - pour la Bretagne :
+
+    ![Bretagne non colorié entièrement](screenshots/power_bi/region_Bretagne_KO.png)
+
+
+  - pour l'Occitanie :
+
+    ![Occitanie non colorié entièrement](screenshots/power_bi/region_Occitanie_KO.png)
+
+
+- Changer le `Data category` (à `County` ou `State or Province`) résout le problème pour l'Occitanie mais pas la Bretagne.
+
+- Le contournement est d'ajouter une colonne, où on préfixera le nom de la région de `Région d('|de|du|des)` en fonction des régions, par exemple :
+
+  - `Région d'Île-de-France`
+  - `Région de Normandie`
+  - `Région des Hauts-de-France`
+  - `Région du Grand Est`
+
+- A noter qu'il y a une exception pour `Région Bourgogne-Franche-Comté` (pas de `de`).
+
+- Cela résout bien le problème de colorisation :
+
+  - pour la Bretagne :
+
+    ![Bretagne colorié entièrement](screenshots/power_bi/region_Bretagne_OK.png)
+
+  - pour l'Occitanie :
+
+    ![Occitanie colorié entièrement](screenshots/power_bi/region_Occitanie_OK.png)
+
