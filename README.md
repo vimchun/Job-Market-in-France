@@ -22,23 +22,6 @@ Le plan suivant présente un plan logique plutôt que de présenter les étapes 
 
 todo : toc
 
-<!--
-
-- Les étapes ont été les suivantes :
-
-  - [1. Extraction des données par API et Transformations](readme_files/step_1__extract_and_transform_data.md)
-
-  - [2. Chargement des données dans une base de données relationnelle](readme_files/step_2__load_data_to_database.md)
-
-  - [3. Consommation des données](readme_files/step_3__data_consumption.md)
-
-  - [4. Création d'une API pour la db, dockerisation de cette application et de la db PostGreSQL](readme_files/step_4__api.md)
-
-  - [5. Orchestration avec Airflow](readme_files/step_5__airflow_orchestration.md)
-
-  - [Arborescence](#arborescence-du-projet)
- -->
-
 
 
 # fourre tout à trier
@@ -89,7 +72,7 @@ Développements et tests sous :
    (si la connexion n'est pas bien définie, alors le `DAG 2` posera problème)
 
 
-Dans l'idéal, il aurait fallu créer cette connexion de manière "encore plus automatique" avec une tâche dans le DAG (cela permettra de ne pas avoir à exécuter le script précédent), mais certaines problématiques nous en empêchent. Ceci est documenté ![ici](readme_files/README_additional_notes.md#création-automatique-de-connexion-postgres)
+Dans l'idéal, il aurait fallu créer cette connexion de manière "encore plus automatique" avec une tâche dans le `DAG 2` (cela permettra de ne pas avoir à exécuter le script précédent), mais certaines problématiques nous en empêchent. Ceci est documenté ![ici](readme_files/README_additional_notes.md#création-automatique-de-connexion-postgres)
 
 
 ## Arborescence du projet sans la partie liée à la conf Docker
@@ -187,38 +170,205 @@ Au moment d'écrire les DAGs, il y avait deux versions majeures : la 2.11.0 et l
 Finalement, le choix se portera sur la version 3.0.x car cette nouvelle branche a des évolutions majeures (https://airflow.apache.org/blog/airflow-three-point-oh-is-here/).
 
 
-## Description des DAGs
+## Description du worflow des DAGs
+
+Ci-dessous le nom d'une `tâche` avec une description.
+
+Pour alléger le texte, on écrira :
+
+- `fichier_existant.json` : fichier json aggrégeant les fichiers jsons téléchargés
+- `dossier_A` : dossier contenant tous les fichiers json téléchargés par api
+- `dossier_B` : dossier contenant le json fichier_existant.json
+
 
 ### DAG 1
 
-Tout se base dans le dossier `api_extract__transform/outputs/offres/1--generated_json_file`, qui doit contenir zéro fichier json, ou un seul fichier json.
+#### Task group "setup"
 
-  - S'il y a plusieurs fichiers json dans ce dossier, le script s'arrête.
-
-  - S'il y a aucun fichier json dans ce dossier, le script :
-
-    - 1. supprime tous les fichiers json du dossier `api_extract__transform/outputs/offres/0--original_json_files_from_api`
-    - 2. récupère toutes les offres par API (61 fichiers json)
-    - 3. concatène les 61 fichiers en 1 fichier json
-    - 4. retire de ce fichier toutes les offres qui sont hors de la France métropolitaine
-    - 5. ajoute des attributs de localisation `nom_commune`, `nom_ville`, `code_departement`, `nom_departement`, `code_region`, `nom_region` à partir du code insee, des coordonnées GPS et des informations renseignées dans l'attribut `libelle`, comme le département ou la région.
-    - 6. ajoute un attribut `dateExtraction` à la date du jour actuelle, qui correspond à la date d'extraction des données par API
-    - 7. ajoute un attribut `datePremiereEcriture` à la date du jour actuelle, qui correspond à la date où on écrit une offre dans la base la première fois.
-
-  - S'il y a un fichier json dans ce dossier, le script :
-    - supposons que le nom de ce fichier `json_1` soit `2025-04-09--14h19__extraction_occurence_2.json`
-    - le script va créer un autre fichier `json_2` à la date/heure du jour et incrémenter l'occurence, le fichier `json_2` s'appellera par exemple `2025-04-12--21h41__extraction_occurence_3.json`
-    - les étapes 1-6 précédentes sont exécutées pour `json_2`
-    - le script va ensuite concaténer avec "`json_1` - `json_2`" et `json_2` (il y a une intersection entre `json_1` et `json_2`) dans `json_2`
-    - l'attribut `datePremiereEcriture` aura la date du jour pour toutes les nouvelles offres, mais prendra les anciennes valeurs pour les anciennes offres
-    - `json_1` est déplacé dans le dossier `archive_json_files`, laissant `json_2` être le seul fichier json
-       dans le dossier `api_extract__transform/outputs/offres/1--generated_json_file`
+##### Task group "check_files_in_folders"
 
 
-Le fichier json servira d'entrée à un autre script `load_sql/2--script_insert_into_tables.py`.
+- `S1_delete_all_in_one_json`
+
+  - Suppression du fichier `all_in_one.json` s'il existe
+
+
+- `S1_check_csv_file_exists`, `S1_check_appellation_yaml_file_exists`, `S1_check_credentials_yaml_file_exists`
+
+  - Vérification de la présence de ces fichiers :
+    - si un des fichiers n'existe pas : fin du DAG (exception levée)
+
+
+- `S1_count_number_of_json_file`
+
+  - Vérification du nombre de fichiers json dans le `dossier_B` :
+    - s'il y a plusieurs fichiers json : fin du DAG (exception levée).
+    - s'il y a 0 ou 1 fichier json `fichier_existant.json` : on continue et on retourne "count" (nombre de fichiers json).
+
+
+
+##### Task group "after_checks"
+
+- `S2_remove_all_json_files`
+
+  - Suppression des fichiers json dans le `dossier_A`.
+    - Après suppression, on vérifie qu'il n'y a plus de fichier json, sinon fin du script.
+
+
+- `S2_load_appellations_yaml_file`
+
+  - Chargement fichier yaml avec 61 métiers.
+
+
+- `S2_get_creds_from_yaml_file`
+
+  - Récupération des credentials depuis le fichier.
+
+
+- `S2_get_token`
+
+  - Récupération du token API.
+
+
+
+#### Task group "ETL"
+
+- `A1_get_offers`
+
+  - Récupération et écriture des offres d'emploi dans des fichiers json dans le dossier_A + vérification validité fichiers json [requests].
+
+
+- `A2_all_json_in_one`
+
+  - Consolidation de tous les fichiers json du dossier_A en un seul fichier json data.json dans le dossier_B et suppression des doublons [pandas].
+
+
+- `A3_only_metropole`
+
+  - Conservation uniquement dans les offres d'emploi en France Métropolitaine data.json [pandas].
+
+
+- `A4_add_location_attrs`
+
+  - Ajout d'attributs dans data.json : `nom_commune`, `nom_ville`, `code_departement`, `nom_departement`, `code_region`, `nom_region` [pandas/geopy]
+    (à partir du code insee, coordonnées GPS et autres infos).
+
+
+- `A5_add_dateExtraction_attr`
+
+  - Ajout d'un attribut dans data.json : `date_extraction` [pandas]
+    (pour connaitre la date d'extraction et la date où on écrit la première fois dans la base).
+
+
+- `A6_0_or_1_json_on_setup`
+
+  - Vérification du nombre de fichiers json dans le `dossier_B`.
+
+
+##### Task group "0_file_in_folder"
+
+- Cas où il n'y a pas de fichier json dans le `dossier_B`.
+
+  - `A8_add_date_premiere_ecriture_attr`
+
+    - Ajout d'un attribut dans data.json : `date_premiere_ecriture` [pandas].
+
+
+  - `A9_rename_json_file`
+
+    - Renommage du fichier.
+
+
+##### Task group "1_file_in_folder"
+
+- Cas où il y a 1 fichier json `fichier_existant.json`.
+
+  - `A7_special_jsons_concat`
+
+    - Concaténation spéciale entre le json existant et le nouveau json [pandas] + renommage fichier final + déplacement ancien json existant dans dossier "archives".
+
+
+  - `A8_add_date_premiere_ecriture_attr`
+
+    - Ajout d'un attribut dans data.json : date_premiere_ecriture [pandas].
+
+      - Notes : l'attribut `date_premiere_ecriture` prendra la date du jour pour toutes les nouvelles offres, et conservera l'ancienne valeur pour les anciennes offres.
+
+
+- `A10_write_to_history`
+
+  - Ecriture de l'historique du fichier json dans `_json_files_history.csv` (ajout nom json restant dans le dossier et le nombre de lignes).
+
 
 
 ### DAG 2
+
+
+#### setup
+
+- `check_only_one_json_in_folder`
+
+  - Vérification qu'il n'y ait qu'un json `fichier_existant.json` dans `dossier_B`
+
+
+- `remove_all_split_jsons`
+
+  - Suppression des fichiers json dans le `dossier_A`.
+
+
+- `split_large_json`
+
+  - split le gros fichier json final en plusieurs jsons dédiés pour les tâches suivantes du DAG.
+  - L'intérêt est que toutes les tâches ne lisent pas le même gros fichier json, et que chaque tâche lise chacun son fichier json dédié.
+
+- `SQLExecuteQueryOperator()` avec le fichier `sql/create_all_tables.sql`
+
+  - Création de toutes les tables du projet si elles n'existent pas.
+
+
+
+#### without_junction
+
+Ce groupe exécute en parallèle les tâches suivantes, qui consistent à récupérer les informations dans les fichiers json dédiés (générés par la tâche `split_large_json`) et exécutent des `INSERT INTO` dans les tâches dédiés :
+
+- `OffreEmploi`
+- `Contrat`
+- `Entreprise`
+- `Localisation`
+- `DescriptionOffre`
+
+
+
+#### with_junction
+
+Ce groupe exécute les actions suivantes :
+
+Prenons pour exemple, `Competence` puis `Offre_Competence`
+
+  1/ `INSERT INTO` pour la table de dimension
+  2/ requête pour connaitre la correspondance entre `offre_id` et `competence_id` avant de faire des `INSERT INTO` pour la table de liaison
+  3/ conservation de l'offre la plus récente, si `competence_id` a évolué
+
+
+- `Competence` puis `Offre_Competence`
+- `Experience` puis `Offre_Experience`
+- `Formation` puis `Offre_Formation`
+- `QualiteProfessionnelle` puis `Offre_QualiteProfessionnelle`
+- `Qualification` puis `Offre_Qualification`
+- `Langue` puis `Offre_Langue`
+- `PermisConduire` puis `Offre_PermisConduire`
+
+
+#### transformations
+
+Plusieurs `SQLExecuteQueryOperator()` qui exécutent séquentiellement les tâches suivantes, dont les fichiers SQL du dossier `airflow/dags/sql` sont :
+
+  - `update_descriptionoffre_metier_data_DE`
+  - `update_descriptionoffre_metier_data_DA`
+  - `update_descriptionoffre_metier_data_DS`
+  - `update_contrat_salaires_min_max`
+  - `update_descriptionoffre_column_liste_mots_cles`
+
 
 
 
@@ -261,7 +411,7 @@ Le fichier json servira d'entrée à un autre script `load_sql/2--script_insert_
 
 - On obtient finalement 61 fichiers json contenant toutes les offres d'emploi liées ou pas à la data, pour la France et DOM-TOM uniquement, l'API de France Travail ne renvoyant quasiment pas d'offre d'emploi pour les autres pays.
 
-- Plusieurs transformations seront effectuées par la suite : [voir ici](##transformations-des-données-en-amont-côté-python)
+- Plusieurs transformations seront effectuées par la suite : ![voir ici](#transformations-des-données-en-amont-côté-python)
 
 
 - Notes :
@@ -275,21 +425,33 @@ Le fichier json servira d'entrée à un autre script `load_sql/2--script_insert_
 
 ## Transformations des données en amont (côté Python)
 
-Plusieurs transformations faites en amont du chargement dans la base Postgres sont effectuées avec Python :
+Ces transformations sont faites dans le `DAG 1`, faites via Python et en amont du chargement dans la base Postgres :
 
   - Concaténation des 61 fichiers json dans un seul fichier json, avec suppression des doublons
-  - Conservation des offres en France Métropolitaine uniquement
-    (todo : lien)
-  - Ajout des attributs de localisation des offres (noms et codes des villes, départements, départements et régions)
-    (todo : lien)
-  - Ajout des attributs `date_premiere_ecriture` et `date_extraction`
 
-    - `date_extraction` aura la date du jour à laquelle le DAG 1 a été lancé,
+  - Conservation des offres en France Métropolitaine uniquement, ![détails ici](readme_files/README_additional_notes.md#conservation-des-offres-en-France-Métropolitaine-uniquement)
+
+  - Ajout des attributs de localisation des offres (noms et codes des villes, départements, départements et régions), ![détails ici](readme_files/README_additional_notes.md#attributs-de-localisation-des-offres-noms-et-codes-des-villes-communes-départements-et-régions)
+
+  - Ajout des attributs `date_premiere_ecriture` et `date_extraction` :
+
+    - `date_extraction` aura la date du jour à laquelle le `DAG 1` a été lancé,
     - `date_premiere_ecriture` aura la date du jour pour toutes les nouvelles offres, mais prendra les anciennes valeurs pour les anciennes offres.
 
 
 
 ## Transformations des données en aval (côté SQL)
+
+Ces transformations sont faites dans le `DAG 2`, faites via des requêtes SQL et effectuées en aval de l'écriture dans la base Postgres :
+
+  - pour créer et écrire l'attribut `metier_data` : pour chaque offre, on comparera l'attribut `intitule_offre` avec des regex afin de déterminer s'il s'agit d'une offre pour un `Data Engineer`, un `Data Analyst`, ou un `Data Scientist`.
+
+    - ![détails ici](readme_files/README_additional_notes.md#attribut-metier-data)
+
+  - pour créer et écrire les attributs `salaire_min` et `salaire_max` en fonction d'un algorithme expliqué
+
+    - ![détails ici](readme_files/README_additional_notes.md#attributs-salaire-min-et-salaire-max)
+
 
 
 # Chargement des données dans une base de données relationnelle
@@ -311,7 +473,7 @@ Plusieurs transformations faites en amont du chargement dans la base Postgres so
 
 La base de données `francetravail` sera hébergée dans le conteneur Docker exécutant le service PostgreSQL.
 
-- Les données issues du json généré avec le DAG 1 seront récupérées et écrites en base avec la librairie `psycopg2`.
+- Les données issues du json généré avec le `DAG 1` seront récupérées et écrites en base avec la librairie `psycopg2`.
 
 
 ## Mise à jour de la base de données après récupération de nouvelles offres
@@ -334,192 +496,19 @@ Plus de détails ![ici](readme_files/README_additional_notes.md#mise_à_jour_de_
 
 Power BI servira ici pour la data visualisation.
 
-Le lien suivant montre comment connecter Power BI à la session Postgres : ![section](readme_files/README_additional_notes.md###connexion_avec_la_db)
+Ci-dessous des liens expliquant les différentes manipulations faites pour :
 
-Faire de même pour les autres sections...
+  - ![connecter Power BI avec la db postgres](readme_files/README_additional_notes.md#connexion-avec-la-db)
 
+  - ![modifier le Model view](readme_files/README_additional_notes.md#model-view)
 
-## Requêtes SQL
+  - ![modifier le Table view](readme_files/README_additional_notes.md#table-view)
 
-### Transformations pour écrire l'attribut "metier_data"
+  - ![faire les transformations](readme_files/README_additional_notes.md#transformations)
 
-- Pour identifier les offres de "Data Engineer" parmi toutes les offres récupérées, le premier réflexe serait de filtrer sur le rome_code `M1811` qui correspond à `Data engineer`, mais on se rend compte que les offres d'emploi associées ne sont pas toutes liées à ce poste.
 
-- On retrouve en effet des postes d'architecte, d'ingénieur base de données, de data analyst, de data manager, de technicien data center, etc... (voir résultats de la requête `sql_requests/1_requests/offers_DE_DA_DS/10--table_descriptionoffre__rome_M1811.pgsql`)  # chemin à modifier
 
-- L'attribut `intitule_offre` de la table `DescriptionOffre` sera donc utilisé pour filtrer les offres voulues (ici : `Data Engineer`, `Data Analyst` et `Data Scientist`) grâce à des requêtes qui utilisent des regex, écrivant la valeur `DE`, `DA`, `DS` dans l'attribut `metier_data` (voir `sql_requests/0_transformations`).
-
-
-
-### Transformations pour écrire les attributs "salaire_min" et "salaire_max"
-
-#### Contexte
-
-- Pour écrire ces attributs qui donnent les salaires minimum et maximum annuels, on se base sur l'attribut `salaire_libelle`, qui n'est pas toujours renseigné.
-
-- Lorsqu'elle l'est, les valeurs pour cet attribut sont parfois mal renseignées par les recruteurs :
-
-  - qui inversent parfois le salaire annuel avec le salaire mensuel [auquel cas on fera un traitement (voir ci-dessous) pour avoir les bons salaires] :
-
-    - `Annuel de 486,00 Euros à 1801,00 Euros` (c'est sûrement un salaire mensuel et non annuel)
-    - `Mensuel de 32000,00 Euros à 40000,00 Euros` (c'est sûrement un salaire annuel et non mensuel)
-
-  - qui inversent les salaires min et max [auquel cas on les inversera] :
-
-    - `Annuel de 60000,00 Euros à 40000,00 Euros`
-
-  - qui se trompent sûrement dans les salaires renseignés :
-
-    - `Autre de 30000,00 Euros à 400000,00 Euros` (salaire max = 400k : sûrement erroné avec un 0 en trop)
-    - `Annuel de 80000,00 Euros à 850000,00 Euros` (idem avec salaire max = 850k)
-    - `Annuel de 550000.0 Euros sur 12.0 mois` (salaire = 550k : sûrement erroné avec un 0 en trop)
-
-
-- D'autre part, il faut noter que beaucoup d'offres ne renseignent que le taux horaire [auquel cas on écrira null], par exemple :
-
-  - `Annuel de 11,00 Euros` (c'est sûrement un taux horaire)
-  - `Horaire de 11.88 Euros sur 12 mois`
-
-
-#### Hypothèses
-
-- Comme on n'est pas certain si les salaires indiqués sont mensuels ou annuels (à cause des erreurs des recruteurs), on va prendre les hypothèses suivantes :
-  - salaire mensuel ∈ [1 666, 12 500]
-  - salaire annuel ∈ [20 000, 150 000]
-
-- Donc, on considère que si salaire mensuel :
-  - inférieur à 1666 € (20k), ce n'est pas un salaire mensuel (pour écarter les taux horaires, les salaires à mi-temps, les salaires en alternance...)
-  - supérieur à 12 500 € (150k), c'est très certainement une faute de frappe (il y a vraiment très peu d'offres dans ce cas, peut-être 4 pour 13k offres)
-
-    - par exemple :
-
-      - Ingénieur systèmes embarqués (H/F) : `Annuel de 80000,00 Euros à 850000,00 Euros` (80k - 850k)
-      - Administrateur Bases de données - DBA / Microsoft SQL Server(H/F) (H/F)	: `Mensuel de 400000.0 Euros à 450000.0 Euros sur 12.0 mois` (400k - 450k)
-	    - Chef de Projet EDI (H/F) : `Annuel de 50000.0 Euros à 540000.0 Euros sur 12.0 mois` (50k - 540k)
-      - Data Analyst H/F: `Annuel de 45000,00 Euros à 550000,00 Euros` (45k - 550k)
-
-
-#### Algorithme
-
-- Pour les transformations, on va considérer les cas suivants.
-
-- Si "salaire_libelle" donne :
-
-  - A. une fourchette de salaire ("cas fourchette") :
-
-    - `Annuel de 60000.0 Euros à 90000.0 Euros`
-    - `Annuel de 60000.0 Euros à 90000.0 Euros sur 12.0 mois`
-    - `Annuel de 60000.0 Euros à 90000.0 Euros sur 13.0 mois`
-    - `Mensuel de 1767.00 Euros à 2600.00 Euros sur 12 mois`
-    - `Mensuel de 1767.00 Euros à 2600.00 Euros`
-    - `Autre de 1910,00 Euros à 2050,00 Euros`
-    - `De 40000,00 Euros à 40000,00 Euros`
-    - `Autre de 40000,00 Euros à 45000,00 Euros`
-    - `Cachet de 50000,00 Euros à 55000,00 Euros`
-
-
-      - cas 1 : Si salaire minimum récupéré > salaire maximal récupéré *ET* salaires min+max récupérés ∈ [1 666 €, 12 500 €] (on considère que c'est un salaire mensuel)
-        - alors on inverse les salaires mensuels minimum et maximum.
-
-          - exemple :
-            - `Mensuel de 5500.0 Euros à 4200.0 Euros sur 12.0 mois`
-
-
-      - cas 2 : Si salaires min+max récupérés ∈ [1 666 €, 12 500 €] (on considère que c'est un salaire mensuel)
-        - alors on récupère les salaires minimum et maximum et on les multiplie par 12.
-
-          - exemples :
-            - `Annuel de 1800,00 Euros à 2000,00 Euros`
-            - `Mensuel de 2900,00 Euros à 3000,00 Euros`
-            - `Autre de 1855,26 Euros à 1855,26 Euros`
-
-
-      - cas 3 : Si salaire minimum récupéré > salaire maximal récupéré *ET* salaires min+max récupérés ∈ [20 000 €, 150 000 €] (on considère que c'est un salaire annuel)
-        - alors on inverse les salaires annuels minimum et maximum.
-
-          - exemple :
-            - `Annuel de 60000,00 Euros à 40000,00 Euros`
-
-
-      - cas 4 : Si salaires min+max récupérés ∈ [20 000 €, 150 000 €] (on considère que c'est un salaire annuel)
-        - alors on récupère les salaires minimum et maximum.
-
-          - exemples :
-            - `Annuel de 55000,00 Euros à 65000,00 Euros`
-            - `Mensuel de 45000.0 Euros à 50000.0 Euros sur 12.0 mois`
-            - `Autre de 45000,00 Euros à 55000,00 Euros`
-
-
-      - cas 5 : Sinon, dans les autres cas
-          - alors salaire min/max = NULL.
-
-            - exemples où `salaire minimum <= 1 666 €` :
-              - `Annuel de 25,00 Euros à 30,00 Euros`
-              - `Mensuel de 850,00 Euros à 950,00 Euros`
-              - `De 13,00 Euros à 14,00 Euros`
-
-            - exemples où `salaire max >= 150 000 €` :
-              - `Annuel de 80000,00 Euros à 850000,00 Euros`
-              - `Mensuel de 400000.0 Euros à 450000.0 Euros sur 12.0 mois`
-              - `Autre de 30000,00 Euros à 400000,00 Euros`
-
-            - exemple où `salaire n'appartient pas aux fourchettes de salaires mensuels [1 666, 12 500] ni annuels [20 000, 150 000]` :
-
-              - `Annuel de 19000,00 Euros à 19000,00 Euros`
-
-
-
-  - B. un salaire unique ("cas salaire unique") :
-
-    - `Annuel de 48000.0 Euros sur 12.0 mois`
-    - `Annuel de 50000,00 Euros`
-    - `Mensuel de 45000.0 Euros sur 12.0 mois`
-
-
-      - cas 2 : Si salaire récupéré ∈ [1 666 €, 12 500 €] (on considère que c'est un salaire mensuel)
-        - alors on récupère le salaire et on le multiplie par 12.
-
-          - exemples :
-            - `Mensuel de 4410,00 Euros`
-
-
-      - cas 4 : Si salaire récupéré ∈ [20 000 €, 150 000 €] (on considère que c'est un salaire annuel)
-        - alors on récupère le salaire.
-
-          - exemples :
-            - `Annuel de 55000.0 Euros sur 12.0 mois`
-
-
-      - cas 5 : Sinon, dans les autres cas
-        - alors salaire min/max = NULL.
-
-          - exemples :
-            - `Annuel de 1000,00 Euros`
-            - `Mensuel de 12,00 Euros`
-            - `Annuel de 550000.0 Euros sur 12.0 mois`
-
-
-
-#### Exemples d'offres réelles avec les salaires qu'on fixe
-
-
-| offre_id | intitule_offre                         | salaire_libelle                              | get_salaire_min | get_salaire_max | cas                | sous-cas                                    | salaire_min | salaire_max |
-| -------- | -------------------------------------- | -------------------------------------------- | --------------- | --------------- | ------------------ | ------------------------------------------- | ----------- | ----------- |
-| -        | -                                      | -                                            | -               | -               | -                  | 1 (min>max + mois ∈ [1 666, 12 500])        | -           | -           |
-| 2430874  | Chef de projet (H/F)                   | Mensuel de 5880,00 Euros à 8085,00 Euros     | 5880            | 8085            | cas fourchette     | 2 (mois ∈ [1 666, 12 500])                  | 70560       | 97020       |
-| 188TYKG  | MANAGEUR-EUSE DE TRANSITION (H/F)      | Mensuel de 3136.0 Euros sur 12.0 mois        | 3136            | 12              | cas salaire unique | 2 (mois ∈ [1 666, 12 500])                  | 37632       | 37632       |
-| 2861769  | Chef de projet (H/F)                   | Annuel de 60000,00 Euros à 40000,00 Euros    | 60000           | 40000           | cas fourchette     | 3 (min>max + an ∈ [20 000, 150 000])        | 40000       | 60000       |
-| 2710913  | Responsable BI / Data (H/F)            | Annuel de 75000,00 Euros à 90000,00 Euros    | 75000           | 90000           | cas fourchette     | 4 (an ∈ [20 000, 150 000])                  | 75000       | 90000       |
-| 188LKVH  | Technicien d'exploitation informatique | Annuel de 25200.0 Euros sur 12.0 mois        | 25200           | 12              | cas salaire unique | 4 (an ∈ [20 000, 150 000])                  | 25200       | 25200       |
-| 6071688  | Management de Projets Numériques H/F   | Mensuel de 850,00 Euros à 950,00 Euros       | 850             | 950             | cas fourchette     | 5 (autres cas : salaire < 1666 €)           | null        | null        |
-| 2554957  | Chef de Projet Eds Entrepôt de Données | Annuel de 19000,00 Euros à 19000,00 Euros    | 19000           | 19000           | cas fourchette     | 5 (autres cas : salaire ∈ ]12 500, 20 000[) | null        | null        |
-| 2968347  | Gestionnaire ERP (H/F)                 | Mensuel de 352800,00 Euros à 411600,00 Euros | 352800          | 411600          | cas fourchette     | 5 (autres cas : salaire > 150 000 €)        | null        | null        |
-
-
-- A noter aussi que les salaires des offres en alternance seront exclues ici car leur salaire est très majoritairement inférieur au seuil minimum qu'on a défini ici.
-
-
-### Analyse du jeu de données à travers des requêtes SQL
+## Analyse du jeu de données à travers des requêtes SQL
 
 - voir le dossier `sql_requests/1_requests/offers_DE_DA_DS/`
 
@@ -528,8 +517,8 @@ Faire de même pour les autres sections...
 
 # Création d'une API pour la db
 
+- L'utilité peut par exemple être de requêter la db `francetravail` à travers l'interface OpenAPI (ex-swagger) pour récupérer certaines informations.
+
 - Utilisation de `FastAPI`.
 
 - Pour les réponses, on utilisera la librairie `tabulate` avec `media_type="text/plain"` pour afficher un tableau qui facilitera la lecture, et qui diminuera le nombre de lignes des réponses.
-
-
