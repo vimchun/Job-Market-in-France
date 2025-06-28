@@ -1,3 +1,5 @@
+Cette page complète la ![page principale](../README.md).
+
 # Transformations des données en amont
 
 ## Transformations des données en amont (côté Python)
@@ -20,32 +22,32 @@
   ![cas avec les attributs de localisation](screenshots/location_attributes_cases.png)
 
 
+- Le fichier `airflow/data/resources/code_name__city_department_region.csv` :
 
-- On a dû générer le fichier `api_extract__transform/locations_information/code_name__city_department_region.csv` pour pouvoir catégoriser les cas décrits ci-après, et ainsi récupérer les attributs `nom_ville`, `nom_commune`, `code_departement`, `nom_departement`, `code_region`, `nom_region`.
+  - a été généré à partir de 4 fichiers récupérés sur le site de l'insee et sur data.gouv :
 
-    - [todo: écrire le .py + préciser le nom du script]
+    - `v_commune_2024.csv`, `v_departement_2024.csv` et `v_region_2024.csv` (https://www.insee.fr/fr/information/7766585)
+    - `cities.csv` (https://www.data.gouv.fr/fr/datasets/villes-de-france/)
 
-  - Ce fichier csv :
-    - a été généré à partir de 4 fichiers récupérés sur le site de l'insee et sur data.gouv :
+  - donne le mapping entre :
 
-      - `v_commune_2024.csv`, `v_departement_2024.csv` et `v_region_2024.csv` (https://www.insee.fr/fr/information/7766585)
-      - `cities.csv` (https://www.data.gouv.fr/fr/datasets/villes-de-france/)
+    - `code_insee` et `nom_commune`
+    - `code_postal` et `nom_ville`
+    - `code_departement` et `nom_departement`
+    - `code_region` et `nom_region`
 
-    - donne le mapping entre :
-
-      - `code_insee` et `nom_commune`
-      - `code_postal` et `nom_ville`
-      - `code_departement` et `nom_departement`
-      - `code_region` et `nom_region`
+  - permet de catégoriser les cas décrits ci-après, et ainsi récupérer les attributs `nom_ville`, `nom_commune`, `code_departement`, `nom_departement`, `code_region`, `nom_region`.
 
 
 - Pour les offres récupérées, l'attribut `lieuTravail` peut renseigner les champs suivants `libelle`, `latitude`, `longitude`, `code_postal` et `code_insee`.
 
   - Ces champs peuvent permettre de retrouver la ville, le département et/ou la région d'une offre d'emploi.
 
+
 - Dans les cas décrits par la suite, on part du cas le plus favorable au cas le plus défavorable.
 
-- Pour exemple, les cas suivants donneront une idée de pourcentage d'offres pour chacun des cas, à partir du json disponible en archive : "api_extract__transform/outputs/_archives/2025-03-02--exemples-jsons-et-json-concatenated/2025-03-02--18h36__extraction_occurence_1.json", qui contient 13 639 offres.
+- Pour exemple, les cas suivants donneront une idée de pourcentage d'offres pour chacun des cas, à partir du json suivant : `_archives/1--generated_json_file/2025-03-02--18h36__extraction_occurence_1.json` qui contient 13 639 offres.
+
 
 - Pour catégoriser les offres, on va écrire pour chacune des offres si elle est dans le `cas_1`, dans le `cas_2`, etc... dans une colonne dédiée (`lieu_cas`).
 
@@ -101,7 +103,7 @@
 
 ##### Ajout des attributs de localisation
 
-- La lib geopy permet de retrouver plusieurs informations (`city`, `city_district`, `postcode`, `suburb`, `municipality`, `state`, `town`...), mais tous ces attributs ne sont pas toujours disponibles...
+- La librairie `geopy` permet de retrouver plusieurs informations (`city`, `city_district`, `postcode`, `suburb`, `municipality`, `state`, `town`...), mais tous ces attributs ne sont pas toujours disponibles...
   - En revanche, l'information qui semble toujours être retourné est le code postal.
 
 - A partir du code postal, on ajoute la ville, le département et la région.
@@ -131,7 +133,6 @@
   - Sur le json archivé, c'est le cas pour 804 offres sur 13 639, soit 5.89% des offres.
 
 
-
 ##### Ajout des attributs de localisation
 
 - Dans ce cas, on a par exemple `libelle = 75 - Paris (Dept.)`, donc on va extraire le code du département dans la colonne `code_departement`, et récupérer `nom_departement`, `code_region` et `nom_region` à partir du fichier `code_name__city_department_region.csv`.
@@ -153,6 +154,7 @@
 Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code_name__city_department_region.csv`.
 
 
+
 #### Cas_5 : "code_postal = code_insee = latitude = longitude = NAN", et "libelle = ("FRANCE"|"France"|"France entière")"
 
 - C'est le cas le plus défavorable qui ne permet pas de retrouver la ville, le département ni la région.
@@ -164,17 +166,16 @@ Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code
 
 
 
-
-
 ## Transformations des données en aval (côté SQL)
 
 ### Attribut "metier_data"
 
 - Pour identifier les offres de "Data Engineer" parmi toutes les offres récupérées, le premier réflexe serait de filtrer sur le rome_code `M1811` qui correspond à `Data engineer`, mais on se rend compte que les offres d'emploi associées ne sont pas toutes liées à ce poste.
 
-- On retrouve en effet des postes d'architecte, d'ingénieur base de données, de data analyst, de data manager, de technicien data center, etc... (voir résultats de la requête `sql_requests/1_requests/offers_DE_DA_DS/10--table_descriptionoffre__rome_M1811.pgsql`)  # chemin à modifier
+- On retrouve en effet des postes d'architecte, d'ingénieur base de données, de data analyst, de data manager, de technicien data center, etc... (voir résultats de la requête `fastapi/sql_requests/10_table_DescriptionOffre/not_used_on_fastapi/3__rome_M1811.pgsql`).
 
-- L'attribut `intitule_offre` de la table `DescriptionOffre` sera donc utilisé pour filtrer les offres voulues (ici : `Data Engineer`, `Data Analyst` et `Data Scientist`) grâce à des requêtes qui utilisent des regex, écrivant la valeur `DE`, `DA`, `DS` dans l'attribut `metier_data` (voir `sql_requests/0_transformations`).
+
+- L'attribut `intitule_offre` de la table `DescriptionOffre` sera donc utilisé pour filtrer les offres voulues (ici : `Data Engineer`, `Data Analyst` et `Data Scientist`) grâce à des requêtes qui utilisent des regex, écrivant la valeur `DE`, `DA`, `DS` dans l'attribut `metier_data` (voir `airflow/dags/sql`).
 
 
 ### Attributs "salaire_min" et "salaire_max"
@@ -345,50 +346,6 @@ Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code
 - A noter aussi que les salaires des offres en alternance seront exclues ici car leur salaire est très majoritairement inférieur au seuil minimum qu'on a défini ici.
 
 
-# Airflow
-
-## SQLExecuteQueryOperator vs PostgresOperator
-
-Notes concernant l'erreur :
-
-  ```bash
-      from airflow.operators.postgres_operator import PostgresOperator
-  ModuleNotFoundError: No module named 'airflow.operators.postgres_operator'
-  ```
-
-  causé par :
-
-    ```python
-    from airflow.operators.postgres_operator import PostgresOperator
-    ```
-
-Après s'être connecté sur le conteneur "worker" :
-
-  ```bash
-  default@0ab352f980fd:/opt/airflow$ pip list | grep apache-airflow-providers-postgres
-  apache-airflow-providers-postgres         6.1.3
-  ```
-
-=> https://airflow.apache.org/docs/apache-airflow-providers-postgres/6.1.3/
-
-
-Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6.2.0/changelog.html#
-
-  ```md
-  à partir de la 6.0.0 :
-  Remove airflow.providers.postgres.operators.postgres.PostgresOperator. Please use airflow.providers.common.sql.operators.sql.SQLExecuteQueryOperator instead.
-  ```
-
-
-Conclusion : `PostgresOperator` est deprecated au profil de `SQLExecuteQueryOperator` avec la version `apache-airflow-providers-postgres` utilisée (6.1.3).
-C'est ce qu'il faudra pour l'exécution des requêtes SQL.
-
-  ```bash
-  default@0ab352f980fd:/opt/airflow$ cat /home/airflow/.local/lib/python3.12/site-packages/airflow/providers/common/sql/operators/sql.py  |  grep SQLExecuteQueryOperator
-  class SQLExecuteQueryOperator(BaseSQLOperator):
-  ```
-
-
 
 
 # Chargement des données dans une base de données relationnelle
@@ -450,14 +407,13 @@ Même problématique avec certaines offres qui voient la valeur de l'attribut `e
 
 
 
-# Consommation des données
 
-## Power BI
+# Power BI
 
-### Connexion avec la db
+## Connexion avec la db
 
-Voici pour information les items sur lesquels il faut cliquer :
-(cf https://learn.microsoft.com/fr-fr/power-query/connectors/postgresql)
+Voici les items sur lesquels il faut cliquer :
+  (cf https://learn.microsoft.com/fr-fr/power-query/connectors/postgresql)
 
 - `Blank report`
 
@@ -495,7 +451,7 @@ Voici pour information les items sur lesquels il faut cliquer :
           - fenêtre `Load` (qui finit par bien aboutir)
 
 
-### Model view
+## Model view
 
 - Onglet `model view` : on voit bien les 19 tables, on doit refaire les liens créés automatiquement.
 
@@ -508,7 +464,7 @@ Voici pour information les items sur lesquels il faut cliquer :
 
 
 
-### Table view
+## Table view
 
 - Création de la table de date
 
@@ -516,9 +472,9 @@ Voici pour information les items sur lesquels il faut cliquer :
   - Date Différence = DATEDIFF('Offre Emploi'[Date Création], 'Offre Emploi'[Date Actualisation], DAY)
 
 
-### Transformations
+## Transformations
 
-#### Renommage de toutes les colonnes
+### Renommage de toutes les colonnes
 
 - C'est juste pour Power BI.
 
@@ -528,7 +484,7 @@ Voici pour information les items sur lesquels il faut cliquer :
   - `Durée Travail Libellé` (au lieu de `duree_travail_libelle`)
 
 
-#### Attribut "Liste Mots-Clés"
+### Attribut "Liste Mots-Clés"
 
 - Exemple de valeur pour une offre : `{etl,git,"power bi",python,sql,tableau}`
 
@@ -539,9 +495,9 @@ Voici pour information les items sur lesquels il faut cliquer :
   - l'offre est donc splittée sur 6 lignes avec un seul mot-clé dans la colonne `Liste Mots Clés`
 
 
-#### Ajout de variables avec le nom des villes, départements et région modifiés pour la data viz
+### Ajout de variables avec le nom des villes, départements et région modifiés pour la data viz
 
-##### Ajout de la variable "Nom Ville Modifié"
+#### Ajout de la variable "Nom Ville Modifié"
 
 - Dans le `report view` / carte mondiale, on a des villes françaises qui sont situées dans d'autres pays, par exemple :
 
@@ -558,9 +514,9 @@ Voici pour information les items sur lesquels il faut cliquer :
 - Comme vu dans le dernier screenshot, pour avoir les villes placées en France, on définit une colonne `Nom Ville Modifié` avec le nom de la ville suffixé avec `, France` (par exemple `Cologne, France`).
 
 
-##### Ajout de la variable "Nom Département Modifié"
+#### Ajout de la variable "Nom Département Modifié"
 
-Même chose pour le département de la `Lot` qui est placé en Lituanie, on ajoute une colonne qui suffixera le nom du département avec `, France` :
+- Même chose pour le département de la `Lot` qui est placé en Lituanie, on ajoute une colonne qui suffixera le nom du département avec `, France` :
 
   - Département `Lot` en Lituanie :
 
@@ -572,7 +528,8 @@ Même chose pour le département de la `Lot` qui est placé en Lituanie, on ajou
     ![Département "Lot" en France](screenshots/power_bi/department_Lot_in_France.png)
 
 
-##### Ajout de la variable "Nom Région Modifié"
+
+#### Ajout de la variable "Nom Région Modifié"
 
 - Quand on affiche la carte du monde avec les régions de la France, on constate que 2 régions (la Bretagne et l'Occitanie) ne sont pas complètement coloriées comme les autres régions :
 
@@ -607,3 +564,47 @@ Même chose pour le département de la `Lot` qui est placé en Lituanie, on ajou
 
     ![Occitanie colorié entièrement](screenshots/power_bi/region_Occitanie_OK.png)
 
+
+# Airflow
+
+## SQLExecuteQueryOperator vs PostgresOperator avec Airflow 3.0
+
+- `PostgresOperator` est deprecated au profil de `SQLExecuteQueryOperator` avec la version `apache-airflow-providers-postgres` utilisée (6.1.3).
+
+- Il faudra donc utiliser `SQLExecuteQueryOperator` pour l'exécution des requêtes SQL.
+
+
+- En effet, l'erreur :
+
+  ```bash
+      from airflow.operators.postgres_operator import PostgresOperator
+  ModuleNotFoundError: No module named 'airflow.operators.postgres_operator'
+  ```
+
+  est causé par :
+
+    ```python
+    from airflow.operators.postgres_operator import PostgresOperator
+    ```
+
+Après s'être connecté sur le conteneur `airflow-worker` :
+
+  ```bash
+  default@0ab352f980fd:/opt/airflow$ pip list | grep apache-airflow-providers-postgres
+  apache-airflow-providers-postgres         6.1.3
+  ```
+
+=> https://airflow.apache.org/docs/apache-airflow-providers-postgres/6.1.3/
+
+
+Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6.2.0/changelog.html#
+
+  ```md
+  à partir de la 6.0.0 :
+  Remove airflow.providers.postgres.operators.postgres.PostgresOperator. Please use airflow.providers.common.sql.operators.sql.SQLExecuteQueryOperator instead.
+  ```
+
+  ```bash
+  default@0ab352f980fd:/opt/airflow$ cat /home/airflow/.local/lib/python3.12/site-packages/airflow/providers/common/sql/operators/sql.py  |  grep SQLExecuteQueryOperator
+  class SQLExecuteQueryOperator(BaseSQLOperator):
+  ```
