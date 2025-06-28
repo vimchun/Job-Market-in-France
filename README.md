@@ -10,12 +10,12 @@ Les objectifs sont globalement de :
 
   - travailler avec un environnement docker,
 
-  - mettre en place une API pour qu'un utilisateur puisse requêter la base de données via une interface graphique (ici avec FastAPI),
+  - mettre en place une API pour qu'un utilisateur puisse requêter la base de données via une interface graphique,
 
   - orchestrer les tâches avec Airflow.
 
 
-Pour alléger cette page principale, une autre page avec des informations supplémentaires est disponible dans cette ![page](readme_files/README_additional_notes.md)
+Pour ne pas surcharger cette page principale, une autre page avec des informations supplémentaires est disponible ![ici](readme_files/README_additional_notes.md).
 
 
 Le plan suivant présente un plan logique plutôt que de présenter les étapes qui ont été effectuées par ordre chronologique :
@@ -23,15 +23,24 @@ Le plan suivant présente un plan logique plutôt que de présenter les étapes 
 todo : toc
 
 
-
-# fourre tout à trier
-
-explication choix postgres (ex : intégration avec airflow)
-
-
 # Slideshow
 
-todo : à faire fin juillet pour la soutenance
+Voici un aperçu du projet :
+
+todo : un gif peut être pas mal
+
+
+# Skills set travaillés
+
+- Python
+- ETL/ELT : récupération de données par API, transformation en amont ou en aval, chargement dans une base de données
+- SQL
+- modélisation UML
+
+- Power BI
+- FastAPI
+- Docker
+- Airflow
 
 
 # Environnement technique
@@ -42,7 +51,7 @@ Développements et tests sous :
   - Airflow 3.0.2 (juin 2025), https://github.com/apache/airflow/releases
 
 
-## Getting started
+# Getting started
 
 - Clone le projet.
 
@@ -60,7 +69,9 @@ Développements et tests sous :
   ```
 
 
-## Arborescence du projet sans la partie liée à la conf Docker
+# Arborescence des fichiers du projet
+
+## Sans la partie liée à la conf Docker
 
 todo : revoir à la fin du projet
 
@@ -82,9 +93,9 @@ todo : revoir à la fin du projet
   ```
 
 
-## Configuration Docker
+## Avec seulement la configuration Docker
 
-Le fichier `docker-compose.yml` décrit les différents services déployés : `postgres`, `fastapi`, `redis`, `airflow-apiserver`, `airflow-scheduler`, `airflow-dag-processor`, `airflow-worker`, `airflow-triggerer`, `airflow-init`, `airflow-cli`, `flower`.
+- Le fichier `docker-compose.yml` décrit les différents services déployés : `postgres`, `fastapi`, `redis`, `airflow-apiserver`, `airflow-scheduler`, `airflow-dag-processor`, `airflow-worker`, `airflow-triggerer`, `airflow-init`, `airflow-cli`, `flower`.
 
 - Arborescence avec les éléments liés à la dockerisation :
 
@@ -120,15 +131,15 @@ Le fichier `docker-compose.yml` décrit les différents services déployés : `p
 
 ## Avant Airflow
 
-Avant d'appliquer Airflow au projet, 2 scripts python étaient nécessaires.
-Pour résumer et simplifier ce qu'ils faisaient ("simplifier" ici car ces scripts ont été remplacés par des DAGs qu'on détaillera après) :
+- Avant d'appliquer Airflow au projet, 2 scripts python étaient nécessaires.
+- Pour résumer et simplifier ce qu'ils faisaient ("simplifier" ici car ces scripts ont été remplacés par des DAGs qu'on détaillera après) :
   - Le premier récupérait les données de France Travail, faisait des transformations, et chargeait les offres d'emploi dans un json.
   - Le second lisait le json puis écrivait les offres d'emploi dans la base de données, et effectuait un deuxième lot de transformations à partir de fichier sql.
 
   ![screenshot du workflow](readme_files/screenshots/workflow.png)
 
 
-Reprendre ces scripts pour avoir Airflow dans le projet a été bénéfique :
+- Reprendre ces scripts pour avoir Airflow dans le projet a été bénéfique :
   - amélioration des fonctions définis
   - code plus compréhensible : factorisation de code, changement des noms de variables, revue des commentaires
   - meilleure façon d'écrire les offres d'emploi dans le json
@@ -138,7 +149,7 @@ Reprendre ces scripts pour avoir Airflow dans le projet a été bénéfique :
 
 ## Avec Airflow
 
-Les bénéfices d'Airflow sur ce projet sont multiples et évidents :
+- Les bénéfices d'Airflow sur ce projet sont multiples et évidents :
 
   - avoir une vision claire du workflow complet à travers la vue Graph du DAG
   - voir quelle fonction pose problème d'un coup d'oeil en cas d'échec et voir les logs associés à la tâche en échec
@@ -151,8 +162,9 @@ Les bénéfices d'Airflow sur ce projet sont multiples et évidents :
 
 ## Version utilisée
 
-Au moment d'écrire les DAGs, il y avait deux versions majeures : la 2.11.0 et la 3.0.1.
-Finalement, le choix se portera sur la version 3.0.x car cette nouvelle branche a des évolutions majeures (https://airflow.apache.org/blog/airflow-three-point-oh-is-here/).
+- Au moment d'écrire les DAGs, il y avait deux versions majeures : la 2.11.0 et la 3.0.2.
+
+- Finalement, le choix se portera sur la version 3.0.2 car cette nouvelle branche a des évolutions majeures (https://airflow.apache.org/blog/airflow-three-point-oh-is-here/).
 
 
 ## Description du worflow des DAGs
@@ -479,7 +491,8 @@ La base de données `francetravail` sera hébergée dans le conteneur Docker ex�
 
 ## Mise à jour de la base de données après récupération de nouvelles offres
 
-Lors de la mise à jour de la base de données après récupération de nouvelles offres, on peut avoir des attributs dont les valeurs ont changé.
+Une offre d'emploi peut être mise à jour, et voir par exemple la valeur d'un de ses attributs modifiée.
+Il faut gérer ce cas et mettre à jour la base de données en écrasant l'ancienne valeur d'un attribut avec sa nouvelle valeur.
 
 Par exemple, on peut avoir une offre avec un `experience_libelle` passer de `expérience exigée de 3 an(s)` à `débutant accepté`.
 
@@ -488,14 +501,16 @@ Même chose pour d'autres attributs.
 Pour gérer cela, l'attribut `date_extraction` est écrit dans toutes les tables de liaison.
 Ainsi, pour une offre, si un attribut d'une table de dimension associé à la table de liaison a évolué, alors on ne conservera que l'offre avec `date_extraction` le plus récent.
 
-Plus de détails ![ici](readme_files/README_additional_notes.md#mise_à_jour_de_la_base_de_données_après_récupération_de_nouvelles_offres)
+Plus de détails ![ici](readme_files/README_additional_notes.md#mise-à-jour-de-la-base-de-données-après-récupération-de-nouvelles-offres).
 
 
-# Consommation des données
 
-## Power BI
+# Power BI
 
 Power BI servira ici pour la data visualisation.
+
+
+## Manipulations
 
 Ci-dessous des liens expliquant les différentes manipulations faites pour :
 
@@ -508,12 +523,10 @@ Ci-dessous des liens expliquant les différentes manipulations faites pour :
   - ![faire les transformations](readme_files/README_additional_notes.md#transformations)
 
 
+## Screenshots des rapports
 
-## Analyse du jeu de données à travers des requêtes SQL
+TODO : faire à la fin du projet
 
-- voir le dossier `sql_requests/1_requests/offers_DE_DA_DS/`
-
-- Au moins une requête sera faite pour chaque table de dimension pour mieux comprendre notre jeu de données.
 
 
 # Création d'une API pour la db
@@ -523,3 +536,8 @@ Ci-dessous des liens expliquant les différentes manipulations faites pour :
 - Utilisation de `FastAPI`.
 
 - Pour les réponses, on utilisera la librairie `tabulate` avec `media_type="text/plain"` pour afficher un tableau qui facilitera la lecture, et qui diminuera le nombre de lignes des réponses.
+
+
+## Screenshots
+
+TODO : faire à la fin du projet
