@@ -36,12 +36,14 @@ todo : un gif peut être pas mal
 - ETL/ELT : récupération de données par API, transformation en amont ou en aval, chargement dans une base de données
 - SQL
 - modélisation UML
+- Linux
+- GIT
 
-- Power BI
 - FastAPI
 - Docker
 - Airflow
 
+- Power BI
 
 # Environnement technique
 
@@ -136,7 +138,7 @@ todo : revoir à la fin du projet
   - Le premier récupérait les données de France Travail, faisait des transformations, et chargeait les offres d'emploi dans un json.
   - Le second lisait le json puis écrivait les offres d'emploi dans la base de données, et effectuait un deuxième lot de transformations à partir de fichier sql.
 
-  ![screenshot du workflow](readme_files/screenshots/workflow.png)
+  ![screenshot du workflow](readme_files/screenshots/workflow_before_airflow.png)
 
 
 - Reprendre ces scripts pour avoir Airflow dans le projet a été bénéfique :
@@ -176,6 +178,7 @@ Pour alléger le texte, on écrira :
 - `fichier_existant.json` : fichier json aggrégeant les fichiers jsons téléchargés
 - `dossier_A` : dossier contenant tous les fichiers json téléchargés par api
 - `dossier_B` : dossier contenant le json fichier_existant.json
+- `data.json` : fichier json aggrégeant les fichiers jsons téléchargés en cours de construction, avant renommage
 
 
 ### DAG 1
@@ -190,18 +193,19 @@ Pour alléger le texte, on écrira :
   - Suppression du fichier `all_in_one.json` s'il existe
 
 
-- `S1_check_csv_file_exists`, `S1_check_appellation_yaml_file_exists`, `S1_check_credentials_yaml_file_exists`
+- tâches en parallèle :
 
-  - Vérification de la présence de ces fichiers :
-    - si un des fichiers n'existe pas : fin du DAG (exception levée)
+  - `S1_count_number_of_json_file`
+
+    - Vérification du nombre de fichiers json dans le `dossier_B` :
+      - s'il y a plusieurs fichiers json : fin du DAG (exception levée).
+      - s'il y a 0 ou 1 fichier json `fichier_existant.json` : on continue et on retourne "count", qui représente le nombre de fichiers json et qui servira plus tard dans ce DAG.
 
 
-- `S1_count_number_of_json_file`
+  - `S1_check_csv_file_exists`, `S1_check_appellation_yaml_file_exists`, `S1_check_credentials_yaml_file_exists`
 
-  - Vérification du nombre de fichiers json dans le `dossier_B` :
-    - s'il y a plusieurs fichiers json : fin du DAG (exception levée).
-    - s'il y a 0 ou 1 fichier json `fichier_existant.json` : on continue et on retourne "count" (nombre de fichiers json).
-
+    - Vérification de la présence de ces fichiers :
+      - si un des fichiers n'existe pas : fin du DAG (exception levée)
 
 
 ##### Task group "after_checks"
@@ -217,44 +221,40 @@ Pour alléger le texte, on écrira :
   - Chargement fichier yaml avec 61 métiers.
 
 
-- `S2_get_creds_from_yaml_file`
+- `S2_get_creds_from_yaml_file` puis `S2_get_token`
 
-  - Récupération des credentials depuis le fichier.
-
-
-- `S2_get_token`
-
-  - Récupération du token API.
+  - La première tâche récupère des credentials depuis le fichier.
+  - La seconde tâche récupère le token API.
 
 
 
 #### Task group "ETL"
 
+
 - `A1_get_offers`
 
-  - Récupération et écriture des offres d'emploi dans des fichiers json dans le dossier_A + vérification validité fichiers json [requests].
+  - Récupération et écriture des offres d'emploi dans des fichiers json dans le `dossier_A` + vérification validité fichiers json [requests].
+  - Le fichier yaml décrivant 61 métiers, Airflow exécute ici 61 `mapped tasks` en parallèle.
 
 
 - `A2_all_json_in_one`
 
-  - Consolidation de tous les fichiers json du dossier_A en un seul fichier json data.json dans le dossier_B et suppression des doublons [pandas].
+  - Consolidation de tous les fichiers json du `dossier_A` en un seul fichier json `data.json` dans le `dossier_B` et suppression des doublons [pandas].
 
 
 - `A3_only_metropole`
 
-  - Conservation uniquement dans les offres d'emploi en France Métropolitaine data.json [pandas].
+  - Conservation uniquement dans les offres d'emploi en France Métropolitaine `data.json` [pandas].
 
 
 - `A4_add_location_attrs`
 
-  - Ajout d'attributs dans data.json : `nom_commune`, `nom_ville`, `code_departement`, `nom_departement`, `code_region`, `nom_region` [pandas/geopy]
-    (à partir du code insee, coordonnées GPS et autres infos).
+  - Ajout d'attributs dans `data.json` : `nom_commune`, `nom_ville`, `code_departement`, `nom_departement`, `code_region`, `nom_region`, à partir du code insee, coordonnées GPS et autres infos [pandas/geopy]
 
 
 - `A5_add_dateExtraction_attr`
 
-  - Ajout d'un attribut dans data.json : `date_extraction` [pandas]
-    (pour connaitre la date d'extraction et la date où on écrit la première fois dans la base).
+  - Ajout d'un attribut dans `data.json` : `date_extraction`, pour connaitre la date d'extraction et la date où on écrit la première fois dans la base [pandas]
 
 
 - `A6_0_or_1_json_on_setup`
@@ -268,7 +268,7 @@ Pour alléger le texte, on écrira :
 
   - `A8_add_date_premiere_ecriture_attr`
 
-    - Ajout d'un attribut dans data.json : `date_premiere_ecriture` [pandas].
+    - Ajout d'un attribut dans `data.json` : `date_premiere_ecriture` [pandas].
 
 
   - `A9_rename_json_file`
@@ -282,12 +282,11 @@ Pour alléger le texte, on écrira :
 
   - `A7_special_jsons_concat`
 
-    - Concaténation spéciale entre le json existant et le nouveau json [pandas] + renommage fichier final + déplacement ancien json existant dans dossier "archives".
-
+    - Concaténation spéciale entre le json existant et le nouveau json (![détails de l'algo](readme_files/README_additional_notes.md#concaténation-spéciale-entre-le-json-existant-et-le-nouveau-json)) [pandas] + renommage fichier final + déplacement ancien json existant dans dossier "archives".
 
   - `A8_add_date_premiere_ecriture_attr`
 
-    - Ajout d'un attribut dans data.json : date_premiere_ecriture [pandas].
+    - Ajout d'un attribut dans `data.json` : date_premiere_ecriture [pandas].
 
       - Notes : l'attribut `date_premiere_ecriture` prendra la date du jour pour toutes les nouvelles offres, et conservera l'ancienne valeur pour les anciennes offres.
 
@@ -459,11 +458,11 @@ Ces transformations sont faites dans le `DAG 2`, faites via des requêtes SQL et
 
   - pour créer et écrire l'attribut `metier_data` : pour chaque offre, on comparera l'attribut `intitule_offre` avec des regex afin de déterminer s'il s'agit d'une offre pour un `Data Engineer`, un `Data Analyst`, ou un `Data Scientist`.
 
-    - ![détails ici](readme_files/README_additional_notes.md#attribut-metier-data)
+    - ![détails ici](readme_files/README_additional_notes.md#attribut-metier_data)
 
   - pour créer et écrire les attributs `salaire_min` et `salaire_max` en fonction d'un algorithme expliqué
 
-    - ![détails ici](readme_files/README_additional_notes.md#attributs-salaire-min-et-salaire-max)
+    - ![détails ici](readme_files/README_additional_notes.md#attributs-salaire_min-et-salaire_max)
 
 
 
@@ -474,45 +473,47 @@ Ces transformations sont faites dans le `DAG 2`, faites via des requêtes SQL et
   - Seuls les attributs liés aux `contacts` et aux `agences` ne seront pas conservés, n'apportant pas d'utilité.
 
 
-- Pour la suite, une modélisation `snowflake` est utilisée, dont le diagramme UML est le suivant :
+- Pour la suite, une modélisation `snowflake` est utilisée, dont le diagramme UML est ![ici](readme_files/screenshots/UML.png).
 
-  ![screenshot diagramme UML](screenshots/UML.png)
+  TODO : justifier ce choix
 
-- Le SGBD `PostgreSQL` sera utilisé. En effet :
+- Le SGBD `PostgreSQL` sera utilisé :
 
-  - PostgreSQL a été choisi pour ses performances, sa fiabilité et sa flexibilité.
-  - En tant que solution open source, il offre une grande transparence et une forte extensibilité.
-  - Il prend en charge des types de données complexes, respecte les principes ACID et bénéficie d’une communauté active assurant une évolution continue.
+  - Performant, sa fiable et sa flexible.
+  - Offre une grande transparence et une forte extensibilité, en tant que solution open source.
+  - Prend en charge des types de données complexes, respecte les principes ACID et bénéficie d’une communauté active assurant une évolution continue.
 
-La base de données `francetravail` sera hébergée dans le conteneur Docker exécutant le service PostgreSQL.
+- La base de données `francetravail` sera hébergée dans le conteneur Docker exécutant le service PostgreSQL.
 
 - Les données issues du json généré avec le `DAG 1` seront récupérées et écrites en base avec la librairie `psycopg2`.
 
 
 ## Mise à jour de la base de données après récupération de nouvelles offres
 
-Une offre d'emploi peut être mise à jour, et voir par exemple la valeur d'un de ses attributs modifiée.
-Il faut gérer ce cas et mettre à jour la base de données en écrasant l'ancienne valeur d'un attribut avec sa nouvelle valeur.
+- Une offre d'emploi peut être mise à jour, et voir par exemple la valeur d'un de ses attributs modifiée.
 
-Par exemple, on peut avoir une offre avec un `experience_libelle` passer de `expérience exigée de 3 an(s)` à `débutant accepté`.
+- Il faut gérer ce cas et mettre à jour la base de données en écrasant l'ancienne valeur d'un attribut avec sa nouvelle valeur.
 
-Même chose pour d'autres attributs.
+- Par exemple, on peut avoir une offre avec un `experience_libelle` passer de `expérience exigée de 3 an(s)` à `débutant accepté`.
 
-Pour gérer cela, l'attribut `date_extraction` est écrit dans toutes les tables de liaison.
-Ainsi, pour une offre, si un attribut d'une table de dimension associé à la table de liaison a évolué, alors on ne conservera que l'offre avec `date_extraction` le plus récent.
+- Même chose pour d'autres attributs.
 
-Plus de détails ![ici](readme_files/README_additional_notes.md#mise-à-jour-de-la-base-de-données-après-récupération-de-nouvelles-offres).
+- Pour gérer cela, l'attribut `date_extraction` est écrit dans toutes les tables de liaison.
+
+- Ainsi, pour une offre, si un attribut d'une table de dimension associé à la table de liaison a évolué, alors on ne conservera que l'offre avec `date_extraction` le plus récent.
+
+- Plus de détails ![ici](readme_files/README_additional_notes.md#mise-à-jour-de-la-base-de-données-après-récupération-de-nouvelles-offres).
 
 
 
 # Power BI
 
-Power BI servira ici pour la data visualisation.
+- Power BI servira ici pour la data visualisation.
 
 
 ## Manipulations
 
-Ci-dessous des liens expliquant les différentes manipulations faites pour :
+- Ci-dessous des liens expliquant les différentes manipulations faites pour :
 
   - ![connecter Power BI avec la db postgres](readme_files/README_additional_notes.md#connexion-avec-la-db)
 
