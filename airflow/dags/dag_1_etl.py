@@ -1,13 +1,17 @@
+import csv
 import json
 import os
+import shutil
 import time
 
 from datetime import datetime
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import requests
 import unidecode
+import yaml
 
 from geopy.geocoders import Nominatim
 
@@ -46,7 +50,7 @@ def delete_all_in_one_json():
         print(f"Le fichier n'existe pas : {file_to_remove}")
 
 
-def is_existing_file(file_path):
+def check_file_exists(file_path):
     """
     Vérifie la présence du fichier yaml "file_path".
       - Si True, on continue le DAG.
@@ -60,19 +64,19 @@ def is_existing_file(file_path):
     return None
 
 
-@task(task_id="S1_is_existing_csv_file")
-def is_existing_csv_file(file_path):
-    return is_existing_file(file_path)
+@task(task_id="S1_check_csv_file_exists")
+def check_csv_file_exists(file_path):
+    return check_file_exists(file_path)
 
 
-@task(task_id="S1_is_existing_appellation_yaml_file")
-def is_existing_appellations_yaml_file(file_path):
-    return is_existing_file(file_path)
+@task(task_id="S1_check_appellation_yaml_file_exists")
+def check_appellations_yaml_file_exists(file_path):
+    return check_file_exists(file_path)
 
 
-@task(task_id="S1_is_existing_credentials_yaml_file")
-def is_existing_credentials_yaml_file(file_path):
-    return is_existing_file(file_path)
+@task(task_id="S1_check_credentials_yaml_file_exists")
+def check_credentials_yaml_file_exists(file_path):
+    return check_file_exists(file_path)
 
 
 @task(task_id="S1_count_number_of_json_file")
@@ -133,7 +137,6 @@ def load_code_appellation_yaml_file():
         ...
       ]
     """
-    import yaml
 
     codes_appellation_filename = os.path.join(RESOURCES_DIR, "code_appellation_libelle.yml")
 
@@ -150,7 +153,6 @@ def get_creds_from_yaml_file(file_path):
     Récupération des credentials données sur le site de FT depuis un fichier yaml
     Retourne un dictionnaire utile pour la fonction "get_bearer_token()"
     """
-    import yaml
 
     with open(file_path, "r") as file:
         creds = yaml.safe_load(file)
@@ -823,10 +825,7 @@ def add_location_attributes(aggregated_json_directory, json_filename, new_json_f
     # - nom_region
 
     # On supprime "intitule" car il est déjà dans le Dataframe "df", et "libelle"/"latitude"/"longitude" qui ne nous intéressent plus
-    df_lieu = df_lieu.drop(
-        ["intitule", "libelle", "latitude", "longitude"],
-        axis=1,
-    )
+    df_lieu = df_lieu.drop(["intitule", "libelle", "latitude", "longitude"], axis=1)
 
     # On ordonne les colonnes pour avoir un ordre plus logique (du plus spécifique au moins spécifique)
     df_lieu = df_lieu[
@@ -845,10 +844,7 @@ def add_location_attributes(aggregated_json_directory, json_filename, new_json_f
     ]
 
     # On supprime la colonne "lieuTravail" qui ne nous intéresse plus dorénavant, et les attributs de cette colonne
-    df = df.drop(
-        ["lieuTravail", "libelle", "latitude", "longitude", "codePostal", "commune"],
-        axis=1,
-    )
+    df = df.drop(["lieuTravail", "libelle", "latitude", "longitude", "codePostal", "commune"], axis=1)
 
     df_final = pd.merge(left=df, right=df_lieu, on="id")
 
@@ -917,10 +913,6 @@ def special_jsons_concatenation(aggregated_json_directory):
 
     Retourne le nom du json qu'il reste dans le dossier, soit "new_json_file"
     """
-
-    import shutil
-
-    from pathlib import Path
 
     now = datetime.now().strftime("%Y-%m-%d--%Hh%M")
     json_file_in_generated_directory = [file for file in os.listdir(aggregated_json_directory) if file.endswith(".json")]
@@ -1106,7 +1098,6 @@ def write_to_history_csv_file(aggregated_json_directory):
 
     Ne retourne rien.
     """
-    import csv
 
     json_file_in_generated_directory = [file for file in os.listdir(aggregated_json_directory) if file.endswith(".json")]
 
@@ -1129,9 +1120,9 @@ def write_to_history_csv_file(aggregated_json_directory):
 with DAG(dag_id="DAG_1_ETL", tags=["project"]):
     with TaskGroup(group_id="SETUP") as setup:
         with TaskGroup(group_id="check_files_in_folders") as check:
-            is_existing_csv_file(LOCATION_CSV_FILENAME)  #### task S1
-            is_existing_appellations_yaml_file(CODES_APPELLATION_FILENAME)  #### task S1
-            is_existing_credentials_yaml_file(CREDENTIAL_FILENAME)  #### task S1
+            check_csv_file_exists(LOCATION_CSV_FILENAME)  #### task S1
+            check_appellations_yaml_file_exists(CODES_APPELLATION_FILENAME)  #### task S1
+            check_credentials_yaml_file_exists(CREDENTIAL_FILENAME)  #### task S1
 
             delete_json = delete_all_in_one_json()  #### task S1
             count = count_number_of_json_file(AGGREGATED_JSON_DIR)  #### task S1
