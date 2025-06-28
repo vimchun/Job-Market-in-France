@@ -347,56 +347,6 @@ Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code
 
 # Airflow
 
-
-## Création "automatique" de connexion Postgres
-
-Notes : Il aurait été mieux de créer une connexion depuis un DAG, pour ne pas avoir à exécuter le script `scripts/create_postgres_connection_on_airflow.sh`, mais il ne semble pas possible de le faire sur Airflow 3 (à creuser).
-
-  - création de la connexion via la librairie `Connection`
-
-    ```py
-    from airflow import DAG, settings
-    from airflow.models.connection import Connection
-    from airflow.operators.python import PythonOperator
-
-
-    def create_postgres_conn(**kwargs):
-        session = settings.Session()
-        print("Session created")
-        connections = session.query(Connection)
-        print("Connections listed")
-        if not kwargs["conn_id"] in [connection.conn_id for connection in connections]:
-            conn = Connection(conn_id=kwargs["conn_id"], conn_type="postgres", host="postgres", login="airflow", password="airflow", schema="airflow")
-            session.add(conn)
-            session.commit()
-            print("Connection Created")
-        else:
-            print("Connection already exists")
-        session.close()
-
-
-    with DAG(dag_id="dag_1") as dag:
-        create_conn = PythonOperator(task_id="try_create_connection_with_session", python_callable=create_postgres_conn, op_kwargs={"conn_id": "postgres"})
-    ```
-
-    => Erreur rencontrée : `RuntimeError: Direct database access via the ORM is not allowed in Airflow 3.0`
-
-
-  - création de la connexion via la librairie `BashOperator`
-
-    ```py
-    from airflow import DAG
-    from airflow.operators.bash import BashOperator
-
-    with DAG(dag_id="dag_2") as dag:
-        create_conn = BashOperator(
-            task_id="try_create_connection_with_bashop",
-            bash_command='airflow connections add "ma_connexion" --conn-uri "postgres://mhh:mhh@postgres:5432/francetravail"',
-        )
-    ```
-    => Erreur rencontrée : `sqlalchemy.exc.ArgumentError: Could not parse SQLAlchemy URL from string 'airflow-db-not-allowed:///'`
-
-
 ## SQLExecuteQueryOperator vs PostgresOperator
 
 Notes concernant l'erreur :
