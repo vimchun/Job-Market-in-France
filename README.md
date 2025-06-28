@@ -59,21 +59,6 @@ Développements et tests sous :
   ./scripts/restart_all_docker_services.sh
   ```
 
-- Créer la connexion `postgres` :
-
-```bash
-  ./scripts/create_postgres_connection_on_airflow.sh
-  ```
-
-- On pourra vérifier que la connexion est bien créée via la GUI comme montré sur le screenshot suivant :
-
-  ![airflow_edit_connection](readme_files/screenshots/airflow_gui_edit_connection.png)
-
-   (si la connexion n'est pas bien définie, alors le `DAG 2` posera problème)
-
-
-Dans l'idéal, il aurait fallu créer cette connexion de manière "encore plus automatique" avec une tâche dans le `DAG 2` (cela permettra de ne pas avoir à exécuter le script précédent), mais certaines problématiques nous en empêchent. Ceci est documenté ![ici](readme_files/README_additional_notes.md#création-automatique-de-connexion-postgres)
-
 
 ## Arborescence du projet sans la partie liée à la conf Docker
 
@@ -316,14 +301,30 @@ Pour alléger le texte, on écrira :
   - Suppression des fichiers json dans le `dossier_A`.
 
 
+- `ensure_postgres_connexion`
+
+  - Vérification de l'existence de la connexion postgres nommée `connection_postgres`, et que ses paramètres sont conformes à celles spécifiés dans le script.
+    - Suppression et création de celle-ci en cas de paramètres non conformes.
+
+  - Création de la connexion si connection inexistante.
+
+  - Note : on peut vérifier que la connexion est bien créée via la GUI comme montré sur le screenshot suivant :
+
+    ![airflow_edit_connection](readme_files/screenshots/airflow_gui_edit_connection.png)
+
+    (si la connexion n'est pas bien définie, alors le `DAG 2` posera problème puisqu'il ne pourra pas intéragir avec la base de donnée `francetravail`)
+
+
 - `split_large_json`
 
-  - split le gros fichier json final en plusieurs jsons dédiés pour les tâches suivantes du DAG.
+  - Split le gros fichier json final en plusieurs jsons dédiés pour les tâches suivantes du DAG.
   - L'intérêt est que toutes les tâches ne lisent pas le même gros fichier json, et que chaque tâche lise chacun son fichier json dédié.
+
 
 - `SQLExecuteQueryOperator()` avec le fichier `sql/create_all_tables.sql`
 
   - Création de toutes les tables du projet si elles n'existent pas.
+
 
 
 
