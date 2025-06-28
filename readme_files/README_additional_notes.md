@@ -406,6 +406,27 @@ Même problématique avec certaines offres qui voient la valeur de l'attribut `e
     - lors de `date_extraction = 2025-04-05` : `experienceExige = D` et `experienceLibelle = Débutant accepté` (par exemple `experience_id = 2`)
 
 
+## Concaténation spéciale entre le json existant et le nouveau json
+
+- A la fin du DAG 1, une concaténation spéciale a lieu entre le json exitant (qu'on appelle `json_A` pour simplifier) et le nouveau json (`json_B`).
+
+- Elle permet de :
+
+  - conserver les offres de `json_A` qui n'existent plus dans `json_B`
+    - ce sont les offres d'emploi qui ne sont plus d'actualité
+
+  - mettre à jour les offres avec les valeurs des attributs de `json_A` avec les valeurs de `json_B`,
+    - ce sont les offres d'emploi ayant été mises à jour
+
+  - ajouter les offres de `json_B` qui n'étaient pas présentes dans `json_A`
+    - ce sont les nouvelles offres
+
+
+- Cette concaténation spéciale est expliquée/illustrée dans ce fichier `drawio_files/db_update.drawio`.
+
+- En voici un screenshot :
+
+  ![ici](screenshots/db_update.png)
 
 
 # Power BI
