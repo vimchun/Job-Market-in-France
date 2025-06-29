@@ -1,0 +1,1616 @@
+[
+    {
+        "id": "188VMCV",
+        "intitule": "Administrateur d'exploitation IBMi (H/F)",
+        "description": "Rejoignez un leader de la transformation digitale et évoluez au sein d'une équipe engagée sur des infrastructures exigeantes.\nIntégrez notre équipe RUN et devenez un acteur clé de la performance de nos infrastructures !\n\nVotre mission\n- Assurer l'exploitation et la maintenance des infrastructures IBM i pour garantir une disponibilité optimale.\n- Surveiller, analyser et optimiser la production (sauvegardes, haute disponibilité, performances...).\n- Appliquer et renforcer les règles de sécurité, gérer les droits d'accès et garantir l'intégrité des systèmes.\n- Automatiser et optimiser les tâches récurrentes pour gagner en efficacité.\n- Accompagner les équipes support dans leur montée en compétences.\n- Participer activement aux projets d'exploitation et aux montées de versions.\nProfil recherché\nExpérience de 2 à 5 ans en exploitation IBM i.\nMaîtrise des outils BRMS, DataDomain et d'une des solutions d'ordonnancement : IJS, VTOM ou Opcon.\nConnaissance des langages CLP, RPG, SQL, SHELL.\nEsprit d'analyse, autonomie et excellent relationnel : vous aimez résoudre des problématiques complexes et travailler en équipe.\n\nCe que nous offrons:\n- Une rémunération attractive avec primes et participation aux résultats.\n- Avantages sociaux : tickets restaurant, mutuelle, prise en charge des transports.\n- Des perspectives d'évolution réelles au sein d'un groupe en pleine croissance.\n- Un environnement technique stimulant et une montée en compétences assurée.",
+        "dateCreation": "2025-02-28T11:00:58.629Z",
+        "dateActualisation": "2025-02-28T13:21:40.016Z",
+        "romeCode": "M1817",
+        "romeLibelle": "Administrateur / Administratrice sécurité informatique",
+        "appellationlibelle": "Administrateur / Administratrice sécurité informatique",
+        "entreprise": {
+            "nom": "HARDIS GROUPE",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "CDI",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "E",
+        "experienceLibelle": "3 An(s)",
+        "competences": [
+            {
+                "code": "300204",
+                "libelle": "Administrer un système d'informations",
+                "exigence": "S"
+            }
+        ],
+        "salaire": {
+            "commentaire": "Déterminée  en fonction du profil",
+            "complement1": "Autre"
+        },
+        "dureeTravailLibelle": "35H Autre",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "nom": "HARDIS GROUPE - Mme Stella DI NOTO",
+            "coordonnees1": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/188VMCV",
+            "courriel": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/188VMCV"
+        },
+        "agence": {
+
+        },
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": "1",
+        "deplacementLibelle": "Jamais",
+        "qualificationCode": "7",
+        "qualificationLibelle": "Technicien",
+        "codeNAF": "62.01Z",
+        "secteurActivite": "62",
+        "secteurActiviteLibelle": "Programmation informatique",
+        "qualitesProfessionnelles": [
+            {
+                "libelle": "Faire preuve d'autonomie",
+                "description": "Capacité à prendre en charge son activité sans devoir être encadré de façon continue (le cas échéant, à solliciter les autres acteurs de l'entreprise)."
+            },
+            {
+                "libelle": "Faire preuve de rigueur et de précision",
+                "description": "Capacité à réaliser des tâches en suivant avec exactitude les règles, les procédures, les instructions qui ont été fournies, sans réaliser d'erreur et à transmettre clairement des informations. Se montrer ponctuel et respectueux des règles de savoir-vivre usuelles."
+            },
+            {
+                "libelle": "Travailler en équipe",
+                "description": "Capacité à travailler et à se coordonner avec les autres au sein de l'entreprise pour réaliser les objectifs fixés."
+            }
+        ],
+        "origineOffre": {
+            "origine": "1",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/188VMCV"
+        },
+        "offresManqueCandidats": false,
+        "contexteTravail": {
+            "horaires": [
+                "35H Autre"
+            ],
+            "conditionsExercice": [
+                "Autre"
+            ]
+        },
+        "formations": null,
+        "langues": null,
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_1",
+        "code_insee": "38485",
+        "nom_commune": "Seyssinet-Pariset",
+        "code_postal": "38170",
+        "nom_ville": "Seyssinet-Pariset",
+        "code_departement": "38",
+        "nom_departement": "Isère",
+        "code_region": "84",
+        "nom_region": "Auvergne-Rhône-Alpes",
+        "dateExtraction": "2025-03-02",
+        "datePremiereEcriture": "2025-03-02"
+    },
+    {
+        "id": "188TYYN",
+        "intitule": "Technicien Sécurité Informatique Débutant H/F (H/F)",
+        "description": "Intégré(e) à notre équipe dédiée à la sécurité, vous participerez activement à la gestion du SOC en charge des infrastructures informatiques de nos clients :\n\n * Réalisation de checklists\n * Analyse de logs\n * Détection de comportements inhabituels et de vulnérabilités\n * Analyse et suivi des incidents\n * Reporting client\n   \n\nCe que nous proposons :\n\n * Un contrat en CDI à pourvoir dès maintenant\n * Une rémunération attractive\n * Une formation à nos méthodes, process, outils, techniques et services\n * Des possibilités d'évolution\n * De bonnes conditions de travail (investissement, proximité, réactivité.)\n * Une entreprise qui bouge et à la pointe de la technologie (R&D, High Tech, Innovations digitales.)\n * RTT\n\n * Bac+2 minimum\n * Des connaissances en système et réseaux seraient un plus\n * Curiosité, pugnacité, rigueur et réactivité\n * Attrait pour la cybersécurité",
+        "dateCreation": "2025-02-27T17:24:39.560Z",
+        "dateActualisation": "2025-02-27T17:24:40.015Z",
+        "romeCode": "M1817",
+        "romeLibelle": "Administrateur / Administratrice sécurité informatique",
+        "appellationlibelle": "Administrateur / Administratrice sécurité informatique",
+        "entreprise": {
+            "nom": "OLYMPE CYBERDEFENSE",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "CDI",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "D",
+        "experienceLibelle": "Débutant accepté",
+        "competences": null,
+        "salaire": {
+            "libelle": "Annuel de 23000.0 Euros à 26000.0 Euros sur 12.0 mois"
+        },
+        "dureeTravailLibelle": "35H Travail en journée",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "coordonnees1": "https://taleez.com/apply/technicien-securite-informatique-debutant-h-f-eslettes-groupe-frameip-cdi-1/applying",
+            "urlPostulation": "https://taleez.com/apply/technicien-securite-informatique-debutant-h-f-eslettes-groupe-frameip-cdi-1/applying"
+        },
+        "agence": {
+
+        },
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": null,
+        "deplacementLibelle": null,
+        "qualificationCode": "5",
+        "qualificationLibelle": "Employé non qualifié",
+        "codeNAF": "62.02A",
+        "secteurActivite": "62",
+        "secteurActiviteLibelle": "Conseil en systèmes et logiciels informatiques",
+        "qualitesProfessionnelles": null,
+        "origineOffre": {
+            "origine": "1",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/188TYYN"
+        },
+        "offresManqueCandidats": false,
+        "contexteTravail": {
+            "horaires": [
+                "35H Travail en journée"
+            ],
+            "conditionsExercice": [
+                ""
+            ]
+        },
+        "formations": null,
+        "langues": null,
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_1",
+        "code_insee": "76245",
+        "nom_commune": "Eslettes",
+        "code_postal": "76710",
+        "nom_ville": "Eslettes",
+        "code_departement": "76",
+        "nom_departement": "Seine-Maritime",
+        "code_region": "28",
+        "nom_region": "Normandie",
+        "dateExtraction": "2025-03-02",
+        "datePremiereEcriture": "2025-03-02"
+    },
+    {
+        "id": "188TSBV",
+        "intitule": "Technicien administrateur des systèmes d'information (H/F)",
+        "description": "Le poste :\nAu sein de la DSIN (56 agents), sous la responsabilité du chef du service Infrastructure (350 serveurs), réseau, téléphonie (5100 lignes) et sécurité, et en lien avec l'ingénieur Système et Sécurité, vous aurez pour missions principales l'exploitation, le Maintien en Condition Opérationnelle (MCO) et de sécurité ainsi que la maintenance du Systèmes d'Information. Vous participerez à son évolution, à la conduite des projets en relation avec le service des études\n\nVos missions :\n- Exploitation : assurer quotidiennement le contrôle des opérations automatisées (sauvegarde...), maintenir à jour la cartographie des composants du SI, assurer le fonctionnement des services d'infrastructures (matériels et logiciels), superviser le fonctionnement du SI\n- Sécurité :  mettre en place et exploiter les outils de sécurité, participer à la détection des failles de sécurité et à leur remédiation, sensibiliser les utilisateurs\n- MCO et MCS du SI : mettre à jour les matérielles et les logicielles, anticiper les besoins d'augmentation de ressources, résolution des incidents\n\nVotre profil :\n- Titulaire d'un Bac +2/3 en informatique, spécialisation en sécurité des systèmes d'information , vous présentez une expérience sur un poste similaire et connaissez les normes juridiques et réglementaires de sécurité et les standards d'exploitation\n- Vous disposez d'une très bonne maîtrise des technologies de réseau et télécommunications et des des outils de sécurité informatique (firewalls, antivirus,...) et avez un réel intérêt pour les avancées techniques en matière de cybersécurité\n- Vous présentez des qualités relationnelles et êtes en capacité d'animer une équipe opérationnelle et de prestataires\n- Vous connaissez la fonction publique territoriale et les procédures de la commande publique \n\nVos savoir-être :\n- Sens de l'organisation\n- Forte réactivité face aux incidents\n- Sens de l'analyse et de l'anticipation\n- Autonomie, rigueur, proactivité\n\nVotre candidature :\nRecrutement par voie de mutation, détachement, inscription sur liste d'aptitude ou à titre contractuel.\n\nAdressez CV et lettre de motivation (OBLIGATOIRE) avant le 28/03/2025 à Monsieur le Président de Le Mans Métropole.",
+        "dateCreation": "2025-02-27T15:18:44.852Z",
+        "dateActualisation": "2025-02-28T08:16:10.337Z",
+        "romeCode": "M1817",
+        "romeLibelle": "Administrateur / Administratrice sécurité informatique",
+        "appellationlibelle": "Administrateur / Administratrice sécurité informatique",
+        "entreprise": {
+            "nom": "LE MANS METROPOLE COMMUNAUTE URBAINE",
+            "description": "Notre collectivité\nPorte d'entrée du grand Ouest, à une heure de Paris en train, la Ville du Mans et sa métropole (210 000 habitants) portent des ambitions inédites en matière de culture, d'innovations durables, d'aménagement urbain et de santé. Leur dynamisme, traduit par l'action quotidienne de près de 5 000 femmes et hommes exerçant 150 métiers différents, est accompagné par le lancement d'un projet d'administration ambitieux : TEAM. Intégrez notre TEAM pour travailler ensemble au Mans !",
+            "url": "http://www.lemansmetropole.fr/citoyen/la-collectivite/les-recrutements/les-offres-demploi/",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDD",
+        "typeContratLibelle": "CDD - 12 Mois",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "D",
+        "experienceLibelle": "Débutant accepté",
+        "competences": [
+            {
+                "code": "300204",
+                "libelle": "Administrer un système d'informations",
+                "exigence": "S"
+            },
+            {
+                "code": "115801",
+                "libelle": "Gérer la sécurité informatique",
+                "exigence": "S"
+            }
+        ],
+        "salaire": {
+            "commentaire": "Selon la situation administrative",
+            "complement1": "Autre"
+        },
+        "dureeTravailLibelle": "35H Autre",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "nom": "LE MANS METROPOLE COMMUNAUTE URBAINE - M. Stéphane LE FOLL",
+            "coordonnees1": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/188TSBV",
+            "courriel": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/188TSBV"
+        },
+        "agence": {
+
+        },
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": "2",
+        "deplacementLibelle": "Ponctuels Zone départementale",
+        "qualificationCode": "6",
+        "qualificationLibelle": "Employé qualifié",
+        "codeNAF": "84.11Z",
+        "secteurActivite": "84",
+        "secteurActiviteLibelle": "Administration publique générale",
+        "qualitesProfessionnelles": [
+            {
+                "libelle": "Faire preuve de rigueur et de précision",
+                "description": "Capacité à réaliser des tâches en suivant avec exactitude les règles, les procédures, les instructions qui ont été fournies, sans réaliser d'erreur et à transmettre clairement des informations. Se montrer ponctuel et respectueux des règles de savoir-vivre usuelles."
+            },
+            {
+                "libelle": "Organiser son travail selon les priorités et les objectifs",
+                "description": "Capacité à planifier, prioriser, anticiper des actions, en tenant compte des moyens, des ressources, des objectifs et du calendrier pour les réaliser."
+            }
+        ],
+        "origineOffre": {
+            "origine": "1",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/188TSBV"
+        },
+        "offresManqueCandidats": false,
+        "contexteTravail": {
+            "horaires": [
+                "35H Autre"
+            ],
+            "conditionsExercice": [
+                "Autre"
+            ]
+        },
+        "formations": null,
+        "langues": null,
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_1",
+        "code_insee": "72181",
+        "nom_commune": "Le Mans",
+        "code_postal": "72000",
+        "nom_ville": "Le Mans",
+        "code_departement": "72",
+        "nom_departement": "Sarthe",
+        "code_region": "52",
+        "nom_region": "Pays de la Loire",
+        "dateExtraction": "2025-03-02",
+        "datePremiereEcriture": "2025-03-02"
+    },
+    {
+        "id": "188LMFH",
+        "intitule": "Administrateur systèmes, réseaux et sécurité (H/F)",
+        "description": "LE DEPARTEMENT DE LA LOZERE recrute par voie statutaire ou à défaut contractuelle pour la Direction Générale Adjointe des Infrastructures Départementales / Direction des Systèmes d'Information et du Numérique / Service Infrastructures, Sécurité, Équipements numérique et \nOutils collaboratifs (ISEC) : 1 Administrateur systèmes, réseaux et sécurité   (H/F) à temps complet (Cadre d'emplois des Ingénieurs ou Attachés).\nDescriptif du poste : \nAu sein de la Direction des Systèmes d'Information et du Numérique et placé sous l'autorité hiérarchique du chef(fe) de service ISEC, vous êtes chargé de piloter le projet de sécurisation de la Collectivité et construire sa résilience. Vous êtes également chargé d'administrer, avec vos collègues, les différents composants d'infrastructure de la Collectivité.\nMissions :\nSur le plan de la cybersécurité vos missions seront : \n- Piloter et suivre le projet de sécurisation du système informatique de la Collectivité ;\n- D'élaborer une cartographie complète du Système d'Information\n- Appliquer et faire vivre la politique de sécurité des systèmes d'information. \n- Organiser la gestion des incidents et la résilience de la Collectivité\n- Assurer une veille technologique sur son secteur\n\nVous serez également en charge des missions suivantes d'administration système et réseaux sur les thématiques suivantes :\n- Réseaux et des composants de sécurité ;\n- Serveurs, baies de stockage et système de sauvegarde ;\n- Téléphonie IP et classique ;\n- Bases de données de la collectivité  ;\nProfil : BAC + 3/5 Informatique\nMaîtrise des réseaux TCP/IP Ethernet - MAN/WAN - Hertzien - Fibre Optique\nMaîtrise des composants de sécurité informatique (Pare feux - Serveur Mandataire - certificats d'authentification - Antivirus - contrôle des accès et double authentification)\nMaîtrise du système d'information et des principes d'architecture\nConnaissances des solutions de sécurité du marché\nConnaissance des systèmes d'exploitations Linux - Unix - Windows et bases de données \nConnaissances des normes de référence informatique (ITIL, ISO27001, LIL3,...Etc) \nMaîtrise de la démarche de projet, des méthodes de conduite de projets informatique, des architectures techniques\nConnaissance des systèmes de base de données\nConnaissance de la démarche d'urbanisation et de la cartographie d'architecture technique\nConnaissance de la téléphonie sur IP\nConnaissance des méthodes et des outils de sauvegarde des données\nMaîtrise de l'anglais technique et être apte à tenir une conversation orale - Règles et aspects légaux des systèmes d'information.\nJe vous remercie d'adresser les candidatures (lettre de motivation + CV) par le biais de cette offre.",
+        "dateCreation": "2025-02-20T13:39:58.658Z",
+        "dateActualisation": "2025-02-26T10:41:05.334Z",
+        "romeCode": "M1817",
+        "romeLibelle": "Administrateur / Administratrice sécurité informatique",
+        "appellationlibelle": "Administrateur / Administratrice sécurité informatique",
+        "entreprise": {
+            "nom": "CONSEIL DEPARTEMENTAL LOZERE",
+            "description": "Pour plus de renseignements sur le poste l'annonce est en ligne sur notre site : lozere.fr",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "CDI",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "E",
+        "experienceLibelle": "36 Mois",
+        "competences": [
+            {
+                "code": "300204",
+                "libelle": "Administrer un système d'informations",
+                "exigence": "S"
+            }
+        ],
+        "salaire": {
+            "commentaire": "Grille indiciaire",
+            "complement1": "Autre"
+        },
+        "dureeTravailLibelle": "35H Autre",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "nom": "CONSEIL DEPARTEMENTAL LOZERE - M. Cyril FOISSAC",
+            "coordonnees1": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/188LMFH",
+            "courriel": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/188LMFH"
+        },
+        "agence": {
+
+        },
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": null,
+        "deplacementLibelle": null,
+        "qualificationCode": "9",
+        "qualificationLibelle": "Cadre",
+        "codeNAF": "84.11Z",
+        "secteurActivite": "84",
+        "secteurActiviteLibelle": "Administration publique générale",
+        "qualitesProfessionnelles": null,
+        "origineOffre": {
+            "origine": "1",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/188LMFH"
+        },
+        "offresManqueCandidats": false,
+        "contexteTravail": {
+            "horaires": [
+                "35H Autre"
+            ],
+            "conditionsExercice": [
+                "Autre"
+            ]
+        },
+        "formations": [
+            {
+                "niveauLibelle": "Bac+3, Bac+4 ou équivalents",
+                "commentaire": "Informatique",
+                "exigence": "S"
+            }
+        ],
+        "langues": null,
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_1",
+        "code_insee": "48095",
+        "nom_commune": "Mende",
+        "code_postal": "48000",
+        "nom_ville": "Mende",
+        "code_departement": "48",
+        "nom_departement": "Lozère",
+        "code_region": "76",
+        "nom_region": "Occitanie",
+        "dateExtraction": "2025-03-02",
+        "datePremiereEcriture": "2025-03-02"
+    },
+    {
+        "id": "188JCHD",
+        "intitule": "Adjoint du Chef de Service Informatique et Multimédia (H/F)",
+        "description": "RÉSUMÉ DU POSTE : référence 15583\nAssurer l'étude, la commande, l'installation, garantir le fonctionnement et la disponibilité des\néquipements informatiques et/ ou téléphoniques (matériels - logiciels) ; prendre en charge le\ntraitement des données et leur exploitation, l'assistance aux utilisateurs et la résolution des incidents\nde premier niveau.\n\nDESCRIPTIF DES ACTIVITÉS\nL'agent devra assurer les missions suivantes :\n- Prendre en charge les études, les demandes de devis, les réceptions, les inventaires, les\ninstallations, les modifications, les mises à jour des équipements informatiques (matériels, réseaux,\ncomposants logiciels d'infrastructure) et les détections de défauts\n- Assurer la permanence et la surveillance des salles informatiques utilisées à des fins\nd'enseignement et en libre accès sur demande\n- Assurer la logistique, les stocks, les inventaires, la gestion des ouvertures et fermetures des salles\ninformatiques\n- Assurer les mises à jour et les maintenances des postes informatiques des salles de TP\n- Assurer l'assistance de matériels, de logiciels de premier niveau auprès des utilisateurs (étudiants,\nenseignants et personnels BIATSS)\n- Assister, accompagner et conseiller les utilisateurs à l'usage courant des outils informatiques,\nbureautiques, de la messagerie électronique mis à leur disposition et en matière de sécurité\ninformatique (résolution ou remontée des incidents et optimisation des performances, etc.)\n- Veiller à la qualité du service\n- Signaler des incidents et anomalies de fonctionnement sur les postes de travail imprimantes et\nautres périphériques ;\n- Procéder aux dépannages de premier niveau de ces différents matériels :\n- Installer le câblage réseau et les bornes WiFi : remplacement, branchement, modification,\nentretien, brassage, détection de défauts ;\n- Gérer et tenir à jour les informations sur l'état du parc (matériels informatiques, audiovisuels,\npériphériques, logiciels, licences)\n- Mettre au rebut des matériels informatiques non réparables et obsolètes\n- Participer à des réunions ponctuelles à l'Université\n- Contrôler le bon fonctionnement des applications et remonter les demandes d'évolution\n- Suivre l'exploitation des systèmes, outils de production et/ou des applicatifs\n- Participer aux actions de formation et d'accompagnement des utilisateurs\n- Anticiper les contraintes environnementales et techniques\n- Rédiger des comptes rendu d'intervention, des notices utilisateurs, des fiches de procédures\n- Participer aux activités audiovisuelles et visioconférences en cas de pics d'activité\n\nPROFIL RECHERCHÉ\nConnaissances\n- Applications métiers\n- Systèmes d'exploitation (connaissances générales)\n- Architecture des équipements locaux (connaissances générales)\n- Architecture et l'environnement technique du système d'information\n- Diagnostic et résolution de problèmes\n- Technologies des équipements audiovisuels et multimédia (notion de base)\n- Sécurité des systèmes d'information\n- Systèmes de gestion de base de données (notion de base)\n- Environnement et réseaux professionnels\n- Anglais : Technique (connaissance générale)\nSavoir-faire - Compétences opérationnelles\n- Utiliser les outils et/ou des techniques de gestion de parc informatique\n- Appliquer les techniques d'installation et de maintenance des équipements\n- Conduire un entretien d'assistance par téléphone (maîtrise) ou par télémaintenance\n- Appliquer les procédures et techniques de service Après-vente\n- Travailler en équipe\n- Appliquer les normes, procédures et règles\n- Savoir planifier et respecter des délais\nSavoir-être - Compétences comportementales\n- Rigueur, fiabilité, dévouement, méthode, sincérité, réactivité et loyauté\n- Sens de l'organisation, de discrétion, de l'initiative et de pédagogie\n- Capacité d'écoute, d'analyse, d'adaptation et aussi à rendre compte\nEn parallèle à ses missions, l'agent devra participer et renforcer le Service",
+        "dateCreation": "2025-02-18T16:19:23.812Z",
+        "dateActualisation": "2025-02-18T16:19:24.452Z",
+        "romeCode": "M1817",
+        "romeLibelle": "Administrateur / Administratrice sécurité informatique",
+        "appellationlibelle": "Administrateur / Administratrice sécurité informatique",
+        "entreprise": {
+            "nom": "UNIVERSITE PARIS CITE",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDD",
+        "typeContratLibelle": "CDD - 12 Mois",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "E",
+        "experienceLibelle": "2 An(s)",
+        "competences": [
+            {
+                "code": "300204",
+                "libelle": "Administrer un système d'informations",
+                "exigence": "S"
+            }
+        ],
+        "salaire": {
+            "libelle": "Annuel de 25000.0 Euros à 35000.0 Euros sur 12.0 mois",
+            "complement1": "CE",
+            "complement2": "Mutuelle"
+        },
+        "dureeTravailLibelle": "37H30 Travail en journée",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "nom": "UNIVERSITE PARIS CITE - Mme Stella  MANDHOT",
+            "coordonnees1": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/188JCHD",
+            "courriel": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/188JCHD"
+        },
+        "agence": {
+
+        },
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": null,
+        "deplacementLibelle": null,
+        "qualificationCode": "7",
+        "qualificationLibelle": "Technicien",
+        "codeNAF": "85.42Z",
+        "secteurActivite": "85",
+        "secteurActiviteLibelle": "Enseignement supérieur",
+        "qualitesProfessionnelles": null,
+        "origineOffre": {
+            "origine": "1",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/188JCHD"
+        },
+        "offresManqueCandidats": false,
+        "contexteTravail": {
+            "horaires": [
+                "37H30 Travail en journée"
+            ],
+            "conditionsExercice": [
+                ""
+            ]
+        },
+        "formations": null,
+        "langues": null,
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_1",
+        "code_insee": "75106",
+        "nom_commune": "Paris 6e Arrondissement",
+        "code_postal": "75006",
+        "nom_ville": "Paris",
+        "code_departement": "75",
+        "nom_departement": "Paris",
+        "code_region": "11",
+        "nom_region": "Île-de-France",
+        "dateExtraction": "2025-03-02",
+        "datePremiereEcriture": "2025-03-02"
+    },
+    {
+        "id": "188FTZF",
+        "intitule": "Adjoint du Chef de Service Informatique et Multimédia (H/F)",
+        "description": "RÉSUMÉ DU POSTE : référence 15583\nAssurer l'étude, la commande, l'installation, garantir le fonctionnement et la disponibilité des\néquipements informatiques et/ ou téléphoniques (matériels - logiciels) ; prendre en charge le\ntraitement des données et leur exploitation, l'assistance aux utilisateurs et la résolution des incidents\nde premier niveau.\n\nDESCRIPTIF DES ACTIVITÉS\nL'agent devra assurer les missions suivantes :\n- Prendre en charge les études, les demandes de devis, les réceptions, les inventaires, les\ninstallations, les modifications, les mises à jour des équipements informatiques (matériels, réseaux,\ncomposants logiciels d'infrastructure) et les détections de défauts\n- Assurer la permanence et la surveillance des salles informatiques utilisées à des fins\nd'enseignement et en libre accès sur demande\n- Assurer la logistique, les stocks, les inventaires, la gestion des ouvertures et fermetures des salles\ninformatiques\n- Assurer les mises à jour et les maintenances des postes informatiques des salles de TP\n- Assurer l'assistance de matériels, de logiciels de premier niveau auprès des utilisateurs (étudiants,\nenseignants et personnels BIATSS)\n- Assister, accompagner et conseiller les utilisateurs à l'usage courant des outils informatiques,\nbureautiques, de la messagerie électronique mis à leur disposition et en matière de sécurité\ninformatique (résolution ou remontée des incidents et optimisation des performances, etc.)\n- Veiller à la qualité du service\n- Signaler des incidents et anomalies de fonctionnement sur les postes de travail imprimantes et\nautres périphériques ;\n- Procéder aux dépannages de premier niveau de ces différents matériels :\n- Installer le câblage réseau et les bornes WiFi : remplacement, branchement, modification,\nentretien, brassage, détection de défauts ;\n- Gérer et tenir à jour les informations sur l'état du parc (matériels informatiques, audiovisuels,\npériphériques, logiciels, licences)\n- Mettre au rebut des matériels informatiques non réparables et obsolètes\n- Participer à des réunions ponctuelles à l'Université\n- Contrôler le bon fonctionnement des applications et remonter les demandes d'évolution\n- Suivre l'exploitation des systèmes, outils de production et/ou des applicatifs\n- Participer aux actions de formation et d'accompagnement des utilisateurs\n- Anticiper les contraintes environnementales et techniques\n- Rédiger des comptes rendu d'intervention, des notices utilisateurs, des fiches de procédures\n- Participer aux activités audiovisuelles et visioconférences en cas de pics d'activité\n\nPROFIL RECHERCHÉ\nConnaissances\n- Applications métiers\n- Systèmes d'exploitation (connaissances générales)\n- Architecture des équipements locaux (connaissances générales)\n- Architecture et l'environnement technique du système d'information\n- Diagnostic et résolution de problèmes\n- Technologies des équipements audiovisuels et multimédia (notion de base)\n- Sécurité des systèmes d'information\n- Systèmes de gestion de base de données (notion de base)\n- Environnement et réseaux professionnels\n- Anglais : Technique (connaissance générale)\nSavoir-faire - Compétences opérationnelles\n- Utiliser les outils et/ou des techniques de gestion de parc informatique\n- Appliquer les techniques d'installation et de maintenance des équipements\n- Conduire un entretien d'assistance par téléphone (maîtrise) ou par télémaintenance\n- Appliquer les procédures et techniques de service Après-vente\n- Travailler en équipe\n- Appliquer les normes, procédures et règles\n- Savoir planifier et respecter des délais\nSavoir-être - Compétences comportementales\n- Rigueur, fiabilité, dévouement, méthode, sincérité, réactivité et loyauté\n- Sens de l'organisation, de discrétion, de l'initiative et de pédagogie\n- Capacité d'écoute, d'analyse, d'adaptation et aussi à rendre compte\nEn parallèle à ses missions, l'agent devra participer et renforcer le Service",
+        "dateCreation": "2025-02-17T09:52:09.281Z",
+        "dateActualisation": "2025-02-18T08:43:07.563Z",
+        "romeCode": "M1817",
+        "romeLibelle": "Administrateur / Administratrice sécurité informatique",
+        "appellationlibelle": "Administrateur / Administratrice sécurité informatique",
+        "entreprise": {
+            "nom": "UNIVERSITE PARIS CITE",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDD",
+        "typeContratLibelle": "CDD - 12 Mois",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "E",
+        "experienceLibelle": "2 An(s)",
+        "competences": [
+            {
+                "code": "300204",
+                "libelle": "Administrer un système d'informations",
+                "exigence": "S"
+            }
+        ],
+        "salaire": {
+            "libelle": "Annuel de 25000.0 Euros à 35000.0 Euros sur 12.0 mois",
+            "complement1": "CE",
+            "complement2": "Mutuelle"
+        },
+        "dureeTravailLibelle": "37H30 Autre",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "nom": "UNIVERSITE PARIS CITE - Mme Stella  MANDHOT",
+            "coordonnees1": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/188FTZF",
+            "courriel": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/188FTZF"
+        },
+        "agence": {
+
+        },
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": null,
+        "deplacementLibelle": null,
+        "qualificationCode": "7",
+        "qualificationLibelle": "Technicien",
+        "codeNAF": "85.42Z",
+        "secteurActivite": "85",
+        "secteurActiviteLibelle": "Enseignement supérieur",
+        "qualitesProfessionnelles": null,
+        "origineOffre": {
+            "origine": "1",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/188FTZF"
+        },
+        "offresManqueCandidats": false,
+        "contexteTravail": {
+            "horaires": [
+                "37H30 Autre"
+            ],
+            "conditionsExercice": [
+                "Autre"
+            ]
+        },
+        "formations": null,
+        "langues": null,
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_1",
+        "code_insee": "75106",
+        "nom_commune": "Paris 6e Arrondissement",
+        "code_postal": "75006",
+        "nom_ville": "Paris",
+        "code_departement": "75",
+        "nom_departement": "Paris",
+        "code_region": "11",
+        "nom_region": "Île-de-France",
+        "dateExtraction": "2025-03-02",
+        "datePremiereEcriture": "2025-03-02"
+    },
+    {
+        "id": "187TGCM",
+        "intitule": "Technicien Sécurité Informatique (H/F)",
+        "description": "L'agence CRIT Fonctions Supports et Cadres recherche pour l'un de ses clients, une Banque française basée dans le 1er arrondissement de Paris, un(e) Technicien(ne) Sécurité Informatique, dans le cadre d'une mission de 6 mois minimum, à pourvoir dès que possible.\nVos missions serons les suivantes:\n- Gérer les événements de sécurité suite à une détection d'une fuite d'information;\n- Prendre en charge le suivi des incidents;\n- Produire les indicateurs de suivi de l'activité ainsi que les rapports d'activité;\n- Assister et communiquer auprès des utilisateurs;\n- Participer à l' amélioration des procédures d'exploitation...\n\nContrat: Mission d'intérim\nDurée: 6 mois minimum\nLocalisation: 75001 paris\nRémunération: entre 32 et 34K + Primes de fin de mission\n\nVous disposerez aussi des avantages CRIT : \n- Compte Epargne Temps (CET) déblocable à tout moment.\n- Acompte de paie hebdomadaire si besoin.\n- Aides diverses (via FASTT) : mutuelle, logement, garde d'enfants, etc.\n- Application My Crit pour un suivi facile.\n- Comité Social et Économique (CSE) : cartes cadeaux, remboursement chèques vacances, etc.\n - Diplôme de niveau BAC+2 en informatique ou équivalent\n- Expérience de 2 à 5 ans dans le domaine de la sécurité informatique\n- Bonne connaissance des outils de sécurité informatique\n- Capacité à gérer les incidents de sécurité\n- Esprit d'équipe et aptitude à collaborer avec différents services\n- Aisance relationnelle\n\nMettez à profil vos compétences techniques et votre aisance relationnelle au sein d'une entreprise qui n'attend que vous!",
+        "dateCreation": "2025-02-06T16:28:27.179Z",
+        "dateActualisation": "2025-02-06T16:28:27.616Z",
+        "romeCode": "M1817",
+        "romeLibelle": "Administrateur / Administratrice sécurité informatique",
+        "appellationlibelle": "Administrateur / Administratrice sécurité informatique",
+        "entreprise": {
+            "nom": "CRIT INTERIM",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "MIS",
+        "typeContratLibelle": "Intérim - 6 Mois",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "E",
+        "experienceLibelle": "2 An(s)",
+        "competences": null,
+        "salaire": {
+            "libelle": "Annuel de 30000.0 Euros à 35000.0 Euros sur 12.0 mois"
+        },
+        "dureeTravailLibelle": "35H",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "coordonnees1": "https://app.mytalentplug.com/description-offre.aspx?ojid=JFtkFGWJnwoc9KOCM2A8PA==",
+            "urlPostulation": "https://app.mytalentplug.com/description-offre.aspx?ojid=JFtkFGWJnwoc9KOCM2A8PA=="
+        },
+        "agence": {
+
+        },
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": null,
+        "deplacementLibelle": null,
+        "qualificationCode": "7",
+        "qualificationLibelle": "Technicien",
+        "codeNAF": "78.20Z",
+        "secteurActivite": "78",
+        "secteurActiviteLibelle": "Activités des agences de travail temporaire",
+        "qualitesProfessionnelles": null,
+        "origineOffre": {
+            "origine": "1",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/187TGCM"
+        },
+        "offresManqueCandidats": false,
+        "contexteTravail": {
+            "horaires": [
+                "35H"
+            ],
+            "conditionsExercice": [
+                ""
+            ]
+        },
+        "formations": null,
+        "langues": null,
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_1",
+        "code_insee": "75101",
+        "nom_commune": "Paris 1er Arrondissement",
+        "code_postal": "75001",
+        "nom_ville": "Paris",
+        "code_departement": "75",
+        "nom_departement": "Paris",
+        "code_region": "11",
+        "nom_region": "Île-de-France",
+        "dateExtraction": "2025-03-02",
+        "datePremiereEcriture": "2025-03-02"
+    },
+    {
+        "id": "188RTSQ",
+        "intitule": "Gestionnaire bdd patrimoine distributeur (H/F)",
+        "description": "Le poste :\nVotre Agence Proman Boulogne sur Mer recrute pour son client Enedis, un Gestionnaire BDD Patrimoine Distributeur H/F. Description du poste et v os missions: Représenter les réseaux et les postes de distribution en mettant à jour les bases de données patrimoniales d'Enedis le plus précisément possible afin que les agents puissent travailler dans de bonnes conditions et en toute sécurité; Echanger avec les différents services internes à Enedis Accompagner les Collectivités dans la gestion et le développement de leurs territoires \nPour plus d'offres d'emploi, téléchargez notre application myPROMAN intérimaires sur App Store ou Google Play . \n\n\nProfil recherché :\nVous avez un diplôme de type BAC+2/3 ou BTS Vous avez une aisance à l'oral et êtes capable de contruire un dialogue constructif avec les clients. Vous avez une bonne capacité d'adaptation. Vous possédez de bonnes capacités d'analyse et de synthèse, d'anticipation, d''autonomie, d'organisation personnelle et de gestion des priorités. Tous nos postes sont ouverts aux personnes en situation de handicap. \nTous nos postes sont ouverts aux personnes en situation de handicap.",
+        "dateCreation": "2025-02-26T10:02:12.292Z",
+        "dateActualisation": "2025-02-27T20:46:15.257Z",
+        "romeCode": "M1801",
+        "romeLibelle": "Administrateur / Administratrice de systèmes d'information (SI)",
+        "appellationlibelle": "Administratreur(trice) système & réseaux information et com",
+        "entreprise": {
+            "nom": "PROMAN",
+            "logo": "https://api.francetravail.fr/exp-rechercheoffre/v1/logo-entreprise/O7vIMVCv434KWFKJkLX5vrcYFz5uAhH2",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "MIS",
+        "typeContratLibelle": "Intérim - 7 Jour(s)",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "E",
+        "experienceLibelle": "2 An(s)",
+        "competences": null,
+        "salaire": {
+            "libelle": "Horaire de 12.59 Euros sur 12.0 mois"
+        },
+        "dureeTravailLibelle": "temps partiel - 7H Autre",
+        "dureeTravailLibelleConverti": "Temps partiel",
+        "alternance": false,
+        "contact": {
+            "nom": "PROMAN - M. PROMAN BOULOGNE SUR MER",
+            "coordonnees1": "https://www.proman-emploi.fr/?job=MP545608&candidature&origine=POLE-EMPLOI-JTMO&utm_source=pole-emploi-jtmo&utm_medium=referral&utm_campaign=annonces-free&utm_term=offre",
+            "urlPostulation": "https://www.proman-emploi.fr/?job=MP545608&candidature&origine=POLE-EMPLOI-JTMO&utm_source=pole-emploi-jtmo&utm_medium=referral&utm_campaign=annonces-free&utm_term=offre"
+        },
+        "agence": {
+
+        },
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": null,
+        "deplacementLibelle": null,
+        "qualificationCode": "5",
+        "qualificationLibelle": "Employé non qualifié",
+        "codeNAF": "78.20Z",
+        "secteurActivite": "78",
+        "secteurActiviteLibelle": "Activités des agences de travail temporaire",
+        "qualitesProfessionnelles": null,
+        "origineOffre": {
+            "origine": "1",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/188RTSQ"
+        },
+        "offresManqueCandidats": false,
+        "contexteTravail": {
+            "horaires": [
+                "temps partiel - 7H Autre"
+            ],
+            "conditionsExercice": [
+                "Autre"
+            ]
+        },
+        "formations": null,
+        "langues": null,
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_1",
+        "code_insee": "62758",
+        "nom_commune": "Saint-Martin-Boulogne",
+        "code_postal": "62280",
+        "nom_ville": "Saint-Martin-Boulogne",
+        "code_departement": "62",
+        "nom_departement": "Pas-de-Calais",
+        "code_region": "32",
+        "nom_region": "Hauts-de-France",
+        "dateExtraction": "2025-03-02",
+        "datePremiereEcriture": "2025-03-02"
+    },
+    {
+        "id": "188QDPM",
+        "intitule": "Administrateur / Administratrice système informatique (H/F)",
+        "description": "DESCRIPTION DE LA DIRECTION HIERARCHIQUE \n\nLa Direction de l'Innovation Technologique et du Système d'Information (DITSI) comprend les secteurs d'activités suivants :\n\n- Unité Projets et Supports Utilisateurs :  \n - (18 agents) assure le support aux utilisateurs, le renouvellement du matériel informatique, et de la téléphonie fixe ;\n- (11 agents) : assure le support aux utilisateurs des logiciels métiers ainsi que le suivi et la gestion de projet ;\n- DPI 4 agents : \n- Unité Infrastructure :  7 agents\n- Unité Administrative et Organisationnelle :  4 agents\n- Unité Innovation :  5 agents\n- Sécurité et protection des données : 2 agents : 1 RSSI et 1 DPO\n\nLa DITSI a pour mission d'assurer la sécurité et le bon fonctionnement du système d'information (SI) ainsi que son développement en cohérence avec les stratégies nationales et régionales. \nPlus précisément, l'équipe de la Direction de l'Innovation Technologique et du Système d'Information se veut proche des utilisateurs, des patients/résidents et/ou des usagers pour lesquels elle œuvre quotidiennement en veillant à la sécurisation du système d'information ainsi qu'à son évolution dans le cadre de l'amélioration de la qualité de leur prise en charge. \nA cet effet, la DITSI a en charge, notamment, l'opérationnalité de plus de 200 applications, de la supervision d'une architecture technologique moderne, efficiente et sécurisée (plusieurs Data Center, cœurs de réseaux, ) tout en assurant une veille technologique active. \nLa DITSI est une direction fonctionnelle dynamique qui travaille en étroite collaboration avec l'ensemble des services du GHU Paris (de soins, administratifs, techniques et généraux). Elle participe activement aux projets territoriaux tels que le DMP et Terresanté mais également, sur des projets de Recherche Européens comme le RHU PSYCARE.\n\n\nDESCRIPTION DU POSTE ET DES MISSIONS  \n\nGestion des plateformes MICOSOFT OFFICE 365.\nPrise en charge de l'installation, la mise à jour des équipements (matériels, composants logiciels d'infrastructure - vCenter, SCCM, AD) et des systèmes (serveurs et BDD).\nPilotage de l'exploitation des systèmes et gestion des incidents d'exploitation (détection des dysfonctionnements, diagnostic, intervention, alerte).\nRéalisation des tests d'installation, d'exploitation et d'intégration technique, traitement des anomalies et analyses des performances des systèmes et applications.\nMise en œuvre et surveillance de la disponibilité des ressources physiques (serveurs, disques, automates, ...) et des ressources nécessaires (logiciels, espaces disques, puissance...) au fonctionnement des systèmes de production et d'exploitation informatiques.\nAssurer les tâches de \"back-office\" régulières (gestion des sauvegardes, tenue du tableau de bord.).\nRédaction des comptes rendus d'intervention, de notices utilisateurs, de procédures.\nAssistance et support de niveau 2 auprès des utilisateurs.\nParticipation aux projets informatiques.\nMaintien en condition opérationnelle de l'infrastructure du système d'information et de son évolution\nVeille technologique\nParticipation aux astreintes \n\n\nCOMPETENCES REQUISES\n\nPlanifier et suivre les travaux et interventions de maintenance\nParticiper à l'exploitation en continue du SI et garantir le bon fonctionnement des systèmes\nDétecter et diagnostiquer les problèmes systèmes\nAppliquer les techniques de maintenance des équipements\nRespecter les procédures\nSuperviser et vérifier l'état des ressources informatiques, réaliser les sauvegardes et les archivages de données\nS'adapter aux évolutions technologiques\nDialoguer avec les utilisateurs en s'adaptant à leurs attentes\nConduire un entretien d'assistance par téléphone\n \n\nPROFIL \nBac +5 Master en informatique, diplôme d'ingénieur\nOffice 365\nGestion de projet\nActive Directory / SCCM / Powershell\nSystème Directory / SCCM / Powershell\nSystème d'exploitation Windows / Linux / AIX",
+        "dateCreation": "2025-02-25T09:00:57.725Z",
+        "dateActualisation": "2025-02-25T13:17:26.399Z",
+        "romeCode": "M1801",
+        "romeLibelle": "Administrateur / Administratrice de systèmes d'information (SI)",
+        "appellationlibelle": "Administrateur / Administratrice système informatique",
+        "entreprise": {
+            "nom": "CENTRE HOSPITALIER SAINTE ANNE",
+            "description": "Le Groupe Hospitalier Universitaire Paris psychiatrie & neurosciences est né le 1er janvier 2019 des rapprochements des hôpitaux Sainte-Anne, Maison Blanche et Perray-Vaucluse.  Leader dans le soin, l'enseignement et la recherche portant sur les maladies mentales et le système nerveux, le GHU Paris emploie 5600 hospitaliers répartis dans 100 sites parisiens, ainsi que des unités à dimension médico-sociale dans le 91 et le 93. ",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "CDI",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "E",
+        "experienceLibelle": "12 Mois",
+        "competences": [
+            {
+                "code": "300204",
+                "libelle": "Administrer un système d'informations",
+                "exigence": "S"
+            }
+        ],
+        "salaire": {
+            "libelle": "Mensuel de 2360.0 Euros à 3452.0 Euros sur 12.0 mois",
+            "complement1": "Restauration",
+            "complement2": "CE"
+        },
+        "dureeTravailLibelle": "37H30 Autre",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "nom": "CENTRE HOSPITALIER SAINTE ANNE - Mme Noémie SCHOEBEL",
+            "coordonnees1": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/188QDPM",
+            "courriel": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/188QDPM"
+        },
+        "agence": {
+
+        },
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": null,
+        "deplacementLibelle": null,
+        "qualificationCode": "9",
+        "qualificationLibelle": "Cadre",
+        "codeNAF": "86.10Z",
+        "secteurActivite": "86",
+        "secteurActiviteLibelle": "Activités hospitalières",
+        "qualitesProfessionnelles": [
+            {
+                "libelle": "Faire preuve d'autonomie",
+                "description": "Capacité à prendre en charge son activité sans devoir être encadré de façon continue (le cas échéant, à solliciter les autres acteurs de l'entreprise)."
+            },
+            {
+                "libelle": "Faire preuve de rigueur et de précision",
+                "description": "Capacité à réaliser des tâches en suivant avec exactitude les règles, les procédures, les instructions qui ont été fournies, sans réaliser d'erreur et à transmettre clairement des informations. Se montrer ponctuel et respectueux des règles de savoir-vivre usuelles."
+            },
+            {
+                "libelle": "Travailler en équipe",
+                "description": "Capacité à travailler et à se coordonner avec les autres au sein de l'entreprise pour réaliser les objectifs fixés."
+            }
+        ],
+        "origineOffre": {
+            "origine": "1",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/188QDPM"
+        },
+        "offresManqueCandidats": false,
+        "contexteTravail": {
+            "horaires": [
+                "37H30 Autre"
+            ],
+            "conditionsExercice": [
+                "Autre"
+            ]
+        },
+        "formations": [
+            {
+                "codeFormation": "31054",
+                "domaineLibelle": "informatique et systèmes d'information",
+                "niveauLibelle": "Bac+5 et plus ou équivalents",
+                "exigence": "E"
+            }
+        ],
+        "langues": null,
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_1",
+        "code_insee": "75114",
+        "nom_commune": "Paris 14e Arrondissement",
+        "code_postal": "75014",
+        "nom_ville": "Paris",
+        "code_departement": "75",
+        "nom_departement": "Paris",
+        "code_region": "11",
+        "nom_region": "Île-de-France",
+        "dateExtraction": "2025-03-02",
+        "datePremiereEcriture": "2025-03-02"
+    },
+    {
+        "id": "188PRQC",
+        "intitule": "Administrateur Unix - Stockage et base de données (H/F)",
+        "description": "Compagnie des Signaux renforce ses équipes et recrute un Administrateur Unix - Stockage et base de données H/F en CDI, pour son site des Ulis (91) - siège social.\n\nRattaché au Responsable Infrastructure et Service France et intégré au sein d'une équipe composée de 10 personnes, vous êtes garant de la gestion, du maintien en condition opérationnelle et du support de niveau 3 de l'environnement Unix/Linux, base de données, stockage et sauvegarde des données, permettant d'assurer le bon fonctionnement de nos applications métiers.\nVous intervenez principalement sur le site des Ulis (91), siège social, en France.\n\nVos principales missions incluent : \n\n- Gérer, administrer, améliorer continuellement et assurer le support quotidien de niveau 3 des services sous l'environnement Unix/Linux, Windows et VMware « Serveurs Business »\n- Gérer, administrer, améliorer continuellement et assurer le support quotidien de niveau 3 de l'environnement de la sauvegarde des données IBM TSM\n- Gérer, administrer, améliorer continuellement et assurer le support quotidien de niveau 3 de base de données « Microsoft SQL, Oracle, Rational, Scripting »\n- Gérer et participer à des projets de refonte et d'amélioration continue dans le périmètre de l'expertise\n- Collaborer avec les responsables des services pour assurer la réalisation à 100 % des engagements en matière de contrôle général des services informatiques (en particulier pour les systèmes de niveau 0 et 1)\n- Maintenir la documentation des procédures en conformité avec les processus qualité de l'entreprise\n\nModalités de travail : \n\n- Temps complet\n- Télétravail partiel possible (jusqu'à 2 jours par semaine) \n\nLocalisation du poste : \n\n- Au cœur du Parc d'activités de Courtabœuf \n- Accès facilité : \n- En voiture depuis l'autoroute A10/A11 et la N118\n- En bus n°22 depuis la gare RER de Massy Palaiseau (RER B et C)\n\nPourquoi nous rejoindre ?\n\n- Contribuer au développement d'un secteur d'avenir et participer à l'évolution d'un mode de transport plus durable et plus respectueux de l'environnement, répondant aux grands enjeux du XXIème siècle\n- Participer à ce marché de la signalisation ferroviaire en forte croissance dont la large palette de métiers qui le compose (Système, Hardware, Software, Communication, Cybersécurité, .) permet d'envisager nombre de parcours professionnels et d'expériences au service la sécurité et l'efficacité des transports\n- Evoluer au sein d'une entreprise responsable et engagée en faveur de grandes causes telles que la préservation de l'environnement (une entreprise qui s'engage à réduire de 100% ses propres émissions de CO2 d'ici à 2030, et d'ici à 2050 les émissions de CO2 de l'ensemble de sa chaîne de valeur), la diversité, l'égalité des chances et l'emploi des personnes en situation de handicap \n- Intégrer une entreprise bienveillante, à taille humaine et multiculturelle, qui prône un équilibre entre la vie professionnelle et la vie privée\n- Rejoindre un employeur qui décroche depuis 8 ans la labellisation HappyTrainees et dont le taux de recommandation des stagiaires et alternants s'élève à 92% en 2024\n- Bénéficier d'une politique de télétravail partiel, d'un plan de formation et d'un accompagnement de votre carrière dans l'objectif de développer vos compétences et de construire votre avenir professionnel\n\nNos autres avantages :\n\n- CSE \n- 1% Logement\n- Epargne salariale (PEE/PERECO) & abondement\n- Participation et Intéressement\n- Prise en charge partielle de la carte Navigo\n- Protection sociale (mutuelle et prévoyance)\n- RIE (restaurant inter-entreprises au sein des locaux des Ulis)\n\nComment postuler ?\n\nSi vous êtes conquis par notre opportunité d'emploi, n'attendez plus et envoyez-nous votre CV en français et/ou en anglais. Si vous êtes retenu, vous serez convié à un entretien dont une partie se déroulera en anglais.\n\nMaintenant c'est à vous de jouer ! \nBonne chance !",
+        "dateCreation": "2025-02-24T15:39:12.108Z",
+        "dateActualisation": "2025-02-24T15:40:21.857Z",
+        "romeCode": "M1801",
+        "romeLibelle": "Administrateur / Administratrice de systèmes d'information (SI)",
+        "appellationlibelle": "Administrateur / Administratrice système informatique",
+        "entreprise": {
+            "nom": "COMPAGNIE DES SIGNAUX",
+            "description": "Compagnie des Signaux, société du Groupe MERMEC, est un fournisseur mondial de solutions de transport ferroviaire intégrées. Nous développons des solutions innovantes et durables dans les domaines de la signalisation, de l'exploitation, du service et de la maintenance, ainsi que de la technologie numérique et des systèmes clé en main. \n\nLe Groupe MERMEC est présent dans 21 pays et compte plus de 3 000 employés dans le monde. ",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "CDI",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "E",
+        "experienceLibelle": "5 An(s)",
+        "competences": [
+            {
+                "code": "300204",
+                "libelle": "Administrer un système d'informations",
+                "exigence": "S"
+            },
+            {
+                "libelle": "Gestion de la sauvegarde IBM TSM",
+                "exigence": "E"
+            },
+            {
+                "libelle": "Scripting",
+                "exigence": "E"
+            },
+            {
+                "libelle": "Stockage, base de données SQL, Oracle",
+                "exigence": "E"
+            },
+            {
+                "libelle": "Gestion des équipements HP-UX et IBM",
+                "exigence": "E"
+            },
+            {
+                "libelle": "Bonne pratique ITIL ",
+                "exigence": "S"
+            },
+            {
+                "libelle": "Gestion des rôles, accès et privilèges",
+                "exigence": "E"
+            },
+            {
+                "libelle": "Connaissance du RGPD ",
+                "exigence": "E"
+            },
+            {
+                "libelle": "Gestion des environnements Unix/Linux",
+                "exigence": "E"
+            },
+            {
+                "libelle": "Bonne pratique de la cybersécurité ",
+                "exigence": "E"
+            },
+            {
+                "libelle": "Spécialisation en réseau, communication/systèmes",
+                "exigence": "S"
+            }
+        ],
+        "salaire": {
+            "commentaire": "A négocier",
+            "complement1": "Autre"
+        },
+        "dureeTravailLibelle": "35H Autre",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "nom": "COMPAGNIE DES SIGNAUX - Mme Joanna LEVEQUE",
+            "coordonnees1": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/188PRQC",
+            "courriel": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/188PRQC"
+        },
+        "agence": {
+
+        },
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": "1",
+        "deplacementLibelle": "Jamais",
+        "qualificationCode": "9",
+        "qualificationLibelle": "Cadre",
+        "codeNAF": "27.90Z",
+        "secteurActivite": "27",
+        "secteurActiviteLibelle": "Fabrication d'autres matériels électriques",
+        "qualitesProfessionnelles": [
+            {
+                "libelle": "Faire preuve d'autonomie",
+                "description": "Capacité à prendre en charge son activité sans devoir être encadré de façon continue (le cas échéant, à solliciter les autres acteurs de l'entreprise)."
+            },
+            {
+                "libelle": "Faire preuve de rigueur et de précision",
+                "description": "Capacité à réaliser des tâches en suivant avec exactitude les règles, les procédures, les instructions qui ont été fournies, sans réaliser d'erreur et à transmettre clairement des informations. Se montrer ponctuel et respectueux des règles de savoir-vivre usuelles."
+            },
+            {
+                "libelle": "Organiser son travail selon les priorités et les objectifs",
+                "description": "Capacité à planifier, prioriser, anticiper des actions, en tenant compte des moyens, des ressources, des objectifs et du calendrier pour les réaliser."
+            }
+        ],
+        "origineOffre": {
+            "origine": "1",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/188PRQC"
+        },
+        "offresManqueCandidats": false,
+        "contexteTravail": {
+            "horaires": [
+                "35H Autre"
+            ],
+            "conditionsExercice": [
+                "Autre"
+            ]
+        },
+        "formations": [
+            {
+                "niveauLibelle": "Bac+2 ou équivalents",
+                "exigence": "S"
+            }
+        ],
+        "langues": [
+            {
+                "libelle": "Anglais",
+                "exigence": "E"
+            },
+            {
+                "libelle": "Français",
+                "exigence": "E"
+            }
+        ],
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_1",
+        "code_insee": "91692",
+        "nom_commune": "Les Ulis",
+        "code_postal": "91940",
+        "nom_ville": "Les Ulis",
+        "code_departement": "91",
+        "nom_departement": "Essonne",
+        "code_region": "11",
+        "nom_region": "Île-de-France",
+        "dateExtraction": "2025-03-02",
+        "datePremiereEcriture": "2025-03-02"
+    },
+    {
+        "id": "188NTGQ",
+        "intitule": "Administrateur système et réseau Datacenter (H/F)",
+        "description": "Nous recherchons pour notre client, un Administrateur système et réseau Datacenter (H/F) basé à Civrieux-en-Dombes.\n\nEn tant qu'Administrateur système et réseau Datacenter H/F, vous serez rattaché au directeur d'exploitation.\n\nEt dans ce cadre, vos missions seront de :\n- Gérer l'exploitation et l'administration des infrastructures au niveau du Datacenter\n- Assurer et veiller au bon fonctionnement des fermes de serveurs\n- Effectuer l'ajout de serveurs dans les fermes (cluster)\n- Analyser et faire le diagnostic des dysfonctionnements\n- Créer les serveurs virtuels\n- Gérer les mises à jour\n- Gérer et déployer les services et rôles Microsoft AD, DHCP, GPO, Exchange, RDS...\n- Résoudre les incidents niveau 2\n- Gérer et déployer sous les serveurs Linux Apache, Zabbix, FRRouting, DHCP, Netfilter\n\n\n\nENVIRONNEMENT TECHNIQUE\n- Windows\n- Linux\n- VMware\n- Hyper-V\n\n\n\n\nPROFIL RECHERCHE\nTitulaire d'un Bac+3 en informatique minimum avec une expérience d'au moins 3 ans sur un poste similaire :\n\n- Vous avez de solides connaissances en réseaux, sur la virtualisation et sur les différents OS\n-  Vous avez l'esprit d'équipe, le sens du service et de l'écoute\n-  Vous êtes curieux(se), passionné(e), rigoureux(se)\n-  Vous savez travailler dans le respect de la sécurité et des délais",
+        "dateCreation": "2025-02-24T09:29:24.505Z",
+        "dateActualisation": "2025-02-25T09:56:18.803Z",
+        "romeCode": "M1801",
+        "romeLibelle": "Administrateur / Administratrice de systèmes d'information (SI)",
+        "appellationlibelle": "Administrateur / Administratrice système informatique",
+        "entreprise": {
+            "nom": "COMIT",
+            "description": "COMIT, est une ESN lyonnaise qui centre son activité sur la réussite des projets IT de ses clients par l'accomplissement de ses consultants.\n\nNos prestations de services s'articulent autour du Workplace, de l'infrastructure, de la Cybersécurité et du Développement.\nLes Valeurs de COMIT se résument en quatre mots : Compétences, Proximité, Ambition et Implication.\n\nChez COMIT, nous avons à coeur de porter les projets de nos clients et d'apporter à nos consultants du sens à leur quotidien.",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "CDI",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "E",
+        "experienceLibelle": "5 An(s)",
+        "competences": [
+            {
+                "code": "300204",
+                "libelle": "Administrer un système d'informations",
+                "exigence": "S"
+            }
+        ],
+        "salaire": {
+            "libelle": "Annuel de 45000.0 Euros à 50000.0 Euros sur 12.0 mois"
+        },
+        "dureeTravailLibelle": "39H Autre",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "nom": "COMIT - Mme Corinne Mbaka",
+            "coordonnees1": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/188NTGQ",
+            "courriel": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/188NTGQ"
+        },
+        "agence": {
+
+        },
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": null,
+        "deplacementLibelle": null,
+        "qualificationCode": "8",
+        "qualificationLibelle": "Agent de maîtrise",
+        "codeNAF": "62.02A",
+        "secteurActivite": "62",
+        "secteurActiviteLibelle": "Conseil en systèmes et logiciels informatiques",
+        "qualitesProfessionnelles": null,
+        "origineOffre": {
+            "origine": "1",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/188NTGQ"
+        },
+        "offresManqueCandidats": false,
+        "contexteTravail": {
+            "horaires": [
+                "39H Autre"
+            ],
+            "conditionsExercice": [
+                "Autre"
+            ]
+        },
+        "formations": null,
+        "langues": null,
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_1",
+        "code_insee": "01105",
+        "nom_commune": "Civrieux",
+        "code_postal": "01390",
+        "nom_ville": "Civrieux",
+        "code_departement": "01",
+        "nom_departement": "Ain",
+        "code_region": "84",
+        "nom_region": "Auvergne-Rhône-Alpes",
+        "dateExtraction": "2025-03-02",
+        "datePremiereEcriture": "2025-03-02"
+    },
+    {
+        "id": "188NFXN",
+        "intitule": "Administrateur Poste de Travail (H/F)",
+        "description": "Nous recherchons un Administrateur Poste de Travail spécialisé en Microsoft Intune, SCCM et PowerShell, pour renforcer notre équipe IT et assurer le bon fonctionnement de nos environnements utilisateurs.\n\nMissions principales\nGérer et administrer l'environnement poste de travail Windows via Microsoft Intune et SCCM.\nDéployer, configurer et maintenir les applications et mises à jour via SCCM et Intune.\nAutomatiser les tâches récurrentes et optimiser les processus grâce à PowerShell.\nAssurer le support niveau 2-3 et résoudre les incidents liés aux postes de travail.\nGérer les stratégies de sécurité et les politiques de conformité des postes de travail.\nParticiper à des projets d'évolution et de migration des infrastructures postes de travail.\n\nProfil recherché\nExpérience : Minimum 2 ans en administration des environnements postes de travail.\nCompétences techniques :\n\nMaîtrise de Microsoft Intune et SCCM (MECM).\nExcellentes connaissances en PowerShell (scripts, automatisation).\nExpérience en gestion des stratégies de groupe (GPO) et en sécurité des postes de travail.\nBonne compréhension de Microsoft 365 et Azure AD.",
+        "dateCreation": "2025-02-21T16:41:39.381Z",
+        "dateActualisation": "2025-02-21T16:41:39.786Z",
+        "romeCode": "M1801",
+        "romeLibelle": "Administrateur / Administratrice de systèmes d'information (SI)",
+        "appellationlibelle": "Administrateur / Administratrice système informatique",
+        "entreprise": {
+            "nom": "E-KENT",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "CDI",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "E",
+        "experienceLibelle": "2 An(s)",
+        "competences": [
+            {
+                "code": "300204",
+                "libelle": "Administrer un système d'informations",
+                "exigence": "S"
+            }
+        ],
+        "salaire": {
+            "libelle": "Annuel de 35000.0 Euros à 40000.0 Euros sur 12.0 mois"
+        },
+        "dureeTravailLibelle": "35H Travail en journée",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+
+        },
+        "agence": {
+
+        },
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": null,
+        "deplacementLibelle": null,
+        "qualificationCode": "3",
+        "qualificationLibelle": "Ouvrier qualifié (P1,P2)",
+        "codeNAF": "62.02A",
+        "secteurActivite": "62",
+        "secteurActiviteLibelle": "Conseil en systèmes et logiciels informatiques",
+        "qualitesProfessionnelles": null,
+        "origineOffre": {
+            "origine": "1",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/188NFXN"
+        },
+        "offresManqueCandidats": false,
+        "contexteTravail": {
+            "horaires": [
+                "35H Travail en journée"
+            ],
+            "conditionsExercice": [
+                ""
+            ]
+        },
+        "formations": null,
+        "langues": null,
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_1",
+        "code_insee": "75109",
+        "nom_commune": "Paris 9e Arrondissement",
+        "code_postal": "75009",
+        "nom_ville": "Paris",
+        "code_departement": "75",
+        "nom_departement": "Paris",
+        "code_region": "11",
+        "nom_region": "Île-de-France",
+        "dateExtraction": "2025-03-02",
+        "datePremiereEcriture": "2025-03-02"
+    },
+    {
+        "id": "188VWGG",
+        "intitule": "LEAD DATA ENGINEER/OPS F/H (H/F)",
+        "description": "Description du poste\n\nTA MISSION SI TU L'ACCEPTES\n\nL'équipe Data apporte des solutions aux équipes internes (pour mieux comprendre l'usage des produits RCA, piloter l'activité, analyser et détecter des tendances, .) et participe au développement de fonctionnalités analytiques pour les clients de RCA. En collaboration avec les Data Analysts et les features teams, tes missions seront les suivantes : \n\n* Tu es référent dans le choix et la mise en œuvre des architectures Data.\n* Tu accompagnes notre équipe de data engineer dans sa monté en compétence, et tu mets en place des bonnes pratiques.\n* Tu participes à la définition de la roadmap data avec l'ensemble de l'équipe (identification, qualification et priorisation des projets métiers et techniques)\n* Tu développes des infrastructures data en utilisant des outils IaC (Terraform) dans un contexte AWS/Snowflake et fusionne dans des CI/CD.\n* Tu codes des packages et applications Python Dockerisées dans un contexte d'intégration continue.\n* Tu conçois et mets-en œuvre des pipelines de données pour répondre aux besoins des utilisateurs RCA et de ses clients.\n* Tu épaules nos Data Analysts et nos PO/PM dans la réalisation de leurs missions\n* Tu participes à la définition des bonnes pratiques et à la mise en oeuvre de l'outillage de la plateforme Data (DevOps, tests, observabilité, gouvernance)\n \nCE QUE NOUS TE PROPOSONS\n\n* Une stack technique très récente et innovante \n* De nombreux sujets à explorer (Architecture évènementielle, Cloud, Machine Learning, Data as a Service, .) \n* Une grande liberté d'expression et de réalisation, tu peux partager et challenger tes idées  \n* Un cadre de travail adapté (locaux modernes, jusqu'à 3 jours de télétravail, horaires flexibles, 5 jours de RTT, lundi de pentecôte et jour anniversaire offerts .)\n* Et aussi d'autres avantages : team building, participation, chèques cadeaux, titres restaurants .\n\n\nQualifications\n\nTU ES LE CANDIDAT IDÉAL SI\n\n* Tu es reconnu-e par tes pairs pour tes compétences data que tu as pu mettre en oeuvre sur de nombreux projets \n* Les pipelines d'ingestion et préparation de données n'ont plus de secrets pour toi \n* Tu as des expériences significatives dans des contextes similaires à RCA (AWS, Python, Snowflake)\n* Pragmatique, tu es soucieux-se de la réalisation et de la qualité du travail tout en veillant au respect des priorités.\n* Bon-ne communicant-e, tu aimes les échanges simples et bienveillants, et tu cherches toujours à challenger tes idées et tes méthodes de travail avec celles des autres.\n* Tu es proactif-ve au quotidien et souhaites t'impliquer dans la construction d'une équipe et de ses pratiques\n \nNOTRE STACK TECHNIQUE \n\n* ELT : Airflow / DBT / Kafka\n* Dev : Python (Poetry, Pytest, Black, .), SQL, Gitlab CI\n* Cloud : AWS (IAM, S3, EKS, ECS, RDS, MSK, DMS, .)\n* Stockage : Snowflake (Administration, RBAC, ingestion, .), Postgres\n* BI / Reporting : Holistics, Thoughtspot\n \n\nInformations complémentaires\n\nNotre processus de recrutement se veut simple, transparent et dans la bonne humeur ! \n\nNous débuterons par un premier échange téléphonique qui sera suivi d'un entretien (pour pouvoir rencontrer tes futur(e)s collègues de travail). Nous te tiendrons informé à chaque étape, peu importe le résultat, et nous prenons le temps de te faire un retour directement (et pas par mail)\n\nEnvie d'intégrer l'équipe ? Fais-nous confiance et rejoins l'aventure RCA !",
+        "dateCreation": "2025-02-28T13:57:59.248Z",
+        "dateActualisation": "2025-02-28T13:57:59.764Z",
+        "romeCode": "M1811",
+        "romeLibelle": "Data engineer",
+        "appellationlibelle": "Data engineer",
+        "entreprise": {
+            "nom": "RCA REALISATIONS POUR LA COMPTABILITE ET",
+            "description": "RCA est un éditeur de logiciel depuis plus de 20 ans. \n\nNotre entreprise développe 2 gammes : \n- Des logiciels à destination des cabinets d'expertise comptable\n- Une plateforme digitale collaborative destinée aux experts-comptables ainsi qu'à leurs clients TPE/PME \n\n100% indépendante et 100% Nantaise, notre entreprise réalise à ce jour un chiffre d'affaires de 21 millions d'euros.\n\nIl y a environ 10 ans, nous étions 3, aujourd'hui, nous sommes plus de 200 collaborateurs. ",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "CDI",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "D",
+        "experienceLibelle": "Débutant accepté",
+        "competences": [
+            {
+                "code": "300067",
+                "libelle": "Analyser, exploiter, structurer des données",
+                "exigence": "S"
+            },
+            {
+                "code": "300488",
+                "libelle": "Concevoir et gérer un projet",
+                "exigence": "S"
+            },
+            {
+                "code": "120209",
+                "libelle": "Enrichir une base de données",
+                "exigence": "S"
+            }
+        ],
+        "salaire": {
+            "libelle": "Annuel de 24000.0 Euros à 26000.0 Euros sur 12.0 mois"
+        },
+        "dureeTravailLibelle": "35H Travail en journée",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "nom": "RCA REALISATIONS POUR LA COMPTABILITE ET - M. Fayssal HORAIRA",
+            "coordonnees1": "https://jobs.smartrecruiters.com/RCA1/744000044861785-lead-data-engineer-ops-f-h",
+            "urlPostulation": "https://jobs.smartrecruiters.com/RCA1/744000044861785-lead-data-engineer-ops-f-h"
+        },
+        "agence": {
+
+        },
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": null,
+        "deplacementLibelle": null,
+        "qualificationCode": "6",
+        "qualificationLibelle": "Employé qualifié",
+        "codeNAF": "58.29C",
+        "secteurActivite": "58",
+        "secteurActiviteLibelle": "Édition de logiciels applicatifs",
+        "qualitesProfessionnelles": null,
+        "origineOffre": {
+            "origine": "1",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/188VWGG"
+        },
+        "offresManqueCandidats": false,
+        "contexteTravail": {
+            "horaires": [
+                "35H Travail en journée"
+            ],
+            "conditionsExercice": [
+                ""
+            ]
+        },
+        "formations": null,
+        "langues": null,
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_1",
+        "code_insee": "44162",
+        "nom_commune": "Saint-Herblain",
+        "code_postal": "44800",
+        "nom_ville": "Saint-Herblain",
+        "code_departement": "44",
+        "nom_departement": "Loire-Atlantique",
+        "code_region": "52",
+        "nom_region": "Pays de la Loire",
+        "dateExtraction": "2025-03-02",
+        "datePremiereEcriture": "2025-03-02"
+    },
+    {
+        "id": "188VMGQ",
+        "intitule": "Data Engineer (H/F)",
+        "description": "Plus qu'un métier, Itéa a pour vocation de déceler et révéler les bons profils avec une curiosité qui va souvent au-delà des compétences et parfois entre les lignes d'un CV.\nAujourd'hui, nous recherchons pour l'un de nos clients, un Data Engineer H/F et vous présentons les points clés du poste :\n\n\nPoste en CDI\nBasé à Strasbourg ou Metz\n Secteur public\n\nVos missions seront :\n\nParticiper à l'audit fonctionnel et à la compréhension des besoins métiers\nRédiger les spécifications et le cahier des charges\nRéaliser les MCP et MPD \nMettre en place de contrôles de données et réalisation de tableaux de bords \nParticiper aux réunions d'avancement\nSuivre et évaluer la bonne mise en place via des tests d'impacts\nGérer la bonne mise à disposition de la documentation\n\nEt vous ?\n\nVous disposez de 4 à 7 années d'expériences sur un poste identique \nVous maîtrisez  l'ICA et Python\n\nVous vous retrouvez dans ces critères, vous avez le goût du travail bien accompli et appréciez la diversité des tâches, prenez le temps de postuler afin d'échanger avec nous sur cette opportunité.\nDans le fond, c'est toujours une belle histoire de rencontres, de connexions et de valeurs.",
+        "dateCreation": "2025-02-28T11:02:46.165Z",
+        "dateActualisation": "2025-02-28T13:52:48.187Z",
+        "romeCode": "M1811",
+        "romeLibelle": "Data engineer",
+        "appellationlibelle": "Data engineer",
+        "entreprise": {
+            "nom": "ITEA",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "CDI",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "E",
+        "experienceLibelle": "5 An(s)",
+        "competences": [
+            {
+                "code": "300067",
+                "libelle": "Analyser, exploiter, structurer des données",
+                "exigence": "S"
+            },
+            {
+                "code": "300488",
+                "libelle": "Concevoir et gérer un projet",
+                "exigence": "S"
+            },
+            {
+                "code": "120209",
+                "libelle": "Enrichir une base de données",
+                "exigence": "S"
+            }
+        ],
+        "salaire": {
+            "commentaire": "selon profil",
+            "complement1": "Autre"
+        },
+        "dureeTravailLibelle": "35H Autre",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "coordonnees1": "https://recrutement.itea-rh.fr/front-apply.html?id_job=605&id_origin=49",
+            "urlPostulation": "https://recrutement.itea-rh.fr/front-apply.html?id_job=605&id_origin=49"
+        },
+        "agence": {
+
+        },
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": null,
+        "deplacementLibelle": null,
+        "qualificationCode": "9",
+        "qualificationLibelle": "Cadre",
+        "codeNAF": "62.02A",
+        "secteurActivite": "62",
+        "secteurActiviteLibelle": "Conseil en systèmes et logiciels informatiques",
+        "qualitesProfessionnelles": [
+            {
+                "libelle": "Faire preuve de rigueur et de précision",
+                "description": "Capacité à réaliser des tâches en suivant avec exactitude les règles, les procédures, les instructions qui ont été fournies, sans réaliser d'erreur et à transmettre clairement des informations. Se montrer ponctuel et respectueux des règles de savoir-vivre usuelles."
+            },
+            {
+                "libelle": "Organiser son travail selon les priorités et les objectifs",
+                "description": "Capacité à planifier, prioriser, anticiper des actions, en tenant compte des moyens, des ressources, des objectifs et du calendrier pour les réaliser."
+            },
+            {
+                "libelle": "Prendre des initiatives et être force de proposition",
+                "description": "Capacité à initier, imaginer des propositions nouvelles pour résoudre les problèmes identifiés ou améliorer une situation. Être proactif."
+            }
+        ],
+        "origineOffre": {
+            "origine": "1",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/188VMGQ"
+        },
+        "offresManqueCandidats": false,
+        "contexteTravail": {
+            "horaires": [
+                "35H Autre"
+            ],
+            "conditionsExercice": [
+                "Autre"
+            ]
+        },
+        "formations": null,
+        "langues": null,
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_1",
+        "code_insee": "67482",
+        "nom_commune": "Strasbourg",
+        "code_postal": "67000",
+        "nom_ville": "Strasbourg",
+        "code_departement": "67",
+        "nom_departement": "Bas-Rhin",
+        "code_region": "44",
+        "nom_region": "Grand Est",
+        "dateExtraction": "2025-03-02",
+        "datePremiereEcriture": "2025-03-02"
+    },
+    {
+        "id": "2720912",
+        "intitule": "Ingénieur BI/Data Analyst H/F",
+        "description": "Notre client est une entreprise de taille moyenne spécialisée dans les énergies renouvelables, reconnue pour son engagement en faveur de la technologie et de l'innovation.  En tant qu'Ingénieur BI/Data Analyst, vous serez chargé de :\nPiloter les initiatives de gestion et d'analyse des données pour l'entreprise ;\nCréer et gérer des tableaux de bord interactifs et des rapports à l'aide de Talend et Power BI ;\nMaintenir et optimiser le CRM afin d'assurer une gestion efficace des relations clients ;\nParticiper à la mise en place de l'ERP et veiller à son intégration harmonieuse avec les systèmes existants ;\nAnalyser les données pour fournir des insights exploitables et soutenir la prise de décision stratégique ;\nAméliorer les processus de collecte et d'analyse des données ;\nCollaborer avec les différents départements pour identifier et répondre à leurs besoins en matière de données ;\nÉlaborer des stratégies visant à améliorer la qualité des données ;\nProduire des rapports et des tableaux de bord facilitant la prise de décision ;\nFormer les équipes à l'importance et à l'utilisation efficace des données ;\nVeiller à la conformité avec les réglementations sur la protection des données.\nUn salaire attractif, avec une fourchette estimée entre  € et  € par an ;\nDes avantages supplémentaires qui reflètent l'engagement de l'entreprise envers ses employés ;\nUn environnement de travail stimulant et innovant ;\nUn contrat à durée indéterminée.",
+        "dateCreation": "2025-02-25T16:46:19.000Z",
+        "dateActualisation": "2025-02-26T07:16:02.000Z",
+        "romeCode": "M1811",
+        "romeLibelle": "Data engineer",
+        "appellationlibelle": "Ingénieur / Ingénieure big data",
+        "entreprise": {
+            "description": "Nos missions :\nMichael Page recrute des cadres confirmés en CDI et CDD grâce à l'expertise de consultants répartis au sein de 17 divisions spécialisées : Achats & Logistique, Assurance, Audit, Conseil & Expertise, Banque, Commercial, Digital, Médias & Communication, Distribution & Commerce, Finance & Comptabilité, Hôtellerie & Tourisme, Immobilier & Construction, Ingénieurs, Juridique & Fiscal, Marketing, Public & Parapublic, Ressources Humaines, Santé et Systèmes d'Informat...",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "Contrat à durée indéterminée",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "D",
+        "experienceLibelle": "Débutant accepté",
+        "competences": null,
+        "salaire": {
+
+        },
+        "dureeTravailLibelle": null,
+        "dureeTravailLibelleConverti": null,
+        "alternance": false,
+        "contact": null,
+        "agence": null,
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": null,
+        "deplacementLibelle": null,
+        "qualificationCode": null,
+        "qualificationLibelle": null,
+        "codeNAF": null,
+        "secteurActivite": null,
+        "secteurActiviteLibelle": null,
+        "qualitesProfessionnelles": null,
+        "origineOffre": {
+            "origine": "2",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/2720912",
+            "partenaires": [
+                {
+                    "nom": "METEOJOB",
+                    "url": "https://www.meteojob.com/jobads/43571490?utm_source=pole-emploi&utm_medium=aggregator-free",
+                    "logo": "https://www.francetravail.fr/logos/img/partenaires/meteojob80.png"
+                },
+                {
+                    "nom": "DIRECTEMPLOI",
+                    "url": "https://www.directemploi.com/candidatOffre/50872415?utm_source=pole-emploi&utm_medium=referral&utm_campaign=Pôle-Emploi",
+                    "logo": "https://www.francetravail.fr/logos/img/partenaires/directemploi80.png"
+                }
+            ]
+        },
+        "offresManqueCandidats": null,
+        "contexteTravail": {
+            "horaires": [
+                ""
+            ]
+        },
+        "formations": null,
+        "langues": null,
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_1",
+        "code_insee": "80021",
+        "nom_commune": "Amiens",
+        "code_postal": "80000",
+        "nom_ville": "Amiens",
+        "code_departement": "80",
+        "nom_departement": "Somme",
+        "code_region": "32",
+        "nom_region": "Hauts-de-France",
+        "dateExtraction": "2025-03-02",
+        "datePremiereEcriture": "2025-03-02"
+    },
+    {
+        "id": "2701109",
+        "intitule": "Data Analyst H/F",
+        "description": "POSTE : Data Analyst H/F\nDESCRIPTION : Nous recherchons pour le compte de notre client, AIRBUS UN/UNE DATA ANALYST.\n\n\nVous serez en charge de déployer et d'exploiter des normes et des processus de qualité pour améliorer la conception correcte du premier coup liés aux livrables d'ingénierie des pylônes et des nacelles.\n\nAvec cette mission, vous aurez un impact clé sur la qualité et la maturité de nos produits Airbus ! \n\nDescription de l'emploi : \n\nNous sommes heureux d'offrir un poste au sein de notre équipe Quality Engineering Propulsion.\n\nVous serez en charge de déployer et d'exploiter des normes et des processus de qualité pour améliorer la conception correcte du premier coup liés aux livrables d'ingénierie des pylônes et des nacelles. Avec cette mission, vous aurez un impact clé sur la qualité et la maturité de nos produits Airbus !\n\nVos principales missions seront de :\n- Assurer et contrôler le respect des processus opérés par les équipes d'ingénierie\n\n- Prise en charge des révisions de conception\n\n- Évaluer les livrables d'ingénierie sur la base de contrôles standardisés\n\n- Faciliter et piloter l'Analyse des Risques de Conception (DFMEA)\n\n- Faciliter et piloter la résolution pratique de problèmes (PPS)\n\n- Analyser les non-conformités et définir des plans d'éradication/amélioration\n\n- Suivre et améliorer la performance qualité (production et analyse des KPI, définition et suivi du plan d'actions)\n\n- Capturer les leçons apprises et améliorer les processus opérationnels et de qualité continus\n\nCe poste, basé à TOULOUSE est à pourvoir dans le cadre  d'une mission d'intérim de 6 mois renouvelable.\nLa rémunération brute annuelle est à négocier selon votre expérience.\nPROFIL : De formation Bac +5, vous justifiez d'une expérience de 5 années minimum.Obligatoire : Connaissance en Data Analytics, connaissance et expérience des applications SKYWISE (notamment outil CONTOUR pour tableau de bord), connaissance de base de Python, Expérience en exploration de données (ex. Objets de données)\nOrienté PPS (résolution de problèmes) / Analyse des risques produits (DFMEA) / Contrôles qualités sur des livrables engineering / Process  assurance (plan qualité projet) / Design review (revues de conception) / analyses de données (data analyse : KPI's et dashboards)\n\nCompétences prioritaires obligatoires à avoir :\n\nBackground engineering = compréhension de l'environnement et de sujets techniques\n\nConnaissances PPS et DFMEA (standard qualité)\n\nCompétences accessoires :\n\nFibre data analyse avec utilisation de Skywise",
+        "dateCreation": "2025-02-25T11:10:18.000Z",
+        "dateActualisation": "2025-02-26T22:02:27.000Z",
+        "romeCode": "M1851",
+        "romeLibelle": "Analyste décisionnel - Business Intelligence",
+        "appellationlibelle": "Analyste décisionnel - Business Intelligence",
+        "entreprise": {
+            "nom": "Expectra",
+            "description": "Expectra, leader en France de l'intérim spécialisé et du recrutement en CDI de cadres et agents de maîtrise.\nLes consultants du Département Aéronautique vous proposent des opportunités de carrière.",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "MIS",
+        "typeContratLibelle": "Mission intérimaire - 6 Mois",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "E",
+        "experienceLibelle": "Expérience exigée",
+        "competences": null,
+        "salaire": {
+            "libelle": "Mensuel de 4224,00 Euros à 4224,00 Euros"
+        },
+        "dureeTravailLibelle": null,
+        "dureeTravailLibelleConverti": null,
+        "alternance": false,
+        "contact": null,
+        "agence": null,
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": null,
+        "deplacementLibelle": null,
+        "qualificationCode": "9",
+        "qualificationLibelle": "Cadre",
+        "codeNAF": "78.20Z",
+        "secteurActivite": "78",
+        "secteurActiviteLibelle": "Activités des agences de travail temporaire",
+        "qualitesProfessionnelles": null,
+        "origineOffre": {
+            "origine": "2",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/2701109",
+            "partenaires": [
+                {
+                    "nom": "HANDICAP_JOB",
+                    "url": "https://www.handicap-job.com/recherche/detail/oid/6143339/data-analyst-fh.html",
+                    "logo": "https://www.francetravail.fr/logos/img/partenaires/handicap_job80.png"
+                },
+                {
+                    "nom": "AEROCONTACT",
+                    "url": "https://www.aerocontact.com/emploi-aeronautique/data-analyst-fh~940066.html?fromref=poleemploi",
+                    "logo": "https://www.francetravail.fr/logos/img/partenaires/aerocontact80.png"
+                }
+            ]
+        },
+        "offresManqueCandidats": null,
+        "contexteTravail": {
+            "horaires": [
+                ""
+            ]
+        },
+        "formations": null,
+        "langues": null,
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_1",
+        "code_insee": "31555",
+        "nom_commune": "Toulouse",
+        "code_postal": "31000",
+        "nom_ville": "Toulouse",
+        "code_departement": "31",
+        "nom_departement": "Haute-Garonne",
+        "code_region": "76",
+        "nom_region": "Occitanie",
+        "dateExtraction": "2025-03-02",
+        "datePremiereEcriture": "2025-03-02"
+    },
+    {
+        "id": "9014030",
+        "intitule": "Lead data scientist  f/h (H/F)",
+        "description": "La Direction Générale du Soutien Militaire (DGSM) de Dassault Aviation assure le soutien en service des 1000 aéronefs militaires en service en France et à l'Export.Au sein de cette Direction, la composante Transformation Numérique (TN) participe au développement, à la mise en oeuvre et au déploiement de l'environnement Big Data Militaire ainsi que de l'utilisation de l'IA.Cet environnement a pour objectif d'aider à l'amélioration de la disponibilité de nos avions et est une composante incontournable des contrats de maintenance passés avec nos clients militaires.Vous rejoignez au sein de la DGSM/TN, une équipe Big Data basée à Saint-Cloud (92). \n\nVous participez aux travaux de Data Science pour répondre à des besoins métier (Maintenance, Logistique, Missions, analyses de fiabilité...) afin d'optimiser la disponibilité de nos avions militaires (Rafale, M2000, ATL).\nAu travers d'outils de Data Science (i.e. notebook, script python) et d'un Big Data Studio développé spécifiquement par DASSAULT SYSTEMES :\no Vous formalisez les besoins métiers en échangeant sur leurs activités avec les spécialistes de domaines; \no Vous développez en boucle Agile avec les métiers, les modèles et visualisation.\nLes principaux domaines utilisés sont :\no Time series : détection d'anomalie, signaux faibles\no NLP : Analyse de sentiment, classification de texte, recherche en langage naturelle\no Vous présentez les résultats de vos études et décidez avec les correspondants de la Transformation Numérique et les Métiers de leur publication officielle au sein de la plate-forme ;\no Vous êtes le référant data science au sein de DGSM et êtes garant de la qualité des livrables réalisés par les data scientists de l'équipe ;\no Vous effectuez une veille scientifique et technologique afin de garantir la cohérence entre les méthodes utilisées chez Dassault Aviation et celles du marché.\no Vous êtes force de proposition dans l'évolution des outils et méthodes utilisées.\n\nVous travaillez en mode projet avec les équipes métier de la DGSM et de la R&D ; l'intégration des personnes de plusieurs directions permettant de combiner les aspects Métier du soutien, Data Science et Informatique.",
+        "dateCreation": "2024-12-09T17:10:42.000Z",
+        "dateActualisation": "2025-02-11T15:49:53.000Z",
+        "romeCode": "M1831",
+        "romeLibelle": "Développeur / Développeuse - jeux vidéo",
+        "appellationlibelle": "Lead programmeur / Lead programmeuse - jeux vidéo",
+        "entreprise": {
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "Contrat à durée indéterminée",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "D",
+        "experienceLibelle": "Débutant accepté",
+        "competences": null,
+        "salaire": {
+
+        },
+        "dureeTravailLibelle": null,
+        "dureeTravailLibelleConverti": null,
+        "alternance": false,
+        "contact": null,
+        "agence": null,
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": null,
+        "deplacementLibelle": null,
+        "qualificationCode": null,
+        "qualificationLibelle": null,
+        "codeNAF": null,
+        "secteurActivite": null,
+        "secteurActiviteLibelle": null,
+        "qualitesProfessionnelles": null,
+        "origineOffre": {
+            "origine": "2",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/9014030",
+            "partenaires": [
+                {
+                    "nom": "AEROCONTACT",
+                    "url": "https://www.aerocontact.com/emploi-aeronautique/lead-data-scientist-fh~934231.html?fromref=poleemploi",
+                    "logo": "https://www.francetravail.fr/logos/img/partenaires/aerocontact80.png"
+                }
+            ]
+        },
+        "offresManqueCandidats": null,
+        "contexteTravail": {
+            "horaires": [
+                ""
+            ]
+        },
+        "formations": null,
+        "langues": null,
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_1",
+        "code_insee": "92064",
+        "nom_commune": "Saint-Cloud",
+        "code_postal": "92210",
+        "nom_ville": "Saint-Cloud",
+        "code_departement": "92",
+        "nom_departement": "Hauts-de-Seine",
+        "code_region": "11",
+        "nom_region": "Île-de-France",
+        "dateExtraction": "2025-03-02",
+        "datePremiereEcriture": "2025-03-02"
+    },
+    {
+        "id": "188QYJL",
+        "intitule": "Data Scientist Junior H/F (H/F)",
+        "description": "Au sein d'une équipe de consultants en datascience, vous participerez aux tâches suivantes :\n- Intervenir sur le cadrage du projet et participer à la traduction des besoins client en problématique data ;\n- Participer à la conception et à la mise en œuvre de la solution à apporter : structuration des données, modélisations, industrialisations . ;\n- Participer aux échanges avec le client ainsi qu'à la réalisation des supports et des livrables du projet ;\n- Participer à la veille technologique et à la recherche de solution innovante à l'état de l'art.\n\nQualifications requises :\nIssu(e) d'une école d'ingénieur et/ou titulaire d'un master en data science, vous avez idéalement une première expérience sur un projet en data science (stages, projets d'étude, .) et disposez des compétences suivantes :\n- Programmation Python ;\n- Bonne connaissance des techniques de statistique et machine learning ;\n- Bonne connaissance des librairies de machine learning pour Datascience (sklearn, pandas, matplotlib-seaborn,  .) ;\n- Vous disposez de capacités de synthèse et de communication vous permettant d'argumenter les choix technologiques et d'en expliquer les risques et avantages ;\n- Vous disposez de qualités d'organisation et de rigueur, et le goût du travail en équipe.\n\nCompétences additionnelles :\n- Connaissance en intégration continue (versioning Git, tests unitaires) ;\n- Participation à des compétitions en ligne (Kaggle, DREAM, .) ou à des projets open-source ou collaboratifs ;\n- Connaissances en calcul distribué (parallélisation et/ou Spark) ;\n- Expérience en deep learning (Tensorflow/Torch/Theano) ;\n- Connaissances en NLP et/ou Computer Vision (OpenCV, Keras, LangChain, OpenAI) ;\n- Expérience dans les secteurs banque ou assurance.",
+        "dateCreation": "2025-02-25T14:26:09.771Z",
+        "dateActualisation": "2025-02-25T15:08:34.254Z",
+        "romeCode": "M1405",
+        "romeLibelle": "Data scientist",
+        "appellationlibelle": "Data scientist",
+        "entreprise": {
+            "nom": "QUINTEN HEALTH",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "CDI",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "D",
+        "experienceLibelle": "Débutant accepté",
+        "competences": [
+            {
+                "code": "113798",
+                "libelle": "Programmation en Python",
+                "exigence": "S"
+            },
+            {
+                "code": "109527",
+                "libelle": "Adapter les outils de traitement statistique de données",
+                "exigence": "S"
+            },
+            {
+                "code": "300457",
+                "libelle": "Définir et faire évoluer des procédés de traitement de l'information",
+                "exigence": "S"
+            },
+            {
+                "code": "300200",
+                "libelle": "Exploiter des solutions de Data Science ou d'Intelligence Artificielle",
+                "exigence": "S"
+            },
+            {
+                "code": "300068",
+                "libelle": "Réaliser une analyse ou modélisation statistique de données",
+                "exigence": "S"
+            }
+        ],
+        "salaire": {
+            "commentaire": "A définir selon profil",
+            "complement1": "Autre"
+        },
+        "dureeTravailLibelle": "35H Autre",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "nom": "QUINTEN HEALTH - Mme Camille DUPONT",
+            "coordonnees1": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/188QYJL",
+            "courriel": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/188QYJL"
+        },
+        "agence": {
+
+        },
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": null,
+        "deplacementLibelle": null,
+        "qualificationCode": "9",
+        "qualificationLibelle": "Cadre",
+        "codeNAF": "62.02A",
+        "secteurActivite": "62",
+        "secteurActiviteLibelle": "Conseil en systèmes et logiciels informatiques",
+        "qualitesProfessionnelles": [
+            {
+                "libelle": "Faire preuve de rigueur et de précision",
+                "description": "Capacité à réaliser des tâches en suivant avec exactitude les règles, les procédures, les instructions qui ont été fournies, sans réaliser d'erreur et à transmettre clairement des informations. Se montrer ponctuel et respectueux des règles de savoir-vivre usuelles."
+            },
+            {
+                "libelle": "Organiser son travail selon les priorités et les objectifs",
+                "description": "Capacité à planifier, prioriser, anticiper des actions, en tenant compte des moyens, des ressources, des objectifs et du calendrier pour les réaliser."
+            },
+            {
+                "libelle": "Prendre des initiatives et être force de proposition",
+                "description": "Capacité à initier, imaginer des propositions nouvelles pour résoudre les problèmes identifiés ou améliorer une situation. Être proactif."
+            }
+        ],
+        "origineOffre": {
+            "origine": "1",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/188QYJL"
+        },
+        "offresManqueCandidats": false,
+        "contexteTravail": {
+            "horaires": [
+                "35H Autre"
+            ],
+            "conditionsExercice": [
+                "Autre"
+            ]
+        },
+        "formations": null,
+        "langues": [
+            {
+                "libelle": "Français",
+                "exigence": "E"
+            }
+        ],
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_1",
+        "code_insee": "75117",
+        "nom_commune": "Paris 17e Arrondissement",
+        "code_postal": "75017",
+        "nom_ville": "Paris",
+        "code_departement": "75",
+        "nom_departement": "Paris",
+        "code_region": "11",
+        "nom_region": "Île-de-France",
+        "dateExtraction": "2025-03-02",
+        "datePremiereEcriture": "2025-03-02"
+    }
+]

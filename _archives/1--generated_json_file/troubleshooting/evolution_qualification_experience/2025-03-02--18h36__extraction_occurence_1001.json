@@ -1,0 +1,585 @@
+[
+    {
+        "id": "0000001",
+        "intitule": "Administrateur d'exploitation IBMi (H/F)",
+        "description": "Rejoignez un leader de la transformation digitale et évoluez au sein d'une équipe engagée sur des infrastructures exigeantes.\nIntégrez notre équipe RUN et devenez un acteur clé de la performance de nos infrastructures !\n\nVotre mission\n- Assurer l'exploitation et la maintenance des infrastructures IBM i pour garantir une disponibilité optimale.\n- Surveiller, analyser et optimiser la production (sauvegardes, haute disponibilité, performances...).\n- Appliquer et renforcer les règles de sécurité, gérer les droits d'accès et garantir l'intégrité des systèmes.\n- Automatiser et optimiser les tâches récurrentes pour gagner en efficacité.\n- Accompagner les équipes support dans leur montée en compétences.\n- Participer activement aux projets d'exploitation et aux montées de versions.\nProfil recherché\nExpérience de 2 à 5 ans en exploitation IBM i.\nMaîtrise des outils BRMS, DataDomain et d'une des solutions d'ordonnancement : IJS, VTOM ou Opcon.\nConnaissance des langages CLP, RPG, SQL, SHELL.\nEsprit d'analyse, autonomie et excellent relationnel : vous aimez résoudre des problématiques complexes et travailler en équipe.\n\nCe que nous offrons:\n- Une rémunération attractive avec primes et participation aux résultats.\n- Avantages sociaux : tickets restaurant, mutuelle, prise en charge des transports.\n- Des perspectives d'évolution réelles au sein d'un groupe en pleine croissance.\n- Un environnement technique stimulant et une montée en compétences assurée.",
+        "dateCreation": "2025-02-28T11:00:58.629Z",
+        "dateActualisation": "2025-02-28T13:21:40.016Z",
+        "romeCode": "M1817",
+        "romeLibelle": "Administrateur / Administratrice sécurité informatique",
+        "appellationlibelle": "Administrateur / Administratrice sécurité informatique",
+        "entreprise": {
+            "nom": "HARDIS GROUPE",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "CDI",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "E",
+        "experienceLibelle": "3 An(s)",
+        "competences": [
+            {
+                "code": "300204",
+                "libelle": "Administrer un système d'informations",
+                "exigence": "S"
+            }
+        ],
+        "salaire": {
+            "commentaire": "Déterminée  en fonction du profil",
+            "complement1": "Autre"
+        },
+        "dureeTravailLibelle": "35H Autre",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "nom": "HARDIS GROUPE - Mme Stella DI NOTO",
+            "coordonnees1": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/188VMCV",
+            "courriel": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/188VMCV"
+        },
+        "agence": {
+
+        },
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": "1",
+        "deplacementLibelle": "Jamais",
+        "qualificationCode": "7",
+        "qualificationLibelle": "Technicien",
+        "codeNAF": "62.01Z",
+        "secteurActivite": "62",
+        "secteurActiviteLibelle": "Programmation informatique",
+        "qualitesProfessionnelles": [
+            {
+                "libelle": "Faire preuve d'autonomie",
+                "description": "Capacité à prendre en charge son activité sans devoir être encadré de façon continue (le cas échéant, à solliciter les autres acteurs de l'entreprise)."
+            },
+            {
+                "libelle": "Faire preuve de rigueur et de précision",
+                "description": "Capacité à réaliser des tâches en suivant avec exactitude les règles, les procédures, les instructions qui ont été fournies, sans réaliser d'erreur et à transmettre clairement des informations. Se montrer ponctuel et respectueux des règles de savoir-vivre usuelles."
+            },
+            {
+                "libelle": "Travailler en équipe",
+                "description": "Capacité à travailler et à se coordonner avec les autres au sein de l'entreprise pour réaliser les objectifs fixés."
+            }
+        ],
+        "origineOffre": {
+            "origine": "1",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/188VMCV"
+        },
+        "offresManqueCandidats": false,
+        "contexteTravail": {
+            "horaires": [
+                "35H Autre"
+            ],
+            "conditionsExercice": [
+                "Autre"
+            ]
+        },
+        "formations": null,
+        "langues": null,
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_1",
+        "code_insee": "38485",
+        "nom_commune": "Seyssinet-Pariset",
+        "code_postal": "38170",
+        "nom_ville": "Seyssinet-Pariset",
+        "code_departement": "38",
+        "nom_departement": "Isère",
+        "code_region": "84",
+        "nom_region": "Auvergne-Rhône-Alpes"
+        "dateExtraction": "2025-03-02",
+		"datePremiereEcriture": "2025-03-02"
+    },
+    {
+        "id": "0000002",
+        "intitule": "Technicien Sécurité Informatique Débutant H/F (H/F)",
+        "description": "Intégré(e) à notre équipe dédiée à la sécurité, vous participerez activement à la gestion du SOC en charge des infrastructures informatiques de nos clients :\n\n * Réalisation de checklists\n * Analyse de logs\n * Détection de comportements inhabituels et de vulnérabilités\n * Analyse et suivi des incidents\n * Reporting client\n   \n\nCe que nous proposons :\n\n * Un contrat en CDI à pourvoir dès maintenant\n * Une rémunération attractive\n * Une formation à nos méthodes, process, outils, techniques et services\n * Des possibilités d'évolution\n * De bonnes conditions de travail (investissement, proximité, réactivité.)\n * Une entreprise qui bouge et à la pointe de la technologie (R&D, High Tech, Innovations digitales.)\n * RTT\n\n * Bac+2 minimum\n * Des connaissances en système et réseaux seraient un plus\n * Curiosité, pugnacité, rigueur et réactivité\n * Attrait pour la cybersécurité",
+        "dateCreation": "2025-02-27T17:24:39.560Z",
+        "dateActualisation": "2025-02-27T17:24:40.015Z",
+        "romeCode": "M1817",
+        "romeLibelle": "Administrateur / Administratrice sécurité informatique",
+        "appellationlibelle": "Administrateur / Administratrice sécurité informatique",
+        "entreprise": {
+            "nom": "OLYMPE CYBERDEFENSE",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "CDI",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "D",
+        "experienceLibelle": "Débutant accepté",
+        "competences": null,
+        "salaire": {
+            "libelle": "Annuel de 23000.0 Euros à 26000.0 Euros sur 12.0 mois"
+        },
+        "dureeTravailLibelle": "35H Travail en journée",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "coordonnees1": "https://taleez.com/apply/technicien-securite-informatique-debutant-h-f-eslettes-groupe-frameip-cdi-1/applying",
+            "urlPostulation": "https://taleez.com/apply/technicien-securite-informatique-debutant-h-f-eslettes-groupe-frameip-cdi-1/applying"
+        },
+        "agence": {
+
+        },
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": null,
+        "deplacementLibelle": null,
+        "qualificationCode": "5",
+        "qualificationLibelle": "Employé non qualifié",
+        "codeNAF": "62.02A",
+        "secteurActivite": "62",
+        "secteurActiviteLibelle": "Conseil en systèmes et logiciels informatiques",
+        "qualitesProfessionnelles": null,
+        "origineOffre": {
+            "origine": "1",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/188TYYN"
+        },
+        "offresManqueCandidats": false,
+        "contexteTravail": {
+            "horaires": [
+                "35H Travail en journée"
+            ],
+            "conditionsExercice": [
+                ""
+            ]
+        },
+        "formations": null,
+        "langues": null,
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_1",
+        "code_insee": "76245",
+        "nom_commune": "Eslettes",
+        "code_postal": "76710",
+        "nom_ville": "Eslettes",
+        "code_departement": "76",
+        "nom_departement": "Seine-Maritime",
+        "code_region": "28",
+        "nom_region": "Normandie"
+        "dateExtraction": "2025-03-02",
+		"datePremiereEcriture": "2025-03-02"
+    },
+    {
+        "id": "0000003",
+        "intitule": "Technicien administrateur des systèmes d'information (H/F)",
+        "description": "Le poste :\nAu sein de la DSIN (56 agents), sous la responsabilité du chef du service Infrastructure (350 serveurs), réseau, téléphonie (5100 lignes) et sécurité, et en lien avec l'ingénieur Système et Sécurité, vous aurez pour missions principales l'exploitation, le Maintien en Condition Opérationnelle (MCO) et de sécurité ainsi que la maintenance du Systèmes d'Information. Vous participerez à son évolution, à la conduite des projets en relation avec le service des études\n\nVos missions :\n- Exploitation : assurer quotidiennement le contrôle des opérations automatisées (sauvegarde...), maintenir à jour la cartographie des composants du SI, assurer le fonctionnement des services d'infrastructures (matériels et logiciels), superviser le fonctionnement du SI\n- Sécurité :  mettre en place et exploiter les outils de sécurité, participer à la détection des failles de sécurité et à leur remédiation, sensibiliser les utilisateurs\n- MCO et MCS du SI : mettre à jour les matérielles et les logicielles, anticiper les besoins d'augmentation de ressources, résolution des incidents\n\nVotre profil :\n- Titulaire d'un Bac +2/3 en informatique, spécialisation en sécurité des systèmes d'information , vous présentez une expérience sur un poste similaire et connaissez les normes juridiques et réglementaires de sécurité et les standards d'exploitation\n- Vous disposez d'une très bonne maîtrise des technologies de réseau et télécommunications et des des outils de sécurité informatique (firewalls, antivirus,...) et avez un réel intérêt pour les avancées techniques en matière de cybersécurité\n- Vous présentez des qualités relationnelles et êtes en capacité d'animer une équipe opérationnelle et de prestataires\n- Vous connaissez la fonction publique territoriale et les procédures de la commande publique \n\nVos savoir-être :\n- Sens de l'organisation\n- Forte réactivité face aux incidents\n- Sens de l'analyse et de l'anticipation\n- Autonomie, rigueur, proactivité\n\nVotre candidature :\nRecrutement par voie de mutation, détachement, inscription sur liste d'aptitude ou à titre contractuel.\n\nAdressez CV et lettre de motivation (OBLIGATOIRE) avant le 28/03/2025 à Monsieur le Président de Le Mans Métropole.",
+        "dateCreation": "2025-02-27T15:18:44.852Z",
+        "dateActualisation": "2025-02-28T08:16:10.337Z",
+        "romeCode": "M1817",
+        "romeLibelle": "Administrateur / Administratrice sécurité informatique",
+        "appellationlibelle": "Administrateur / Administratrice sécurité informatique",
+        "entreprise": {
+            "nom": "LE MANS METROPOLE COMMUNAUTE URBAINE",
+            "description": "Notre collectivité\nPorte d'entrée du grand Ouest, à une heure de Paris en train, la Ville du Mans et sa métropole (210 000 habitants) portent des ambitions inédites en matière de culture, d'innovations durables, d'aménagement urbain et de santé. Leur dynamisme, traduit par l'action quotidienne de près de 5 000 femmes et hommes exerçant 150 métiers différents, est accompagné par le lancement d'un projet d'administration ambitieux : TEAM. Intégrez notre TEAM pour travailler ensemble au Mans !",
+            "url": "http://www.lemansmetropole.fr/citoyen/la-collectivite/les-recrutements/les-offres-demploi/",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDD",
+        "typeContratLibelle": "CDD - 12 Mois",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "D",
+        "experienceLibelle": "Débutant accepté",
+        "competences": [
+            {
+                "code": "300204",
+                "libelle": "Administrer un système d'informations",
+                "exigence": "S"
+            },
+            {
+                "code": "115801",
+                "libelle": "Gérer la sécurité informatique",
+                "exigence": "S"
+            }
+        ],
+        "salaire": {
+            "commentaire": "Selon la situation administrative",
+            "complement1": "Autre"
+        },
+        "dureeTravailLibelle": "35H Autre",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "nom": "LE MANS METROPOLE COMMUNAUTE URBAINE - M. Stéphane LE FOLL",
+            "coordonnees1": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/188TSBV",
+            "courriel": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/188TSBV"
+        },
+        "agence": {
+
+        },
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": "2",
+        "deplacementLibelle": "Ponctuels Zone départementale",
+        "qualificationCode": "6",
+        "qualificationLibelle": "Employé qualifié",
+        "codeNAF": "84.11Z",
+        "secteurActivite": "84",
+        "secteurActiviteLibelle": "Administration publique générale",
+        "qualitesProfessionnelles": [
+            {
+                "libelle": "Faire preuve de rigueur et de précision",
+                "description": "Capacité à réaliser des tâches en suivant avec exactitude les règles, les procédures, les instructions qui ont été fournies, sans réaliser d'erreur et à transmettre clairement des informations. Se montrer ponctuel et respectueux des règles de savoir-vivre usuelles."
+            },
+            {
+                "libelle": "Organiser son travail selon les priorités et les objectifs",
+                "description": "Capacité à planifier, prioriser, anticiper des actions, en tenant compte des moyens, des ressources, des objectifs et du calendrier pour les réaliser."
+            }
+        ],
+        "origineOffre": {
+            "origine": "1",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/188TSBV"
+        },
+        "offresManqueCandidats": false,
+        "contexteTravail": {
+            "horaires": [
+                "35H Autre"
+            ],
+            "conditionsExercice": [
+                "Autre"
+            ]
+        },
+        "formations": null,
+        "langues": null,
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_1",
+        "code_insee": "72181",
+        "nom_commune": "Le Mans",
+        "code_postal": "72000",
+        "nom_ville": "Le Mans",
+        "code_departement": "72",
+        "nom_departement": "Sarthe",
+        "code_region": "52",
+        "nom_region": "Pays de la Loire"
+        "dateExtraction": "2025-03-02",
+        "datePremiereEcriture": "2025-03-02"
+	},
+    {
+        "id": "PBQUAL1",
+        "intitule": "[ QUALIFICATION_CODE = 7 PUIS 8  (id=188LLXS) ] Technicien de gestion de données sur équipement (H/F)",
+        "description": "Afin de contribuer à la réalisation des projets pétroliers majeurs, un spécialiste de la gestion de données sera en charge de collecter les données techniques principales pour tous les équipements et tous les composants des équipements fournis par les partenaires, dans le but de les charger dans la base de données du projet (AVEVA Engineering).\nLa base de données technique sera mise à la disposition du client final pour les opération FPSO pour les opérations de maintenance.\nL'activité principale consiste à collecter les données provenant de divers équipements délivré par les fournisseurs, vérifier la pertinence des dessins et des revues documentaires du fournisseur pour bien déterminer qu'il ne manque pas d'information.\n\nCompétences requises :\nAvoir des notions d'anglais, des connaissances des documents courants des équipement fournis sur des projets pétroliers tels que : P&ID, data sheet, layout drawing, wiring drawing.",
+        "dateCreation": "2025-02-20T13:26:04.059Z",
+        "dateActualisation": "2025-02-20T13:26:04.526Z",
+        "romeCode": "M1811",
+        "romeLibelle": "Data engineer",
+        "appellationlibelle": "Data engineer",
+        "entreprise": {
+            "nom": "GIS MIC (GLOBAL INTERNATIONAL SERVICES M",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "CDI",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "D",
+        "experienceLibelle": "Débutant accepté",
+        "competences": [
+            {
+                "code": "300067",
+                "libelle": "Analyser, exploiter, structurer des données",
+                "exigence": "S"
+            },
+            {
+                "code": "300488",
+                "libelle": "Concevoir et gérer un projet",
+                "exigence": "S"
+            },
+            {
+                "code": "120209",
+                "libelle": "Enrichir une base de données",
+                "exigence": "E"
+            }
+        ],
+        "salaire": {
+            "commentaire": "à définir selon expérience",
+            "complement1": "Mutuelle",
+            "complement2": "Autre"
+        },
+        "dureeTravailLibelle": "40H Travail en journée",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+
+        },
+        "agence": {
+
+        },
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": "1",
+        "deplacementLibelle": "Jamais",
+        "qualificationCode": "7",
+        "qualificationLibelle": "Technicien",
+        "codeNAF": "71.12B",
+        "secteurActivite": "71",
+        "secteurActiviteLibelle": "Ingénierie, études techniques",
+        "qualitesProfessionnelles": [
+            {
+                "libelle": "Faire preuve de rigueur et de précision",
+                "description": "Capacité à réaliser des tâches en suivant avec exactitude les règles, les procédures, les instructions qui ont été fournies, sans réaliser d'erreur et à transmettre clairement des informations. Se montrer ponctuel et respectueux des règles de savoir-vivre usuelles."
+            }
+        ],
+        "origineOffre": {
+            "origine": "1",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/188LLXS"
+        },
+        "offresManqueCandidats": false,
+        "contexteTravail": {
+            "horaires": [
+                "40H Travail en journée"
+            ],
+            "conditionsExercice": [
+                ""
+            ]
+        },
+        "formations": null,
+        "langues": [
+            {
+                "libelle": "Anglais",
+                "exigence": "S"
+            }
+        ],
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_1",
+        "code_insee": "57031",
+        "nom_commune": "Ars-Laquenexy",
+        "code_postal": "57530",
+        "nom_ville": "Ars-Laquenexy",
+        "code_departement": "57",
+        "nom_departement": "Moselle",
+        "code_region": "44",
+        "nom_region": "Grand Est"
+        "dateExtraction": "2025-03-02",
+ 		"datePremiereEcriture": "2025-03-02"
+   },
+    {
+        "id": "PBQUAL2",
+        "intitule": "[ QUALIFICATION_CODE = 6 PUIS 7  (id=186XNDD) ] Coach sportif(ve) (H/F)",
+        "description": "Curves Bruz, club de fitness dédié exclusivement aux femmes, recherche un(e) coach sportif(ve) dynamique et passionné(e) pour accompagner et motiver nos adhérentes dans une ambiance conviviale et bienveillante.\n\nVOS MISSIONS:\n- Animer et surveiller un circuit de cardio training adapté à tous les niveaux, en veillant à la bonne exécution des exercices.\n- Proposer et encadrer des cours collectifs de Pilates et Zumba, en maintenant l'énergie et la motivation du groupe\n- Motiver et encourager chaque participante à atteindre ses objectifs tout en respectant son rythme\n- Corriger les postures, guider les mouvements et garantir une pratique sécurisée et efficace\n- Suivre les progrès des adhérentes et leur proposer des conseils personnalisés\n- Travailler en équipe pour créer une atmosphère positive et inspirante\n\nPROFIL RECHERCHE:\n- Diplôme dans le domaine du sport (STAPS, BPJEPS ou équivalent). Vous devez être en possession d'une carte d'éducateur sportif valide.\n- Certification ou expérience significative en Pilates et Zumba indispensable\n- Une expérience dans l'animation de circuits cardio training ou de cours collectifs est un atout\n- Dynamisme, bienveillance et excellent relationnel\n- Capacité de s'adapter aux besoins et objectifs d'une clientèle féminine\n- Esprit d'équipe et volonté de contribuer à une ambiance chaleureuse et motivante\n\nCONDITIONS:\n\n- Repos: samedi après midi, dimanche et un autre repos dans la semaine\n- Avantages: accès aux installations, opportunités de formations continue, chèques vacances, primes sur objectifs d'équipe\n- Rémunération selon grille de la convention et selon expérience.\n\nVous êtes motivé(e), passionné(e) par le fitness, le Pilates et la Zumba; et prête à inspirer une communauté 100% féminine? Vous avez envie de travailler auprès d'un public varié: sportives/non sportives; avec ou sans souci de santé, tout âge... ?\n\nPoste à pourvoir de suite",
+        "dateCreation": "2025-01-20T19:10:47.200Z",
+        "dateActualisation": "2025-02-26T12:22:46.742Z",
+        "romeCode": "G1217",
+        "romeLibelle": "Moniteur / Monitrice en salle de sport",
+        "appellationlibelle": "Coach sportif",
+        "entreprise": {
+            "nom": "CURVES",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "CDI",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "D",
+        "experienceLibelle": "Débutant accepté",
+        "competences": null,
+        "salaire": {
+            "libelle": "Mensuel de 1850.0 Euros à 2050.0 Euros sur 12.0 mois",
+            "complement1": "Primes",
+            "complement2": "Mutuelle"
+        },
+        "dureeTravailLibelle": "35H Autre",
+        "dureeTravailLibelleConverti": "Temps plein",
+        "alternance": false,
+        "contact": {
+            "nom": "CURVES - Mme PEGGY PIVETEAU",
+            "coordonnees1": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/186XNDD",
+            "courriel": "Pour postuler, utiliser le lien suivant : https://candidat.francetravail.fr/offres/recherche/detail/186XNDD"
+        },
+        "agence": {
+
+        },
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": "1",
+        "deplacementLibelle": "Jamais",
+        "qualificationCode": "6",
+        "qualificationLibelle": "Employé qualifié",
+        "codeNAF": "93.13Z",
+        "secteurActivite": "93",
+        "secteurActiviteLibelle": "Activités des centres de culture physique",
+        "qualitesProfessionnelles": null,
+        "origineOffre": {
+            "origine": "1",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/186XNDD"
+        },
+        "offresManqueCandidats": false,
+        "contexteTravail": {
+            "horaires": [
+                "35H Autre"
+            ],
+            "conditionsExercice": [
+                "Autre"
+            ]
+        },
+        "formations": null,
+        "langues": null,
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_1",
+        "code_insee": "35047",
+        "nom_commune": "Bruz",
+        "code_postal": "35170",
+        "nom_ville": "Bruz",
+        "code_departement": "35",
+        "nom_departement": "Ille-et-Vilaine",
+        "code_region": "53",
+        "nom_region": "Bretagne"
+        "dateExtraction": "2025-03-02",
+		"datePremiereEcriture": "2025-03-02"
+    },
+    {
+        "id": "PBEXP01",
+        "intitule": "[ EXPERIENCE = E/Expérience exigée de 3 An(s) PUIS D/Débutant accepté  (id=1316532) ] Administrateur linux (H/F)",
+        "description": "Description du poste :\nEn tant qu'organisateur de forums de recrutement, Talents Handicap accompagne de très nombreuses entreprises & organisations en France dans leurs recrutements de collaborateurs en situation de handicap. Participant actuellement à l'un de nos forums.\nL'entreprise Sopra Steria recherche actuellement des profils :\nDescription de l'entreprise\nSopra Steria, acteur majeur de la Tech en Europe avec 56 000 collaborateurs dans près de 30 pays, est reconnu pour ses activités de conseil, de services numériques et d'édition de logiciels. Il aide ses clients à mener leur transformation digitale et à obtenir des bénéfices concrets et durables. Le Groupe apporte une réponse globale aux enjeux de compétitivité des grandes entreprises et organisations, combinant une connaissance approfondie des secteurs d'activité et des technologies innovantes à une approche résolument collaborative. Sopra Steria place l'humain au centre de son action et s'engage auprès de ses clients à tirer le meilleur parti du digital pour construire un avenir positif. En 2023, le Groupe a réalisé un chiffre d'affaires de 5,8 milliards d'euros.\nThe world is how we shape it\nSopra Steria Infrastructure & Security Services est la business unit de Sopra Steria dédiée aux activités d'infrastructures, cloud et cybersécurité. Elle est un acteur clé du end-to-end de Sopra Steria. Forte de ses 3000 collaborateurs, Sopra Steria I2S se distingue par la flexibilité de son modèle de delivery qui associe la proximité clients depuis nos 8 agences et les capacités industrielles avancées de nos centres de services en off-shore.\nDescription du poste\nVotre futur environnement de travail:\nVous intégrez une agence dynamique qui compte plus de 370 collaborateurs répartis sur toute la région parisienne. Suivant les missions qui vous sont confiées, vous êtes amené(e) à évoluer au sein d'équipes internes Sopra Steria dans des prestations de type Infogérance ou vous êtes directement intégré(e) à des équipes client.\nL'agence commercialise ses activités auprès de clients Grands Comptes appartenant aux secteurs de la Banque, Assurances Protection Sociale, Retail & Automotive, Service Public et Santé Social et Emploi, et bien d'autres.\nPrêt(e) à relever le défi avec nous ?\nVotre rôle et vos missions :\nL'administrateur cloud, est responsable de la conception, de la mise en œuvre et de la maintenance des infrastructures de virtualisation Cloud :***Vous assurez le build d'un socle de virtualisation selon les documents d'architectures communiqués.\n* Vous prenez en charge l'administration, la configuration et l'optimisation des systèmes.\n* Vous assurez le maintien en conditions opérationnelles des infrastructures (physiques et virtuelles) : suivi de l'état de l'art et traitement des incidents de niveau 2 et 3.\n* Vous mettez à jour les référentiels assets et documentaires d'exploitation / d'administration.\n* Vous participez à l'évolution du système d'information de notre client (migration et sécurisation des socles de virtualisation, etc.).\n* Vous contribuez aux tâches d'exploitation (suivi des sauvegardes, supervision, etc.).\n* Vous automatisez les tâches d'administration et de déploiement des services.\nLes expertises attendues pour réaliser cette prestation sont listées ci-après :***Vmware(ESX6.5, 7.x) avec compétences avérées des composants VCenter/ vCloud Director/ vRops / NSX/ VRA / VRO.\n* Ansible et/ou Kubernetes\nCe que nous vous proposons :***Un accord télétravail pour télétravailler jusqu'à 2 jours par semaine selon vos missions.\n* Un package avantages intéressants : une mutuelle, un CSE, des titres restaurants, un accord d'intéressement, des primes vacances et cooptation.\n* Un accompagnement individualisé avec un mentor que vous choisissez.\n* Des opportunités de carrières multiples : plus de 50 métiers, autant de passerelles à imaginer ensemble. Plusieurs centaines de formations accessibles en toute autonomie depuis l'app mobile avec Sopra Steria Academy.\n* La possibilité de s'engager auprès de notre fondation ou de notre partenaire «Vendredi »\n* L'opportunité de rejoindre le collectif Tech'Me UP (formations, conférences, veille, et bien plus encore...).\nQualifications\nDiplômé(e) d'une école d'Ingénieur ou équivalent, vous avez au moins 5 ans d'expérience sur un poste d'Ingénieur(e) Cloud.\nVous êtes reconnu(e) pour votre adaptabilité, votre esprit d'innovation, votre capacité à convaincre et votre esprit de synthèse.\nVous avez le goût du challenge et vous appréciez le travail en équipe, tout en faisant preuve d'autonomie.\nVous recherchez des projets qui allient challenge technique, nouvelles technologies et innovation.\nVous vous reconnaissez ? Nous sommes impatients de vous rencontrer !",
+        "dateCreation": "2025-01-25T16:57:20.000Z",
+        "dateActualisation": "2025-03-01T11:10:01.000Z",
+        "romeCode": "M1843",
+        "romeLibelle": "Administrateur / Administratrice de serveurs",
+        "appellationlibelle": "Administrateur / Administratrice de serveurs",
+        "entreprise": {
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "Contrat à durée indéterminée",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "E",
+        "experienceLibelle": "Expérience exigée de 3 An(s)",
+        "competences": null,
+        "salaire": {
+
+        },
+        "dureeTravailLibelle": null,
+        "dureeTravailLibelleConverti": null,
+        "alternance": false,
+        "contact": null,
+        "agence": null,
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": null,
+        "deplacementLibelle": null,
+        "qualificationCode": null,
+        "qualificationLibelle": null,
+        "codeNAF": null,
+        "secteurActivite": null,
+        "secteurActiviteLibelle": null,
+        "qualitesProfessionnelles": null,
+        "origineOffre": {
+            "origine": "2",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/1316532",
+            "partenaires": [
+                {
+                    "nom": "METEOJOB",
+                    "url": "https://www.meteojob.com/jobads/42039861?utm_source=pole-emploi&utm_medium=aggregator-free",
+                    "logo": "https://www.francetravail.fr/logos/img/partenaires/meteojob80.png"
+                }
+            ]
+        },
+        "offresManqueCandidats": null,
+        "contexteTravail": {
+            "horaires": [
+                ""
+            ]
+        },
+        "formations": null,
+        "langues": null,
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_3",
+        "code_insee": null,
+        "nom_commune": null,
+        "code_postal": null,
+        "nom_ville": null,
+        "code_departement": "92",
+        "nom_departement": "Hauts-de-Seine",
+        "code_region": "11",
+        "nom_region": "Île-de-France"
+        "dateExtraction": "2025-03-02",
+		"datePremiereEcriture": "2025-03-02"
+    },
+    {
+        "id": "PBEXP02",
+        "intitule": "[ EXPERIENCE = E/Expérience exigée de 2 An(s) PUIS E/Expérience exigée de 3 An(s)  (id=0268188) ] ingénieur cybersécurité H/F - EC20545",
+        "description": "ingénieur cybersécurité H/F - EC20545 - Proposer et/ou mettre en œuvre la gouvernance Cybersécurité GPS impliquant les équipes internes et externes en charge de la sécurité informatique.\n- Planifier, organiser et piloter en responsabilité directe la mise en œuvre des mesures de cybersécurité (projets humains, logiciels, matériels), en définissant et garantissant la méthode, les échéanciers, l'implication des ressources nécessaires, les indicateurs de performance clés \n- D ... émarche d'amélioration continue, analyser et identifier les besoins en cybersécurité de GPS et proposer une actualisation de la feuille de route cybersécurité globale \n- Sélectionner et/ou déployer et gérer les technologies (matérielles et/ou logicielles) de cybersécurité, identifiées d ... uille de route. Assurer et garantir la maintenance des technologies mise en œuvre\n- Superviser les tests de sécurité, y compris les tests de pénétration, les analyses de vulnérabilités et les simulations d'attaques, pour évaluer l'efficacité des contrôles de sécurité. \n- Assurer la formation et la sensibilisation à la sécurité pour l'ensemble du personnel, en mettant l'accent sur les bonnes pratiques et les politiques de sécurité de l'entreprise.\n- Gérer les incidents de sécurité, en coordonnant la réponse de l'organisation, en menant des enquêtes post-incident et en mettant en œuvre des mesures correctives pour éviter de futures violations.\n- Effectuer une surveillance continue de la sécurité informatique, en analysant les journaux d'activité, en identifiant les anomalies et en répondant aux menaces émergentes.\n\n\n\n\n\n- Préparer des rapports réguliers sur l'état de la sécurité informatique de GPS y compris les incidents de sécurité, les performances des contrôles de sécurité et les mesures prises pour renforcer la sécurité.\n- Assurer une veille technologique constante sur les tendances et les développements en matière de cybersécurité, et recommander des améliorations aux systèmes et aux processus de sécurité.\n- Déplacements sur le territoire\n- Peut être amené à intervenir en renfort sur d'autres services ou d'autres métiers de la DSIC en cas de pics d'activité.",
+        "dateCreation": "2025-01-05T07:38:09.000Z",
+        "dateActualisation": "2025-03-02T02:43:48.000Z",
+        "romeCode": "M1854",
+        "romeLibelle": "Administrateur / Administratrice réseau informatique",
+        "appellationlibelle": "Administrateur / Administratrice réseau informatique",
+        "entreprise": {
+            "nom": "Grand Paris Sud Seine-Essonne-Sénart",
+            "entrepriseAdaptee": false
+        },
+        "typeContrat": "CDI",
+        "typeContratLibelle": "Contrat à durée indéterminée",
+        "natureContrat": "Contrat travail",
+        "experienceExige": "E",
+        "experienceLibelle": "Expérience exigée de 2 An(s)",
+        "competences": null,
+        "salaire": {
+
+        },
+        "dureeTravailLibelle": null,
+        "dureeTravailLibelleConverti": null,
+        "alternance": false,
+        "contact": null,
+        "agence": null,
+        "nombrePostes": 1,
+        "accessibleTH": false,
+        "deplacementCode": null,
+        "deplacementLibelle": null,
+        "qualificationCode": null,
+        "qualificationLibelle": null,
+        "codeNAF": null,
+        "secteurActivite": null,
+        "secteurActiviteLibelle": null,
+        "qualitesProfessionnelles": null,
+        "origineOffre": {
+            "origine": "2",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/0268188",
+            "partenaires": [
+                {
+                    "nom": "EMPLOI COLLECTIVITES",
+                    "url": "https://www.emploi-collectivites.fr/offre-emploi-territoriale-grand-paris-sud-seine-essonne-senart/ingenieur-cybersecurite-88179?prov=PE",
+                    "logo": "https://www.francetravail.fr/logos/img/partenaires/emploicollectivites80.png"
+                }
+            ]
+        },
+        "offresManqueCandidats": null,
+        "contexteTravail": {
+            "horaires": [
+                ""
+            ]
+        },
+        "formations": null,
+        "langues": null,
+        "permis": null,
+        "complementExercice": null,
+        "experienceCommentaire": null,
+        "conditionExercice": null,
+        "lieu_cas": "cas_1",
+        "code_insee": "91228",
+        "nom_commune": "Évry-Courcouronnes",
+        "code_postal": "91000",
+        "nom_ville": "Évry-Courcouronnes",
+        "code_departement": "91",
+        "nom_departement": "Essonne",
+        "code_region": "11",
+        "nom_region": "Île-de-France"
+        "dateExtraction": "2025-03-02",
+ 		"datePremiereEcriture": "2025-03-02"
+   }
+]
