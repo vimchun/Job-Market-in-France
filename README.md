@@ -1,8 +1,8 @@
 # Présentation du projet
 
-J'ai réalisé ce projet seul de bout en bout, dans le cadre de ma formation "Data Engineer" chez Data Scientest.
+- J'ai réalisé ce projet seul de bout en bout, dans le cadre de ma formation "Data Engineer" chez Data Scientest.
 
-Les objectifs sont globalement de :
+- Les objectifs sont globalement de :
 
   - mettre en place un pipeline ETL/ELT pour récupérer les offres d'emploi par API sur https://francetravail.io/data/api, étudier les attributs disponibles et faire le diagramme UML, effectuer des transformations en amont ou en aval de l'écriture des données dans une base de données Postgres,
 
@@ -15,28 +15,32 @@ Les objectifs sont globalement de :
   - orchestrer les tâches avec Airflow.
 
 
-Pour ne pas surcharger cette page principale, une autre page avec des informations supplémentaires est disponible ![ici](readme_files/README_additional_notes.md).
+- Pour ne pas surcharger cette page principale, une autre page avec des informations supplémentaires est disponible ![ici](readme_files/README_additional_notes.md).
 
 
-Le plan suivant présente un plan logique plutôt que de présenter les étapes qui ont été effectuées par ordre chronologique :
+- Le plan suivant présente un plan logique plutôt que de présenter les étapes qui ont été effectuées par ordre chronologique :
 
-todo : toc
+
+## Sommaire
+
+  todo : toc
 
 
 # Slideshow
 
-Voici un aperçu du projet :
+- Voici un aperçu du projet :
 
-todo : un gif peut être pas mal
+  todo : un gif peut être pas mal
 
 
 # Skills set travaillés
 
 - Python
-- ETL/ELT : récupération de données par API, transformation en amont ou en aval, chargement dans une base de données
+- Pipeline ETL/ELT
 - SQL
-- modélisation UML
+- Modélisation UML
 - Linux
+- Bash
 - GIT
 
 - FastAPI
@@ -45,9 +49,10 @@ todo : un gif peut être pas mal
 
 - Power BI
 
+
 # Environnement technique
 
-Développements et tests sous :
+- Développements et tests sous :
   - Windows 11 + WSL + Docker Desktop
   - Environnement virtuel, Python 3.12.9 (février 2025)
   - Airflow 3.0.2 (juin 2025), https://github.com/apache/airflow/releases
@@ -56,6 +61,9 @@ Développements et tests sous :
 # Getting started
 
 - Clone le projet.
+
+TODO : commande ?
+
 
 - Mettre en place la configuration docker :
 
@@ -75,10 +83,13 @@ Développements et tests sous :
 
 ## Sans la partie liée à la conf Docker
 
-todo : revoir à la fin du projet
-
-  ```bash
+```bash
   .
+  ├── _archives                        # fichiers archivés non importants
+  │   └── notebooks                    # fichiers notebooks qui ont servi pour créer les scripts
+  │
+  ├── .venv                            # environnements virtuels
+  │
   ├── airflow/                         # application Airflow
   │   ├── config                       # contient le fichier fichier de conf "airflow.cfg"
   │   ├── dags                         # contient "DAG 1" et "DAG 2"
@@ -88,18 +99,30 @@ todo : revoir à la fin du projet
   │   ├── logs                         # contient les logs des DAGs
   │   └── plugins                      # contient les plugins (dossier non utilisé pour le moment)
   │  
+  ├── drawio_files/                    # fichiers .drawio (schémas explicatifs)
+  │  
   ├── fastapi/                         # application FastAPI
   │   ├── sql_requests                 # requêtes SQL utilisées par le script fastapi
   │   ├── locations_information        # point de montage (volume)  # todo : à renommer en "locations_information_mount" ?
   │   └── main.py                      # script fastapi
+  │  
+  ├── power_bi/                        # contient le fichier .pbix
+  │  
+  ├── readme_files/                    # contient `README_additional_notes.md` et d'autres fichiers (screenshots...)
+  │  
+  ├── scripts/                         # contient des scripts bash
+  │  
+  ├── .env/                            # fichier utile pour Airflow
+  ├── .gitattributes                   # calcul stats sur github
+  ├── .gitignore                       # ne pas pousser les fichiers spécifiés sur git
+  ├── README.md                        # doc principale
+  ├── requirements.txt                 # libs python utilisés dans le projet
+  ├── ruff.toml                        # fichier de conf ruff pour le formattage python
+  └── todo.md                          # fichiers listant les actions prévues
   ```
 
 
 ## Avec seulement la configuration Docker
-
-- Le fichier `docker-compose.yml` décrit les différents services déployés : `postgres`, `fastapi`, `redis`, `airflow-apiserver`, `airflow-scheduler`, `airflow-dag-processor`, `airflow-worker`, `airflow-triggerer`, `airflow-init`, `airflow-cli`, `flower`.
-
-- Arborescence avec les éléments liés à la dockerisation :
 
 ```bash
   .
@@ -114,18 +137,35 @@ todo : revoir à la fin du projet
   └── docker-compose.yml               # orchestration docker pour postgres + fastapi + les services Airflow
   ```
 
-- Notes concernant la configuration `fastapi` :
+### Docker compose
+
+- Le fichier `docker-compose.yml` décrit les différents services déployés :
+
+  - `postgres`,
+  - `fastapi`,
+  - `redis`,
+  - `airflow-apiserver`,
+  - `airflow-scheduler`,
+  - `airflow-dag-processor`,
+  - `airflow-worker`,
+  - `airflow-triggerer`,
+  - `airflow-init`,
+  - `airflow-cli`,
+  - `flower`.
+
+
+## Configuration Fastapi
+
+- Le `docker-compose.yml` décrit des montages de volumes pour ne pas avoir à redémarrer le docker-compose après chaque modification de fichiers sql, par exemple.
+
+- A noter pour le `Dockerfile` :
 
   - Lors de la phase de développement :
-    - `Dockerfile` :
-      - `CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]` (avec l'option `--reload` pour ne pas avoir à relancer la commande après une modification)
-    - `docker-compose.yml` :
-      - avec les montages de volumes pour ne pas avoir à relancer le docker-compose après chaque modification de fichiers sql
+    - l'option `--reload` peut être passée pour ne pas avoir à relancer la commande après une modification : `CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]`
 
-  - Quand les développements seront terminés (phase de prod) :
-    - `Dockerfile` :
-      - `CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]` (sans l'option `--reload`)
-      - `COPY` du script python, et des fichiers nécessaires dans le conteneur (fichier csv, fichiers sql), au lieu de passer par des volumes
+  - En phase de prod (développements terminés) :
+    - sans l'option `--reload` : `CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]`
+    - `COPY` du script python, et des fichiers nécessaires dans le conteneur (fichier csv, fichiers sql), au lieu de passer par des montages de volumes
 
 
 
@@ -285,8 +325,11 @@ TODO : screenshot de DAG 1 à la fin du projet
   - `A7_special_jsons_concat`
 
     - Concaténation spéciale entre le json existant et le nouveau json, détails de l'algo (![ici](readme_files/README_additional_notes.md#concaténation-spéciale-entre-le-json-existant-et-le-nouveau-json)) [pandas]
+
     - Renommage du fichier `all_in_one.json` en `date__extraction_occurence_N+1.json`, si le fichier existant était nommé `date__extraction_occurence_N.json`.
+
     - Déplacement de l'ancien json existant `date__extraction_occurence_N.json` dans le dossier `archives`.
+
 
   - `A8_add_date_premiere_ecriture_attr`
 
@@ -363,8 +406,8 @@ Ce groupe exécute les actions suivantes :
 Prenons pour exemple, `Competence` puis `Offre_Competence`
 
   1/ `INSERT INTO` pour la table de dimension
-  2/ requête pour connaitre la correspondance entre `offre_id` et `competence_id` avant de faire des `INSERT INTO` pour la table de liaison
-  3/ conservation de l'offre la plus récente, si `competence_id` a évolué
+  2/ Requête pour connaitre la correspondance entre `offre_id` et `competence_id` avant de faire des `INSERT INTO` pour la table de liaison
+  3/ Conservation de l'offre la plus récente, si `competence_id` a évolué
 
 
 - `Competence` puis `Offre_Competence`
