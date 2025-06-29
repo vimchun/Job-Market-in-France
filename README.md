@@ -50,7 +50,9 @@
 - Power BI
 
 
-# Environnement technique
+# Environnement
+
+## Environnement technique
 
 - Développements et tests sous :
   - Windows 11 + WSL + Docker Desktop
@@ -58,15 +60,14 @@
   - Airflow 3.0.2 (juin 2025), https://github.com/apache/airflow/releases
 
 
-# Getting started
+## Conditions initiales
 
-- Clone le projet.
+- Pour avoir le projet en local :
 
-TODO : commande ?
+  TODO : commande clone ?
 
 
-- Mettre en place la configuration docker :
-
+- Avoir la configuration docker :
 
 ```bash
   # Pour initialiser Airflow et démarrer les services docker :
@@ -78,6 +79,12 @@ TODO : commande ?
   ./scripts/restart_all_docker_services.sh
   ```
 
+- Côté Airflow :
+
+  - Il faut que `DAG 1` soit activé dans la GUI, sinon la planification du DAG ne fonctionnera pas, auquel cas `DAG1` sera en `Queued` (tbd).
+  - Il faut que `DAG 2` soit activé dans la GUI, sinon le `DAG 1` déclenchera le `DAG 2`, mais il sera en `Queued`.
+
+TODO : screenshot
 
 # Arborescence des fichiers du projet
 
@@ -342,6 +349,9 @@ TODO : screenshot de DAG 1 à la fin du projet
 
   - Ecriture de l'historique du fichier json dans `_json_files_history.csv` (ajout nom json restant dans le dossier et le nombre de lignes).
 
+- `trigger_dag_2`
+
+  - Déclenchement du `DAG 2`
 
 
 ### DAG 2

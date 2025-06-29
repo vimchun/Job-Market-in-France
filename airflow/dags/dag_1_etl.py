@@ -17,6 +17,7 @@ from geopy.geocoders import Nominatim
 
 from airflow import DAG
 from airflow.decorators import task
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 from airflow.utils.task_group import TaskGroup
 from airflow.utils.trigger_rule import TriggerRule
 
@@ -1174,7 +1175,14 @@ with DAG(dag_id="DAG_1_ETL", tags=["project"]):
 
         write_history = write_to_history_csv_file(AGGREGATED_JSON_DIR)  #### task A10
 
+        trigger_dag2 = TriggerDagRunOperator(  #### task finale qui déclenche le DAG 2
+            task_id="trigger_dag_2",
+            trigger_dag_id="DAG_2_WRITE_TO_DATABASE",
+            wait_for_completion=False,
+            reset_dag_run=True,
+        )
+
         api_requests >> tl
-        [file0, file1] >> write_history
+        [file0, file1] >> write_history >> trigger_dag2
 
     setup >> etl
