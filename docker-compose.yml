@@ -1,18 +1,15 @@
 # Notes :
-# Inspiré de la doc Airflow : https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html
+# Basé à partir de la doc Airflow : https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html
 #
-# - Lancer le fichier "start_containers.sh" qui en partie fait les commandes suivantes :
-#     docker compose up airflow-init
-#     docker compose up
+# Lancer le fichier "scripts/docker_compose_down_up.sh" qui s'occupe de réinitialiser la conf docker (voir le script).
 
 x-airflow-common:
   &airflow-common
-  # image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.11.0}  # utilise l'image officielle (2.11.0 date de mai 2025 (https://hub.docker.com/r/apache/airflow/tags))
-  # image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:3.0.1}
-  build: .   # build à partir du Dockerfile
-  # build:
-  #   context: .
-  #   dockerfile: airflow-3.0.2/Dockerfile
+  # image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:3.0.2}
+  # build: .   # build à partir du Dockerfile
+  build:
+    context: .
+    dockerfile: airflow/Dockerfile
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
