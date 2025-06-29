@@ -175,13 +175,15 @@ Ci-dessous le nom d'une `tâche` avec une description.
 
 Pour alléger le texte, on écrira :
 
-- `fichier_existant.json` : fichier json aggrégeant les fichiers jsons téléchargés
-- `dossier_A` : dossier contenant tous les fichiers json téléchargés par api
-- `dossier_B` : dossier contenant le json fichier_existant.json
-- `data.json` : fichier json aggrégeant les fichiers jsons téléchargés en cours de construction, avant renommage
+- `fichier_existant.json` : fichier json aggrégeant les fichiers jsons téléchargés.
+- `dossier_A` : dossier contenant tous les fichiers json téléchargés par api.
+- `dossier_B` : dossier contenant le json `fichier_existant.json`.
+- `all_in_one.json` : fichier json aggrégeant les fichiers jsons téléchargés en cours de construction, avant renommage.
 
 
 ### DAG 1
+
+TODO : screenshot de DAG 1 à la fin du projet
 
 #### Task group "setup"
 
@@ -190,7 +192,7 @@ Pour alléger le texte, on écrira :
 
 - `S1_delete_all_in_one_json`
 
-  - Suppression du fichier `all_in_one.json` s'il existe
+  - Suppression du fichier `all_in_one.json` s'il existe dans le `dossier_B`.
 
 
 - tâches en parallèle :
@@ -199,13 +201,13 @@ Pour alléger le texte, on écrira :
 
     - Vérification du nombre de fichiers json dans le `dossier_B` :
       - s'il y a plusieurs fichiers json : fin du DAG (exception levée).
-      - s'il y a 0 ou 1 fichier json `fichier_existant.json` : on continue et on retourne "count", qui représente le nombre de fichiers json et qui servira plus tard dans ce DAG.
+      - s'il y a 0 ou 1 fichier json `fichier_existant.json` : on continue et on retourne "count", qui représente le nombre de fichiers json (0 ou 1 donc) et qui servira plus tard dans ce DAG.
 
 
   - `S1_check_csv_file_exists`, `S1_check_appellation_yaml_file_exists`, `S1_check_credentials_yaml_file_exists`
 
     - Vérification de la présence de ces fichiers :
-      - si un des fichiers n'existe pas : fin du DAG (exception levée)
+      - si un des fichiers n'existe pas : fin du DAG (exception levée).
 
 
 ##### Task group "after_checks"
@@ -213,18 +215,18 @@ Pour alléger le texte, on écrira :
 - `S2_remove_all_json_files`
 
   - Suppression des fichiers json dans le `dossier_A`.
-    - Après suppression, on vérifie qu'il n'y a plus de fichier json, sinon fin du script.
+    - Après suppression, on vérifie qu'il n'y a plus de fichier json (s'il reste un fichier json : fin du script).
 
 
 - `S2_load_appellations_yaml_file`
 
-  - Chargement fichier yaml avec 61 métiers.
+  - Chargement du fichier yaml avec les 61 métiers de la tech.
 
 
 - `S2_get_creds_from_yaml_file` puis `S2_get_token`
 
   - La première tâche récupère des credentials depuis le fichier.
-  - La seconde tâche récupère le token API.
+  - La seconde tâche récupère le token API pour la suite.
 
 
 
@@ -233,28 +235,28 @@ Pour alléger le texte, on écrira :
 
 - `A1_get_offers`
 
-  - Récupération et écriture des offres d'emploi dans des fichiers json dans le `dossier_A` + vérification validité fichiers json [requests].
+  - Récupération et écriture des offres d'emploi dans des fichiers json dans le `dossier_A` [requests] + vérification de la validité des fichiers json.
   - Le fichier yaml décrivant 61 métiers, Airflow exécute ici 61 `mapped tasks` en parallèle.
 
 
 - `A2_all_json_in_one`
 
-  - Consolidation de tous les fichiers json du `dossier_A` en un seul fichier json `data.json` dans le `dossier_B` et suppression des doublons [pandas].
+  - Consolidation de tous les fichiers json du `dossier_A` en un seul fichier json `all_in_one.json` dans le `dossier_B` et suppression des doublons [pandas].
 
 
 - `A3_only_metropole`
 
-  - Conservation uniquement dans les offres d'emploi en France Métropolitaine `data.json` [pandas].
+  - Conservation uniquement dans les offres d'emploi en France Métropolitaine dans `all_in_one.json` [pandas].
 
 
 - `A4_add_location_attrs`
 
-  - Ajout d'attributs dans `data.json` : `nom_commune`, `nom_ville`, `code_departement`, `nom_departement`, `code_region`, `nom_region`, à partir du code insee, coordonnées GPS et autres infos [pandas/geopy]
+  - Ajout d'attributs dans `all_in_one.json` : `nom_commune`, `nom_ville`, `code_departement`, `nom_departement`, `code_region`, `nom_region`, à partir du code insee, coordonnées GPS et autres infos [pandas/geopy].
 
 
 - `A5_add_dateExtraction_attr`
 
-  - Ajout d'un attribut dans `data.json` : `date_extraction`, pour connaitre la date d'extraction et la date où on écrit la première fois dans la base [pandas]
+  - Ajout d'un attribut dans `all_in_one.json` : `date_extraction`, pour connaitre la date d'extraction et la date où on écrit la première fois dans la base [pandas].
 
 
 - `A6_0_or_1_json_on_setup`
@@ -264,29 +266,31 @@ Pour alléger le texte, on écrira :
 
 ##### Task group "0_file_in_folder"
 
-- Cas où il n'y a pas de fichier json dans le `dossier_B`.
+- Cas où il n'y a pas de fichier json dans le `dossier_B` (variable `count=0`).
 
   - `A8_add_date_premiere_ecriture_attr`
 
-    - Ajout d'un attribut dans `data.json` : `date_premiere_ecriture` [pandas].
+    - Ajout d'un attribut dans `all_in_one.json` : `date_premiere_ecriture` [pandas].
 
 
   - `A9_rename_json_file`
 
-    - Renommage du fichier.
+    - Renommage du fichier `all_in_one.json` en `date__extraction_occurence_1.json` (car il s'agit de la première extraction)
 
 
 ##### Task group "1_file_in_folder"
 
-- Cas où il y a 1 fichier json `fichier_existant.json`.
+- Cas où il y a 1 fichier json `fichier_existant.json` dans le `dossier_B` (variable `count=1`).
 
   - `A7_special_jsons_concat`
 
-    - Concaténation spéciale entre le json existant et le nouveau json (![détails de l'algo](readme_files/README_additional_notes.md#concaténation-spéciale-entre-le-json-existant-et-le-nouveau-json)) [pandas] + renommage fichier final + déplacement ancien json existant dans dossier "archives".
+    - Concaténation spéciale entre le json existant et le nouveau json, détails de l'algo (![ici](readme_files/README_additional_notes.md#concaténation-spéciale-entre-le-json-existant-et-le-nouveau-json)) [pandas]
+    - Renommage du fichier `all_in_one.json` en `date__extraction_occurence_N+1.json`, si le fichier existant était nommé `date__extraction_occurence_N.json`.
+    - Déplacement de l'ancien json existant `date__extraction_occurence_N.json` dans le dossier `archives`.
 
   - `A8_add_date_premiere_ecriture_attr`
 
-    - Ajout d'un attribut dans `data.json` : date_premiere_ecriture [pandas].
+    - Ajout d'un attribut dans `all_in_one.json` : `date_premiere_ecriture` [pandas].
 
       - Notes : l'attribut `date_premiere_ecriture` prendra la date du jour pour toutes les nouvelles offres, et conservera l'ancienne valeur pour les anciennes offres.
 
@@ -299,6 +303,7 @@ Pour alléger le texte, on écrira :
 
 ### DAG 2
 
+TODO : screenshot de DAG 2 à la fin du projet
 
 #### setup
 
