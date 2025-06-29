@@ -212,4 +212,3 @@ CREATE TABLE IF NOT EXISTS Offre_PermisConduire (
     , FOREIGN KEY (offre_id) REFERENCES OffreEmploi (offre_id) ON DELETE CASCADE
     , FOREIGN KEY (permis_id) REFERENCES PermisConduire (permis_id) ON DELETE CASCADE
 );
-
