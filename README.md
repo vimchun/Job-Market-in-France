@@ -81,8 +81,8 @@
 
 - Côté Airflow :
 
-  - Il faut que `DAG 1` soit activé dans la GUI, sinon la planification du DAG ne fonctionnera pas, auquel cas `DAG1` sera en `Queued` (tbd).
-  - Il faut que `DAG 2` soit activé dans la GUI, sinon le `DAG 1` déclenchera le `DAG 2`, mais il sera en `Queued`.
+  - Il faut que `DAG 1` soit activé dans la GUI, sinon la planification du DAG ne déclenchera pas du tout (`DAG1` n'est pas en `Queued` sur cette version, mais c'est tout comme, car le DAG se déclenchera lorsqu'il sera activé).
+  - Il faut que `DAG 2` soit activé dans la GUI, sinon le `DAG 1` ne déclenchera pas le `DAG 2`, et il sera en `Queued`.
 
 TODO : screenshot
 
@@ -92,25 +92,25 @@ TODO : screenshot
 
 ```bash
   .
-  ├── _archives                        # fichiers archivés non importants
-  │   └── notebooks                    # fichiers notebooks qui ont servi pour créer les scripts
+  ├── _archives/                       # fichiers archivés non importants
+  │   └── notebooks/                   # fichiers notebooks qui ont servi pour créer les scripts
   │
-  ├── .venv                            # environnements virtuels
+  ├── .venv/                           # environnements virtuels
   │
   ├── airflow/                         # application Airflow
-  │   ├── config                       # contient le fichier fichier de conf "airflow.cfg"
-  │   ├── dags                         # contient "DAG 1" et "DAG 2"
-  │   ├── data
-  │   │   ├── outputs                  # contient les jsons récupérés par API, et le json qui les aggrège avec les transformations Python
-  │   │   └── resources                # contient les différents fichiers nécessaires au lancement du DAG 1
-  │   ├── logs                         # contient les logs des DAGs
-  │   └── plugins                      # contient les plugins (dossier non utilisé pour le moment)
+  │   ├── config/                      # contient le fichier fichier de conf "airflow.cfg"
+  │   ├── dags/                        # contient "DAG 1" et "DAG 2"
+  │   ├── data/
+  │   │   ├── outputs/                 # contient les jsons récupérés par API, et le json qui les aggrège avec les transformations Python
+  │   │   └── resources/               # contient les différents fichiers nécessaires au lancement du DAG 1
+  │   ├── logs/                        # contient les logs des DAGs
+  │   └── plugins/                     # contient les plugins (dossier non utilisé pour le moment)
   │  
   ├── drawio_files/                    # fichiers .drawio (schémas explicatifs)
   │  
   ├── fastapi/                         # application FastAPI
-  │   ├── sql_requests                 # requêtes SQL utilisées par le script fastapi
-  │   ├── locations_information        # point de montage (volume)  # todo : à renommer en "locations_information_mount" ?
+  │   ├── sql_requests/                # requêtes SQL utilisées par le script fastapi
+  │   ├── locations_information/       # point de montage (volume)  # todo : à renommer en "locations_information_mount" ?
   │   └── main.py                      # script fastapi
   │  
   ├── power_bi/                        # contient le fichier .pbix
@@ -125,7 +125,7 @@ TODO : screenshot
   ├── README.md                        # doc principale
   ├── requirements.txt                 # libs python utilisés dans le projet
   ├── ruff.toml                        # fichier de conf ruff pour le formattage python
-  └── todo.md                          # fichiers listant les actions prévues
+  └── todo.md                          # fichiers listant les idées/actions prévues
   ```
 
 
