@@ -351,7 +351,7 @@ TODO : screenshot de DAG 1 à la fin du projet
 
 - `trigger_dag_2`
 
-  - Déclenchement du `DAG 2`
+  - Déclenchement du `DAG 2` si `DAG` OK
 
 
 ### DAG 2
