@@ -1118,7 +1118,12 @@ def write_to_history_csv_file(aggregated_json_directory):
     return None
 
 
-with DAG(dag_id="DAG_1_ETL", tags=["project"]):
+with DAG(
+    dag_id="DAG_1_ETL",
+    schedule="50 11 * * *",  # exécution tous les jours à 13h50 (attention il faut prendre en compte un offset de +2h dans la gui)
+    catchup=False,  # pour ne pas rattraper les exécutions manquées
+    tags=["project"],
+):
     with TaskGroup(group_id="SETUP") as setup:
         with TaskGroup(group_id="check_files_in_folders") as check:
             check_csv_file_exists(LOCATION_CSV_FILENAME)  #### task S1
@@ -1175,7 +1180,7 @@ with DAG(dag_id="DAG_1_ETL", tags=["project"]):
 
         write_history = write_to_history_csv_file(AGGREGATED_JSON_DIR)  #### task A10
 
-        trigger_dag2 = TriggerDagRunOperator(  #### task finale qui déclenche le DAG 2
+        trigger_dag2 = TriggerDagRunOperator(  #### task finale qui déclenche le DAG 2 si DAG 1 en "success"
             task_id="trigger_dag_2",
             trigger_dag_id="DAG_2_WRITE_TO_DATABASE",
             wait_for_completion=False,
