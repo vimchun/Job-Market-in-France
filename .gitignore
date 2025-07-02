@@ -9,6 +9,16 @@ api_extract__transform/outputs/offres/1--generated_json_file/*.json
 api_extract__transform/outputs/offres/1--generated_json_file/archive_json_files
 api_extract__transform/outputs/offres/1--generated_json_file/troubleshooting/archives
 
+airflow/logs
+airflow/plugins
+airflow/data/outputs/offres/0--original_json_files_from_api/*.json
+airflow/data/outputs/offres/1--generated_json_file/archives/*.json
+airflow/data/outputs/offres/1--generated_json_file/*.json
+airflow/data/outputs/offres/1--generated_json_file/split_json_files/*.json
+
+# temporairement le temps du dev
+# airflow/data/outputs/offres/1--generated_json_file/_json_files_history.csv
+
 power_bi/archives_pbi
 node_modules
 package-lock.json
