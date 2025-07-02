@@ -2,9 +2,6 @@
 
 ### P0
 
-  - airflow :
-    - lancer script 1 puis script 2 (fréquence à définir)
-
   - github actions (dossier .workflow)
 
   - ajout prom/grafana au docker compose
