@@ -1120,7 +1120,7 @@ def write_to_history_csv_file(aggregated_json_directory):
 
 with DAG(
     dag_id="DAG_1_ETL",
-    schedule="50 11 * * *",  # exécution tous les jours à 13h50 (attention il faut prendre en compte un offset de +2h dans la gui)
+    schedule="30 19 * * *",  # exécution tous les jours à 21h30 (attention il faut prendre en compte un offset de +2h dans la gui)
     catchup=False,  # pour ne pas rattraper les exécutions manquées
     tags=["project"],
 ):
