@@ -119,8 +119,9 @@ sql_file_directory_part_1 = os.path.join(os.path.dirname(os.path.abspath(__file_
 DEFAULT_CSV_PATH = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
     "..",
-    "api_extract__transform",
-    "locations_information",
+    "airflow",
+    "data",
+    "resources",
     "code_name__city_department_region.csv",
 )
 

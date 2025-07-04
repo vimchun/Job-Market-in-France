@@ -12,7 +12,9 @@
 
   - mettre en place une API pour qu'un utilisateur puisse requêter la base de données via une interface graphique,
 
-  - orchestrer les tâches avec Airflow.
+  - orchestrer les tâches avec Airflow,
+
+  - monitoring avec Prometheus et Grafana
 
 
 - Pour ne pas surcharger cette page principale, une autre page avec des informations supplémentaires est disponible ![ici](readme_files/README_additional_notes.md).
@@ -46,6 +48,8 @@
 - FastAPI
 - Docker
 - Airflow
+- Prometheus
+- Grafana
 
 - Power BI
 
@@ -86,6 +90,18 @@
 
 TODO : screenshot
 
+
+# Urls de la GUI des applications
+
+(todo :+sceenshots)
+
+| Application | url                        |
+| ----------- | -------------------------- |
+| FastAPI     | http://localhost:8000/docs |
+| Airflow     | http://localhost:8080/     |
+| Prometheus  | http://localhost:9090/     |
+
+
 # Arborescence des fichiers du projet
 
 ## Sans la partie liée à la conf Docker
@@ -110,7 +126,6 @@ TODO : screenshot
   │  
   ├── fastapi/                         # application FastAPI
   │   ├── sql_requests/                # requêtes SQL utilisées par le script fastapi
-  │   ├── locations_information/       # point de montage (volume)  # todo : à renommer en "locations_information_mount" ?
   │   └── main.py                      # script fastapi
   │  
   ├── power_bi/                        # contient le fichier .pbix
