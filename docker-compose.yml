@@ -12,24 +12,31 @@ x-airflow-common:
     dockerfile: airflow/Dockerfile
   environment:
     &airflow-common-env
+
+    AIRFLOW_CONFIG: /opt/airflow/config/airflow.cfg
+
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
     AIRFLOW__CORE__AUTH_MANAGER: airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://mhh:mhh@postgres/francetravail
     AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://mhh:mhh@postgres/francetravail
     AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
-    AIRFLOW__CORE__FERNET_KEY: ***REMOVED***
-    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
-    AIRFLOW__CORE__LOAD_EXAMPLES: "false"
-    AIRFLOW__CORE__EXECUTION_API_SERVER_URL: 'http://airflow-apiserver:8080/execution/'
-    AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
+    # AIRFLOW__CORE__FERNET_KEY: ***REMOVED***
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: True
+    AIRFLOW__CORE__LOAD_EXAMPLES: False
+    AIRFLOW__CORE__EXECUTION_API_SERVER_URL: http://airflow-apiserver:8080/execution/
+    AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: True
     # _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
-    AIRFLOW_CONFIG: '/opt/airflow/config/airflow.cfg'
+    AIRFLOW__METRICS__STATSD_ON: True  # active la collecte des métriques par StatsD destinées au statsd-exporter
+    AIRFLOW__METRICS__STATSD_HOST: statsd-exporter
+    AIRFLOW__METRICS__STATSD_PORT: 9125
+    AIRFLOW__METRICS__STATSD_PREFIX: airflow
+
   volumes:
     - ./airflow/dags:/opt/airflow/dags
     - ./airflow/data:/opt/airflow/data
     - ./airflow/logs:/opt/airflow/logs
     - ./airflow/config:/opt/airflow/config
-    - ./airflow/plugins:/opt/airflow/plugins
+    # - ./airflow/plugins:/opt/airflow/plugins
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
@@ -40,6 +47,8 @@ x-airflow-common:
 
 
 services:
+
+  ##################################
 
   postgres:
     image: postgres:16-alpine
@@ -58,6 +67,8 @@ services:
       retries: 5
       start_period: 5s
     restart: always
+
+  ##################################
 
   fastapi:
     build:
@@ -79,6 +90,8 @@ services:
     depends_on:
       - postgres
 
+  ##################################
+
   redis:
     image: redis:latest
     container_name: redis
@@ -91,6 +104,8 @@ services:
       retries: 50
       start_period: 30s
     restart: always
+
+  ##################################
 
   airflow-apiserver:
     container_name: airflow-apiserver
@@ -110,6 +125,8 @@ services:
     #   airflow-init:
     #     condition: service_completed_successfully
 
+  ##################################
+
   airflow-scheduler:
     container_name: airflow-scheduler
     <<: *airflow-common
@@ -126,6 +143,8 @@ services:
     #   airflow-init:
     #     condition: service_completed_successfully
 
+  ##################################
+
   airflow-dag-processor:
     container_name: airflow-dag-processor
     <<: *airflow-common
@@ -141,6 +160,8 @@ services:
     #   <<: *airflow-common-depends-on
     #   airflow-init:
     #     condition: service_completed_successfully
+
+  ##################################
 
   airflow-worker:
     container_name: airflow-worker
@@ -165,6 +186,8 @@ services:
     #   airflow-init:
     #     condition: service_completed_successfully
 
+  ##################################
+
   airflow-triggerer:
     container_name: airflow-triggerer
     <<: *airflow-common
@@ -181,6 +204,7 @@ services:
     #   airflow-init:
     #     condition: service_completed_successfully
 
+  ##################################
 
   airflow-init:
     container_name: airflow-init
@@ -273,6 +297,8 @@ services:
       _PIP_ADDITIONAL_REQUIREMENTS: ''
     user: "0:0"
 
+  ##################################
+
   airflow-cli:
     container_name: airflow-cli
     <<: *airflow-common
@@ -288,6 +314,8 @@ services:
       - airflow
     # depends_on:
     #   <<: *airflow-common-depends-on
+
+  ##################################
 
   flower:
     container_name: flower
@@ -309,5 +337,38 @@ services:
     #   airflow-init:
     #     condition: service_completed_successfully
 
+
+  ##################################
+
+  # https://github.com/statsd/statsd
+  #  pour convertir les métriques StatsD en format Prometheus
+
+  statsd-exporter:
+    image: prom/statsd-exporter
+    container_name: statsd-exporter
+    command: "--statsd.listen-udp=:8125 --web.listen-address=:9102"
+    ports:
+      - "9102:9102"
+      - "8125:8125/udp"
+    restart: always
+
+
+  ##################################
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    restart: always
+
+  ##################################
+
+
 volumes:
   postgres_data_job_market:
+  prometheus_data:
