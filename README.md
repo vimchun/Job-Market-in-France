@@ -95,11 +95,12 @@ TODO : screenshot
 
 (todo :+sceenshots)
 
-| Application | url                        |
-| ----------- | -------------------------- |
-| FastAPI     | http://localhost:8000/docs |
-| Airflow     | http://localhost:8080/     |
-| Prometheus  | http://localhost:9090/     |
+| Application     | url                        |
+| --------------- | -------------------------- |
+| FastAPI         | http://localhost:8000/docs |
+| Airflow         | http://localhost:8080/     |
+| Prometheus      | http://localhost:9092/     |
+| StatsD Exporter | http://localhost:9102/     |
 
 
 # Arborescence des fichiers du projet
