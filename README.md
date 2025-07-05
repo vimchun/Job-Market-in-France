@@ -93,7 +93,7 @@ TODO : screenshot
 
 # Urls de la GUI des applications
 
-(todo :+sceenshots)
+(todo : + screenshots)
 
 | Application     | url                        |
 | --------------- | -------------------------- |
@@ -101,6 +101,53 @@ TODO : screenshot
 | Airflow         | http://localhost:8080/     |
 | Prometheus      | http://localhost:9092/     |
 | StatsD Exporter | http://localhost:9102/     |
+
+
+# Prometheus
+
+## Configuration de la collecte des métriques via StatsD
+
++ screenshot prometheus > status > targets
+
+- Un `target` a été défini pour collecter les métriques provenant de `StatsD`, via le fichier de configuration `airflow/config/prometheus.yaml` :
+
+```yaml
+  scrape_configs:
+    - job_name: statsd-exporter
+      static_configs:
+        - targets: ["statsd-exporter:9102"]
+  ```
+
+- `StatsD` est un collecteur de métriques qui permet à Airflow d'envoyer des données sous forme de métriques formatées en StatsD, et de les exposer via un `statsd-exporter` configuré pour Prometheus.
+
+- Un autre fichier de configuration `airflow/config/statsd.yaml` permet de définir des mappings à partir des métriques issues d'Airflow, avec la possibilité de modifier le nom de la requête promQL.
+
+  - https://github.com/databand-ai/airflow-dashboards/blob/main/statsd/statsd.conf
+
+
+- Mappings Airflow disponible dans la doc : https://airflow.apache.org/docs/apache-airflow/stable/logging-monitoring/metrics.html
+
+
+
+## Métriques
+
+### Métriques de StatsD
+
+Les métriques disponibles sont celles renvoyées par la commande `curl http://localhost:9102/metrics`, également disponibles dans le fichier `readme_files/metrics_statsd`.
+
+
+
+## Check
+
+```bash
+docker exec -it prometheus sh  # l'image de prometheus ne contient pas bash
+
+/prometheus $ promtool check config /etc/prometheus/prometheus.yaml
+##==> Checking /etc/prometheus/prometheus.yaml
+##==>  SUCCESS: /etc/prometheus/prometheus.yaml is valid prometheus config file syntax
+```
+
+
 
 
 # Arborescence des fichiers du projet
