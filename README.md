@@ -95,19 +95,18 @@ TODO : screenshot
 
 (todo : + screenshots)
 
-| Application     | url                        |
-| --------------- | -------------------------- |
-| FastAPI         | http://localhost:8000/docs |
-| Airflow         | http://localhost:8080/     |
-| Prometheus      | http://localhost:9092/     |
-| StatsD Exporter | http://localhost:9102/     |
+| Application                 | Url                           |
+| --------------------------- | ----------------------------- |
+| FastAPI                     | http://localhost:8000/docs    |
+| Airflow                     | http://localhost:8080/        |
+| Prometheus                  | http://localhost:9092/        |
+| StatsD Exporter             | http://localhost:9102/        |
+| StatsD Exporter (métriques) | http://localhost:9102/metrics |
 
 
 # Prometheus
 
 ## Configuration de la collecte des métriques via StatsD
-
-+ screenshot prometheus > status > targets
 
 - Un `target` a été défini pour collecter les métriques provenant de `StatsD`, via le fichier de configuration `airflow/config/prometheus.yaml` :
 
@@ -118,37 +117,42 @@ TODO : screenshot
         - targets: ["statsd-exporter:9102"]
   ```
 
+  - Lorsqu'on se connecte sur la GUI de Prometheus (http://localhost:9092/) (todo : mettre le lien), on doit voir le target à OK, comme le montre dans le screenshot suivant :
+    - todo : + screenshot prometheus > status > targets
+
+
 - `StatsD` est un collecteur de métriques qui permet à Airflow d'envoyer des données sous forme de métriques formatées en StatsD, et de les exposer via un `statsd-exporter` configuré pour Prometheus.
 
-- Un autre fichier de configuration `airflow/config/statsd.yaml` permet de définir des mappings à partir des métriques issues d'Airflow, avec la possibilité de modifier le nom de la requête promQL.
 
-  - https://github.com/databand-ai/airflow-dashboards/blob/main/statsd/statsd.conf
+- Par ailleurs, les métriques disponibles sont celles renvoyées par la commande `curl http://localhost:9102/metrics`, également disponibles dans le fichier `readme_files/metrics_statsd`.
 
+- Tous les mappings Airflow sont disponibles dans cette doc : https://airflow.apache.org/docs/apache-airflow/stable/logging-monitoring/metrics.html (todo : mettre le lien dans "doc").
 
-- Mappings Airflow disponible dans la doc : https://airflow.apache.org/docs/apache-airflow/stable/logging-monitoring/metrics.html
+- A noter qu'un autre fichier de configuration `airflow/config/statsd.yaml` permet de définir des mappings à partir des métriques issues d'Airflow, avec la possibilité de modifier le nom de la requête promQL.
 
+  - Ce dernier a été inspiré de celui-ci : https://github.com/databand-ai/airflow-dashboards/blob/main/statsd/statsd.conf, dont la plupart des mappings ne sont plus d'actualité car il s'agit certainement d'un fichier de conf qui a été fait pour Airflow 2.x, le fichier ayant été publié il y a 3 ans (au moment où sont rédigé ces lignes, Airflow 3.x ne que quelques mois).
 
+    - Ces mappings seront préfixés avec `custom_[type]_[nom]` (`type` étant `counter`, `gauge`, `observer`)
 
-## Métriques
-
-### Métriques de StatsD
-
-Les métriques disponibles sont celles renvoyées par la commande `curl http://localhost:9102/metrics`, également disponibles dans le fichier `readme_files/metrics_statsd`.
-
-
-
-## Check
+    - On peut vérifier que ce fichier est valide :
 
 ```bash
-docker exec -it prometheus sh  # l'image de prometheus ne contient pas bash
+      docker exec -it prometheus sh  # l'image de prometheus ne contient pas bash
 
-/prometheus $ promtool check config /etc/prometheus/prometheus.yaml
-##==> Checking /etc/prometheus/prometheus.yaml
-##==>  SUCCESS: /etc/prometheus/prometheus.yaml is valid prometheus config file syntax
+      /prometheus $ promtool check config /etc/prometheus/prometheus.yaml
+      ##==> Checking /etc/prometheus/prometheus.yaml
+      ##==>  SUCCESS: /etc/prometheus/prometheus.yaml is valid prometheus config file syntax
 ```
 
+    - Pour vérifier qu'un mapping est valide ou pas :
 
+```bash
+      # docker exec ?
 
+      curl http://localhost:9102/metrics | grep <match>
+
+      # par exemple :
+```
 
 # Arborescence des fichiers du projet
 
