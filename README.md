@@ -72,9 +72,11 @@
 
 ### Versions testées
 
-Le ficher `docker-compose.yml` ne spécifiant pas les versions pour les différents services (tag latest par défaut), il est important de noter les versions des services de l'écosystème.
+- Le ficher `docker-compose.yml` ne spécifiant pas les versions pour les différents services (tag latest par défaut), il est important de noter les versions des services de l'écosystème.
 
-Ce [lien](readme_files/README_additional_notes.md#versions-testées) donne les commandes permettant de récupérer les versions.
+- Ce [lien](readme_files/README_additional_notes.md#versions-testées) donne les commandes permettant de récupérer les versions.
+
+- Tableau avec les versions utilisées :
 
   | service         | version  | date    | lien                                                   |
   | --------------- | -------- | ------- | ------------------------------------------------------ |
@@ -84,7 +86,7 @@ Ce [lien](readme_files/README_additional_notes.md#versions-testées) donne les c
   | Airflow         | 3.0.2    | 06/2025 | https://github.com/apache/airflow/releases             |
   | StatsD-exporter | 0.28.0   | 10/2024 | https://github.com/prometheus/statsd_exporter/releases |
   | Prometheus      | 2.53.5   | 06/2025 | https://github.com/prometheus/prometheus/releases      |
-
+  | Grafana         | 12.0.2   | 06/2025 | https://github.com/grafana/grafana/releases            |
 
 
 ## Conditions initiales
@@ -121,13 +123,13 @@ TODO : screenshot
 
 (todo : + screenshots)
 
-| Application                 | Url                           |
-| --------------------------- | ----------------------------- |
-| FastAPI                     | http://localhost:8000/docs    |
-| Airflow                     | http://localhost:8080/        |
-| Prometheus                  | http://localhost:9092/        |
-| StatsD Exporter             | http://localhost:9102/        |
-| StatsD Exporter (métriques) | http://localhost:9102/metrics |
+| Application     | Url                                                    |
+| --------------- | ------------------------------------------------------ |
+| FastAPI         | http://localhost:8000/docs                             |
+| Airflow         | http://localhost:8080/                                 |
+| StatsD Exporter | http://localhost:9102/ + http://localhost:9102/metrics |
+| Prometheus      | http://localhost:9092/                                 |
+| Grafana         | http://localhost:3000/                                 |
 
 
 # Prometheus
@@ -194,6 +196,25 @@ TODO : refaire le fichier quand les DAGs seront figés
 
 
 - Tous les métriques Airflow sont disponibles dans cette [doc](https://airflow.apache.org/docs/apache-airflow/stable/logging-monitoring/metrics.html).
+
+
+# Grafana
+
+## Configuration automatique après installation
+
+- Après (ré)installation, la datasource `Prometheus` est crée automatiquement grâce au fichier `grafana/volumes/provisioning/datasources/datasources.yml` qui est copié dans `/grafana/provisioning/datasources/datasources.yml` grâce au montage de volume, comme montré ici :
+
+  ![datasource Prometheus dans Grafana](readme_files/screenshots/grafana_datasource_prometheus.png)
+
+
+- Les dashboards placés dans `grafana/volumes/provisioning/dashboards/` sont également importés automatiquement.
+
+
+todo : mettre screenshots quand ca sera bon
+
+
+## Création de dashboards
+
 
 
 
