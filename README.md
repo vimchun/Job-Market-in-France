@@ -85,8 +85,11 @@
 
 - Côté Airflow :
 
-  - Il faut que `DAG 1` soit activé dans la GUI, sinon la planification du DAG ne déclenchera pas du tout (`DAG1` n'est pas en `Queued` sur cette version, mais c'est tout comme, car le DAG se déclenchera lorsqu'il sera activé).
-  - Il faut que `DAG 2` soit activé dans la GUI, sinon le `DAG 1` ne déclenchera pas le `DAG 2`, et il sera en `Queued`.
+  - Il faut que `DAG 1` et `DAG 2` soient activés dans la GUI (par défaut, ils sont désactivés après une réinitialisation d'environnement) :
+
+    - `DAG 1` doit être activé sinon la planification du DAG ne déclenchera pas du tout (`DAG1` n'est pas en `Queued` sur cette version, mais c'est tout comme, car le DAG se déclenchera lorsqu'il sera activé).
+
+    - `DAG 2` doit être activé sinon le `DAG 1` ne déclenchera pas le `DAG 2`, et il sera en `Queued`.
 
 TODO : screenshot
 
@@ -106,7 +109,7 @@ TODO : screenshot
 
 # Prometheus
 
-## Configuration de la collecte des métriques via StatsD
+## Configuration via StatsD
 
 - Un `target` a été défini pour collecter les métriques provenant de `StatsD`, via le fichier de configuration `airflow/config/prometheus.yaml` :
 
@@ -117,42 +120,43 @@ TODO : screenshot
         - targets: ["statsd-exporter:9102"]
   ```
 
-  - Lorsqu'on se connecte sur la GUI de Prometheus (http://localhost:9092/) (todo : mettre le lien), on doit voir le target à OK, comme le montre dans le screenshot suivant :
-    - todo : + screenshot prometheus > status > targets
+  - Lorsqu'on se connecte sur la [GUI](http://localhost:9092/) de Prometheus, on doit voir que l'état du target `statsd-exporter` est à `UP`, comme le montre dans le screenshot suivant :
 
+    ![prometheus targets](readme_files/screenshots/prometheus_targets.png)
 
 - `StatsD` est un collecteur de métriques qui permet à Airflow d'envoyer des données sous forme de métriques formatées en StatsD, et de les exposer via un `statsd-exporter` configuré pour Prometheus.
 
 
 - Par ailleurs, les métriques disponibles sont celles renvoyées par la commande `curl http://localhost:9102/metrics`, également disponibles dans le fichier `readme_files/metrics_statsd`.
 
-- Tous les mappings Airflow sont disponibles dans cette doc : https://airflow.apache.org/docs/apache-airflow/stable/logging-monitoring/metrics.html (todo : mettre le lien dans "doc").
+- Tous les mappings Airflow sont disponibles dans cette [doc](https://airflow.apache.org/docs/apache-airflow/stable/logging-monitoring/metrics.html).
 
-- A noter qu'un autre fichier de configuration `airflow/config/statsd.yaml` permet de définir des mappings à partir des métriques issues d'Airflow, avec la possibilité de modifier le nom de la requête promQL.
 
-  - Ce dernier a été inspiré de celui-ci : https://github.com/databand-ai/airflow-dashboards/blob/main/statsd/statsd.conf, dont la plupart des mappings ne sont plus d'actualité car il s'agit certainement d'un fichier de conf qui a été fait pour Airflow 2.x, le fichier ayant été publié il y a 3 ans (au moment où sont rédigé ces lignes, Airflow 3.x ne que quelques mois).
+## Définition de mappings avec `statsd.yaml`
 
-    - Ces mappings seront préfixés avec `custom_[type]_[nom]` (`type` étant `counter`, `gauge`, `observer`)
+- Un autre fichier de configuration `airflow/config/statsd.yaml` permet de définir des mappings à partir des métriques issues d'Airflow, avec la possibilité de modifier le nom de la requête promQL.
 
-    - On peut vérifier que ce fichier est valide :
+- Ce dernier a été inspiré de ce [repo](https://github.com/databand-ai/airflow-dashboards/blob/main/statsd/statsd.conf), dont la plupart des mappings ne sont plus d'actualité car il s'agit certainement d'un fichier de conf qui a été fait pour Airflow 2.x, le fichier ayant été publié il y a 3 ans (au moment où sont rédigé ces lignes, Airflow 3.x n'a que quelques mois).
 
-```bash
-      docker exec -it prometheus sh  # l'image de prometheus ne contient pas bash
+  - Trois mappings valides sont conservés pour garder cette possibilité de paramétrer les mappings.
 
-      /prometheus $ promtool check config /etc/prometheus/prometheus.yaml
-      ##==> Checking /etc/prometheus/prometheus.yaml
-      ##==>  SUCCESS: /etc/prometheus/prometheus.yaml is valid prometheus config file syntax
-```
+    - Ils sont nommés de cette manière : `custom_[type]_[nom]` (`type` étant `counter`, `gauge`, `observer`)
 
-    - Pour vérifier qu'un mapping est valide ou pas :
+
+  - On peut vérifier que ce fichier est valide :
 
 ```bash
-      # docker exec ?
+    docker exec -it prometheus sh  # l'image de prometheus ne contient pas "bash"
 
-      curl http://localhost:9102/metrics | grep <match>
-
-      # par exemple :
+    /prometheus $ promtool check config /etc/prometheus/prometheus.yaml
+    ##==> Checking /etc/prometheus/prometheus.yaml
+    ##==>  SUCCESS: /etc/prometheus/prometheus.yaml is valid prometheus config file syntax
 ```
+
+  - Pour vérifier la validité d'un mapping du fichier `airflow/config/statsd.yaml` : [lien](readme_files/README_additional_notes.md#vérifier-la-validité-dun-mapping-dans-statsdyaml)
+
+
+
 
 # Arborescence des fichiers du projet
 
