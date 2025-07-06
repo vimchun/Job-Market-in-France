@@ -1,5 +1,80 @@
 Cette page complète la ![page principale](../README.md).
 
+
+# Environnement
+
+## Services Docker
+
+### Versions testées
+
+Cette section montre comment retrouver les versions des différents services.
+
+
+```bash
+docker images --digests
+  ##==> REPOSITORY                         TAG         DIGEST                                                                    IMAGE ID       CREATED        SIZE
+  ##==> job_market-fastapi                 latest      sha256:00ce6647228ecf84b430f2f9cacc8e17a8b420c3472c766ce7bf5480a93fe755   00ce6647228e   38 hours ago   433MB
+  ##==> job_market-airflow-dag-processor   latest      sha256:a20386275c72f7ec18ecf90296ae4b6a5dac204d44f79f011f70a5699e9e15e3   a20386275c72   41 hours ago   2.8GB
+  ##==> job_market-airflow-apiserver       latest      sha256:47c2d256a4749916d431f38e9cb644f17ec2fd7ddd340deac0af8b9e80fd7f78   47c2d256a474   41 hours ago   2.8GB
+  ##==> job_market-airflow-triggerer       latest      sha256:1a85ae5afaeec22176a9cb572600684828b5f09f5928d8b316d99dfb08125a26   1a85ae5afaee   41 hours ago   2.8GB
+  ##==> job_market-airflow-scheduler       latest      sha256:e76c44a0985c768a7cfa86463312e3310b203633c7130e038ca9b271e43502ab   e76c44a0985c   41 hours ago   2.8GB
+  ##==> job_market-airflow-init            latest      sha256:356a9139712c224953130572a0cc66d18ea93c3552539cc78928f8ab80350c28   356a9139712c   41 hours ago   2.8GB
+  ##==> job_market-airflow-worker          latest      sha256:f44d36bb3b6fdc2d2b25b9bb6f3bef26c3d0cdf4d547ae73d575a12aafe6f8d5   f44d36bb3b6f   41 hours ago   2.8GB
+  ##==> prom/prometheus                    latest      sha256:7a34573f0b9c952286b33d537f233cd5b708e12263733aa646e50c33f598f16c   7a34573f0b9c   6 days ago     382MB
+  ##==> postgres                           16-alpine   sha256:ef2235fd13b6cb29728a98ee17862ff5c9b7d20515a9b34804da4a45062695f6   ef2235fd13b6   4 weeks ago    394MB
+  ##==> redis                              latest      sha256:b43d2dcbbdb1f9e1582e3a0f37e53bf79038522ccffb56a25858969d7a9b6c11   b43d2dcbbdb1   5 weeks ago    188MB
+  ##==> prom/statsd-exporter               latest      sha256:4e7a1f00b9b23ef0c5b4fdbb7f4748bdc218cfdff04acc8033bc5b9f7c15009d   4e7a1f00b9b2   8 months ago   33.4MB
+```
+
+#### FastAPI
+
+```bash
+docker exec -it fastapi pip show fastapi
+  ##==> Name: fastapi
+  ##==> Version: 0.115.12
+  ##==> ...
+```
+
+#### Postgres
+
+```bash
+docker exec -it postgres postgres --version
+  ##==> postgres (PostgreSQL) 16.9
+```
+
+#### Redis
+
+```bash
+docker exec -it redis redis-server --version
+  ##==> Redis server v=8.0.2 sha=00000000:1 malloc=jemalloc-5.3.0 bits=64 build=e26b76554fc1ebea
+```
+
+#### Airflow
+
+Version défini dans le [Dockerfile](../airflow/Dockerfile)
+
+#### Statsd-exporter
+
+```bash
+docker run --rm --entrypoint statsd_exporter prom/statsd-exporter --version
+  ##==> statsd_exporter, version 0.28.0 (branch: HEAD, revision: c0a390a2c43f77863278615b47d46e886bdca726)
+  ##==>   build user:       root@783240c1e627
+  ##==>   build date:       20241025-13:53:47
+  ##==>   go version:       go1.23.2
+  ##==>   platform:         linux/amd64
+  ##==>   tags:             unknown
+```
+
+#### Prometheus
+
+```bash
+docker exec -it prometheus prometheus --version
+  ##==> prometheus, version 2.53.5 (branch: HEAD, revision: d344ea7bf4cc9e9e131a0318d10025982e9c4cc1)
+  ##==>   build user:       root@31e33add4c49
+  ##==>   build date:       20250630-10:18:05
+  ##==>   ...
+```
+
 # Transformations des données en amont
 
 ## Transformations des données en amont (côté Python)

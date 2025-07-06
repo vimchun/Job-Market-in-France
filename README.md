@@ -56,14 +56,35 @@
 
 # Environnement
 
-+ Screenshot environnement avec les différents services Docker
-
 ## Environnement technique
 
 - Développements et tests sous :
   - Windows 11 + WSL + Docker Desktop
   - Environnement virtuel, Python 3.12.9 (février 2025)
   - Airflow 3.0.2 (juin 2025), https://github.com/apache/airflow/releases
+
+
+## Services Docker
+
+### Schéma
+
++ Screenshot environnement avec les différents services Docker
+
+### Versions testées
+
+Le ficher `docker-compose.yml` ne spécifiant pas les versions pour les différents services (tag latest par défaut), il est important de noter les versions des services de l'écosystème.
+
+Ce [lien](readme_files/README_additional_notes.md#versions-testées) donne les commandes permettant de récupérer les versions.
+
+  | service         | version  | date    | lien                                                   |
+  | --------------- | -------- | ------- | ------------------------------------------------------ |
+  | FastAPI         | 0.115.12 | 03/2025 | https://github.com/fastapi/fastapi/releases            |
+  | Postgres        | 16.9     | 05/2025 | https://github.com/postgres/postgres/tags              |
+  | Redis           | 8.0.2    | 05/2025 | https://github.com/redis/redis/releases                |
+  | Airflow         | 3.0.2    | 06/2025 | https://github.com/apache/airflow/releases             |
+  | StatsD-exporter | 0.28.0   | 10/2024 | https://github.com/prometheus/statsd_exporter/releases |
+  | Prometheus      | 2.53.5   | 06/2025 | https://github.com/prometheus/prometheus/releases      |
+
 
 
 ## Conditions initiales
