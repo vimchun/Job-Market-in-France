@@ -56,6 +56,8 @@
 
 # Environnement
 
++ Screenshot environnement avec les différents services Docker
+
 ## Environnement technique
 
 - Développements et tests sous :
@@ -127,11 +129,6 @@ TODO : screenshot
 - `StatsD` est un collecteur de métriques qui permet à Airflow d'envoyer des données sous forme de métriques formatées en StatsD, et de les exposer via un `statsd-exporter` configuré pour Prometheus.
 
 
-- Par ailleurs, les métriques disponibles sont celles renvoyées par la commande `curl http://localhost:9102/metrics`, également disponibles dans le fichier `readme_files/metrics_statsd`.
-
-- Tous les mappings Airflow sont disponibles dans cette [doc](https://airflow.apache.org/docs/apache-airflow/stable/logging-monitoring/metrics.html).
-
-
 ## Définition de mappings avec `statsd.yaml`
 
 - Un autre fichier de configuration `airflow/config/statsd.yaml` permet de définir des mappings à partir des métriques issues d'Airflow, avec la possibilité de modifier le nom de la requête promQL.
@@ -140,7 +137,7 @@ TODO : screenshot
 
   - Trois mappings valides sont conservés pour garder cette possibilité de paramétrer les mappings.
 
-    - Ils sont nommés de cette manière : `custom_[type]_[nom]` (`type` étant `counter`, `gauge`, `observer`)
+    - Ils sont nommés de cette manière : `custom_[type]_[nom]` (`type` étant `counter`, `gauge`, `observer`).
 
 
   - On peut vérifier que ce fichier est valide :
@@ -155,6 +152,27 @@ TODO : screenshot
 
   - Pour vérifier la validité d'un mapping du fichier `airflow/config/statsd.yaml` : [lien](readme_files/README_additional_notes.md#vérifier-la-validité-dun-mapping-dans-statsdyaml)
 
+
+
+## Dump des métriques exposées par statsd-exporter
+
+- Ce dump donne le nom, type et valeurs actuelles des compteurs, jauges, résumé...
+
+- Il traduit la liste des commandes qu'on peut taper sur la barre `Expression` sur la [GUI de Prometheus](http://localhost:9092/graph?g0.expr=&g0.tab=1&g0.display_mode=lines&g0.show_exemplars=0&g0.range_input=1h)
+
+- Il est récupérable avec la commande suivante (par conséquent disponibles dans le fichier `readme_files/metrics_statsd`).
+
+```bash
+  curl http://localhost:9102/metrics > readme_files/metrics_statsd
+```
+TODO : refaire le fichier quand les DAGs seront figés
+
+  - Notes :
+    - Il faut exécuter les DAGs pour voir apparaitre les commandes liés aux tâches des DAGs.
+    - Des NaN peuvent apparaissent s'il n’y a pas assez de données récentes dans la fenêtre de calcul du quantile summary.
+
+
+- Tous les métriques Airflow sont disponibles dans cette [doc](https://airflow.apache.org/docs/apache-airflow/stable/logging-monitoring/metrics.html).
 
 
 

@@ -340,7 +340,7 @@ services:
   ##################################
 
   # https://github.com/statsd/statsd
-  #  pour convertir les métriques StatsD en format Prometheus
+  #  pour exporter les métriques de StatsD vers Prometheus
 
   statsd-exporter:
     image: prom/statsd-exporter
@@ -350,8 +350,8 @@ services:
     entrypoint: ["/bin/sh", "-c", "--"]
     command: ["statsd_exporter --log.level debug --statsd.mapping-config=/home/statsd-mapping-configs.yaml"]
     ports:
-      - "9102:9102"  # scrape port
-      - "9125:9125"  # ingest port
+      - "9102:9102"  # scrape port (pour Prometheus)
+      - "9125:9125"  # ingest port (pour recevoir les métriques de StatsD)
     restart: always
 
   ##################################
