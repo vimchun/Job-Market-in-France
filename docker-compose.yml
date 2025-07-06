@@ -92,7 +92,7 @@ services:
   ##################################
 
   redis:
-    image: redis:latest
+    image: redis
     container_name: redis
     expose:
       - 6379
@@ -373,7 +373,25 @@ services:
 
   ##################################
 
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    environment:
+      # https://grafana.com/docs/grafana/latest/setup-grafana/configure-docker/#default-paths
+      GF_SECURITY_ADMIN_USER: grafana
+      GF_SECURITY_ADMIN_PASSWORD: grafana
+      GF_PATHS_PROVISIONING: /grafana/provisioning  # default : /etc/grafana/provisioning
+    ports:
+      - 3000:3000
+    volumes:
+      # https://grafana.com/docs/grafana/latest/administration/provisioning/#data-sources :
+      #   "You can manage data sources in Grafana by adding YAML configuration files in the provisioning/datasources directory"
+      - ./grafana/volumes/provisioning:/grafana/provisioning
+    restart: always
+
+  ##################################
 
 volumes:
   postgres_data_job_market:
   prometheus_data:
+  grafana_data:
