@@ -85,6 +85,7 @@
   | Redis           | 8.0.2    | 05/2025 | https://github.com/redis/redis/releases                |
   | Airflow         | 3.0.2    | 06/2025 | https://github.com/apache/airflow/releases             |
   | StatsD-exporter | 0.28.0   | 10/2024 | https://github.com/prometheus/statsd_exporter/releases |
+  | Node-exporter   | 1.9.1    | 04/2025 | https://github.com/prometheus/node_exporter/releases   |
   | Prometheus      | 2.53.5   | 06/2025 | https://github.com/prometheus/prometheus/releases      |
   | Grafana         | 12.0.2   | 06/2025 | https://github.com/grafana/grafana/releases            |
 
@@ -128,13 +129,16 @@ TODO : screenshot
 | FastAPI         | http://localhost:8000/docs                             |
 | Airflow         | http://localhost:8080/                                 |
 | StatsD Exporter | http://localhost:9102/ + http://localhost:9102/metrics |
+| Node Exporter   | http://localhost:9100/ + http://localhost:9100/metrics |
 | Prometheus      | http://localhost:9092/                                 |
 | Grafana         | http://localhost:3000/                                 |
 
 
 # Prometheus
 
-## Configuration via StatsD
+## StatsD Exporter
+
+### Configuration via StatsD
 
 - Un `target` a été défini pour collecter les métriques provenant de `StatsD`, via le fichier de configuration `airflow/config/prometheus.yaml` :
 
@@ -152,7 +156,7 @@ TODO : screenshot
 - `StatsD` est un collecteur de métriques qui permet à Airflow d'envoyer des données sous forme de métriques formatées en StatsD, et de les exposer via un `statsd-exporter` configuré pour Prometheus.
 
 
-## Définition de mappings avec `statsd.yaml`
+### Définition de mappings avec `statsd.yaml`
 
 - Un autre fichier de configuration `airflow/config/statsd.yaml` permet de définir des mappings à partir des métriques issues d'Airflow, avec la possibilité de modifier le nom de la requête promQL.
 
@@ -177,7 +181,7 @@ TODO : screenshot
 
 
 
-## Dump des métriques exposées par statsd-exporter
+### Dump des métriques exposées par statsd-exporter
 
 - Ce dump donne le nom, type et valeurs actuelles des compteurs, jauges, résumé...
 
@@ -196,6 +200,11 @@ TODO : refaire le fichier quand les DAGs seront figés
 
 
 - Tous les métriques Airflow sont disponibles dans cette [doc](https://airflow.apache.org/docs/apache-airflow/stable/logging-monitoring/metrics.html).
+
+
+## Node Exporter
+
+- Ce service permet la récupération de métriques intéressantes concernant la partie cpu, ram, disque, etc..., qu'on pourra exposer à travers un dashboard Grafana.
 
 
 # Grafana
