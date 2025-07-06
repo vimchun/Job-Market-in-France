@@ -66,6 +66,18 @@ docker run --rm --entrypoint statsd_exporter prom/statsd-exporter --version
   ##==>   tags:             unknown
 ```
 
+#### Node-exporter
+
+```bash
+docker exec node-exporter node_exporter --version
+  ##==> node_exporter, version 1.9.1 (branch: HEAD, revision: f2ec547b49af53815038a50265aa2adcd1275959)
+  ##==>   build user:       root@7023beaa563a
+  ##==>   build date:       20250401-15:19:01
+  ##==>   go version:       go1.23.7
+  ##==>   platform:         linux/amd64
+  ##==>   tags:             unknown
+```
+
 #### Prometheus
 
 ```bash
@@ -433,7 +445,9 @@ Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code
 
 # Prometheus
 
-## Vérifier la validité d'un mapping dans `statsd.yaml`
+## StatsD Exporter
+
+### Vérifier la validité d'un mapping dans `statsd.yaml`
 
 - Pour vérifier qu'un mapping est valide ou pas :
 
