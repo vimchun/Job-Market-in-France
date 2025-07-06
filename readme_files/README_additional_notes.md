@@ -53,6 +53,7 @@ docker exec -it redis redis-server --version
 
 Version défini dans le [Dockerfile](../airflow/Dockerfile)
 
+
 #### Statsd-exporter
 
 ```bash
@@ -74,6 +75,14 @@ docker exec -it prometheus prometheus --version
   ##==>   build date:       20250630-10:18:05
   ##==>   ...
 ```
+
+#### Grafana
+
+```bash
+docker exec -it grafana grafana server -v
+  ##==> Version 12.0.2 (commit: 5bda17e7c1cb313eb96266f2fdda73a6b35c3977, branch: HEAD)
+```
+
 
 # Transformations des données en amont
 
