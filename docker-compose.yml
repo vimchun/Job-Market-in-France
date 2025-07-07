@@ -350,8 +350,8 @@ services:
     entrypoint: ["/bin/sh", "-c", "--"]
     command: ["statsd_exporter --log.level debug --statsd.mapping-config=/home/statsd-mapping-configs.yaml"]
     ports:
-      - "9102:9102"  # scrape port (pour Prometheus)
-      - "9125:9125"  # ingest port (pour recevoir les métriques de StatsD)
+      - 9102:9102  # scrape port (pour Prometheus)
+      - 9125:9125  # ingest port (pour recevoir les métriques de StatsD)
     restart: always
 
   ##################################
@@ -360,7 +360,7 @@ services:
     image: prom/node-exporter
     container_name: node-exporter
     ports:
-      - 9100:9100
+      - 9100:9100  # scrape port (pour Prometheus)
     volumes:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
@@ -370,6 +370,20 @@ services:
     restart: always
 
   ##################################
+
+  postgres-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter
+    container_name: postgres-exporter
+    environment:
+      DATA_SOURCE_NAME: "postgresql://mhh:mhh@postgres:5432/francetravail?sslmode=disable"
+    ports:
+      - 9187:9187  # scrape port (pour Prometheus)
+    depends_on:
+      - postgres
+    restart: always
+
+  ##################################
+
   prometheus:
     image: prom/prometheus
     container_name: prometheus
