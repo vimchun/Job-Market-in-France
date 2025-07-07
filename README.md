@@ -78,16 +78,17 @@
 
 - Tableau avec les versions utilisées :
 
-  | service         | version  | date    | lien                                                   |
-  | --------------- | -------- | ------- | ------------------------------------------------------ |
-  | FastAPI         | 0.115.12 | 03/2025 | https://github.com/fastapi/fastapi/releases            |
-  | Postgres        | 16.9     | 05/2025 | https://github.com/postgres/postgres/tags              |
-  | Redis           | 8.0.2    | 05/2025 | https://github.com/redis/redis/releases                |
-  | Airflow         | 3.0.2    | 06/2025 | https://github.com/apache/airflow/releases             |
-  | StatsD-exporter | 0.28.0   | 10/2024 | https://github.com/prometheus/statsd_exporter/releases |
-  | Node-exporter   | 1.9.1    | 04/2025 | https://github.com/prometheus/node_exporter/releases   |
-  | Prometheus      | 2.53.5   | 06/2025 | https://github.com/prometheus/prometheus/releases      |
-  | Grafana         | 12.0.2   | 06/2025 | https://github.com/grafana/grafana/releases            |
+  | service           | version  | date    | lien                                                               |
+  | ----------------- | -------- | ------- | ------------------------------------------------------------------ |
+  | FastAPI           | 0.115.12 | 03/2025 | https://github.com/fastapi/fastapi/releases                        |
+  | Postgres          | 16.9     | 05/2025 | https://github.com/postgres/postgres/tags                          |
+  | Redis             | 8.0.2    | 05/2025 | https://github.com/redis/redis/releases                            |
+  | Airflow           | 3.0.2    | 06/2025 | https://github.com/apache/airflow/releases                         |
+  | StatsD-exporter   | 0.28.0   | 10/2024 | https://github.com/prometheus/statsd_exporter/releases             |
+  | Node-exporter     | 1.9.1    | 04/2025 | https://github.com/prometheus/node_exporter/releases               |
+  | Postgres-exporter | 0.17.1   | 02/2025 | https://github.com/prometheus-community/postgres_exporter/releases |
+  | Prometheus        | 2.53.5   | 06/2025 | https://github.com/prometheus/prometheus/releases                  |
+  | Grafana           | 12.0.2   | 06/2025 | https://github.com/grafana/grafana/releases                        |
 
 
 ## Conditions initiales
@@ -156,6 +157,24 @@ TODO : screenshot
 - `StatsD` est un collecteur de métriques qui permet à Airflow d'envoyer des données sous forme de métriques formatées en StatsD, et de les exposer via un `statsd-exporter` configuré pour Prometheus.
 
 
+
+### Métriques disponibles
+
+- StatsD Exporter donne les métriques suivantes :
+
+  - la durée de chaque tâche de DAG `DAG1` et `DAG2`
+  - les métriques définies dans `statsd.yaml` (voir section suivante)
+  - 56 métriques préfixés par `airflow_*`
+  - 31 métriques préfixés par `go_*`
+  - 9 métriques préfixés par `process_*`
+  - 4 métriques préfixés par `promhttp_*`
+  - 24 métriques préfixés par `statsd_*`
+
+
+- Le lien suivant renvoie vers la liste des métriques avec un préfixe : [lien](readme_files/README_additional_notes.md#métriques-disponibles-de-statsd-exporter)
+
+
+
 ### Définition de mappings avec `statsd.yaml`
 
 - Un autre fichier de configuration `airflow/config/statsd.yaml` permet de définir des mappings à partir des métriques issues d'Airflow, avec la possibilité de modifier le nom de la requête promQL.
@@ -187,10 +206,10 @@ TODO : screenshot
 
 - Il traduit la liste des commandes qu'on peut taper sur la barre `Expression` sur la [GUI de Prometheus](http://localhost:9092/graph?g0.expr=&g0.tab=1&g0.display_mode=lines&g0.show_exemplars=0&g0.range_input=1h)
 
-- Il est récupérable avec la commande suivante (par conséquent disponibles dans le fichier `grafana/metrics_statsd_exporter`).
+- Il est récupérable avec la commande suivante (par conséquent disponibles dans le fichier `grafana/available_metrics/metrics_statsd_exporter.md`).
 
 ```bash
-  curl http://localhost:9102/metrics > grafana/metrics_statsd_exporter
+  curl http://localhost:9102/metrics > grafana/available_metrics/metrics_statsd_exporter.md
 ```
 TODO : refaire le fichier quand les DAGs seront figés
 
@@ -209,12 +228,15 @@ TODO : refaire le fichier quand les DAGs seront figés
 
 ### Dump des métriques exposées par node-exporter
 
-- Il est récupérable avec la commande suivante (par conséquent disponibles dans le fichier `grafana/metrics_node_exporter`).
+- Il est récupérable avec la commande suivante (par conséquent disponibles dans le fichier `grafana/available_metrics/metrics_node_exporter.md`).
 
 ```bash
-  curl http://localhost:9100/metrics > grafana/metrics_node_exporter
+  curl http://localhost:9100/metrics > grafana/available_metrics/metrics_node_exporter.md
 ```
 
+## Postgres Exporter
+
+todo : à compléter
 
 
 # Grafana
@@ -243,14 +265,29 @@ todo : mettre screenshots quand ca sera bon
 
 ### Dashboards téléchargés
 
-- Le [site de Grafana](https://grafana.com/grafana/dashboards/) propose des dashboards téléchargeables, publiés par la communauté.
+- Le [site de Grafana](https://grafana.com/grafana/dashboards/) propose des dashboards téléchargeables, publiés par la communauté ou par `Grafana Labs`.
 
   - [1860-node-exporter-full](https://grafana.com/grafana/dashboards/1860-node-exporter-full/) fournit un dashboard pour le node-exporter, disponible sous `grafana/volumes/provisioning/dashboards/1860_node-exporter-full_rev41.json`
 
+    ![dashboard node-exporter pendant exécution d'un dag](readme_files/screenshots/grafana/dashboard_node_exporter_during_dag_execution.png)
+
+
+  - [9628-postgres-exporter](https://grafana.com/grafana/dashboards/9628-postgresql-database/) fournit un dashboard pour le postgres-exporter, disponible sous `grafana/volumes/provisioning/dashboards/9628_postgres-exporter_rev8.json`
+
+    ![dashboard postgres-exporter](readme_files/screenshots/grafana/dashboard_postgres_exporter.png)
 
 
 ### Dashboards créés
 
+
+#### Métriques avec préfixes
+
+- Deux dashboards avec les 56 métriques préfixés par `airflow_*` et les 31 métriques préfixés par `go_*` ont été créés à but informatif, plus de détails [ici](readme_files/README_additional_notes.md#métriques-avec-préfixes).
+
+
+#### Métriques jugées utiles
+
+- Dashboard à créer avec les métriques que je juge probant dans l'analyse.
 
 
 # Arborescence des fichiers du projet

@@ -78,6 +78,18 @@ docker exec node-exporter node_exporter --version
   ##==>   tags:             unknown
 ```
 
+#### Postgres-exporter
+
+```bash
+docker exec postgres-exporter postgres_exporter --version
+##==> postgres_exporter, version 0.17.1 (branch: HEAD, revision: 1e574cf4fd2a75a8a707d424eafcaa0b88cb7af4)
+##==>   build user:       root@b0ba132eddb0
+##==>   build date:       20250226-13:53:15
+##==>   go version:       go1.23.6
+##==>   platform:         linux/amd64
+##==>   tags:             unknown
+```
+
 #### Prometheus
 
 ```bash
@@ -446,6 +458,32 @@ Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code
 # Prometheus
 
 ## StatsD Exporter
+
+### Métriques disponibles de StatsD Exporter
+
+- Voici la liste des métriques disponibles avec préfixe sans les détails ni les valeurs :
+
+  - 56 métriques préfixés par `airflow_*` :
+
+    - `airflow_asset_orphaned`, `airflow_dag_processing_file_path_queue_size`, `airflow_dag_processing_file_path_queue_update_count`, `airflow_dag_processing_import_errors`, `airflow_dag_processing_processes`, `airflow_dag_processing_total_parse_time`, `airflow_dag_processor_heartbeat`, `airflow_dagbag_size`, `airflow_dagrun_dependency_check{quantile="xxx"}`, `airflow_dagrun_dependency_check_sum`, `airflow_dagrun_dependency_check_count`, `airflow_dagrun_duration_success{quantile="xxx"}`, `airflow_dagrun_duration_success_sum`, `airflow_dagrun_duration_success_count`, `airflow_executor_open_slots`, `airflow_executor_queued_tasks`, `airflow_executor_running_tasks`, `airflow_pool_deferred_slots`, `airflow_pool_deferred_slots_default_pool`, `airflow_pool_open_slots`, `airflow_pool_open_slots_default_pool`, `airflow_pool_queued_slots`, `airflow_pool_queued_slots_default_pool`, `airflow_pool_running_slots`, `airflow_pool_running_slots_default_pool`, `airflow_pool_scheduled_slots`, `airflow_pool_scheduled_slots_default_pool`, `airflow_pool_starving_tasks`, `airflow_pool_starving_tasks_default_pool`, `airflow_scheduler_critical_section_query_duration{quantile="xxx"}`, `airflow_scheduler_critical_section_query_duration_sum`, `airflow_scheduler_critical_section_query_duration_count`, `airflow_scheduler_heartbeat`, `airflow_scheduler_orphaned_tasks_adopted`, `airflow_scheduler_orphaned_tasks_cleared`, `airflow_scheduler_scheduler_loop_duration{quantile="xxx"}`, `airflow_scheduler_scheduler_loop_duration_sum`, `airflow_scheduler_scheduler_loop_duration_count`, `airflow_scheduler_tasks_executable`, `airflow_scheduler_tasks_starving`, `airflow_serde_load_serializers{quantile="xxx"}`, `airflow_serde_load_serializers_sum`, `airflow_serde_load_serializers_count`, `airflow_task_instance_created`, `airflow_task_instance_created_SQLExecuteQueryOperator`, `airflow_task_instance_created_TriggerDagRunOperator`, `airflow_task_instance_created__BranchPythonDecoratedOperator`, `airflow_task_instance_created__PythonDecoratedOperator`, `airflow_task_scheduled_duration{quantile="xxx"}`, `airflow_task_scheduled_duration_sum`, `airflow_task_scheduled_duration_count`, `airflow_ti_running`, `airflow_triggerer_capacity_left`, `airflow_triggerer_heartbeat`, `airflow_triggers_blocked_main_thread`, `airflow_triggers_running`
+
+  - 31 métriques préfixés par `go_*` :
+
+    - `go_gc_duration_seconds{quantile="xxx"}`, `go_gc_duration_seconds_sum`, `go_gc_duration_seconds_count`, `go_gc_gogc_percent`, `go_gc_gomemlimit_bytes`, `go_goroutines`, `go_info{version="go1.23.2"}`, `go_memstats_alloc_bytes`, `go_memstats_alloc_bytes_total`, `go_memstats_buck_hash_sys_bytes`, `go_memstats_frees_total`, `go_memstats_gc_sys_bytes`, `go_memstats_heap_alloc_bytes`, `go_memstats_heap_idle_bytes`, `go_memstats_heap_inuse_bytes`, `go_memstats_heap_objects`, `go_memstats_heap_released_bytes`, `go_memstats_heap_sys_bytes`, `go_memstats_last_gc_time_seconds`, `go_memstats_mallocs_total`, `go_memstats_mcache_inuse_bytes`, `go_memstats_mcache_sys_bytes`, `go_memstats_mspan_inuse_bytes`, `go_memstats_mspan_sys_bytes`, `go_memstats_next_gc_bytes`, `go_memstats_other_sys_bytes`, `go_memstats_stack_inuse_bytes`, `go_memstats_stack_sys_bytes`, `go_memstats_sys_bytes`, `go_sched_gomaxprocs_threads`, `go_threads`
+
+  - 9 métriques préfixés par `process_*` :
+
+    - `process_cpu_seconds_total`, `process_max_fds`, `process_network_receive_bytes_total`, `process_network_transmit_bytes_total`, `process_open_fds`, `process_resident_memory_bytes`, `process_start_time_seconds`, `process_virtual_memory_bytes`, `process_virtual_memory_max_bytes`
+
+  - 4 métriques préfixés par `promhttp_*` :
+
+    - `promhttp_metric_handler_requests_in_flight`, `promhttp_metric_handler_requests_total{code="200"}`, `promhttp_metric_handler_requests_total{code="500"}`, `promhttp_metric_handler_requests_total{code="503"}`
+
+  - 24 métriques préfixés par `statsd_*` :
+    - `statsd_exporter_build_info{branch="HEAD",goarch="amd64",goos="linux",goversion="go1.23.2",revision="c0a390a2c43f77863278615b47d46e886bdca726",tags="unknown",version="0.28.0"}`, `statsd_exporter_event_queue_flushed_total`, `statsd_exporter_events_actions_total{action="map"}`, `statsd_exporter_events_total{type="counter"}`, `statsd_exporter_events_total{type="gauge"}`, `statsd_exporter_events_total{type="observer"}`, `statsd_exporter_events_unmapped_total`, `statsd_exporter_lines_total`, `statsd_exporter_loaded_mappings`, `statsd_exporter_metrics_total{type="counter"}`, `statsd_exporter_metrics_total{type="gauge"}`, `statsd_exporter_metrics_total{type="summary"}`, `statsd_exporter_samples_total`, `statsd_exporter_tag_errors_total`, `statsd_exporter_tags_total`, `statsd_exporter_tcp_connection_errors_total`, `statsd_exporter_tcp_connections_total`, `statsd_exporter_tcp_too_long_lines_total`, `statsd_exporter_udp_packet_drops_total`, `statsd_exporter_udp_packets_total`, `statsd_exporter_unixgram_packets_total`, `statsd_metric_mapper_cache_gets_total`, `statsd_metric_mapper_cache_hits_total`, `statsd_metric_mapper_cache_length`
+
+
+
 
 ### Vérifier la validité d'un mapping dans `statsd.yaml`
 
@@ -880,3 +918,27 @@ Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6
     dag_file_processor_timeout = 300  # default = 50
 ```
 
+
+# Grafana
+
+## Dashboards
+
+### Dashboards créés
+
+#### Métriques avec préfixes
+
+- Cette ![section](../README.md#métriques-disponibles) fait état de métriques préfixés.
+
+- 1 dashboard a été créé pour :
+
+  - les 56 métriques préfixés par `airflow_*` (`grafana/volumes/provisioning/dashboards/airflow_.json`) :
+
+    ![dashboard "airflow_"](screenshots/grafana/dashboard_statsd_exporter_metrics_prefixed_with_airflow_.png)
+
+
+  - les 31 métriques préfixés par `go_*` (`grafana/volumes/provisioning/dashboards/go_.json`) :
+
+    ![dashboard "go_"](screenshots/grafana/dashboard_statsd_exporter_metrics_prefixed_with_go_.png)
+
+
+- Ces 2 dashboards ont été créés pour avoir une idée de quoi ressemblent ces métriques.
