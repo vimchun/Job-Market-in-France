@@ -187,10 +187,10 @@ TODO : screenshot
 
 - Il traduit la liste des commandes qu'on peut taper sur la barre `Expression` sur la [GUI de Prometheus](http://localhost:9092/graph?g0.expr=&g0.tab=1&g0.display_mode=lines&g0.show_exemplars=0&g0.range_input=1h)
 
-- Il est récupérable avec la commande suivante (par conséquent disponibles dans le fichier `readme_files/metrics_statsd`).
+- Il est récupérable avec la commande suivante (par conséquent disponibles dans le fichier `grafana/metrics_statsd_exporter`).
 
 ```bash
-  curl http://localhost:9102/metrics > readme_files/metrics_statsd
+  curl http://localhost:9102/metrics > grafana/metrics_statsd_exporter
 ```
 TODO : refaire le fichier quand les DAGs seront figés
 
@@ -205,6 +205,16 @@ TODO : refaire le fichier quand les DAGs seront figés
 ## Node Exporter
 
 - Ce service permet la récupération de métriques intéressantes concernant la partie cpu, ram, disque, etc..., qu'on pourra exposer à travers un dashboard Grafana.
+
+
+### Dump des métriques exposées par node-exporter
+
+- Il est récupérable avec la commande suivante (par conséquent disponibles dans le fichier `grafana/metrics_node_exporter`).
+
+```bash
+  curl http://localhost:9100/metrics > grafana/metrics_node_exporter
+```
+
 
 
 # Grafana
@@ -222,8 +232,24 @@ TODO : refaire le fichier quand les DAGs seront figés
 todo : mettre screenshots quand ca sera bon
 
 
-## Création de dashboards
+## Dashboards
 
+### Import automatique après installation
+
+- Les dashboards (.json) peuvent être déposés dans `grafana/volumes/provisioning/dashboards`, dossier monté dans le conteneur `grafana` sous `/grafana/provisioning/dashboards`.
+
+- Pour que Grafana recharge le contenu du dossier, il faut redémarrer le conteneur : `docker compose restart grafana`.
+
+
+### Dashboards téléchargés
+
+- Le [site de Grafana](https://grafana.com/grafana/dashboards/) propose des dashboards téléchargeables, publiés par la communauté.
+
+  - [1860-node-exporter-full](https://grafana.com/grafana/dashboards/1860-node-exporter-full/) fournit un dashboard pour le node-exporter, disponible sous `grafana/volumes/provisioning/dashboards/1860_node-exporter-full_rev41.json`
+
+
+
+### Dashboards créés
 
 
 
