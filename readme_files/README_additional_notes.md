@@ -798,3 +798,85 @@ Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6
   default@0ab352f980fd:/opt/airflow$ cat /home/airflow/.local/lib/python3.12/site-packages/airflow/providers/common/sql/operators/sql.py  |  grep SQLExecuteQueryOperator
   class SQLExecuteQueryOperator(BaseSQLOperator):
   ```
+
+
+## Problème d'import du fichier DAG trop lent
+
+- L'erreur suivante avait été remontée car l'import du DAG avait pris plus de 30 secondes :
+
+```log
+  Log message source details: sources=["/opt/airflow/logs/dag_id=DAG_1_ETL/run_id=manual__2025-07-07T11:33:42.757187+00:00/task_id=ETL.A1_get_offers/map_index=54/attempt=1.log"]
+  [2025-07-07, 13:36:44] INFO - DAG bundles loaded: dags-folder: source="airflow.dag_processing.bundles.manager.DagBundlesManager"
+  [2025-07-07, 13:36:44] INFO - Filling up the DagBag from /opt/airflow/dags/dag_1_etl.py: source="airflow.models.dagbag.DagBag"
+  [2025-07-07, 13:37:14] ERROR - Process timed out, PID: 1471: source="airflow.utils.timeout.TimeoutPosix"
+  [2025-07-07, 13:37:14] ERROR - Failed to import: /opt/airflow/dags/dag_1_etl.py: source="airflow.models.dagbag.DagBag"
+  AirflowTaskTimeout: DagBag import timeout for /opt/airflow/dags/dag_1_etl.py after 30.0s.
+  Please take a look at these docs to improve your DAG import time:
+  * https://airflow.apache.org/docs/apache-airflow/3.0.2/best-practices.html#top-level-python-code
+  * https://airflow.apache.org/docs/apache-airflow/3.0.2/best-practices.html#reducing-dag-complexity, PID: 1471
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/models/dagbag.py", line 394 in parse
+  File "<frozen importlib._bootstrap_external>", line 999 in exec_module
+  File "<frozen importlib._bootstrap>", line 488 in _call_with_frames_removed
+  File "/opt/airflow/dags/dag_1_etl.py", line 1147 in <module>
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/sdk/bases/decorator.py", line 400 in expand
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/sdk/bases/decorator.py", line 389 in _validate_arg_names
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/sdk/bases/decorator.py", line 97 in _validate_arg_names
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/sdk/definitions/_internal/expandinput.py", line 62 in is_mappable
+  File "/home/airflow/.local/lib/python3.12/site-packages/airflow/utils/timeout.py", line 69 in handle_timeout
+  [2025-07-07, 13:37:14] ERROR - DAG not found during start up: dag_id="DAG_1_ETL": bundle="BundleInfo(name='dags-folder', version=None)": path="dag_1_etl.py": source="task"
+  [2025-07-07, 13:37:20] WARNING - Process exited abnormally: exit_code=1: source="task"
+```
+
+
+- Conformément à https://airflow.apache.org/docs/apache-airflow/3.0.2/best-practices.html#top-level-python-code, les imports coûteux sont à déplacer dans les fonctions qui utilisent ces imports (il ne faut pas mettre tous les imports en tête du fichier, car ils allongent la durée d'import du DAG).
+
+  - J'avais les imports suivants pour `DAG 1` et `DAG 2` en tête du script :
+
+```py
+    # DAG 1
+    import csv
+    import json
+    import os
+    import shutil
+    import time
+
+    from datetime import datetime
+    from pathlib import Path
+
+    import numpy as np
+    import pandas as pd
+    import requests
+    import unidecode
+    import yaml
+
+    from geopy.geocoders import Nominatim
+
+
+    # DAG 2
+    import json
+    import logging
+    import os
+
+    import psycopg2
+    import requests
+```
+
+
+- Les imports suivants sont coûteux et sont à déplacer dans les fonctions :
+  - `numpy`, `pandas`
+  - `requests`, `yaml`, `geopy`
+
+- Les imports suivants sont peu coûteux / quasi instantané, on peut les laisser en tête du fichier :
+  - `csv`, `json`, `os`, `shutil`, `time`, `datetime`, `pathlib`, `logging`, `psycopg2`, `unidecode`
+
+
+
+- Notes :
+  - Dans le fichier `airflow.cfg`, on peut aussi contourner en jouant sur les valeurs suivantes (on ne le fait pas, car les ajustements précédents sont pour le moment suffisants) :
+
+```conf
+    [core]
+    dagbag_import_timeout = 60        # default = 30
+    dag_file_processor_timeout = 300  # default = 50
+```
+

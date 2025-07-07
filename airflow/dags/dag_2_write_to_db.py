@@ -3,7 +3,6 @@ import logging
 import os
 
 import psycopg2
-import requests
 
 from airflow import DAG
 from airflow.decorators import task
@@ -39,6 +38,9 @@ def get_token():
     """
     Récupère le bearer token pour pouvoir faire les requêtes pour GET et POST les connections.
     """
+
+    import requests
+
     response = requests.post(
         "http://airflow-apiserver:8080/auth/token",
         json={"username": "airflow", "password": "airflow"},
@@ -54,6 +56,9 @@ def ensure_postgres_connexion(postgres_connection_name):
     """
     Vérifie que la connexion postgres nommée "postgres_connection_name" existe, et la crée le cas échéant (comme si on le faisait depuis la GUI d'Airflow).
     """
+
+    import requests
+
     token = get_token()
 
     for _ in range(2):
