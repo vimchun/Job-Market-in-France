@@ -7,13 +7,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-import numpy as np
-import pandas as pd
-import requests
 import unidecode
-import yaml
-
-from geopy.geocoders import Nominatim
 
 from airflow import DAG
 from airflow.decorators import task
@@ -139,6 +133,8 @@ def load_code_appellation_yaml_file():
       ]
     """
 
+    import yaml
+
     codes_appellation_filename = os.path.join(RESOURCES_DIR, "code_appellation_libelle.yml")
 
     with open(codes_appellation_filename, "r") as file:
@@ -154,6 +150,8 @@ def get_creds_from_yaml_file(file_path):
     Récupération des credentials données sur le site de FT depuis un fichier yaml
     Retourne un dictionnaire utile pour la fonction "get_bearer_token()"
     """
+
+    import yaml
 
     with open(file_path, "r") as file:
         creds = yaml.safe_load(file)
@@ -178,6 +176,8 @@ def get_bearer_token(dict_, scope):
     Retourne :
     - Bearer Token (str) : pour l'authentification des requêtes, ou None en cas d'erreur.
     """
+
+    import requests
 
     print(f'\n==> Fonction "get_bearer_token()"\n')
 
@@ -219,6 +219,7 @@ def get_offers(token, code_libelle_list):
 
     Ne retourne rien.
     """
+    import requests
 
     def throttled_get(url, headers=None, params=None, max_retries=10, retry_delay=2):
         """
@@ -385,6 +386,7 @@ def concatenate_all_json_into_one(downloaded_jsons_from_api_directory, aggregate
 
     Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
     """
+    import pandas as pd
 
     print(f'\n==> Fonction "concatenate_all_into_one()"\n')
 
@@ -431,6 +433,8 @@ def keep_only_offres_from_metropole(aggregated_json_directory, json_filename, ne
     Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
      et aussi le nombre de ligne du DataFrame (si on en a besoin pour renommer le fichier, mais on ne le fera pas conformément au workflow)
     """
+
+    import pandas as pd
 
     print(f'\n==> Fonction "keep_only_offres_from_metropole()"\n')
 
@@ -499,6 +503,11 @@ def add_location_attributes(aggregated_json_directory, json_filename, new_json_f
 
     Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
     """
+
+    import numpy as np
+    import pandas as pd
+
+    from geopy.geocoders import Nominatim
 
     print(f'\n==> Fonction "add_location_attributes()"\n')
 
@@ -870,6 +879,8 @@ def add_date_extract_attribute(aggregated_json_directory, json_filename, new_jso
     Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
     """
 
+    import pandas as pd
+
     print(f'\n==> Fonction "add_date_extract_attribute()"\n')
 
     if date_to_insert is None:
@@ -914,6 +925,8 @@ def special_jsons_concatenation(aggregated_json_directory):
 
     Retourne le nom du json qu'il reste dans le dossier, soit "new_json_file"
     """
+
+    import pandas as pd
 
     now = datetime.now().strftime("%Y-%m-%d--%Hh%M")
     json_file_in_generated_directory = [file for file in os.listdir(aggregated_json_directory) if file.endswith(".json")]
@@ -1039,6 +1052,8 @@ def add_date_premiere_ecriture_attribute(aggregated_json_directory, json_filenam
 
     Renvoie le nom du json généré qui conformément au workflow devrait être le nom du fichier en entrée puisqu'on l'écrase (paramétrable au cas où)
     """
+    import numpy as np
+    import pandas as pd
 
     print(f'\n==> Fonction "add_date_premiere_ecriture_attribute()"\n')
 
@@ -1099,6 +1114,8 @@ def write_to_history_csv_file(aggregated_json_directory):
 
     Ne retourne rien.
     """
+
+    import pandas as pd
 
     json_file_in_generated_directory = [file for file in os.listdir(aggregated_json_directory) if file.endswith(".json")]
 
