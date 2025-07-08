@@ -260,7 +260,11 @@ todo : mettre screenshots quand ca sera bon
 
 - Les dashboards (.json) peuvent être déposés dans `grafana/volumes/provisioning/dashboards`, dossier monté dans le conteneur `grafana` sous `/grafana/provisioning/dashboards`.
 
-- Pour que Grafana recharge le contenu du dossier, il faut redémarrer le conteneur : `docker compose restart grafana`.
+- Ceci est défini dans le fichier de configuration `grafana/volumes/provisioning/dashboards/providers.yml`, qui contient également `foldersFromFilesStructure: true`, qui permet de retrouver dans la GUI de Grafana la même architecture de dossier que dans `grafana/volumes/provisioning/dashboards`.
+
+  todo : screenshot archi dossier vs dossier grafana
+
+- Pour que Grafana recharge le contenu du dossier, on peut simplement redémarrer le conteneur : `docker compose restart grafana`.
 
 
 ### Dashboards téléchargés
