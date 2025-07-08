@@ -56,13 +56,9 @@
 
 # Environnement
 
-## Environnement technique
-
 - Développements et tests sous :
   - Windows 11 + WSL + Docker Desktop
   - Environnement virtuel, Python 3.12.9 (février 2025)
-  - Airflow 3.0.2 (juin 2025), https://github.com/apache/airflow/releases
-
 
 ## Services Docker
 
@@ -665,17 +661,17 @@ Plusieurs `SQLExecuteQueryOperator()` qui exécutent séquentiellement les tâch
 
   - le code des appellations ROME pour filtrer par métier (codes récupérés à partir du endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/appellations`) :
 
-    ```json
+    ```jsonc
     { "code": "38971",  "libelle": "Data_Analyst" },
     { "code": "38972",  "libelle": "Data_Scientist" },
     { "code": "404278", "libelle": "Data_Engineer" },
     { "code": "38975",  "libelle": "Data_Manager" },
-    ...
+    // ...
     ```
 
   - le code des pays (codes récupérés à partir du endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/pays`) :
 
-    ```json
+    ```jsonc
     { "code": "01", "libelle": "France" },     // inclut les offres en France d'outre-mer et en Corse
     { "code": "02", "libelle": "Allemagne" },  // les pays étrangers ne retournent malheureusement pas d'offre sur les métiers à analyser
     ...
@@ -714,9 +710,9 @@ Ces transformations sont faites dans le `DAG 1`, faites via Python et en amont d
 
   - Concaténation des 61 fichiers json dans un seul fichier json, avec suppression des doublons
 
-  - Conservation des offres en France Métropolitaine uniquement, [détails ici](readme_files/README_additional_notes.md#conservation-des-offres-en-France-Métropolitaine-uniquement)
+  - Conservation des offres en France Métropolitaine uniquement, [détails ici](readme_files/README_additional_notes.md#conservation-des-offres-en-France-Métropolitaine-uniquement).
 
-  - Ajout des attributs de localisation des offres (noms et codes des villes, départements, départements et régions), [détails ici](readme_files/README_additional_notes.md#attributs-de-localisation-des-offres-noms-et-codes-des-villes-communes-départements-et-régions)
+  - Ajout des attributs de localisation des offres (noms et codes des villes, départements, départements et régions), [détails ici](readme_files/README_additional_notes.md#attributs-de-localisation-des-offres-noms-et-codes-des-villes-communes-départements-et-régions).
 
   - Ajout des attributs `date_premiere_ecriture` et `date_extraction` :
 
@@ -797,6 +793,11 @@ Ces transformations sont faites dans le `DAG 2`, faites via des requêtes SQL et
   - [modifier le Table view](readme_files/README_additional_notes.md#table-view)
 
   - [faire les transformations](readme_files/README_additional_notes.md#transformations)
+
+
+## Fichier .pbix
+
+- Sauvegarder petit fichier, puis charger pour gain de place et ouvrir le fichier plus facilement ?
 
 
 ## Screenshots des rapports
