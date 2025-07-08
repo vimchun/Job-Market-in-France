@@ -310,13 +310,12 @@ todo : mettre screenshots quand ca sera bon
   ├── .venv/                           # environnements virtuels
   │
   ├── airflow/                         # application Airflow
-  │   ├── config/                      # contient le fichier fichier de conf "airflow.cfg"
-  │   ├── dags/                        # contient "DAG 1" et "DAG 2"
+  │   ├── dags/                        # contient "DAG 1", "DAG 2", et un dossier contenant des scripts sql pour les transformations
   │   ├── data/
   │   │   ├── outputs/                 # contient les jsons récupérés par API, et le json qui les aggrège avec les transformations Python
   │   │   └── resources/               # contient les différents fichiers nécessaires au lancement du DAG 1
   │   ├── logs/                        # contient les logs des DAGs
-  │   └── plugins/                     # contient les plugins (dossier non utilisé pour le moment)
+  │   └── airflow.cfg                  # fichier de conf
   │  
   ├── drawio_files/                    # fichiers .drawio (schémas explicatifs)
   │  
@@ -324,13 +323,23 @@ todo : mettre screenshots quand ca sera bon
   │   ├── sql_requests/                # requêtes SQL utilisées par le script fastapi
   │   └── main.py                      # script fastapi
   │  
+  ├── grafana/                         # contient le fichier .pbix
+  │   ├── available_metrics/           # donne les métriques exposées relatives à (node|postgres|statsd)_exporter
+  │   └── provisioning/
+  │       ├── dashboards/              # contient un fichier de conf permettant notamment de ranger les dashboards dans leur dossier dans la GUI
+  │       │   ├── downloaded/          # contient les dashboards téléchargés sur le site de grafana
+  │       │   └── prefixed_metrics/    # contient les dashboards avec les métriques préfixées par "airflow_" et "go_"
+  │       └── datasources/             # contient un fichier de conf qui permet la création du datasource "Prometheus"
+  │  
   ├── power_bi/                        # contient le fichier .pbix
+  │  
+  ├── prometheus/                      # contient des fichiers de conf
   │  
   ├── readme_files/                    # contient `README_additional_notes.md` et d'autres fichiers (screenshots...)
   │  
   ├── scripts/                         # contient des scripts bash
   │  
-  ├── .env/                            # fichier utile pour Airflow
+  ├── .env                             # fichier utile pour Airflow
   ├── .gitattributes                   # calcul stats sur github
   ├── .gitignore                       # ne pas pousser les fichiers spécifiés sur git
   ├── README.md                        # doc principale
@@ -369,8 +378,12 @@ todo : mettre screenshots quand ca sera bon
   - `airflow-triggerer`,
   - `airflow-init`,
   - `airflow-cli`,
-  - `flower`.
-
+  - `flower`,
+  - `statsd-exporter`,
+  - `node-exporter`,
+  - `postgres-exporter`,
+  - `prometheus`,
+  - `grafana`
 
 ## Configuration Fastapi
 
@@ -666,7 +679,7 @@ Plusieurs `SQLExecuteQueryOperator()` qui exécutent séquentiellement les tâch
     { "code": "38972",  "libelle": "Data_Scientist" },
     { "code": "404278", "libelle": "Data_Engineer" },
     { "code": "38975",  "libelle": "Data_Manager" },
-    // ...
+    ...
     ```
 
   - le code des pays (codes récupérés à partir du endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/pays`) :
