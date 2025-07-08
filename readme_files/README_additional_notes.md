@@ -1,4 +1,4 @@
-Cette page complète la ![page principale](../README.md).
+Cette page complète la [page principale](../README.md).
 
 
 # Environnement
@@ -731,13 +731,12 @@ Voici les items sur lesquels il faut cliquer :
 
   - offre_id = `2083056` dans la ville `Cologne` (code postal 32 430) en région Occitanie, département Gers  => placé en Allemagne (NOK, car on est censé avoir que des offres en France)
 
-    ![Cologne en Allemagne](screenshots/power_bi/city_Cologne_in_Germany.png)
+    <img src="screenshots/power_bi/city_Cologne_in_Germany.png" alt="Cologne en Allemagne" style="width:40%"/>
 
 
   - offre_id = `2757953` dans la ville `La Réunion` (code postal 47 700) en région Nouvelle-Aquitaine, département Lot-et-Garonne  => placé en France (OK)
 
-    ![Cologne en France](screenshots/power_bi/city_Cologne_in_France.png)
-
+    <img src="screenshots/power_bi/city_Cologne_in_France.png" alt="Cologne en France" style="width:40%"/>
 
 - Comme vu dans le dernier screenshot, pour avoir les villes placées en France, on définit une colonne `Nom Ville Modifié` avec le nom de la ville suffixé avec `, France` (par exemple `Cologne, France`).
 
@@ -748,13 +747,11 @@ Voici les items sur lesquels il faut cliquer :
 
   - Département `Lot` en Lituanie :
 
-    ![Département "Lot" en Lituanie](screenshots/power_bi/department_Lot_in_Lithuania.png)
-
+    <img src="screenshots/power_bi/department_Lot_in_Lithuania.png" alt='Département "Lot" en Lituanie' style="width:40%"/>
 
   - Département `Lot` en France :
 
-    ![Département "Lot" en France](screenshots/power_bi/department_Lot_in_France.png)
-
+    <img src="screenshots/power_bi/department_Lot_in_France.png" alt='Département "Lot" en France' style="width:40%"/>
 
 
 #### Ajout de la variable "Nom Région Modifié"
@@ -763,13 +760,11 @@ Voici les items sur lesquels il faut cliquer :
 
   - pour la Bretagne :
 
-    ![Bretagne non colorié entièrement](screenshots/power_bi/region_Bretagne_KO.png)
-
+    <img src="screenshots/power_bi/region_Bretagne_KO.png" alt="Bretagne non colorié entièrement" style="width:20%"/>
 
   - pour l'Occitanie :
 
-    ![Occitanie non colorié entièrement](screenshots/power_bi/region_Occitanie_KO.png)
-
+    <img src="screenshots/power_bi/region_Occitanie_KO.png" alt="Occitanie non colorié entièrement" style="width:20%"/>
 
 - Changer le `Data category` (à `County` ou `State or Province`) résout le problème pour l'Occitanie mais pas la Bretagne.
 
@@ -786,11 +781,11 @@ Voici les items sur lesquels il faut cliquer :
 
   - pour la Bretagne :
 
-    ![Bretagne colorié entièrement](screenshots/power_bi/region_Bretagne_OK.png)
+    <img src="screenshots/power_bi/region_Bretagne_OK.png" alt="Bretagne colorié entièrement" style="width:20%"/>
 
   - pour l'Occitanie :
 
-    ![Occitanie colorié entièrement](screenshots/power_bi/region_Occitanie_OK.png)
+    <img src="screenshots/power_bi/region_Occitanie_OK.png" alt="Occitanie colorié entièrement" style="width:20%"/>
 
 
 # Airflow
@@ -927,7 +922,7 @@ Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6
 
 #### Métriques avec préfixes
 
-- Cette ![section](../README.md#métriques-disponibles) fait état de métriques préfixés.
+- Cette [section](../README.md#métriques-disponibles) fait état de métriques préfixés.
 
 - 1 dashboard a été créé pour :
 

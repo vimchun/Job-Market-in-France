@@ -17,7 +17,7 @@
   - monitoring avec Prometheus et Grafana
 
 
-- Pour ne pas surcharger cette page principale, une autre page avec des informations supplémentaires est disponible ![ici](readme_files/README_additional_notes.md).
+- Pour ne pas surcharger cette page principale, une autre page avec des informations supplémentaires est disponible [ici](readme_files/README_additional_notes.md).
 
 
 - Le plan suivant présente un plan logique plutôt que de présenter les étapes qui ont été effectuées par ordre chronologique :
@@ -153,7 +153,7 @@ TODO : screenshot
 
   - Lorsqu'on se connecte sur la [GUI](http://localhost:9092/) de Prometheus, on doit voir que l'état du target `statsd-exporter` est à `UP`, comme le montre dans le screenshot suivant :
 
-    ![prometheus targets](readme_files/screenshots/prometheus_targets.png)
+    <img src="readme_files/screenshots/prometheus_targets.png" alt="prometheus targets" style="width:60%"/>
 
 - `StatsD` est un collecteur de métriques qui permet à Airflow d'envoyer des données sous forme de métriques formatées en StatsD, et de les exposer via un `statsd-exporter` configuré pour Prometheus.
 
@@ -172,7 +172,7 @@ TODO : screenshot
   - 24 métriques préfixés par `statsd_*`
 
 
-- Le lien suivant renvoie vers la liste des métriques avec un préfixe : [lien](readme_files/README_additional_notes.md#métriques-disponibles-de-statsd-exporter)
+- Le lien suivant renvoie vers la liste des métriques avec un préfixe : [lien](readme_files/README_additional_notes.md#métriques-disponibles-de-statsd-exporter).
 
 
 
@@ -180,7 +180,7 @@ TODO : screenshot
 
 - Un autre fichier de configuration `airflow/config/statsd.yaml` permet de définir des mappings à partir des métriques issues d'Airflow, avec la possibilité de modifier le nom de la requête promQL.
 
-- Ce dernier a été inspiré de ce [repo](https://github.com/databand-ai/airflow-dashboards/blob/main/statsd/statsd.conf), dont la plupart des mappings ne sont plus d'actualité car il s'agit certainement d'un fichier de conf qui a été fait pour Airflow 2.x, le fichier ayant été publié il y a 3 ans (au moment où sont rédigé ces lignes, Airflow 3.x n'a que quelques mois).
+- Ce dernier a été inspiré de ce [repo](https://github.com/databand-ai/airflow-dashboards/blob/main/statsd/statsd.conf), dont la plupart des mappings ne sont plus d'actualité car il s'agit certainement d'un fichier de conf qui a été fait pour Airflow 2.x, le fichier ayant été mis à jour la dernière fois le 25/03/2021, il y a 4 ans (au moment où sont rédigé ces lignes, Airflow 3.x n'a que quelques mois).
 
   - Trois mappings valides sont conservés pour garder cette possibilité de paramétrer les mappings.
 
@@ -197,15 +197,15 @@ TODO : screenshot
     ##==>  SUCCESS: /etc/prometheus/prometheus.yaml is valid prometheus config file syntax
 ```
 
-  - Pour vérifier la validité d'un mapping du fichier `airflow/config/statsd.yaml` : [lien](readme_files/README_additional_notes.md#vérifier-la-validité-dun-mapping-dans-statsdyaml)
+  - Pour vérifier la validité d'un mapping du fichier `airflow/config/statsd.yaml` : [lien](readme_files/README_additional_notes.md#vérifier-la-validité-dun-mapping-dans-statsdyaml).
 
 
 
 ### Dump des métriques exposées par statsd-exporter
 
-- Ce dump donne le nom, type et valeurs actuelles des compteurs, jauges, résumé...
+- Ce dump donne le nom, type et valeurs actuelles des compteurs, jauges, résumés...
 
-- Il traduit la liste des commandes qu'on peut taper sur la barre `Expression` sur la [GUI de Prometheus](http://localhost:9092/graph?g0.expr=&g0.tab=1&g0.display_mode=lines&g0.show_exemplars=0&g0.range_input=1h)
+- Il traduit la liste des commandes qu'on peut taper sur la barre `Expression` sur la [GUI de Prometheus](http://localhost:9092/graph?g0.expr=&g0.tab=1&g0.display_mode=lines&g0.show_exemplars=0&g0.range_input=1h).
 
 - Il est récupérable avec la commande suivante (par conséquent disponibles dans le fichier `grafana/available_metrics/metrics_statsd_exporter.md`).
 
@@ -254,8 +254,7 @@ TODO : refaire le fichier quand les DAGs seront figés
 
 - Après (ré)installation, la datasource `Prometheus` est crée automatiquement grâce au fichier `grafana/volumes/provisioning/datasources/datasources.yml` qui est copié dans `/grafana/provisioning/datasources/datasources.yml` grâce au montage de volume, comme montré ici :
 
-  ![datasource Prometheus dans Grafana](readme_files/screenshots/grafana_datasource_prometheus.png)
-
+  <img src="readme_files/screenshots/grafana_datasource_prometheus.png" alt="datasource Prometheus dans Grafana" style="width:30%"/>
 
 - Les dashboards placés dans `grafana/volumes/provisioning/dashboards/` sont également importés automatiquement.
 
@@ -280,12 +279,12 @@ todo : mettre screenshots quand ca sera bon
 
 - Le [site de Grafana](https://grafana.com/grafana/dashboards/) propose des dashboards téléchargeables, publiés par la communauté ou par `Grafana Labs`.
 
-  - [1860-node-exporter-full](https://grafana.com/grafana/dashboards/1860-node-exporter-full/) fournit un dashboard pour le node-exporter, disponible sous `grafana/volumes/provisioning/dashboards/1860_node-exporter-full_rev41.json`
+  - [1860-node-exporter-full](https://grafana.com/grafana/dashboards/1860-node-exporter-full/) fournit un dashboard pour le node-exporter, disponible sous `grafana/volumes/provisioning/dashboards/1860_node-exporter-full_rev41.json` :
 
     ![dashboard node-exporter pendant exécution d'un dag](readme_files/screenshots/grafana/dashboard_node_exporter_during_dag_execution.png)
 
 
-  - [9628-postgres-exporter](https://grafana.com/grafana/dashboards/9628-postgresql-database/) fournit un dashboard pour le postgres-exporter, disponible sous `grafana/volumes/provisioning/dashboards/9628_postgres-exporter_rev8.json`
+  - [9628-postgres-exporter](https://grafana.com/grafana/dashboards/9628-postgresql-database/) fournit un dashboard pour le postgres-exporter, disponible sous `grafana/volumes/provisioning/dashboards/9628_postgres-exporter_rev8.json` :
 
     ![dashboard postgres-exporter](readme_files/screenshots/grafana/dashboard_postgres_exporter.png)
 
@@ -547,7 +546,7 @@ TODO : screenshot de DAG 1 à la fin du projet
 
   - `A7_special_jsons_concat`
 
-    - Concaténation spéciale entre le json existant et le nouveau json, détails de l'algo (![ici](readme_files/README_additional_notes.md#concaténation-spéciale-entre-le-json-existant-et-le-nouveau-json)) [pandas]
+    - Concaténation spéciale entre le json existant et le nouveau json, détails de l'algo ([ici](readme_files/README_additional_notes.md#concaténation-spéciale-entre-le-json-existant-et-le-nouveau-json)) [pandas]
 
     - Renommage du fichier `all_in_one.json` en `date__extraction_occurence_N+1.json`, si le fichier existant était nommé `date__extraction_occurence_N.json`.
 
@@ -697,7 +696,7 @@ Plusieurs `SQLExecuteQueryOperator()` qui exécutent séquentiellement les tâch
 
 - On obtient finalement 61 fichiers json contenant toutes les offres d'emploi liées ou pas à la data, pour la France et DOM-TOM uniquement, l'API de France Travail ne renvoyant quasiment pas d'offre d'emploi pour les autres pays.
 
-- Plusieurs transformations seront effectuées par la suite : ![voir ici](#transformations-des-données-en-amont-côté-python)
+- Plusieurs transformations seront effectuées par la suite : [voir ici](#transformations-des-données-en-amont-côté-python).
 
 
 - Notes :
@@ -715,9 +714,9 @@ Ces transformations sont faites dans le `DAG 1`, faites via Python et en amont d
 
   - Concaténation des 61 fichiers json dans un seul fichier json, avec suppression des doublons
 
-  - Conservation des offres en France Métropolitaine uniquement, ![détails ici](readme_files/README_additional_notes.md#conservation-des-offres-en-France-Métropolitaine-uniquement)
+  - Conservation des offres en France Métropolitaine uniquement, [détails ici](readme_files/README_additional_notes.md#conservation-des-offres-en-France-Métropolitaine-uniquement)
 
-  - Ajout des attributs de localisation des offres (noms et codes des villes, départements, départements et régions), ![détails ici](readme_files/README_additional_notes.md#attributs-de-localisation-des-offres-noms-et-codes-des-villes-communes-départements-et-régions)
+  - Ajout des attributs de localisation des offres (noms et codes des villes, départements, départements et régions), [détails ici](readme_files/README_additional_notes.md#attributs-de-localisation-des-offres-noms-et-codes-des-villes-communes-départements-et-régions)
 
   - Ajout des attributs `date_premiere_ecriture` et `date_extraction` :
 
@@ -732,11 +731,11 @@ Ces transformations sont faites dans le `DAG 2`, faites via des requêtes SQL et
 
   - pour créer et écrire l'attribut `metier_data` : pour chaque offre, on comparera l'attribut `intitule_offre` avec des regex afin de déterminer s'il s'agit d'une offre pour un `Data Engineer`, un `Data Analyst`, ou un `Data Scientist`.
 
-    - ![détails ici](readme_files/README_additional_notes.md#attribut-metier_data)
+    - [détails ici](readme_files/README_additional_notes.md#attribut-metier_data)
 
   - pour créer et écrire les attributs `salaire_min` et `salaire_max` en fonction d'un algorithme expliqué
 
-    - ![détails ici](readme_files/README_additional_notes.md#attributs-salaire_min-et-salaire_max)
+    - [détails ici](readme_files/README_additional_notes.md#attributs-salaire_min-et-salaire_max)
 
 
 
@@ -747,7 +746,9 @@ Ces transformations sont faites dans le `DAG 2`, faites via des requêtes SQL et
   - Seuls les attributs liés aux `contacts` et aux `agences` ne seront pas conservés, n'apportant pas d'utilité.
 
 
-- Pour la suite, une modélisation `snowflake` est utilisée, dont le diagramme UML est ![ici](readme_files/screenshots/UML.png).
+- Pour la suite, une modélisation `snowflake` est utilisée, dont le diagramme UML est :
+
+  ![ici](readme_files/screenshots/UML.png)
 
   TODO : justifier ce choix
 
@@ -776,7 +777,7 @@ Ces transformations sont faites dans le `DAG 2`, faites via des requêtes SQL et
 
 - Ainsi, pour une offre, si un attribut d'une table de dimension associé à la table de liaison a évolué, alors on ne conservera que l'offre avec `date_extraction` le plus récent.
 
-- Plus de détails ![ici](readme_files/README_additional_notes.md#mise-à-jour-de-la-base-de-données-après-récupération-de-nouvelles-offres).
+- Plus de détails [ici](readme_files/README_additional_notes.md#mise-à-jour-de-la-base-de-données-après-récupération-de-nouvelles-offres).
 
 
 
@@ -789,13 +790,13 @@ Ces transformations sont faites dans le `DAG 2`, faites via des requêtes SQL et
 
 - Ci-dessous des liens expliquant les différentes manipulations faites pour :
 
-  - ![connecter Power BI avec la db postgres](readme_files/README_additional_notes.md#connexion-avec-la-db)
+  - [connecter Power BI avec la db postgres](readme_files/README_additional_notes.md#connexion-avec-la-db)
 
-  - ![modifier le Model view](readme_files/README_additional_notes.md#model-view)
+  - [modifier le Model view](readme_files/README_additional_notes.md#model-view)
 
-  - ![modifier le Table view](readme_files/README_additional_notes.md#table-view)
+  - [modifier le Table view](readme_files/README_additional_notes.md#table-view)
 
-  - ![faire les transformations](readme_files/README_additional_notes.md#transformations)
+  - [faire les transformations](readme_files/README_additional_notes.md#transformations)
 
 
 ## Screenshots des rapports
@@ -806,7 +807,7 @@ TODO : faire à la fin du projet
 
 # Création d'une API pour la db
 
-- L'utilité peut par exemple être de requêter la db `francetravail` à travers l'interface OpenAPI (ex-swagger) pour récupérer certaines informations.
+- L'utilité peut par exemple être de requêter la base de données `francetravail` à travers l'interface OpenAPI (ex-swagger) pour récupérer certaines informations.
 
 - Utilisation de `FastAPI`.
 
