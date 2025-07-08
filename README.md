@@ -78,17 +78,17 @@
 
 - Tableau avec les versions utilisées :
 
-  | service           | version  | date    | lien                                                               |
-  | ----------------- | -------- | ------- | ------------------------------------------------------------------ |
-  | FastAPI           | 0.115.12 | 03/2025 | https://github.com/fastapi/fastapi/releases                        |
-  | Postgres          | 16.9     | 05/2025 | https://github.com/postgres/postgres/tags                          |
-  | Redis             | 8.0.2    | 05/2025 | https://github.com/redis/redis/releases                            |
-  | Airflow           | 3.0.2    | 06/2025 | https://github.com/apache/airflow/releases                         |
-  | StatsD-exporter   | 0.28.0   | 10/2024 | https://github.com/prometheus/statsd_exporter/releases             |
-  | Node-exporter     | 1.9.1    | 04/2025 | https://github.com/prometheus/node_exporter/releases               |
-  | Postgres-exporter | 0.17.1   | 02/2025 | https://github.com/prometheus-community/postgres_exporter/releases |
-  | Prometheus        | 2.53.5   | 06/2025 | https://github.com/prometheus/prometheus/releases                  |
-  | Grafana           | 12.0.2   | 06/2025 | https://github.com/grafana/grafana/releases                        |
+  | service           | version  | date de la release | lien                                                               |
+  | ----------------- | -------- | ------------------ | ------------------------------------------------------------------ |
+  | FastAPI           | 0.115.12 | 03/2025            | https://github.com/fastapi/fastapi/releases                        |
+  | Postgres          | 16.9     | 05/2025            | https://github.com/postgres/postgres/tags                          |
+  | Redis             | 8.0.2    | 05/2025            | https://github.com/redis/redis/releases                            |
+  | Airflow           | 3.0.2    | 06/2025            | https://github.com/apache/airflow/releases                         |
+  | StatsD-exporter   | 0.28.0   | 10/2024            | https://github.com/prometheus/statsd_exporter/releases             |
+  | Node-exporter     | 1.9.1    | 04/2025            | https://github.com/prometheus/node_exporter/releases               |
+  | Postgres-exporter | 0.17.1   | 02/2025            | https://github.com/prometheus-community/postgres_exporter/releases |
+  | Prometheus        | 2.53.5   | 06/2025            | https://github.com/prometheus/prometheus/releases                  |
+  | Grafana           | 12.0.2   | 06/2025            | https://github.com/grafana/grafana/releases                        |
 
 
 ## Conditions initiales
@@ -125,14 +125,15 @@ TODO : screenshot
 
 (todo : + screenshots)
 
-| Application     | Url                                                    |
-| --------------- | ------------------------------------------------------ |
-| FastAPI         | http://localhost:8000/docs                             |
-| Airflow         | http://localhost:8080/                                 |
-| StatsD Exporter | http://localhost:9102/ + http://localhost:9102/metrics |
-| Node Exporter   | http://localhost:9100/ + http://localhost:9100/metrics |
-| Prometheus      | http://localhost:9092/                                 |
-| Grafana         | http://localhost:3000/                                 |
+| Application       | Url                                                    |
+| ---------------   | ------------------------------------------------------ |
+| FastAPI           | http://localhost:8000/docs                             |
+| Airflow           | http://localhost:8080/                                 |
+| StatsD Exporter   | http://localhost:9102/ + http://localhost:9102/metrics |
+| Node Exporter     | http://localhost:9100/ + http://localhost:9100/metrics |
+| Postgres Exporter | http://localhost:9187/ + http://localhost:9187/metrics |
+| Prometheus        | http://localhost:9092/ + http://localhost:9092/metrics |
+| Grafana           | http://localhost:3000/                                 |
 
 
 # Prometheus
@@ -236,8 +237,16 @@ TODO : refaire le fichier quand les DAGs seront figés
 
 ## Postgres Exporter
 
-todo : à compléter
+- Ce service permet la récupération de métriques intéressantes concernant la partie écriture dans les bases de données dont celle de `francetravail`, (... todo : à compléter), qu'on pourra exposer à travers un dashboard Grafana.
 
+
+### Dump des métriques exposées par postgres-exporter
+
+- Il est récupérable avec la commande suivante (par conséquent disponibles dans le fichier `grafana/available_metrics/metrics_postgres_exporter.md`).
+
+```bash
+  curl http://localhost:9187/metrics > grafana/available_metrics/metrics_postgres_exporter.md
+```
 
 # Grafana
 
