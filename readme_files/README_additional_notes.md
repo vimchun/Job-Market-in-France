@@ -127,8 +127,7 @@ docker exec -it grafana grafana server -v
 
 - Le screenshot suivant (issu du fichier `step_1__location_cases.xlsx`) résume la partie décrite ci-dessous :
 
-  ![cas avec les attributs de localisation](screenshots/location_attributes_cases.png)
-
+  <img src="screenshots/location_attributes_cases.png" alt="cas avec les attributs de localisation" style="width:100%"/>
 
 - Le fichier `airflow/data/resources/code_name__city_department_region.csv` :
 
@@ -633,7 +632,7 @@ Même problématique avec certaines offres qui voient la valeur de l'attribut `e
 
 - En voici un screenshot :
 
-  ![ici](screenshots/db_update.png)
+  <img src="screenshots/db_update.png" alt="db_update" style="width:100%"/>
 
 
 # Power BI
@@ -924,16 +923,16 @@ Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6
 
 - Cette [section](../README.md#métriques-disponibles) fait état de métriques préfixés.
 
-- 1 dashboard a été créé pour :
+- Un dashboard a été créé :
 
-  - les 56 métriques préfixés par `airflow_*` (`grafana/volumes/provisioning/dashboards/airflow_.json`) :
+  - pour les 56 métriques préfixés par `airflow_*` (`grafana/volumes/provisioning/dashboards/airflow_.json`) :
 
-    ![dashboard "airflow_"](screenshots/grafana/dashboard_statsd_exporter_metrics_prefixed_with_airflow_.png)
+    <img src="screenshots/grafana/dashboard_statsd_exporter_metrics_prefixed_with_airflow_.png" alt='dashboard "airflow_"' style="width:100%"/>
 
 
-  - les 31 métriques préfixés par `go_*` (`grafana/volumes/provisioning/dashboards/go_.json`) :
+  - pour les 31 métriques préfixés par `go_*` (`grafana/volumes/provisioning/dashboards/go_.json`) :
 
-    ![dashboard "go_"](screenshots/grafana/dashboard_statsd_exporter_metrics_prefixed_with_go_.png)
+    <img src="screenshots/grafana/dashboard_statsd_exporter_metrics_prefixed_with_go_.png" alt='dashboard "go_"' style="width:100%"/>
 
 
 - Ces 2 dashboards ont été créés pour avoir une idée de quoi ressemblent ces métriques.

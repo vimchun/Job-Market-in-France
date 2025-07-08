@@ -281,12 +281,12 @@ todo : mettre screenshots quand ca sera bon
 
   - [1860-node-exporter-full](https://grafana.com/grafana/dashboards/1860-node-exporter-full/) fournit un dashboard pour le node-exporter, disponible sous `grafana/volumes/provisioning/dashboards/1860_node-exporter-full_rev41.json` :
 
-    ![dashboard node-exporter pendant exécution d'un dag](readme_files/screenshots/grafana/dashboard_node_exporter_during_dag_execution.png)
+    <img src="readme_files/screenshots/grafana/dashboard_node_exporter_during_dag_execution.png" alt="dashboard node-exporter pendant exécution d'un dag" style="width:100%"/>
 
 
   - [9628-postgres-exporter](https://grafana.com/grafana/dashboards/9628-postgresql-database/) fournit un dashboard pour le postgres-exporter, disponible sous `grafana/volumes/provisioning/dashboards/9628_postgres-exporter_rev8.json` :
 
-    ![dashboard postgres-exporter](readme_files/screenshots/grafana/dashboard_postgres_exporter.png)
+    <img src="readme_files/screenshots/grafana/dashboard_postgres_exporter.png" alt="dashboard postgres-exporter" style="width:100%"/>
 
 
 ### Dashboards créés
@@ -400,7 +400,7 @@ todo : mettre screenshots quand ca sera bon
   - Le premier récupérait les données de France Travail, faisait des transformations, et chargeait les offres d'emploi dans un json.
   - Le second lisait le json puis écrivait les offres d'emploi dans la base de données, et effectuait un deuxième lot de transformations à partir de fichier sql.
 
-  ![screenshot du workflow](readme_files/screenshots/workflow_before_airflow.png)
+  <img src="readme_files/screenshots/workflow_before_airflow.png" alt="screenshot du workflow" style="width:100%"/>
 
 
 - Reprendre ces scripts pour avoir Airflow dans le projet a été bénéfique :
@@ -594,7 +594,7 @@ TODO : screenshot de DAG 2 à la fin du projet
 
   - Note : on peut vérifier que la connexion est bien créée via la GUI comme montré sur le screenshot suivant :
 
-    ![airflow_edit_connection](readme_files/screenshots/airflow_gui_edit_connection.png)
+    <img src="readme_files/screenshots/airflow_gui_edit_connection.png" alt="airflow_edit_connection" style="width:100%"/>
 
     (si la connexion n'est pas bien définie, alors le `DAG 2` posera problème puisqu'il ne pourra pas intéragir avec la base de donnée `francetravail`)
 
@@ -746,9 +746,9 @@ Ces transformations sont faites dans le `DAG 2`, faites via des requêtes SQL et
   - Seuls les attributs liés aux `contacts` et aux `agences` ne seront pas conservés, n'apportant pas d'utilité.
 
 
-- Pour la suite, une modélisation `snowflake` est utilisée, dont le diagramme UML est :
+- Pour la suite, une modélisation `snowflake` est utilisée, dont le diagramme UML est le suivant :
 
-  ![ici](readme_files/screenshots/UML.png)
+  <img src="readme_files/screenshots/UML.png" alt="diagramme" style="width:100%"/>
 
   TODO : justifier ce choix
 
