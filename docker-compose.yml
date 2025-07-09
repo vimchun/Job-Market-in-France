@@ -35,7 +35,6 @@ x-airflow-common:
     - ./airflow/dags:/opt/airflow/dags
     - ./airflow/data:/opt/airflow/data
     - ./airflow/logs:/opt/airflow/logs
-    # - ./airflow/plugins:/opt/airflow/plugins
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
@@ -380,6 +379,30 @@ services:
       - 9187:9187  # scrape port (pour Prometheus)
     depends_on:
       - postgres
+    restart: always
+
+  ##################################
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor
+    container_name: cadvisor
+    # command:
+    #   - -port=9098  # nouveau port d'écoute (8080 comme Airflow par défaut)
+    ports:
+      - 8081:8080  # PWSH : `netstat -ano | findstr ":8081"` => pour voir si le port est dispo ou pas
+    environment:
+      - CADVISOR_HEALTHCHECK_URL=http://localhost:8081/healthz
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
     restart: always
 
   ##################################

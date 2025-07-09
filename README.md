@@ -83,6 +83,7 @@
   | StatsD-exporter   | 0.28.0   | 10/2024            | https://github.com/prometheus/statsd_exporter/releases             |
   | Node-exporter     | 1.9.1    | 04/2025            | https://github.com/prometheus/node_exporter/releases               |
   | Postgres-exporter | 0.17.1   | 02/2025            | https://github.com/prometheus-community/postgres_exporter/releases |
+  | cAdvisor          | v0.49.1  | 03/2024            | https://github.com/google/cadvisor/releases                        |
   | Prometheus        | 2.53.5   | 06/2025            | https://github.com/prometheus/prometheus/releases                  |
   | Grafana           | 12.0.2   | 06/2025            | https://github.com/grafana/grafana/releases                        |
 
@@ -121,15 +122,16 @@ TODO : screenshot
 
 (todo : + screenshots)
 
-| Application       | Url                                                    |
-| ---------------   | ------------------------------------------------------ |
-| FastAPI           | http://localhost:8000/docs                             |
-| Airflow           | http://localhost:8080/                                 |
-| StatsD Exporter   | http://localhost:9102/ + http://localhost:9102/metrics |
-| Node Exporter     | http://localhost:9100/ + http://localhost:9100/metrics |
-| Postgres Exporter | http://localhost:9187/ + http://localhost:9187/metrics |
-| Prometheus        | http://localhost:9092/ + http://localhost:9092/metrics |
-| Grafana           | http://localhost:3000/                                 |
+| Application       | Url                                                     |
+| ----------------- | ------------------------------------------------------- |
+| FastAPI           | http://localhost:8000/docs                              |
+| Airflow           | http://localhost:8080/                                  |
+| StatsD Exporter   | http://localhost:9102/ + http://localhost:9102/metrics  |
+| Node Exporter     | http://localhost:9100/ + http://localhost:9100/metrics  |
+| Postgres Exporter | http://localhost:9187/ + http://localhost:9187/metrics  |
+| cAdvisor          | http://localhost:8081/ +  http://localhost:8081/metrics |
+| Prometheus        | http://localhost:9092/ + http://localhost:9092/metrics  |
+| Grafana           | http://localhost:3000/                                  |
 
 
 # Prometheus
