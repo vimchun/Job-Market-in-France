@@ -287,15 +287,17 @@ todo : mettre screenshots quand ca sera bon
 
 ### Dashboards créés
 
+#### Mon dashboard
 
-#### Métriques avec préfixes
+- Le dashboard `my dashboard` (`grafana/provisioning/dashboards/mine/my_dashboard.json`) contient uniquement des visualisations jugées utiles.
+
+  - Il reprend des visualisations de `1860_node-exporter-full_rev41.json` (122 panels) et de `9628_postgres-exporter_rev8.json` (32 panels).
+
+
+
+#### Dashboard avec les métriques préfixées
 
 - Deux dashboards avec les 56 métriques préfixés par `airflow_*` et les 31 métriques préfixés par `go_*` ont été créés à but informatif, plus de détails [ici](readme_files/README_additional_notes.md#métriques-avec-préfixes).
-
-
-#### Métriques jugées utiles
-
-- Dashboard à créer avec les métriques que je juge probant dans l'analyse.
 
 
 # Arborescence des fichiers du projet
