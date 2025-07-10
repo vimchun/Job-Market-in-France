@@ -57,7 +57,9 @@
 # Environnement
 
 - Développements et tests sous :
-  - Windows 11 + WSL + Docker Desktop
+  - Windows 11 + WSL Ubuntu 22.04
+    - Note importante : on n'utilise pas `Docker Desktop` mais `Docker CE dans WSL` car il y a un problème d'environnement avec WSL + Docker Desktop pour que `cadvisor` soit opérationnel (https://github.com/vacp2p/wakurtosis/issues/58)
+      - Voir section XXXXX pour la procédure sans `Docker Desktop`
   - Environnement virtuel, Python 3.12.9 (février 2025)
 
 ## Services Docker
@@ -111,7 +113,7 @@
 
   - Il faut que `DAG 1` et `DAG 2` soient activés dans la GUI (par défaut, ils sont désactivés après une réinitialisation d'environnement) :
 
-    - `DAG 1` doit être activé sinon la planification du DAG ne déclenchera pas du tout (`DAG1` n'est pas en `Queued` sur cette version, mais c'est tout comme, car le DAG se déclenchera lorsqu'il sera activé).
+    - `DAG 1` doit être activé sinon la planification du DAG ne déclenchera pas du tout (`DAG 1` n'est pas en `Queued` sur cette version, mais c'est tout comme, car le DAG se déclenchera lorsqu'il sera activé).
 
     - `DAG 2` doit être activé sinon le `DAG 1` ne déclenchera pas le `DAG 2`, et il sera en `Queued`.
 
@@ -122,16 +124,16 @@ TODO : screenshot
 
 (todo : + screenshots)
 
-| Application       | Url                                                     |
-| ----------------- | ------------------------------------------------------- |
-| FastAPI           | http://localhost:8000/docs                              |
-| Airflow           | http://localhost:8080/                                  |
-| StatsD Exporter   | http://localhost:9102/ + http://localhost:9102/metrics  |
-| Node Exporter     | http://localhost:9100/ + http://localhost:9100/metrics  |
-| Postgres Exporter | http://localhost:9187/ + http://localhost:9187/metrics  |
-| cAdvisor          | http://localhost:8081/ +  http://localhost:8081/metrics |
-| Prometheus        | http://localhost:9092/ + http://localhost:9092/metrics  |
-| Grafana           | http://localhost:3000/                                  |
+| Application       | Url                                                    |
+| ----------------- | ------------------------------------------------------ |
+| FastAPI           | http://localhost:8000/docs                             |
+| Airflow           | http://localhost:8080/                                 |
+| StatsD Exporter   | http://localhost:9102/ + http://localhost:9102/metrics |
+| Node Exporter     | http://localhost:9100/ + http://localhost:9100/metrics |
+| Postgres Exporter | http://localhost:9187/ + http://localhost:9187/metrics |
+| cAdvisor          | http://localhost:8081/ + http://localhost:8081/metrics |
+| Prometheus        | http://localhost:9092/ + http://localhost:9092/metrics |
+| Grafana           | http://localhost:3000/                                 |
 
 
 # Prometheus
@@ -161,7 +163,7 @@ TODO : screenshot
 
 - StatsD Exporter donne les métriques suivantes :
 
-  - la durée de chaque tâche de DAG `DAG1` et `DAG2`
+  - la durée de chaque tâche de DAG `DAG 1` et `DAG 2`
   - les métriques définies dans `statsd.yaml` (voir section suivante)
   - 56 métriques préfixés par `airflow_*`
   - 31 métriques préfixés par `go_*`
@@ -245,6 +247,17 @@ TODO : refaire le fichier quand les DAGs seront figés
 ```bash
   curl http://localhost:9187/metrics > grafana/available_metrics/metrics_postgres_exporter.md
 ```
+
+## cAdvisor
+
+- Ce service permet d'analyser l'usage des ressources et les caractéristiques de performance des conteneurs docker en cours d'exécution.
+
+- Comme écrit dans cette [section](#Environnement), il est préférable `Docker CE dans WSL` au profit de `Docker Desktop`.
+
+- Exemple de requête PromQL qui renvoie les conteneurs docker :
+
+  <img src="readme_files/screenshots/prometheus_cadvisor.png" alt="cadvisor opérationnel" style="width:30%"/>
+
 
 # Grafana
 
