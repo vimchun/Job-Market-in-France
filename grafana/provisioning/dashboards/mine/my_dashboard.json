@@ -1,25 +1,9 @@
 {
-  "annotations": {
-    "list": [
-      {
-        "builtIn": 1,
-        "datasource": {
-          "type": "datasource",
-          "uid": "grafana"
-        },
-        "enable": true,
-        "hide": true,
-        "iconColor": "rgba(0, 211, 255, 1)",
-        "name": "Annotations & Alerts",
-        "type": "dashboard"
-      }
-    ]
-  },
   "description": "This dashboard works with postgres_exporter for prometheus",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 12,
+  "id": 26,
   "links": [],
   "panels": [
     {
@@ -2451,14 +2435,14 @@
   "preload": false,
   "refresh": "10s",
   "schemaVersion": 41,
-  "tags": [
-    "postgres",
-    "db",
-    "stats"
-  ],
+  "tags": [],
   "templating": {
     "list": [
       {
+        "current": {
+          "text": "Prometheus",
+          "value": "PBFA97CFB590B2093"
+        },
         "label": "datasource",
         "name": "DS_PROMETHEUS",
         "options": [],
@@ -2468,77 +2452,10 @@
         "type": "datasource"
       },
       {
-        "auto": true,
-        "auto_count": 200,
-        "auto_min": "1s",
         "current": {
-          "text": "auto",
-          "value": "$__auto_interval_interval"
+          "text": "",
+          "value": ""
         },
-        "label": "Interval",
-        "name": "interval",
-        "options": [
-          {
-            "selected": true,
-            "text": "auto",
-            "value": "$__auto_interval_interval"
-          },
-          {
-            "selected": false,
-            "text": "1s",
-            "value": "1s"
-          },
-          {
-            "selected": false,
-            "text": "5s",
-            "value": "5s"
-          },
-          {
-            "selected": false,
-            "text": "1m",
-            "value": "1m"
-          },
-          {
-            "selected": false,
-            "text": "5m",
-            "value": "5m"
-          },
-          {
-            "selected": false,
-            "text": "1h",
-            "value": "1h"
-          },
-          {
-            "selected": false,
-            "text": "6h",
-            "value": "6h"
-          },
-          {
-            "selected": false,
-            "text": "1d",
-            "value": "1d"
-          }
-        ],
-        "query": "1s,5s,1m,5m,1h,6h,1d",
-        "refresh": 2,
-        "type": "interval"
-      },
-      {
-        "current": {},
-        "datasource": "${DS_PROMETHEUS}",
-        "definition": "",
-        "includeAll": false,
-        "label": "Namespace",
-        "name": "namespace",
-        "options": [],
-        "query": "query_result(pg_exporter_last_scrape_duration_seconds)",
-        "refresh": 2,
-        "regex": "/.*kubernetes_namespace=\"([^\"]+).*/",
-        "sort": 1,
-        "type": "query"
-      },
-      {
-        "current": {},
         "datasource": "${DS_PROMETHEUS}",
         "definition": "",
         "includeAll": false,
@@ -2552,7 +2469,10 @@
         "type": "query"
       },
       {
-        "current": {},
+        "current": {
+          "text": "postgres-exporter:9187",
+          "value": "postgres-exporter:9187"
+        },
         "datasource": "${DS_PROMETHEUS}",
         "definition": "",
         "includeAll": false,
@@ -2566,7 +2486,12 @@
         "type": "query"
       },
       {
-        "current": {},
+        "current": {
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
         "datasource": "${DS_PROMETHEUS}",
         "definition": "",
         "includeAll": true,
@@ -2581,21 +2506,10 @@
         "type": "query"
       },
       {
-        "current": {},
-        "datasource": "${DS_PROMETHEUS}",
-        "definition": "",
-        "includeAll": true,
-        "label": "Lock table",
-        "multi": true,
-        "name": "mode",
-        "options": [],
-        "query": "label_values({mode=~\"accessexclusivelock|accesssharelock|exclusivelock|rowexclusivelock|rowsharelock|sharelock|sharerowexclusivelock|shareupdateexclusivelock\"}, mode)",
-        "refresh": 1,
-        "regex": "",
-        "type": "query"
-      },
-      {
-        "current": {},
+        "current": {
+          "text": "node-exporter",
+          "value": "node-exporter"
+        },
         "datasource": {
           "type": "prometheus",
           "uid": "${DS_PROMETHEUS}"
@@ -2615,7 +2529,10 @@
         "type": "query"
       },
       {
-        "current": {},
+        "current": {
+          "text": "711da5192533",
+          "value": "711da5192533"
+        },
         "datasource": {
           "type": "prometheus",
           "uid": "${DS_PROMETHEUS}"
@@ -2635,7 +2552,10 @@
         "type": "query"
       },
       {
-        "current": {},
+        "current": {
+          "text": "node-exporter:9100",
+          "value": "node-exporter:9100"
+        },
         "datasource": {
           "type": "prometheus",
           "uid": "${DS_PROMETHEUS}"
@@ -2653,24 +2573,6 @@
         "regex": "",
         "sort": 1,
         "type": "query"
-      },
-      {
-        "current": {
-          "text": "[a-z]+|nvme[0-9]+n[0-9]+|mmcblk[0-9]+",
-          "value": "[a-z]+|nvme[0-9]+n[0-9]+|mmcblk[0-9]+"
-        },
-        "hide": 2,
-        "includeAll": false,
-        "name": "diskdevices",
-        "options": [
-          {
-            "selected": true,
-            "text": "[a-z]+|nvme[0-9]+n[0-9]+|mmcblk[0-9]+",
-            "value": "[a-z]+|nvme[0-9]+n[0-9]+|mmcblk[0-9]+"
-          }
-        ],
-        "query": "[a-z]+|nvme[0-9]+n[0-9]+|mmcblk[0-9]+",
-        "type": "custom"
       }
     ]
   },
@@ -2680,7 +2582,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "my dashboard",
-  "uid": "000000999",
+  "title": "my dashboard v100",
+  "uid": "459c0c8e-e394-4fa1-b842-f0a037fbf991",
   "version": 1
 }
