@@ -386,18 +386,17 @@ services:
   cadvisor:
     image: gcr.io/cadvisor/cadvisor
     container_name: cadvisor
-    # command:
-    #   - -port=9098  # nouveau port d'écoute (8080 comme Airflow par défaut)
     ports:
-      - 8081:8080  # PWSH : `netstat -ano | findstr ":8081"` => pour voir si le port est dispo ou pas
-    environment:
-      - CADVISOR_HEALTHCHECK_URL=http://localhost:8081/healthz
+      - 8081:8080
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:ro
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
+    privileged: true
+    devices:
+      - /dev/kmsg
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:8080/ || exit 1"]
       interval: 30s
