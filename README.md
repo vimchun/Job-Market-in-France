@@ -55,7 +55,7 @@
 
     - Note importante : on n'utilise pas `Docker Desktop` mais `Docker CE dans WSL` car `cadvisor` n'est pas opérationnel dans l'environnement WSL avec Ubuntu 22.04 + Docker Desktop.
 
-      - Voir [section](readme_files/README_additional_notes.md#Utilisation-de-Docker-CE-dans-WSL-pour-cAdvisor) pour les explications et pour la procudure d'installation de `Docker CE` dans WSL.
+      - Voir [ici](readme_files/README_additional_notes.md#Utilisation-de-Docker-CE-dans-WSL-pour-cAdvisor) pour les explications et pour la procudure d'installation de `Docker CE` dans WSL.
 
   - Environnement virtuel, Python 3.12.9 (février 2025)
 

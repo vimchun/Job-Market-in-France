@@ -961,7 +961,7 @@ Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6
   wsl --shutdown  # avec powershell
   ```
 
-1. Vérifier que `systemd` fonctionne :
+2. Vérifier que `systemd` fonctionne :
 
 ```bash
   systemctl --no-pager status user.slice
@@ -971,7 +971,7 @@ Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6
   ##==>        ...
   ```
 
-1. Installer Docker CE :
+3. Installer Docker CE :
 
 ```bash
   # Installer les dépendances
@@ -991,7 +991,7 @@ Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6
   sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 ```
 
-1. Corriger iptables pour une compatibilité avec WSL2 afin de permettre à Docker de démarrer correctement :
+4. Corriger iptables pour une compatibilité avec WSL2 afin de permettre à Docker de démarrer correctement :
 
 ```bash
   # Ubuntu 22.04 utilise `nftables` par défaut, incompatible avec Docker sur WSL2, il faut basculer vers l'option `legacy` :
@@ -1001,7 +1001,7 @@ Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6
   ##==> update-alternatives: using /usr/sbin/ip6tables-legacy to provide /usr/sbin/ip6tables (ip6tables) in manual mode
 ```
 
-1. Configuration de l'utilisateur :
+5. Configuration de l'utilisateur :
 
 ```bash
 # Ajouter l'utilisateur au groupe docker
@@ -1012,7 +1012,7 @@ sudo usermod -aG docker $USER
   wsl --shutdown  # avec powershell
   ```
 
-1. Activer et démarrer Docker au démarrage :
+6. Activer et démarrer Docker au démarrage :
 
 ```bash
   # Activer le service Docker
@@ -1029,7 +1029,7 @@ sudo usermod -aG docker $USER
 ```
 
 
-1. Désactiver la variable `DOCKER_HOST`, souvent utilisée pour pointer vers `Docker Desktop` :
+7. Désactiver la variable `DOCKER_HOST`, souvent utilisée pour pointer vers `Docker Desktop` :
 
 ```bash
   env | grep -i DOCKER_HOST
