@@ -35,23 +35,16 @@
   todo : un gif peut être pas mal
 
 
-# Skills set travaillés
+# Compétences techniques
 
-- Python
-- Pipeline ETL/ELT
-- SQL
-- Modélisation UML
-- Linux
-- Bash
-- GIT
-
-- FastAPI
-- Docker
-- Airflow
-- Prometheus
-- Grafana
-
-- Power BI
+| Domaine                          | Outils & Technologies                      |
+| -------------------------------- | ------------------------------------------ |
+| Langages & programmation         | `Python`, `SQL`, `Bash`/`Linux`, `FastAPI` |
+| Pipeline ETL/ELT & orchestration | `Apache Airflow`                           |
+| Containerisation & versioning    | `Docker`, `Git`                            |
+| Monitoring                       | `Prometheus`, `Grafana`                    |
+| Data Visualisation               | `Power BI`                                 |
+| Modélisation & architecture      | `UML`                                      |
 
 
 # Environnement
@@ -92,10 +85,11 @@
 
 ## Conditions initiales
 
-- Pour avoir le projet en local :
+- Avoir le projet en local :
 
-  TODO : commande clone ?
-
+```bash
+  # TODO : commande clone ?
+```
 
 - Avoir la configuration docker :
 
@@ -111,16 +105,21 @@
 
 - Côté Airflow :
 
-  - Il faut que `DAG 1` et `DAG 2` soient activés dans la GUI (par défaut, ils sont désactivés après une réinitialisation d'environnement) :
+  - `DAG 1` et `DAG 2` doivent être activés dans la GUI (par défaut, ils sont désactivés après une réinitialisation d'environnement) :
+
+    - TODO : screenshot
 
     - `DAG 1` doit être activé sinon la planification du DAG ne déclenchera pas du tout (`DAG 1` n'est pas en `Queued` sur cette version, mais c'est tout comme, car le DAG se déclenchera lorsqu'il sera activé).
 
     - `DAG 2` doit être activé sinon le `DAG 1` ne déclenchera pas le `DAG 2`, et il sera en `Queued`.
 
-TODO : screenshot
+
+- Côté Prometheus :
+
+  - L'état des targets doit être à `UP`, voir le screenshot de cette [section](#Configuration-de-Prometheus).
 
 
-# Urls de la GUI des applications
+# Urls des GUIs
 
 (todo : + screenshots)
 
@@ -138,30 +137,69 @@ TODO : screenshot
 
 # Prometheus
 
-## StatsD Exporter
+## Configuration de Prometheus
 
-### Configuration via StatsD
+- La section `scrape_configs` du fichier de configuration `prometheus/prometheus.yaml` définit les `targets` des différents services à surveiller : `statsd-exporter`, `node-exporter`, `postgres-exporter` et `cadvisor`.
 
-- Un `target` a été défini pour collecter les métriques provenant de `StatsD`, via le fichier de configuration `airflow/config/prometheus.yaml` :
+- Lorsqu'on se connecte sur la [GUI](http://localhost:9092/) de Prometheus, on doit voir que l'état de chaque target est à `UP`, comme le montre dans le screenshot suivant :
 
-```yaml
-  scrape_configs:
-    - job_name: statsd-exporter
-      static_configs:
-        - targets: ["statsd-exporter:9102"]
-  ```
+  <img src="readme_files/screenshots/prometheus_targets.png" alt="prometheus targets" style="width:60%"/>
 
-  - Lorsqu'on se connecte sur la [GUI](http://localhost:9092/) de Prometheus, on doit voir que l'état du target `statsd-exporter` est à `UP`, comme le montre dans le screenshot suivant :
 
-    <img src="readme_files/screenshots/prometheus_targets.png" alt="prometheus targets" style="width:60%"/>
+## Configuration Docker pour cAdvisor
+
+- Comme écrit dans cette [section](#Environnement), il est préférable `Docker CE dans WSL` au profit de `Docker Desktop`.
+
+- Exemple de requête PromQL qui renvoie les conteneurs docker :
+
+  <img src="readme_files/screenshots/prometheus_cadvisor.png" alt="cadvisor opérationnel" style="width:30%"/>
+
+
+
+## Métriques exposées par les différents services
+
+- Les métriques citées ci-dessous traduisent la liste des commandes qu'on peut taper sur la barre `Expression` sur la [GUI de Prometheus](http://localhost:9092/graph).
+
+### Utilité
+
+todo : à remplir
 
 - `StatsD` est un collecteur de métriques qui permet à Airflow d'envoyer des données sous forme de métriques formatées en StatsD, et de les exposer via un `statsd-exporter` configuré pour Prometheus.
 
+- `Statsd-exporter` ...
+
+- `Node-exporter` service permet la récupération de métriques intéressantes concernant la partie cpu, ram, disque, etc..., qu'on pourra exposer à travers un dashboard Grafana.
+
+- `Postgres-exporter` permet la récupération de métriques intéressantes concernant la partie écriture dans les bases de données dont celle de `francetravail`, (... todo : à compléter), qu'on pourra exposer à travers un dashboard Grafana.
+
+- `cAdvisor` permet d'analyser l'usage des ressources et les caractéristiques de performance des conteneurs docker en cours d'exécution.
 
 
-### Métriques disponibles
+### Dump des métriques
 
-- StatsD Exporter donne les métriques suivantes :
+- La liste des métriques est récupérable via la GUI des applis, avec les urls qui se terminent par `metrics` (voir cette [section](#Urls-des-GUIs)).
+
+- On peut aussi les récupération par cli (ainsi, les dumps des métriques sont présents dans le dossier `prometheus/available_metrics`) :
+
+```bash
+  curl http://localhost:9102/metrics > prometheus/available_metrics/metrics_statsd_exporter
+  curl http://localhost:9100/metrics > prometheus/available_metrics/metrics_node_exporter
+  curl http://localhost:9187/metrics > prometheus/available_metrics/metrics_postgres_exporter
+  curl http://localhost:8081/metrics > prometheus/available_metrics/metrics_cadvisor
+```
+
+TODO : refaire le fichier quand les DAGs seront figés
+- Notes :
+  - Il faut exécuter les DAGs pour voir apparaitre les commandes liés aux tâches des DAGs.
+  - Des NaN peuvent apparaissent s'il n’y a pas assez de données récentes dans la fenêtre de calcul du quantile summary.
+
+
+- Tous les métriques Airflow sont disponibles dans cette [doc](https://airflow.apache.org/docs/apache-airflow/stable/logging-monitoring/metrics.html).
+
+
+### Métriques de StatsD-Exporter
+
+- `StatsD-exporter` donne les métriques suivantes :
 
   - la durée de chaque tâche de DAG `DAG 1` et `DAG 2`
   - les métriques définies dans `statsd.yaml` (voir section suivante)
@@ -175,19 +213,11 @@ TODO : screenshot
 - Le lien suivant renvoie vers la liste des métriques avec un préfixe : [lien](readme_files/README_additional_notes.md#métriques-disponibles-de-statsd-exporter).
 
 
+### Personnalisation des mappings statsd
 
-### Définition de mappings avec `statsd.yaml`
+- A noter que le fichier de configuration `prometheus/statsd-mapping-configs.yaml` permet de définir des mappings à partir des métriques issues d'Airflow, avec la possibilité de modifier le nom de la requête promQL.
 
-- Un autre fichier de configuration `airflow/config/statsd.yaml` permet de définir des mappings à partir des métriques issues d'Airflow, avec la possibilité de modifier le nom de la requête promQL.
-
-- Ce dernier a été inspiré de ce [repo](https://github.com/databand-ai/airflow-dashboards/blob/main/statsd/statsd.conf), dont la plupart des mappings ne sont plus d'actualité car il s'agit certainement d'un fichier de conf qui a été fait pour Airflow 2.x, le fichier ayant été mis à jour la dernière fois le 25/03/2021, il y a 4 ans (au moment où sont rédigé ces lignes, Airflow 3.x n'a que quelques mois).
-
-  - Trois mappings valides sont conservés pour garder cette possibilité de paramétrer les mappings.
-
-    - Ils sont nommés de cette manière : `custom_[type]_[nom]` (`type` étant `counter`, `gauge`, `observer`).
-
-
-  - On peut vérifier que ce fichier est valide :
+  - On peut vérifier la validité du fichier avec la ligne de commande suivante :
 
 ```bash
     docker exec -it prometheus sh  # l'image de prometheus ne contient pas "bash"
@@ -199,64 +229,6 @@ TODO : screenshot
 
   - Pour vérifier la validité d'un mapping du fichier `airflow/config/statsd.yaml` : [lien](readme_files/README_additional_notes.md#vérifier-la-validité-dun-mapping-dans-statsdyaml).
 
-
-
-### Dump des métriques exposées par statsd-exporter
-
-- Ce dump donne le nom, type et valeurs actuelles des compteurs, jauges, résumés...
-
-- Il traduit la liste des commandes qu'on peut taper sur la barre `Expression` sur la [GUI de Prometheus](http://localhost:9092/graph?g0.expr=&g0.tab=1&g0.display_mode=lines&g0.show_exemplars=0&g0.range_input=1h).
-
-- Il est récupérable avec la commande suivante (par conséquent disponibles dans le fichier `grafana/available_metrics/metrics_statsd_exporter.md`).
-
-```bash
-  curl http://localhost:9102/metrics > grafana/available_metrics/metrics_statsd_exporter.md
-```
-TODO : refaire le fichier quand les DAGs seront figés
-
-  - Notes :
-    - Il faut exécuter les DAGs pour voir apparaitre les commandes liés aux tâches des DAGs.
-    - Des NaN peuvent apparaissent s'il n’y a pas assez de données récentes dans la fenêtre de calcul du quantile summary.
-
-
-- Tous les métriques Airflow sont disponibles dans cette [doc](https://airflow.apache.org/docs/apache-airflow/stable/logging-monitoring/metrics.html).
-
-
-## Node Exporter
-
-- Ce service permet la récupération de métriques intéressantes concernant la partie cpu, ram, disque, etc..., qu'on pourra exposer à travers un dashboard Grafana.
-
-
-### Dump des métriques exposées par node-exporter
-
-- Il est récupérable avec la commande suivante (par conséquent disponibles dans le fichier `grafana/available_metrics/metrics_node_exporter.md`).
-
-```bash
-  curl http://localhost:9100/metrics > grafana/available_metrics/metrics_node_exporter.md
-```
-
-## Postgres Exporter
-
-- Ce service permet la récupération de métriques intéressantes concernant la partie écriture dans les bases de données dont celle de `francetravail`, (... todo : à compléter), qu'on pourra exposer à travers un dashboard Grafana.
-
-
-### Dump des métriques exposées par postgres-exporter
-
-- Il est récupérable avec la commande suivante (par conséquent disponibles dans le fichier `grafana/available_metrics/metrics_postgres_exporter.md`).
-
-```bash
-  curl http://localhost:9187/metrics > grafana/available_metrics/metrics_postgres_exporter.md
-```
-
-## cAdvisor
-
-- Ce service permet d'analyser l'usage des ressources et les caractéristiques de performance des conteneurs docker en cours d'exécution.
-
-- Comme écrit dans cette [section](#Environnement), il est préférable `Docker CE dans WSL` au profit de `Docker Desktop`.
-
-- Exemple de requête PromQL qui renvoie les conteneurs docker :
-
-  <img src="readme_files/screenshots/prometheus_cadvisor.png" alt="cadvisor opérationnel" style="width:30%"/>
 
 
 # Grafana
