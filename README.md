@@ -50,9 +50,13 @@
 # Environnement
 
 - Développements et tests sous :
-  - Windows 11 + WSL Ubuntu 22.04
-    - Note importante : on n'utilise pas `Docker Desktop` mais `Docker CE dans WSL` car il y a un problème d'environnement avec WSL + Docker Desktop pour que `cadvisor` soit opérationnel (https://github.com/vacp2p/wakurtosis/issues/58)
-      - Voir section XXXXX pour la procédure sans `Docker Desktop`
+
+  - Windows 11 + WSL2 avec Ubuntu 22.04
+
+    - Note importante : on n'utilise pas `Docker Desktop` mais `Docker CE dans WSL` car `cadvisor` n'est pas opérationnel dans l'environnement WSL avec Ubuntu 22.04 + Docker Desktop.
+
+      - Voir [section](readme_files/README_additional_notes.md#Utilisation-de-Docker-CE-dans-WSL-pour-cAdvisor) pour les explications et pour la procudure d'installation de `Docker CE` dans WSL.
+
   - Environnement virtuel, Python 3.12.9 (février 2025)
 
 ## Services Docker

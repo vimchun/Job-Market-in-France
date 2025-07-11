@@ -7,106 +7,77 @@ Cette page complète la [page principale](../README.md).
 
 ### Versions testées
 
-Cette section montre comment retrouver les versions des différents services.
-
-
-```bash
-docker images --digests
-  ##==> REPOSITORY                         TAG         DIGEST                                                                    IMAGE ID       CREATED        SIZE
-  ##==> job_market-fastapi                 latest      sha256:00ce6647228ecf84b430f2f9cacc8e17a8b420c3472c766ce7bf5480a93fe755   00ce6647228e   38 hours ago   433MB
-  ##==> job_market-airflow-dag-processor   latest      sha256:a20386275c72f7ec18ecf90296ae4b6a5dac204d44f79f011f70a5699e9e15e3   a20386275c72   41 hours ago   2.8GB
-  ##==> job_market-airflow-apiserver       latest      sha256:47c2d256a4749916d431f38e9cb644f17ec2fd7ddd340deac0af8b9e80fd7f78   47c2d256a474   41 hours ago   2.8GB
-  ##==> job_market-airflow-triggerer       latest      sha256:1a85ae5afaeec22176a9cb572600684828b5f09f5928d8b316d99dfb08125a26   1a85ae5afaee   41 hours ago   2.8GB
-  ##==> job_market-airflow-scheduler       latest      sha256:e76c44a0985c768a7cfa86463312e3310b203633c7130e038ca9b271e43502ab   e76c44a0985c   41 hours ago   2.8GB
-  ##==> job_market-airflow-init            latest      sha256:356a9139712c224953130572a0cc66d18ea93c3552539cc78928f8ab80350c28   356a9139712c   41 hours ago   2.8GB
-  ##==> job_market-airflow-worker          latest      sha256:f44d36bb3b6fdc2d2b25b9bb6f3bef26c3d0cdf4d547ae73d575a12aafe6f8d5   f44d36bb3b6f   41 hours ago   2.8GB
-  ##==> prom/prometheus                    latest      sha256:7a34573f0b9c952286b33d537f233cd5b708e12263733aa646e50c33f598f16c   7a34573f0b9c   6 days ago     382MB
-  ##==> postgres                           16-alpine   sha256:ef2235fd13b6cb29728a98ee17862ff5c9b7d20515a9b34804da4a45062695f6   ef2235fd13b6   4 weeks ago    394MB
-  ##==> redis                              latest      sha256:b43d2dcbbdb1f9e1582e3a0f37e53bf79038522ccffb56a25858969d7a9b6c11   b43d2dcbbdb1   5 weeks ago    188MB
-  ##==> prom/statsd-exporter               latest      sha256:4e7a1f00b9b23ef0c5b4fdbb7f4748bdc218cfdff04acc8033bc5b9f7c15009d   4e7a1f00b9b2   8 months ago   33.4MB
-```
-
-#### FastAPI
+Cette section montre les commandes pour retrouver les versions des différents services.
 
 ```bash
-docker exec -it fastapi pip show fastapi
-  ##==> Name: fastapi
-  ##==> Version: 0.115.12
-  ##==> ...
-```
-
-#### Postgres
-
-```bash
-docker exec -it postgres postgres --version
-  ##==> postgres (PostgreSQL) 16.9
-```
-
-#### Redis
-
-```bash
-docker exec -it redis redis-server --version
-  ##==> Redis server v=8.0.2 sha=00000000:1 malloc=jemalloc-5.3.0 bits=64 build=e26b76554fc1ebea
-```
-
-#### Airflow
-
-Version défini dans le [Dockerfile](../airflow/Dockerfile)
+  docker images --digests
+    ##==> REPOSITORY                         TAG         DIGEST                                                                    IMAGE ID       CREATED        SIZE
+    ##==> job_market-fastapi                 latest      sha256:00ce6647228ecf84b430f2f9cacc8e17a8b420c3472c766ce7bf5480a93fe755   00ce6647228e   38 hours ago   433MB
+    ##==> job_market-airflow-dag-processor   latest      sha256:a20386275c72f7ec18ecf90296ae4b6a5dac204d44f79f011f70a5699e9e15e3   a20386275c72   41 hours ago   2.8GB
+    ##==> job_market-airflow-apiserver       latest      sha256:47c2d256a4749916d431f38e9cb644f17ec2fd7ddd340deac0af8b9e80fd7f78   47c2d256a474   41 hours ago   2.8GB
+    ##==> job_market-airflow-triggerer       latest      sha256:1a85ae5afaeec22176a9cb572600684828b5f09f5928d8b316d99dfb08125a26   1a85ae5afaee   41 hours ago   2.8GB
+    ##==> job_market-airflow-scheduler       latest      sha256:e76c44a0985c768a7cfa86463312e3310b203633c7130e038ca9b271e43502ab   e76c44a0985c   41 hours ago   2.8GB
+    ##==> job_market-airflow-init            latest      sha256:356a9139712c224953130572a0cc66d18ea93c3552539cc78928f8ab80350c28   356a9139712c   41 hours ago   2.8GB
+    ##==> job_market-airflow-worker          latest      sha256:f44d36bb3b6fdc2d2b25b9bb6f3bef26c3d0cdf4d547ae73d575a12aafe6f8d5   f44d36bb3b6f   41 hours ago   2.8GB
+    ##==> prom/prometheus                    latest      sha256:7a34573f0b9c952286b33d537f233cd5b708e12263733aa646e50c33f598f16c   7a34573f0b9c   6 days ago     382MB
+    ##==> postgres                           16-alpine   sha256:ef2235fd13b6cb29728a98ee17862ff5c9b7d20515a9b34804da4a45062695f6   ef2235fd13b6   4 weeks ago    394MB
+    ##==> redis                              latest      sha256:b43d2dcbbdb1f9e1582e3a0f37e53bf79038522ccffb56a25858969d7a9b6c11   b43d2dcbbdb1   5 weeks ago    188MB
+    ##==> prom/statsd-exporter               latest      sha256:4e7a1f00b9b23ef0c5b4fdbb7f4748bdc218cfdff04acc8033bc5b9f7c15009d   4e7a1f00b9b2   8 months ago   33.4MB
 
 
-#### Statsd-exporter
+  # FastAPI
+  docker exec -it fastapi pip show fastapi
+    ##==> Name: fastapi
+    ##==> Version: 0.115.12
+    ##==> ...
 
-```bash
-docker run --rm --entrypoint statsd_exporter prom/statsd-exporter --version
-  ##==> statsd_exporter, version 0.28.0 (branch: HEAD, revision: c0a390a2c43f77863278615b47d46e886bdca726)
-  ##==>   build user:       root@783240c1e627
-  ##==>   build date:       20241025-13:53:47
-  ##==>   go version:       go1.23.2
-  ##==>   platform:         linux/amd64
-  ##==>   tags:             unknown
-```
+  # Postgres
+  docker exec -it postgres postgres --version
+    ##==> postgres (PostgreSQL) 16.9
 
-#### Node-exporter
+  # Redis
+  docker exec -it redis redis-server --version
+    ##==> Redis server v=8.0.2 sha=00000000:1 malloc=jemalloc-5.3.0 bits=64 build=e26b76554fc1ebea
 
-```bash
-docker exec node-exporter node_exporter --version
-  ##==> node_exporter, version 1.9.1 (branch: HEAD, revision: f2ec547b49af53815038a50265aa2adcd1275959)
-  ##==>   build user:       root@7023beaa563a
-  ##==>   build date:       20250401-15:19:01
-  ##==>   go version:       go1.23.7
-  ##==>   platform:         linux/amd64
-  ##==>   tags:             unknown
-```
+  # Airflow
+  # Version défini dans le [Dockerfile](../airflow/Dockerfile)
 
-#### Postgres-exporter
+  # Statsd-exporter
+  docker run --rm --entrypoint statsd_exporter prom/statsd-exporter --version
+    ##==> statsd_exporter, version 0.28.0 (branch: HEAD, revision: c0a390a2c43f77863278615b47d46e886bdca726)
+    ##==>   build user:       root@783240c1e627
+    ##==>   build date:       20241025-13:53:47
+    ##==>   ...
 
-```bash
-docker exec postgres-exporter postgres_exporter --version
-##==> postgres_exporter, version 0.17.1 (branch: HEAD, revision: 1e574cf4fd2a75a8a707d424eafcaa0b88cb7af4)
-##==>   build user:       root@b0ba132eddb0
-##==>   build date:       20250226-13:53:15
-##==>   go version:       go1.23.6
-##==>   platform:         linux/amd64
-##==>   tags:             unknown
-```
+  # Node-exporter
+  docker exec node-exporter node_exporter --version
+    ##==> node_exporter, version 1.9.1 (branch: HEAD, revision: f2ec547b49af53815038a50265aa2adcd1275959)
+    ##==>   build user:       root@7023beaa563a
+    ##==>   build date:       20250401-15:19:01
+    ##==>   ...
 
-#### Prometheus
-
-```bash
-docker exec -it prometheus prometheus --version
-  ##==> prometheus, version 2.53.5 (branch: HEAD, revision: d344ea7bf4cc9e9e131a0318d10025982e9c4cc1)
-  ##==>   build user:       root@31e33add4c49
-  ##==>   build date:       20250630-10:18:05
+  # Postgres-exporter
+  docker exec postgres-exporter postgres_exporter --version
+  ##==> postgres_exporter, version 0.17.1 (branch: HEAD, revision: 1e574cf4fd2a75a8a707d424eafcaa0b88cb7af4)
+  ##==>   build user:       root@b0ba132eddb0
+  ##==>   build date:       20250226-13:53:15
   ##==>   ...
+
+  # cAdvisor
+  docker exec cadvisor /usr/bin/cadvisor --version
+  ##==> cAdvisor version v0.49.1 (6f3f25ba)
+
+  # Prometheus
+  docker exec -it prometheus prometheus --version
+    ##==> prometheus, version 2.53.5 (branch: HEAD, revision: d344ea7bf4cc9e9e131a0318d10025982e9c4cc1)
+    ##==>   build user:       root@31e33add4c49
+    ##==>   build date:       20250630-10:18:05
+    ##==>   ...
+
+  # Grafana
+  docker exec -it grafana grafana server -v
+    ##==> Version 12.0.2 (commit: 5bda17e7c1cb313eb96266f2fdda73a6b35c3977, branch: HEAD)
 ```
-
-#### Grafana
-
-```bash
-docker exec -it grafana grafana server -v
-  ##==> Version 12.0.2 (commit: 5bda17e7c1cb313eb96266f2fdda73a6b35c3977, branch: HEAD)
-```
-
 
 # Transformations des données en amont
 
@@ -936,3 +907,133 @@ Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6
 
 
 - Ces 2 dashboards ont été créés pour avoir une idée de quoi ressemblent ces métriques.
+
+
+# Utilisation de Docker CE dans WSL pour cAdvisor
+
+- Développant sur Windows 11 et WSL avec Ubuntu 22.04, pour que cAdvisor soit fonctionnel, il faut :
+
+  - Activer `docker CE` sur WSL :
+    - la procédure est décrite [ici](#Installer-et-utiliser-Docker-CE-dans-WSL).
+
+  - Désactiver `Docker Desktop` :
+    - dans la GUI : aller dans `Settings` > `Resources` > `WSL Integration`, et décocher `Enable integration with my default WSL distro` et tout autre case cochée concernant `Ubuntu-22.04`.
+
+
+## Pourquoi utiliser Docker CE
+
+- C'est pour avoir nativement un environnement Docker pur Linux, contrôlé par `systemd`, parfaitement compatible avec `cAdvisor`.
+
+- En effet, `cAdvisor` a notamment besoin pour fonctionner d'avoir accès à `/var/lib/docker/image/overlay2/layerdb/mounts/<conteneur_id>/mount-id`, sinon on a le problème décrit [ici](#Problème-avec-Docker-Desktop).
+  - Ce dossier existe nativement avec `Docker CE`.
+  - Ce dossier n'existe pas avec `Docker Destop` (si un dossier équivalent existait, on aurait pu faire un montage, mais ce n'est pas le cas sur `Ubuntu 22.04`).
+
+
+## Problème avec Docker Desktop
+
+- En utilisant `Docker Desktop` uniquement, tous les services Docker de ce projet sont fonctionnels sauf `cAdvisor`, qui affichent notamment les logs d'erreur suivants au démarrage :
+
+```bash
+  docker logs cadvisor
+  ##==> ...
+  ##==> E0709 23:59:51.210495       1 manager.go:1116] Failed to create existing container: /docker/5d59c6de7d670a827e0eec5751c77dbb805be1deacdde52fbdcd323a4360e6a8: failed to identify the read-write layer ID for container "5d59c6de7d670a827e0eec5751c77dbb805be1deacdde52fbdcd323a4360e6a8". - open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/5d59c6de7d670a827e0eec5751c77dbb805be1deacdde52fbdcd323a4360e6a8/mount-id: no such file or directory
+  ##==> E0709 23:59:51.237487       1 manager.go:1116] Failed to create existing container: /docker/3567368bffadb8d183ad3cd8cfc57e5cf9c8cde98853389d5ac7b05959b98ec7: failed to identify the read-write layer ID for container "3567368bffadb8d183ad3cd8cfc57e5cf9c8cde98853389d5ac7b05959b98ec7". - open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/3567368bffadb8d183ad3cd8cfc57e5cf9c8cde98853389d5ac7b05959b98ec7/mount-id: no such file or directory
+  ##==> ...
+```
+
+  - Le problème `open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/<conteneur_id>/mount-id: no such file or directory` avec `Docker Desktop` est connu et remonté à travers ce ticket : https://github.com/vacp2p/wakurtosis/issues/58.
+
+    - Pour le contourner, certaines forums proposent de faire un montage sur `\\wsl$\docker-desktop-data\data\docker` mais ce dossier n'existe pas sur la distribution `Ubuntu 22.04`, et faire un montage avec le dossier existant `\\wsl.localhost\docker-desktop\mnt\docker-desktop-disk\data\docker` ne fonctionne pas non plus car il n'y a pas le fichier `mount-id`.
+
+- La section [suivante](#Installer-et-utiliser-Docker-CE-dans-WSL) présente la procédure complète pour installer `Docker CE` dans WSL2 Ubuntu 22.04 avec systemd.
+
+
+## Installer et utiliser Docker CE dans WSL
+
+1. Activer systemd dans WSL2, puis redémarrer WSL avec PowerShell :
+
+```bash
+  vi /etc/wsl.conf
+  ##==> [boot]
+  ##==> systemd=true
+  ```
+```powershell
+  wsl --shutdown  # avec powershell
+  ```
+
+1. Vérifier que `systemd` fonctionne :
+
+```bash
+  systemctl --no-pager status user.slice
+  ##==> ● user.slice - User and Session Slice
+  ##==>      Loaded: loaded (/lib/systemd/system/user.slice; static)
+  ##==>      Active: active since Thu 2025-07-10 08:44:30 CEST; 1h 13min ago      <== systemd est "actif"
+  ##==>        ...
+  ```
+
+1. Installer Docker CE :
+
+```bash
+  # Installer les dépendances
+  sudo apt update
+  sudo apt install apt-transport-https ca-certificates curl gnupg lsb-release software-properties-common -y
+
+  # Ajouter la clé GPG officielle et le dépôt Docker
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+    https://download.docker.com/linux/ubuntu \
+    $(. /etc/os-release && echo $VERSION_CODENAME) stable" | \
+    sudo tee /etc/apt/sources.list.d/docker.list
+
+  # Mettre à jour et installer
+  sudo apt update
+  sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+```
+
+1. Corriger iptables pour une compatibilité avec WSL2 afin de permettre à Docker de démarrer correctement :
+
+```bash
+  # Ubuntu 22.04 utilise `nftables` par défaut, incompatible avec Docker sur WSL2, il faut basculer vers l'option `legacy` :
+  sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
+  sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+  ##==> update-alternatives: using /usr/sbin/iptables-legacy to provide /usr/sbin/iptables (iptables) in manual mode
+  ##==> update-alternatives: using /usr/sbin/ip6tables-legacy to provide /usr/sbin/ip6tables (ip6tables) in manual mode
+```
+
+1. Configuration de l'utilisateur :
+
+```bash
+# Ajouter l'utilisateur au groupe docker
+sudo usermod -aG docker $USER
+```
+
+```powershell
+  wsl --shutdown  # avec powershell
+  ```
+
+1. Activer et démarrer Docker au démarrage :
+
+```bash
+  # Activer le service Docker
+  sudo systemctl enable docker.service
+  ##==> Synchronizing state of docker.service with SysV service script with /lib/systemd/systemd-sysv-install.
+  ##==> Executing: /lib/systemd/systemd-sysv-install enable docker
+
+  # Vérifier le statut
+  systemctl status docker.service
+    ##==> ● docker.service - Docker Application Container Engine
+    ##==>      Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled)
+    ##==>      Active: active (running) since Thu 2025-07-10 10:07:48 CEST; 1min 18s ago             <== c'est bon
+    ##==>        ...
+```
+
+
+1. Désactiver la variable `DOCKER_HOST`, souvent utilisée pour pointer vers `Docker Desktop` :
+
+```bash
+  env | grep -i DOCKER_HOST
+  # il faut qu'il n'y ait rien de retourner
+```
+
+Si une ligne comme `DOCKER_HOST=tcp://localhost:2375` s'affiche, alors il faut faire `unset DOCKER_HOST`.
