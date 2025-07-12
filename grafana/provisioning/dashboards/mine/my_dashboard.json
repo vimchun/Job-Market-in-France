@@ -19,7 +19,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 44,
+  "id": 45,
   "links": [],
   "panels": [
     {
@@ -1546,12 +1546,12 @@
               }
             ]
           },
-          "unit": "ops"
+          "unit": "sishort"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 17,
+        "h": 12,
         "w": 21,
         "x": 0,
         "y": 40
@@ -1578,7 +1578,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(rate(pg_stat_database_tup_inserted{datname=~\"$datname\"}[5m])) >= 10",
+          "expr": "pg_stat_database_tup_inserted{datname=~\"$datname\"}",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "insert",
@@ -1591,7 +1591,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(rate(pg_stat_database_tup_updated{datname=~\"$datname\"}[5m])) >= 10",
+          "expr": "pg_stat_database_tup_updated{datname=~\"$datname\"}",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
@@ -1836,6 +1836,119 @@
       ],
       "title": "Current update data",
       "type": "stat"
+    },
+    {
+      "datasource": {
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ops"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 21,
+        "x": 0,
+        "y": 52
+      },
+      "id": 93,
+      "options": {
+        "dataLinks": [],
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(pg_stat_database_tup_inserted{datname=~\"$datname\"}[5m]))",
+          "format": "time_series",
+          "intervalFactor": 2,
+          "legendFormat": "insert",
+          "range": true,
+          "refId": "A",
+          "step": 2
+        },
+        {
+          "datasource": {
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "editorMode": "code",
+          "expr": "sum(rate(pg_stat_database_tup_updated{datname=~\"$datname\"}[5m]))",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 2,
+          "legendFormat": "update",
+          "range": true,
+          "refId": "B",
+          "step": 2
+        }
+      ],
+      "title": "Tuples inserts/updates",
+      "type": "timeseries"
     }
   ],
   "preload": false,
@@ -1992,5 +2105,5 @@
   "timezone": "",
   "title": "my_dashboard",
   "uid": "50911dd6-fce2-47da-a168-01857915246d",
-  "version": 7
+  "version": 1
 }
