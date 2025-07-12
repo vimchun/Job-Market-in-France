@@ -4,7 +4,7 @@ import os
 import shutil
 import time
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 import unidecode
@@ -1135,11 +1135,21 @@ def write_to_history_csv_file(aggregated_json_directory):
     return None
 
 
+# définition de paramètres liés au mécanisme de retry pour une tâche
+default_args = {
+    "retries": 5,  # nombre de tentatives de ré-exécution en cas d’échec d’une tâche
+    "retry_delay": timedelta(minutes=1),  # délai entre deux tentatives de retry (après un échec)
+    "retry_exponential_backoff": True,  # si True : le délai entre les retries augmente de façon exponentielle (ex: 2 min → 4 min → 8 min → ...)
+    "max_retry_delay": timedelta(minutes=5),  # délai maximum entre deux retries, même si activation de backoff exponentiel
+}
+
+
 with DAG(
     dag_id="DAG_1_ETL",
     schedule="30 19 * * *",  # exécution tous les jours à 21h30 (attention il faut prendre en compte un offset de +2h dans la gui)
     catchup=False,  # pour ne pas rattraper les exécutions manquées
     tags=["project"],
+    default_args=default_args,
 ):
     with TaskGroup(group_id="SETUP") as setup:
         with TaskGroup(group_id="check_files_in_folders") as check:
