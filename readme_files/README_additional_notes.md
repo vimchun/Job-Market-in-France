@@ -433,9 +433,63 @@ Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code
 
 - Voici la liste des métriques disponibles avec préfixe sans les détails ni les valeurs :
 
-  - 56 métriques préfixés par `airflow_*` :
+  - 50 métriques préfixés par `airflow_*` :
 
-    - `airflow_asset_orphaned`, `airflow_dag_processing_file_path_queue_size`, `airflow_dag_processing_file_path_queue_update_count`, `airflow_dag_processing_import_errors`, `airflow_dag_processing_processes`, `airflow_dag_processing_total_parse_time`, `airflow_dag_processor_heartbeat`, `airflow_dagbag_size`, `airflow_dagrun_dependency_check{quantile="xxx"}`, `airflow_dagrun_dependency_check_sum`, `airflow_dagrun_dependency_check_count`, `airflow_dagrun_duration_success{quantile="xxx"}`, `airflow_dagrun_duration_success_sum`, `airflow_dagrun_duration_success_count`, `airflow_executor_open_slots`, `airflow_executor_queued_tasks`, `airflow_executor_running_tasks`, `airflow_pool_deferred_slots`, `airflow_pool_deferred_slots_default_pool`, `airflow_pool_open_slots`, `airflow_pool_open_slots_default_pool`, `airflow_pool_queued_slots`, `airflow_pool_queued_slots_default_pool`, `airflow_pool_running_slots`, `airflow_pool_running_slots_default_pool`, `airflow_pool_scheduled_slots`, `airflow_pool_scheduled_slots_default_pool`, `airflow_pool_starving_tasks`, `airflow_pool_starving_tasks_default_pool`, `airflow_scheduler_critical_section_query_duration{quantile="xxx"}`, `airflow_scheduler_critical_section_query_duration_sum`, `airflow_scheduler_critical_section_query_duration_count`, `airflow_scheduler_heartbeat`, `airflow_scheduler_orphaned_tasks_adopted`, `airflow_scheduler_orphaned_tasks_cleared`, `airflow_scheduler_scheduler_loop_duration{quantile="xxx"}`, `airflow_scheduler_scheduler_loop_duration_sum`, `airflow_scheduler_scheduler_loop_duration_count`, `airflow_scheduler_tasks_executable`, `airflow_scheduler_tasks_starving`, `airflow_serde_load_serializers{quantile="xxx"}`, `airflow_serde_load_serializers_sum`, `airflow_serde_load_serializers_count`, `airflow_task_instance_created`, `airflow_task_instance_created_SQLExecuteQueryOperator`, `airflow_task_instance_created_TriggerDagRunOperator`, `airflow_task_instance_created__BranchPythonDecoratedOperator`, `airflow_task_instance_created__PythonDecoratedOperator`, `airflow_task_scheduled_duration{quantile="xxx"}`, `airflow_task_scheduled_duration_sum`, `airflow_task_scheduled_duration_count`, `airflow_ti_running`, `airflow_triggerer_capacity_left`, `airflow_triggerer_heartbeat`, `airflow_triggers_blocked_main_thread`, `airflow_triggers_running`
+    - Tous les métriques Airflow sont disponibles dans cette [doc](https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/logging-monitoring/metrics.html#metric-descriptions).
+
+    - Pour une raison que je n'ai pas réussi à comprendre, certaines métriques de ce dernier lien ne sont pas exposées par statsd-exporter (par exemple `dag.<dag_id>.<task_id>.duration` ou `task.duration`...).
+    - Voici la liste des métriques exposée par statsd-exporter avec le descriptif en anglais repris de la doc :
+
+      - `airflow_asset_orphaned` : Number of assets marked as orphans because they are no longer referenced in DAG schedule parameters or task outlets
+      - `airflow_dag_<dag_id>_<task_id>_scheduled_duration` : Milliseconds a task spends in the Scheduled state, before being Queued
+      - `airflow_dag_processing_file_path_queue_size` : Number of DAG files to be considered for the next scan
+      - `airflow_dag_processing_file_path_queue_update_count` : Number of times we’ve scanned the filesystem and queued all existing dags
+      - `airflow_dag_processing_import_errors` (utilisé dans grafana) : Number of errors from trying to parse DAG files
+      - `airflow_dag_processing_other_callback_count` : Number of non-SLA callbacks received
+      - `airflow_dag_processing_processes` : Relative number of currently running DAG parsing processes (ie this delta is negative when, since the last metric was sent, processes have completed). Metric with file_path and action tagging.
+      - `airflow_dag_processing_total_parse_time` : Seconds taken to scan and import dag_processing.file_path_queue_size DAG files
+      - `airflow_dag_processor_heartbeat` : Standalone DAG processor heartbeats
+      - `airflow_dagbag_size` (utilisé dans grafana) : Number of dags found when the scheduler ran a scan based on its configuration
+      - `airflow_dagrun_<dag_id>_first_task_scheduling_delay` : Milliseconds elapsed between first task start_date and dagrun expected start
+      - `airflow_dagrun_dependency-check_<dag_id>` : Milliseconds taken to check DAG dependencies
+      - `airflow_dagrun_dependency_check` : Milliseconds taken to check DAG dependencies. Metric with dag_id tagging.
+      - `airflow_dagrun_duration_failed_<dag_id>` : Milliseconds taken for a DagRun to reach failed state
+      - `airflow_dagrun_duration_failed` : Milliseconds taken for a DagRun to reach failed state. Metric with dag_id and run_type tagging.
+      - `airflow_dagrun_duration_success_<dag_id>` : Milliseconds taken for a DagRun to reach success state
+      - `airflow_dagrun_duration_success` : Milliseconds taken for a DagRun to reach success state. Metric with dag_id and run_type tagging.
+      - `airflow_dagrun_first_task_scheduling_delay` : Milliseconds elapsed between first task start_date and dagrun expected start. Metric with dag_id and run_type tagging.
+      - `airflow_executor_open_slots` : Number of open slots on executor
+      - `airflow_executor_queued_tasks` : Number of queued tasks on executor
+      - `airflow_executor_running_tasks` : Number of running tasks on executor
+      - `airflow_operator_failures_<operator_name>` : Operator <operator_name> failures
+      - `airflow_operator_failures` : Operator <operator_name> failures. Metric with operator_name tagging.
+      - `airflow_pool_deferred_slots` : Number of deferred slots in the pool. Metric with pool_name tagging.
+      - `airflow_pool_open_slots` : Number of open slots on executor
+      - `airflow_pool_queued_slots` : Number of queued slots in the pool. Metric with pool_name tagging.
+      - `airflow_pool_running_slots` : Number of running slots in the pool. Metric with pool_name tagging.
+      - `airflow_pool_scheduled_slots` : Number of scheduled slots in the pool. Metric with pool_name tagging.
+      - `airflow_pool_starving_tasks` : Number of starving tasks in the pool. Metric with pool_name tagging.
+      - `airflow_scheduler_critical_section_query_duration` : Milliseconds spent running the critical section task instance query
+      - `airflow_scheduler_heartbeat` : Scheduler heartbeats
+      - `airflow_scheduler_orphaned_tasks_adopted` : Number of Orphaned tasks adopted by the Scheduler
+      - `airflow_scheduler_orphaned_tasks_cleared` : Number of Orphaned tasks cleared by the Scheduler
+      - `airflow_scheduler_scheduler_loop_duration` : Milliseconds spent running one scheduler loop
+      - `airflow_scheduler_tasks_executable` : Number of tasks that are ready for execution (set to queued) with respect to pool limits, DAG concurrency, executor state, and priority.
+      - `airflow_scheduler_tasks_killed_externally` : Number of tasks killed externally. Metric with dag_id and task_id tagging.
+      - `airflow_scheduler_tasks_starving` : Number of tasks that cannot be scheduled because of no open slot in pool
+      - `airflow_schedulerjobrunner_end` : pas dans la doc ?
+      - `airflow_serde_load_serializers` : pas dans la doc ?
+      - `airflow_task_instance_created_<operator_name>` : Number of tasks instances created for a given Operator
+      - `airflow_task_instance_created` : Number of tasks instances created for a given Operator. Metric with dag_id and run_type tagging.
+      - `airflow_task_instances_without_heartbeats_killed` : Task instances without heartbeats killed. Metric with dag_id and task_id tagging.
+      - `airflow_task_scheduled_duration` : Milliseconds a task spends in the Scheduled state, before being Queued. Metric with dag_id and task_id tagging.
+      - `airflow_ti_failures` : Overall task instances failures. Metric with dag_id and task_id tagging.
+      - `airflow_ti_running_<queue>_<dag_id>_<task_id>` : Number of running tasks in a given dag. As ti.start and ti.finish can run out of sync this metric shows all running tis.
+      - `airflow_ti_running` : Number of running tasks in a given dag. As ti.start and ti.finish can run out of sync this metric shows all running tis. Metric with queue, dag_id and task_id tagging.
+      - `airflow_triggerer_capacity_left` : Capacity left on a triggerer to run triggers (described by hostname). Metric with hostname tagging.
+      - `airflow_triggerer_heartbeat` : Triggerer heartbeats
+      - `airflow_triggers_blocked_main_thread` : Number of triggers that blocked the main thread (likely due to not being fully asynchronous)
+      - `airflow_triggers_running` : Number of triggers currently running for a triggerer (described by hostname). Metric with hostname tagging.
 
   - 31 métriques préfixés par `go_*` :
 

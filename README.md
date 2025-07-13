@@ -198,9 +198,6 @@ TODO : refaire le fichier quand les DAGs seront figés
   - Des NaN peuvent apparaissent s'il n’y a pas assez de données récentes dans la fenêtre de calcul du quantile summary.
 
 
-- Tous les métriques Airflow sont disponibles dans cette [doc](https://airflow.apache.org/docs/apache-airflow/stable/logging-monitoring/metrics.html).
-
-
 ### Métriques de StatsD-Exporter
 
 - `StatsD-exporter` donne les métriques suivantes :
