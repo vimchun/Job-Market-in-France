@@ -19,7 +19,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 45,
+  "id": 10,
   "links": [],
   "panels": [
     {
@@ -29,6 +29,258 @@
         "w": 24,
         "x": 0,
         "y": 0
+      },
+      "id": 95,
+      "panels": [],
+      "title": "Target \"statsd-exporter\"",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 11,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 4,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "id": 97,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "airflow_dagrun_duration_success_DAG_1_ETL_count",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "DAG 1",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "editorMode": "code",
+          "expr": "airflow_dagrun_duration_success_DAG_2_WRITE_TO_DATABASE_count",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "DAG 2",
+          "range": true,
+          "refId": "C"
+        }
+      ],
+      "title": "DAG success count",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 0,
+        "y": 9
+      },
+      "id": 96,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "airflow_dagbag_size",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Nb of DAGs",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 3,
+        "y": 9
+      },
+      "id": 94,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "editorMode": "code",
+          "expr": "airflow_dag_processing_import_errors",
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "DAG import errors",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 13
       },
       "id": 84,
       "panels": [],
@@ -65,7 +317,7 @@
         "h": 3,
         "w": 3,
         "x": 2,
-        "y": 1
+        "y": 14
       },
       "id": 89,
       "options": {
@@ -162,7 +414,7 @@
         "h": 11,
         "w": 24,
         "x": 0,
-        "y": 4
+        "y": 17
       },
       "id": 85,
       "options": {
@@ -268,7 +520,7 @@
         "h": 11,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 28
       },
       "id": 86,
       "options": {
@@ -316,7 +568,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 26
+        "y": 39
       },
       "id": 83,
       "panels": [],
@@ -462,7 +714,7 @@
         "h": 6,
         "w": 9,
         "x": 0,
-        "y": 27
+        "y": 40
       },
       "id": 79,
       "options": {
@@ -598,7 +850,7 @@
         "h": 6,
         "w": 2,
         "x": 9,
-        "y": 27
+        "y": 40
       },
       "id": 73,
       "options": {
@@ -700,7 +952,7 @@
         "h": 6,
         "w": 4,
         "x": 11,
-        "y": 27
+        "y": 40
       },
       "id": 78,
       "options": {
@@ -811,7 +1063,7 @@
         "h": 6,
         "w": 9,
         "x": 15,
-        "y": 27
+        "y": 40
       },
       "id": 81,
       "options": {
@@ -988,7 +1240,7 @@
         "h": 6,
         "w": 9,
         "x": 0,
-        "y": 33
+        "y": 46
       },
       "id": 80,
       "options": {
@@ -1112,7 +1364,7 @@
         "h": 6,
         "w": 2,
         "x": 9,
-        "y": 33
+        "y": 46
       },
       "id": 71,
       "options": {
@@ -1186,7 +1438,7 @@
         "h": 2,
         "w": 2,
         "x": 11,
-        "y": 33
+        "y": 46
       },
       "id": 75,
       "maxDataPoints": 100,
@@ -1286,7 +1538,7 @@
         "h": 6,
         "w": 9,
         "x": 15,
-        "y": 33
+        "y": 46
       },
       "id": 82,
       "options": {
@@ -1361,7 +1613,7 @@
         "h": 2,
         "w": 2,
         "x": 12,
-        "y": 35
+        "y": 48
       },
       "id": 76,
       "maxDataPoints": 100,
@@ -1441,7 +1693,7 @@
         "h": 2,
         "w": 2,
         "x": 11,
-        "y": 37
+        "y": 50
       },
       "id": 77,
       "maxDataPoints": 100,
@@ -1484,7 +1736,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 39
+        "y": 52
       },
       "id": 72,
       "panels": [],
@@ -1554,7 +1806,7 @@
         "h": 12,
         "w": 21,
         "x": 0,
-        "y": 40
+        "y": 53
       },
       "id": 8,
       "options": {
@@ -1641,7 +1893,7 @@
         "h": 4,
         "w": 3,
         "x": 21,
-        "y": 40
+        "y": 53
       },
       "id": 36,
       "maxDataPoints": 100,
@@ -1718,7 +1970,7 @@
         "h": 4,
         "w": 3,
         "x": 21,
-        "y": 44
+        "y": 57
       },
       "id": 92,
       "maxDataPoints": 100,
@@ -1797,7 +2049,7 @@
         "h": 4,
         "w": 3,
         "x": 21,
-        "y": 48
+        "y": 61
       },
       "id": 91,
       "maxDataPoints": 100,
@@ -1900,7 +2152,7 @@
         "h": 12,
         "w": 21,
         "x": 0,
-        "y": 52
+        "y": 65
       },
       "id": 93,
       "options": {
@@ -2051,8 +2303,8 @@
       },
       {
         "current": {
-          "text": "711da5192533",
-          "value": "711da5192533"
+          "text": "ab5d179bb05b",
+          "value": "ab5d179bb05b"
         },
         "datasource": {
           "type": "prometheus",
@@ -2098,12 +2350,12 @@
     ]
   },
   "time": {
-    "from": "2025-07-12T12:21:04.918Z",
-    "to": "2025-07-12T14:04:14.318Z"
+    "from": "now-24h",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "my_dashboard",
-  "uid": "50911dd6-fce2-47da-a168-01857915246d",
-  "version": 1
+  "uid": "50911dd6-fce2-47da-a168-09857915246d",
+  "version": 3
 }
