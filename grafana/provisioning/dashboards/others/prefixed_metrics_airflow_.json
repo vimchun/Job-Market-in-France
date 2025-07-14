@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 6,
+  "id": 13,
   "links": [],
   "panels": [
     {
@@ -5409,12 +5409,12 @@
     "list": []
   },
   "time": {
-    "from": "2025-07-06T21:08:01.586Z",
-    "to": "2025-07-06T21:32:18.279Z"
+    "from": "now-24h",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "airflow_",
+  "title": "prefixed_metrics_airflow_",
   "uid": "a217a195-2cca-42e2-8dfa-a8c7b4709a76",
-  "version": 9
+  "version": 1
 }

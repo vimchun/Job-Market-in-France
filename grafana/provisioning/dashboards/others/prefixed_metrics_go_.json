@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 4,
+  "id": 14,
   "links": [],
   "panels": [
     {
@@ -2974,12 +2974,12 @@
     "list": []
   },
   "time": {
-    "from": "2025-07-06T20:01:04.996Z",
-    "to": "2025-07-06T20:08:37.244Z"
+    "from": "now-24h",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "go_",
+  "title": "prefixed_metrics_go_",
   "uid": "3c508255-8c23-4ae7-938a-f62e6c09dd50",
-  "version": 9
+  "version": 1
 }
