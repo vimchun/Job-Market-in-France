@@ -17,34 +17,36 @@
   - monitoring avec Prometheus et Grafana
 
 
-- Pour ne pas surcharger cette page principale, une autre page avec des informations supplémentaires est disponible [ici](readme_files/README_additional_notes.md).
+- Pour ne pas surcharger cette page principale, une autre page avec des informations supplémentaires moins importantes est disponible [ici](readme_files/README_additional_notes.md).
 
 
-- Le plan suivant présente un plan logique plutôt que de présenter les étapes qui ont été effectuées par ordre chronologique :
-
-
-## Sommaire
-
-  todo : toc
-
-
-# Slideshow
+## Slideshow
 
 - Voici un aperçu du projet :
 
   todo : un gif peut être pas mal
 
 
-# Compétences techniques
+## Compétences techniques
 
-| Domaine                          | Outils & Technologies                      |
-| -------------------------------- | ------------------------------------------ |
-| Langages & programmation         | `Python`, `SQL`, `Bash`/`Linux`, `FastAPI` |
-| Pipeline ETL/ELT & orchestration | `Apache Airflow`                           |
-| Containerisation & versioning    | `Docker`, `Git`                            |
-| Monitoring                       | `Prometheus`, `Grafana`                    |
-| Data Visualisation               | `Power BI`                                 |
-| Modélisation & architecture      | `UML`                                      |
+- Les compétences travaillées sur ce projet sont les suivantes :
+
+  | Domaine                          | Outils & Technologies                      |
+  | -------------------------------- | ------------------------------------------ |
+  | Langages & programmation         | `Python`, `SQL`, `Bash`/`Linux`, `FastAPI` |
+  | Pipeline ETL/ELT & orchestration | `Apache Airflow 3.0`                       |
+  | Containerisation & versioning    | `Docker`, `Git`                            |
+  | Monitoring                       | `Prometheus`, `Grafana`                    |
+  | Data Visualisation               | `Power BI`                                 |
+  | Modélisation & architecture      | `UML`                                      |
+
+
+## Sommaire
+
+- Le plan suivant présente un plan logique plutôt que de présenter les étapes qui ont été effectuées par ordre chronologique :
+
+  todo : toc
+
 
 
 # Environnement
@@ -59,15 +61,17 @@
 
   - Environnement virtuel, Python 3.12.9 (février 2025)
 
+
 ## Services Docker
 
 ### Schéma
 
 + Screenshot environnement avec les différents services Docker
 
+
 ### Versions testées
 
-- Le ficher `docker-compose.yml` ne spécifiant pas les versions pour les différents services (tag latest par défaut), il est important de noter les versions des services de l'écosystème.
+- Le ficher `docker-compose.yml` ne spécifiant pas les versions pour les différents services (tag `latest` par défaut), il est important de noter les versions des services de l'écosystème.
 
 - Ce [lien](readme_files/README_additional_notes.md#versions-testées) donne les commandes permettant de récupérer les versions.
 
@@ -92,18 +96,19 @@
 - Avoir le projet en local :
 
 ```bash
-  # TODO : commande clone ?
+  git clone git@github.com:vimchun/Job-Market-in-France.git
 ```
 
-- Avoir la configuration docker :
+- Si environnement Windows + WSL, utiliser `Docker CE` dans WSL, plutôt qu'utiliser `Docker Desktop` (voir cette [procédure](readme_files/README_additional_notes.md#Installer-et-utiliser-Docker-CE-dans-WSL))
+
+
+- Avoir les services Docker qui tournent :
 
 ```bash
-  # Pour initialiser Airflow et démarrer les services docker :
-  #  (peut prendre du temps à avoir les services fonctionnels)
-  ./scripts/docker_compose_down_up.sh
+  # Pour initialiser Airflow et démarrer tous les services docker (peut prendre quelques minutes pour que les services soient fonctionnels)
+  ./scripts/docker_compose_down_up.sh true true
 
-
-  # Pour redémarrer tous les services
+  # Si besoin de redémarrer tous les services
   ./scripts/restart_all_docker_services.sh
   ```
 
@@ -123,174 +128,26 @@
   - L'état des targets doit être à `UP`, voir le screenshot de cette [section](#Configuration-de-Prometheus).
 
 
-# Urls des GUIs
+## Urls des GUIs
 
 (todo : + screenshots)
 
-| Application       | Url                                                    |
-| ----------------- | ------------------------------------------------------ |
-| FastAPI           | http://localhost:8000/docs                             |
-| Airflow           | http://localhost:8080/                                 |
-| StatsD Exporter   | http://localhost:9102/ + http://localhost:9102/metrics |
-| Node Exporter     | http://localhost:9100/ + http://localhost:9100/metrics |
-| Postgres Exporter | http://localhost:9187/ + http://localhost:9187/metrics |
-| cAdvisor          | http://localhost:8081/ + http://localhost:8081/metrics |
-| Prometheus        | http://localhost:9092/ + http://localhost:9092/metrics |
-| Grafana           | http://localhost:3000/                                 |
+  | Application       | Url                                                    |
+  | ----------------- | ------------------------------------------------------ |
+  | FastAPI           | http://localhost:8000/docs                             |
+  | Airflow           | http://localhost:8080/                                 |
+  | StatsD Exporter   | http://localhost:9102/ + http://localhost:9102/metrics |
+  | Node Exporter     | http://localhost:9100/ + http://localhost:9100/metrics |
+  | Postgres Exporter | http://localhost:9187/ + http://localhost:9187/metrics |
+  | cAdvisor          | http://localhost:8081/ + http://localhost:8081/metrics |
+  | Prometheus        | http://localhost:9092/ + http://localhost:9092/metrics |
+  | Grafana           | http://localhost:3000/                                 |
 
 
-# Prometheus
 
-## Configuration de Prometheus
+## Arborescence des fichiers du projet
 
-- La section `scrape_configs` du fichier de configuration `prometheus/prometheus.yaml` définit les `targets` des différents services à surveiller : `statsd-exporter`, `node-exporter`, `postgres-exporter` et `cadvisor`.
-
-- Lorsqu'on se connecte sur la [GUI](http://localhost:9092/) de Prometheus, on doit voir que l'état de chaque target est à `UP`, comme le montre dans le screenshot suivant :
-
-  <img src="readme_files/screenshots/prometheus_targets.png" alt="prometheus targets" style="width:60%"/>
-
-
-## Configuration Docker pour cAdvisor
-
-- Comme écrit dans cette [section](#Environnement), il est préférable `Docker CE dans WSL` au profit de `Docker Desktop`.
-
-- Exemple de requête PromQL qui renvoie les conteneurs docker :
-
-  <img src="readme_files/screenshots/prometheus_cadvisor.png" alt="cadvisor opérationnel" style="width:30%"/>
-
-
-
-## Métriques exposées par les différents services
-
-- Les métriques citées ci-dessous traduisent la liste des commandes qu'on peut taper sur la barre `Expression` sur la [GUI de Prometheus](http://localhost:9092/graph).
-
-### Utilité
-
-todo : à remplir
-
-- `StatsD` est un collecteur de métriques qui permet à Airflow d'envoyer des données sous forme de métriques formatées en StatsD, et de les exposer via un `statsd-exporter` configuré pour Prometheus.
-
-- `Statsd-exporter` ...
-
-- `Node-exporter` service permet la récupération de métriques intéressantes concernant la partie cpu, ram, disque, etc..., qu'on pourra exposer à travers un dashboard Grafana.
-
-- `Postgres-exporter` permet la récupération de métriques intéressantes concernant la partie écriture dans les bases de données dont celle de `francetravail`, (... todo : à compléter), qu'on pourra exposer à travers un dashboard Grafana.
-
-- `cAdvisor` permet d'analyser l'usage des ressources et les caractéristiques de performance des conteneurs docker en cours d'exécution.
-
-
-### Dump des métriques
-
-- La liste des métriques est récupérable via la GUI des applis, avec les urls qui se terminent par `metrics` (voir cette [section](#Urls-des-GUIs)).
-
-- On peut aussi les récupération par cli (ainsi, les dumps des métriques sont présents dans le dossier `prometheus/available_metrics`) :
-
-```bash
-  curl http://localhost:9102/metrics > prometheus/available_metrics/metrics_statsd_exporter
-  curl http://localhost:9100/metrics > prometheus/available_metrics/metrics_node_exporter
-  curl http://localhost:9187/metrics > prometheus/available_metrics/metrics_postgres_exporter
-  curl http://localhost:8081/metrics > prometheus/available_metrics/metrics_cadvisor
-```
-
-TODO : refaire le fichier quand les DAGs seront figés
-- Notes :
-  - Il faut exécuter les DAGs pour voir apparaitre les commandes liés aux tâches des DAGs.
-  - Des NaN peuvent apparaissent s'il n’y a pas assez de données récentes dans la fenêtre de calcul du quantile summary.
-
-
-### Métriques de StatsD-Exporter
-
-- `StatsD-exporter` donne les métriques suivantes :
-
-  - la durée de chaque tâche de DAG `DAG 1` et `DAG 2`
-  - les métriques définies dans `statsd.yaml` (voir section suivante)
-  - 56 métriques préfixés par `airflow_*`
-  - 31 métriques préfixés par `go_*`
-  - 9 métriques préfixés par `process_*`
-  - 4 métriques préfixés par `promhttp_*`
-  - 24 métriques préfixés par `statsd_*`
-
-
-- Le lien suivant renvoie vers la liste des métriques avec un préfixe : [lien](readme_files/README_additional_notes.md#métriques-disponibles-de-statsd-exporter).
-
-
-### Personnalisation des mappings statsd
-
-- A noter que le fichier de configuration `prometheus/statsd-mapping-configs.yaml` permet de définir des mappings à partir des métriques issues d'Airflow, avec la possibilité de modifier le nom de la requête promQL.
-
-  - On peut vérifier la validité du fichier avec la ligne de commande suivante :
-
-```bash
-    docker exec -it prometheus sh  # l'image de prometheus ne contient pas "bash"
-
-    /prometheus $ promtool check config /etc/prometheus/prometheus.yaml
-    ##==> Checking /etc/prometheus/prometheus.yaml
-    ##==>  SUCCESS: /etc/prometheus/prometheus.yaml is valid prometheus config file syntax
-```
-
-  - Pour vérifier la validité d'un mapping du fichier `airflow/config/statsd.yaml` : [lien](readme_files/README_additional_notes.md#vérifier-la-validité-dun-mapping-dans-statsdyaml).
-
-
-
-# Grafana
-
-## Configuration automatique après installation
-
-- Après (ré)installation, la datasource `Prometheus` est crée automatiquement grâce au fichier `grafana/volumes/provisioning/datasources/datasources.yml` qui est copié dans `/grafana/provisioning/datasources/datasources.yml` grâce au montage de volume, comme montré ici :
-
-  <img src="readme_files/screenshots/grafana_datasource_prometheus.png" alt="datasource Prometheus dans Grafana" style="width:30%"/>
-
-- Les dashboards placés dans `grafana/volumes/provisioning/dashboards/` sont également importés automatiquement.
-
-
-todo : mettre screenshots quand ca sera bon
-
-
-## Dashboards
-
-### Import automatique après installation
-
-- Les dashboards (.json) peuvent être déposés dans `grafana/volumes/provisioning/dashboards`, dossier monté dans le conteneur `grafana` sous `/grafana/provisioning/dashboards`.
-
-- Ceci est défini dans le fichier de configuration `grafana/volumes/provisioning/dashboards/providers.yml`, qui contient également `foldersFromFilesStructure: true`, qui permet de retrouver dans la GUI de Grafana la même architecture de dossier que dans `grafana/volumes/provisioning/dashboards`.
-
-  todo : screenshot archi dossier vs dossier grafana
-
-- Pour que Grafana recharge le contenu du dossier, on peut simplement redémarrer le conteneur : `docker compose restart grafana`.
-
-
-### Dashboards téléchargés
-
-- Le [site de Grafana](https://grafana.com/grafana/dashboards/) propose des dashboards téléchargeables, publiés par la communauté ou par `Grafana Labs`.
-
-  - [1860-node-exporter-full](https://grafana.com/grafana/dashboards/1860-node-exporter-full/) fournit un dashboard pour le node-exporter, disponible sous `grafana/volumes/provisioning/dashboards/1860_node-exporter-full_rev41.json` :
-
-    <img src="readme_files/screenshots/grafana/dashboard_node_exporter_during_dag_execution.png" alt="dashboard node-exporter pendant exécution d'un dag" style="width:100%"/>
-
-
-  - [9628-postgres-exporter](https://grafana.com/grafana/dashboards/9628-postgresql-database/) fournit un dashboard pour le postgres-exporter, disponible sous `grafana/volumes/provisioning/dashboards/9628_postgres-exporter_rev8.json` :
-
-    <img src="readme_files/screenshots/grafana/dashboard_postgres_exporter.png" alt="dashboard postgres-exporter" style="width:100%"/>
-
-
-### Dashboards créés
-
-#### Mon dashboard
-
-- Le dashboard `my dashboard` (`grafana/provisioning/dashboards/mine/my_dashboard.json`) contient uniquement des visualisations jugées utiles.
-
-  - Il reprend des visualisations de `1860_node-exporter-full_rev41.json` (122 panels) et de `9628_postgres-exporter_rev8.json` (32 panels).
-
-
-
-#### Dashboard avec les métriques préfixées
-
-- Deux dashboards avec les 56 métriques préfixés par `airflow_*` et les 31 métriques préfixés par `go_*` ont été créés à but informatif, plus de détails [ici](readme_files/README_additional_notes.md#métriques-avec-préfixes).
-
-
-# Arborescence des fichiers du projet
-
-## Sans la partie liée à la conf Docker
+### Sans la partie liée à la conf Docker
 
 ```bash
   .
@@ -313,17 +170,19 @@ todo : mettre screenshots quand ca sera bon
   │   ├── sql_requests/                # requêtes SQL utilisées par le script fastapi
   │   └── main.py                      # script fastapi
   │  
-  ├── grafana/                         # contient le fichier .pbix
-  │   ├── available_metrics/           # donne les métriques exposées relatives à (node|postgres|statsd)_exporter
+  ├── grafana/
   │   └── provisioning/
   │       ├── dashboards/              # contient un fichier de conf permettant notamment de ranger les dashboards dans leur dossier dans la GUI
-  │       │   ├── downloaded/          # contient les dashboards téléchargés sur le site de grafana
-  │       │   └── prefixed_metrics/    # contient les dashboards avec les métriques préfixées par "airflow_" et "go_"
+  │       │   ├── mine/                # contient mon dashboard
+  │       │   └── others/              # contient des dashboards téléchargés sur le site de grafana, et des dashboards avec les métriques préfixées par "airflow_" et "go_"
   │       └── datasources/             # contient un fichier de conf qui permet la création du datasource "Prometheus"
   │  
   ├── power_bi/                        # contient le fichier .pbix
   │  
-  ├── prometheus/                      # contient des fichiers de conf
+  ├── prometheus/
+  │   ├── available_metrics/           # donne les métriques exposées relatives à (node|postgres|statsd)_exporter
+  │   ├── prometheus.yaml              # fichier de conf
+  │   └── statsd-mapping-configs.yaml  # fichier de conf
   │  
   ├── readme_files/                    # contient `README_additional_notes.md` et d'autres fichiers (screenshots...)
   │  
@@ -339,22 +198,22 @@ todo : mettre screenshots quand ca sera bon
   ```
 
 
-## Avec seulement la configuration Docker
+### Avec seulement la configuration Docker
 
 ```bash
   .
-  ├── airflow/                         # application Airflow
+  ├── airflow/
   │   ├── requirements.txt             # dépendances nécessaires pour le Dockerfile
   │   └── Dockerfile                   # construction du conteneur Airflow
   │  
-  ├── fastapi/                         # application FastAPI
+  ├── fastapi/
   │   ├── requirements.txt             # dépendances nécessaires pour le Dockerfile
   │   └── Dockerfile                   # construction du conteneur FastAPI
   │  
   └── docker-compose.yml               # orchestration docker pour postgres + fastapi + les services Airflow
   ```
 
-### Docker compose
+## Docker compose
 
 - Le fichier `docker-compose.yml` décrit les différents services déployés :
 
@@ -372,12 +231,14 @@ todo : mettre screenshots quand ca sera bon
   - `statsd-exporter`,
   - `node-exporter`,
   - `postgres-exporter`,
+  - `cAdvisor`,
   - `prometheus`,
   - `grafana`
 
+
 ## Configuration Fastapi
 
-- Le `docker-compose.yml` décrit des montages de volumes pour ne pas avoir à redémarrer le docker-compose après chaque modification de fichiers sql, par exemple.
+- Le `docker-compose.yml` décrit des montages de volumes pour ne pas avoir à redémarrer le `docker compose` après chaque modification de fichiers sql, par exemple.
 
 - A noter pour le `Dockerfile` :
 
@@ -390,11 +251,190 @@ todo : mettre screenshots quand ca sera bon
 
 
 
+# Extraction des données par API
+
+- France Travail (https://francetravail.io/data/api) met à disposition plusieurs APIs, dont "Offres d'emploi v2" (`GET https://api.francetravail.io/partenaire/offresdemploi`).
+
+- Le endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/offres/search` permet de récupérer les offres d'emploi actuelles selon plusieurs paramètres dont :
+
+  - le code des appellations ROME pour filtrer par métier (codes récupérés à partir du endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/appellations`) :
+
+    ```jsonc
+    { "code": "38971",  "libelle": "Data_Analyst" },
+    { "code": "38972",  "libelle": "Data_Scientist" },
+    { "code": "404278", "libelle": "Data_Engineer" },
+    { "code": "38975",  "libelle": "Data_Manager" },
+    ...
+    ```
+
+  - le code des pays (codes récupérés à partir du endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/pays`) :
+
+    ```jsonc
+    { "code": "01", "libelle": "France" },     // inclut les offres en France d'outre-mer et en Corse
+    { "code": "02", "libelle": "Allemagne" },  // les pays étrangers ne retournent malheureusement pas d'offre sur les métiers à analyser
+    ...
+    ```
+
+  - le paramètre `range` qui limite les résultats à 150 offres par requête (avec un status code à `206` si une requête renvoie plus de 150 offres), sachant que l'API ne permet de récupérer que 3150 offres au maximum par appellation ROME.
+
+    - Ainsi, si une requête renvoit 351 offres, il faut enchainer 3 requêtes pour obtenir toutes les offres (la première requête donne les offres `0-149` (status code 206), la deuxième donne les offres `150-299` (status code 206), et la troisième donne les offres `300-350` (status code 200)).
+
+
+- Cet API retourne des offres d'emploi sous forme de documents json avec énormément d'attributs dont l'identifiant de l'offre, son intitulé, sa description, le lieu de travail, des informations sur l'entreprise et sur le contrat, les compétences demandées et l'expérience nécessaires, etc...
+
+- Toutefois, l'API retourne aussi énormément d'offres sans lien avec le métier renseigné en paramètre (par exemple, une requête renseignant l'appellation `Data Engineer` peut renvoyer une offre telle que `Product Owner` car les termes `Data Engineer` peuvent être présents dans la description de l'offre d'emploi).
+
+- On va requêter ainsi un large panel de métiers, dont 29 ayant un lien avec la data, et 32 ayant un lien avec les métiers de la tech (dev, sécurité, devops...), pour maximiser les chances d'obtenir le plus d'offres d'emploi ayant un lien avec les métiers `DE`, `DA` et `DS`, et aussi pour avoir une base de données plus conséquente.
+
+  - En effet, des offres de `Data Engineer` peuvent être présentes en requêtant l'appellation `Data Manager` par exemple.
+
+- On obtient finalement 61 fichiers json contenant toutes les offres d'emploi liées ou pas à la data, pour la France et DOM-TOM uniquement, l'API de France Travail ne renvoyant quasiment pas d'offre d'emploi pour les autres pays.
+
+- Plusieurs transformations seront effectuées par la suite : [voir ici](#transformations-des-données-en-amont-côté-python).
+
+
+- Notes :
+
+  - Les paramètres liés aux dates (`minCreationDate`, `maxCreationDate`, `publieeDepuis`) ne permettent pas d'obtenir des offres expirées (par exemple celles qui ont permis de recruter quelqu'un).
+
+  - Les offres d'emploi retournées peuvent provenir soit de `FRANCE TRAVAIL`, soit des `partenaires` (par exemple `CADREMPLOI`, `DIRECTEMPLOI`, `INDEED`, etc...)
+
+
+## Pas d'autre source de données ?
+
+- Il existe de multiples sources de données sur les offres d'emploi (par exemple : `The Muse` ou `Adzuna`).
+
+- Les raisons pour lesquelles on ne garde que la source de `France Travail` sont les suivantes :
+
+  - ~60 attributs pour chaque offre d'emploi récupérée chez `France Travail` vs -10 chez `The Muse` ou `Adzuna`
+
+  - impossible de traiter si une même offre est disponible entre deux sources (identifiant différent, url différent), donc impossible de merger les offres venant de ces différentes sources, sauf si avoir des doublons n'est pas un problème, ce qui n'est pas le cas sur ce projet où on se focalisera sur un jeu de données propre sans doublon.
+
+
+
+# Transformations des données
+
+## Transformations des données en amont (côté Python)
+
+Ces transformations sont faites dans le `DAG 1`, faites via Python et en amont du chargement dans la base Postgres :
+
+  - Concaténation des 61 fichiers json dans un seul fichier json, avec suppression des doublons
+
+  - Conservation des offres en France Métropolitaine uniquement, [détails ici](readme_files/README_additional_notes.md#conservation-des-offres-en-France-Métropolitaine-uniquement).
+
+  - Ajout des attributs de localisation des offres (noms et codes des villes, départements, départements et régions), [détails ici](readme_files/README_additional_notes.md#attributs-de-localisation-des-offres-noms-et-codes-des-villes-communes-départements-et-régions).
+
+  - Ajout des attributs `date_premiere_ecriture` et `date_extraction` :
+
+    - `date_extraction` aura la date du jour à laquelle le `DAG 1` a été lancé,
+    - `date_premiere_ecriture` aura la date du jour pour toutes les nouvelles offres, mais prendra les anciennes valeurs pour les anciennes offres.
+
+
+
+## Transformations des données en aval (côté SQL)
+
+Ces transformations sont faites dans le `DAG 2`, faites via des requêtes SQL et effectuées en aval de l'écriture dans la base Postgres :
+
+  - pour créer et écrire l'attribut `metier_data` : pour chaque offre, on comparera l'attribut `intitule_offre` avec des regex afin de déterminer s'il s'agit d'une offre pour un `Data Engineer`, un `Data Analyst`, ou un `Data Scientist`.
+
+    - [détails ici](readme_files/README_additional_notes.md#attribut-metier_data)
+
+  - pour créer et écrire les attributs `salaire_min` et `salaire_max` en fonction d'un algorithme expliqué
+
+    - [détails ici](readme_files/README_additional_notes.md#attributs-salaire_min-et-salaire_max)
+
+
+
+# Chargement des données dans une base de données relationnelle
+
+- L'API de France Travail contient beaucoup d'attibuts pour une offre d'emploi, qui seront quasiment tous exploités par la suite.
+
+  - Seuls les attributs liés aux `contacts` et aux `agences` ne seront pas conservés, n'apportant pas d'utilité.
+
+
+- Pour la suite, une modélisation `snowflake` est utilisée, dont le diagramme UML est le suivant :
+
+  <img src="readme_files/screenshots/UML.png" alt="diagramme" style="width:100%"/>
+
+  TODO : justifier ce choix
+
+- Le SGBD `PostgreSQL` sera utilisé :
+
+  - Performant, sa fiable et sa flexible.
+  - Offre une grande transparence et une forte extensibilité, en tant que solution open source.
+  - Prend en charge des types de données complexes, respecte les principes ACID et bénéficie d’une communauté active assurant une évolution continue.
+
+- La base de données `francetravail` sera hébergée dans le conteneur Docker exécutant le service PostgreSQL.
+
+- Les données issues du json généré avec le `DAG 1` seront récupérées et écrites en base avec la librairie `psycopg2`.
+
+
+## Mise à jour de la base de données après récupération de nouvelles offres
+
+- Une offre d'emploi peut être mise à jour, et voir par exemple la valeur d'un de ses attributs modifiée.
+
+- Il faut gérer ce cas et mettre à jour la base de données en écrasant l'ancienne valeur d'un attribut avec sa nouvelle valeur.
+
+- Par exemple, on peut avoir une offre avec un `experience_libelle` passer de `expérience exigée de 3 an(s)` à `débutant accepté`.
+
+- Même chose pour d'autres attributs.
+
+- Pour gérer cela, l'attribut `date_extraction` est écrit dans toutes les tables de liaison.
+
+- Ainsi, pour une offre, si un attribut d'une table de dimension associé à la table de liaison a évolué, alors on ne conservera que l'offre avec `date_extraction` le plus récent.
+
+- Plus de détails [ici](readme_files/README_additional_notes.md#mise-à-jour-de-la-base-de-données-après-récupération-de-nouvelles-offres).
+
+
+
+# Data Viz avec Power BI
+
+- Power BI servira ici pour la data visualisation.
+
+
+## Manipulations
+
+- Ci-dessous des liens expliquant les différentes manipulations faites pour :
+
+  - [connecter Power BI avec la db postgres](readme_files/README_additional_notes.md#connexion-avec-la-db)
+
+  - [modifier le Model view](readme_files/README_additional_notes.md#model-view)
+
+  - [modifier le Table view](readme_files/README_additional_notes.md#table-view)
+
+  - [faire les transformations](readme_files/README_additional_notes.md#transformations)
+
+
+## Fichier .pbix
+
+- Sauvegarder petit fichier, puis charger pour gain de place et ouvrir le fichier plus facilement ?
+
+
+## Screenshots des rapports
+
+TODO : faire à la fin du projet
+
+
+
+# Création d'une API pour la db
+
+- L'utilité peut par exemple être de requêter la base de données `francetravail` à travers l'interface OpenAPI (ex-swagger) pour récupérer certaines informations.
+
+- Utilisation de `FastAPI`.
+
+- Pour les réponses, on utilisera la librairie `tabulate` avec `media_type="text/plain"` pour afficher un tableau qui facilitera la lecture, et qui diminuera le nombre de lignes des réponses.
+
+
+## Screenshots
+
+TODO : faire à la fin du projet
+
+
 # Workflow du projet avec Airflow
 
 ## Avant Airflow
 
-- Avant d'appliquer Airflow au projet, 2 scripts python étaient nécessaires.
+- Avant d'appliquer Airflow au projet, deux scripts python étaient exécutées.
 - Pour résumer et simplifier ce qu'ils faisaient ("simplifier" ici car ces scripts ont été remplacés par des DAGs qu'on détaillera après) :
   - Le premier récupérait les données de France Travail, faisait des transformations, et chargeait les offres d'emploi dans un json.
   - Le second lisait le json puis écrivait les offres d'emploi dans la base de données, et effectuait un deuxième lot de transformations à partir de fichier sql.
@@ -656,168 +696,150 @@ Plusieurs `SQLExecuteQueryOperator()` qui exécutent séquentiellement les tâch
 
 
 
-# Extraction des données par API
 
-- France Travail (https://francetravail.io/data/api) met à disposition plusieurs APIs, dont "Offres d'emploi v2" (`GET https://api.francetravail.io/partenaire/offresdemploi`).
+# Prometheus
 
-- Le endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/offres/search` permet de récupérer les offres d'emploi actuelles selon plusieurs paramètres dont :
+## Configuration de Prometheus
 
-  - le code des appellations ROME pour filtrer par métier (codes récupérés à partir du endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/appellations`) :
+- La section `scrape_configs` du fichier de configuration `prometheus/prometheus.yaml` définit les `targets` des différents services à surveiller : `statsd-exporter`, `node-exporter`, `postgres-exporter` et `cadvisor`.
 
-    ```jsonc
-    { "code": "38971",  "libelle": "Data_Analyst" },
-    { "code": "38972",  "libelle": "Data_Scientist" },
-    { "code": "404278", "libelle": "Data_Engineer" },
-    { "code": "38975",  "libelle": "Data_Manager" },
-    ...
-    ```
+- Lorsqu'on se connecte sur la [GUI](http://localhost:9092/) de Prometheus, on doit voir que l'état de chaque target est à `UP`, comme le montre dans le screenshot suivant :
 
-  - le code des pays (codes récupérés à partir du endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/pays`) :
-
-    ```jsonc
-    { "code": "01", "libelle": "France" },     // inclut les offres en France d'outre-mer et en Corse
-    { "code": "02", "libelle": "Allemagne" },  // les pays étrangers ne retournent malheureusement pas d'offre sur les métiers à analyser
-    ...
-    ```
-
-  - le paramètre `range` qui limite les résultats à 150 offres par requête (avec un status code à `206` si une requête renvoie plus de 150 offres), sachant que l'API ne permet de récupérer que 3150 offres au maximum par appellation ROME.
-
-    - Ainsi, si une requête renvoit 351 offres, il faut enchainer 3 requêtes pour obtenir toutes les offres (la première requête donne les offres `0-149` (status code 206), la deuxième donne les offres `150-299` (status code 206), et la troisième donne les offres `300-350` (status code 200)).
+  <img src="readme_files/screenshots/prometheus_targets.png" alt="prometheus targets" style="width:60%"/>
 
 
-- Cet API retourne des offres d'emploi sous forme de documents json avec énormément d'attributs dont l'identifiant de l'offre, son intitulé, sa description, le lieu de travail, des informations sur l'entreprise et sur le contrat, les compétences demandées et l'expérience nécessaires, etc...
+## Configuration Docker pour cAdvisor
 
-- Toutefois, l'API retourne aussi énormément d'offres sans lien avec le métier renseigné en paramètre (par exemple, une requête renseignant l'appellation `Data Engineer` peut renvoyer une offre telle que `Product Owner` car les termes `Data Engineer` peuvent être présents dans la description de l'offre d'emploi).
+- Comme écrit dans cette [section](#Environnement), il est préférable `Docker CE dans WSL` au profit de `Docker Desktop`.
 
-- On va requêter ainsi un large panel de métiers, dont 29 ayant un lien avec la data, et 32 ayant un lien avec les métiers de la tech (dev, sécurité, devops...), pour maximiser les chances d'obtenir le plus d'offres d'emploi ayant un lien avec les métiers `DE`, `DA` et `DS`, et aussi pour avoir une base de données plus conséquente.
+- Exemple de requête PromQL qui renvoie les conteneurs docker :
 
-  - En effet, des offres de `Data Engineer` peuvent être présentes en requêtant l'appellation `Data Manager` par exemple.
-
-- On obtient finalement 61 fichiers json contenant toutes les offres d'emploi liées ou pas à la data, pour la France et DOM-TOM uniquement, l'API de France Travail ne renvoyant quasiment pas d'offre d'emploi pour les autres pays.
-
-- Plusieurs transformations seront effectuées par la suite : [voir ici](#transformations-des-données-en-amont-côté-python).
+  <img src="readme_files/screenshots/prometheus_cadvisor.png" alt="cadvisor opérationnel" style="width:30%"/>
 
 
+
+## Métriques exposées par les différents services
+
+- Les métriques citées ci-dessous traduisent la liste des commandes qu'on peut taper sur la barre `Expression` sur la [GUI de Prometheus](http://localhost:9092/graph).
+
+### Utilité
+
+todo : à remplir
+
+- `StatsD` est un collecteur de métriques qui permet à Airflow d'envoyer des données sous forme de métriques formatées en StatsD, et de les exposer via un `statsd-exporter` configuré pour Prometheus.
+
+- `Statsd-exporter` ...
+
+- `Node-exporter` service permet la récupération de métriques intéressantes concernant la partie cpu, ram, disque, etc..., qu'on pourra exposer à travers un dashboard Grafana.
+
+- `Postgres-exporter` permet la récupération de métriques intéressantes concernant la partie écriture dans les bases de données dont celle de `francetravail`, (... todo : à compléter), qu'on pourra exposer à travers un dashboard Grafana.
+
+- `cAdvisor` permet d'analyser l'usage des ressources et les caractéristiques de performance des conteneurs docker en cours d'exécution.
+
+
+### Dump des métriques
+
+- La liste des métriques est récupérable via la GUI des applis, avec les urls qui se terminent par `metrics` (voir cette [section](#Urls-des-GUIs)).
+
+- On peut aussi les récupération par cli (ainsi, les dumps des métriques sont présents dans le dossier `prometheus/available_metrics`) :
+
+```bash
+  curl http://localhost:9102/metrics > prometheus/available_metrics/metrics_statsd_exporter
+  curl http://localhost:9100/metrics > prometheus/available_metrics/metrics_node_exporter
+  curl http://localhost:9187/metrics > prometheus/available_metrics/metrics_postgres_exporter
+  curl http://localhost:8081/metrics > prometheus/available_metrics/metrics_cadvisor
+```
+
+TODO : refaire le fichier quand les DAGs seront figés
 - Notes :
+  - Il faut exécuter les DAGs pour voir apparaitre les commandes liés aux tâches des DAGs.
+  - Des NaN peuvent apparaissent s'il n’y a pas assez de données récentes dans la fenêtre de calcul du quantile summary.
 
-  - Les paramètres liés aux dates (`minCreationDate`, `maxCreationDate`, `publieeDepuis`) ne permettent pas d'obtenir des offres expirées (par exemple celles qui ont permis de recruter quelqu'un).
 
-  - Les offres d'emploi retournées peuvent provenir soit de `FRANCE TRAVAIL`, soit des `partenaires` (par exemple `CADREMPLOI`, `DIRECTEMPLOI`, `INDEED`, etc...)
+### Métriques de StatsD-Exporter
 
+- `StatsD-exporter` donne les métriques suivantes :
 
-# Transformations des données
+  - la durée de chaque tâche de DAG `DAG 1` et `DAG 2`
+  - les métriques définies dans `statsd.yaml` (voir section suivante)
+  - 56 métriques préfixés par `airflow_*`
+  - 31 métriques préfixés par `go_*`
+  - 9 métriques préfixés par `process_*`
+  - 4 métriques préfixés par `promhttp_*`
+  - 24 métriques préfixés par `statsd_*`
 
-## Transformations des données en amont (côté Python)
 
-Ces transformations sont faites dans le `DAG 1`, faites via Python et en amont du chargement dans la base Postgres :
+- Le lien suivant renvoie vers la liste des métriques avec un préfixe : [lien](readme_files/README_additional_notes.md#métriques-disponibles-de-statsd-exporter).
 
-  - Concaténation des 61 fichiers json dans un seul fichier json, avec suppression des doublons
 
-  - Conservation des offres en France Métropolitaine uniquement, [détails ici](readme_files/README_additional_notes.md#conservation-des-offres-en-France-Métropolitaine-uniquement).
+### Personnalisation des mappings statsd
 
-  - Ajout des attributs de localisation des offres (noms et codes des villes, départements, départements et régions), [détails ici](readme_files/README_additional_notes.md#attributs-de-localisation-des-offres-noms-et-codes-des-villes-communes-départements-et-régions).
+- A noter que le fichier de configuration `prometheus/statsd-mapping-configs.yaml` permet de définir des mappings à partir des métriques issues d'Airflow, avec la possibilité de modifier le nom de la requête promQL.
 
-  - Ajout des attributs `date_premiere_ecriture` et `date_extraction` :
+  - On peut vérifier la validité du fichier avec la ligne de commande suivante :
 
-    - `date_extraction` aura la date du jour à laquelle le `DAG 1` a été lancé,
-    - `date_premiere_ecriture` aura la date du jour pour toutes les nouvelles offres, mais prendra les anciennes valeurs pour les anciennes offres.
+```bash
+    docker exec -it prometheus sh  # l'image de prometheus ne contient pas "bash"
 
+    /prometheus $ promtool check config /etc/prometheus/prometheus.yaml
+    ##==> Checking /etc/prometheus/prometheus.yaml
+    ##==>  SUCCESS: /etc/prometheus/prometheus.yaml is valid prometheus config file syntax
+```
 
+  - Pour vérifier la validité d'un mapping du fichier `airflow/config/statsd.yaml` : [lien](readme_files/README_additional_notes.md#vérifier-la-validité-dun-mapping-dans-statsdyaml).
 
-## Transformations des données en aval (côté SQL)
 
-Ces transformations sont faites dans le `DAG 2`, faites via des requêtes SQL et effectuées en aval de l'écriture dans la base Postgres :
 
-  - pour créer et écrire l'attribut `metier_data` : pour chaque offre, on comparera l'attribut `intitule_offre` avec des regex afin de déterminer s'il s'agit d'une offre pour un `Data Engineer`, un `Data Analyst`, ou un `Data Scientist`.
+# Grafana
 
-    - [détails ici](readme_files/README_additional_notes.md#attribut-metier_data)
+## Configuration automatique après installation
 
-  - pour créer et écrire les attributs `salaire_min` et `salaire_max` en fonction d'un algorithme expliqué
+- Après (ré)installation, la datasource `Prometheus` est crée automatiquement grâce au fichier `grafana/volumes/provisioning/datasources/datasources.yml` qui est copié dans `/grafana/provisioning/datasources/datasources.yml` grâce au montage de volume, comme montré ici :
 
-    - [détails ici](readme_files/README_additional_notes.md#attributs-salaire_min-et-salaire_max)
+  <img src="readme_files/screenshots/grafana_datasource_prometheus.png" alt="datasource Prometheus dans Grafana" style="width:30%"/>
 
+- Les dashboards placés dans `grafana/volumes/provisioning/dashboards/` sont également importés automatiquement.
 
 
-# Chargement des données dans une base de données relationnelle
+todo : mettre screenshots quand ca sera bon
 
-- L'API de France Travail contient beaucoup d'attibuts pour une offre d'emploi, qui seront quasiment tous exploités par la suite.
 
-  - Seuls les attributs liés aux `contacts` et aux `agences` ne seront pas conservés, n'apportant pas d'utilité.
+## Dashboards
 
+### Import automatique après installation
 
-- Pour la suite, une modélisation `snowflake` est utilisée, dont le diagramme UML est le suivant :
+- Les dashboards (.json) peuvent être déposés dans `grafana/volumes/provisioning/dashboards`, dossier monté dans le conteneur `grafana` sous `/grafana/provisioning/dashboards`.
 
-  <img src="readme_files/screenshots/UML.png" alt="diagramme" style="width:100%"/>
+- Ceci est défini dans le fichier de configuration `grafana/volumes/provisioning/dashboards/providers.yml`, qui contient également `foldersFromFilesStructure: true`, qui permet de retrouver dans la GUI de Grafana la même architecture de dossier que dans `grafana/volumes/provisioning/dashboards`.
 
-  TODO : justifier ce choix
+  todo : screenshot archi dossier vs dossier grafana
 
-- Le SGBD `PostgreSQL` sera utilisé :
+- Pour que Grafana recharge le contenu du dossier, on peut simplement redémarrer le conteneur : `docker compose restart grafana`.
 
-  - Performant, sa fiable et sa flexible.
-  - Offre une grande transparence et une forte extensibilité, en tant que solution open source.
-  - Prend en charge des types de données complexes, respecte les principes ACID et bénéficie d’une communauté active assurant une évolution continue.
 
-- La base de données `francetravail` sera hébergée dans le conteneur Docker exécutant le service PostgreSQL.
+### Dashboards téléchargés
 
-- Les données issues du json généré avec le `DAG 1` seront récupérées et écrites en base avec la librairie `psycopg2`.
+- Le [site de Grafana](https://grafana.com/grafana/dashboards/) propose des dashboards téléchargeables, publiés par la communauté ou par `Grafana Labs`.
 
+  - [1860-node-exporter-full](https://grafana.com/grafana/dashboards/1860-node-exporter-full/) fournit un dashboard pour le node-exporter, disponible sous `grafana/volumes/provisioning/dashboards/1860_node-exporter-full_rev41.json` :
 
-## Mise à jour de la base de données après récupération de nouvelles offres
+    <img src="readme_files/screenshots/grafana/dashboard_node_exporter_during_dag_execution.png" alt="dashboard node-exporter pendant exécution d'un dag" style="width:100%"/>
 
-- Une offre d'emploi peut être mise à jour, et voir par exemple la valeur d'un de ses attributs modifiée.
 
-- Il faut gérer ce cas et mettre à jour la base de données en écrasant l'ancienne valeur d'un attribut avec sa nouvelle valeur.
+  - [9628-postgres-exporter](https://grafana.com/grafana/dashboards/9628-postgresql-database/) fournit un dashboard pour le postgres-exporter, disponible sous `grafana/volumes/provisioning/dashboards/9628_postgres-exporter_rev8.json` :
 
-- Par exemple, on peut avoir une offre avec un `experience_libelle` passer de `expérience exigée de 3 an(s)` à `débutant accepté`.
+    <img src="readme_files/screenshots/grafana/dashboard_postgres_exporter.png" alt="dashboard postgres-exporter" style="width:100%"/>
 
-- Même chose pour d'autres attributs.
 
-- Pour gérer cela, l'attribut `date_extraction` est écrit dans toutes les tables de liaison.
+### Dashboards créés
 
-- Ainsi, pour une offre, si un attribut d'une table de dimension associé à la table de liaison a évolué, alors on ne conservera que l'offre avec `date_extraction` le plus récent.
+#### Mon dashboard
 
-- Plus de détails [ici](readme_files/README_additional_notes.md#mise-à-jour-de-la-base-de-données-après-récupération-de-nouvelles-offres).
+- Le dashboard `my dashboard` (`grafana/provisioning/dashboards/mine/my_dashboard.json`) contient uniquement des visualisations jugées utiles.
 
+  - Il reprend des visualisations de `1860_node-exporter-full_rev41.json` (122 panels) et de `9628_postgres-exporter_rev8.json` (32 panels).
 
 
-# Power BI
+#### Dashboard avec les métriques préfixées
 
-- Power BI servira ici pour la data visualisation.
-
-
-## Manipulations
-
-- Ci-dessous des liens expliquant les différentes manipulations faites pour :
-
-  - [connecter Power BI avec la db postgres](readme_files/README_additional_notes.md#connexion-avec-la-db)
-
-  - [modifier le Model view](readme_files/README_additional_notes.md#model-view)
-
-  - [modifier le Table view](readme_files/README_additional_notes.md#table-view)
-
-  - [faire les transformations](readme_files/README_additional_notes.md#transformations)
-
-
-## Fichier .pbix
-
-- Sauvegarder petit fichier, puis charger pour gain de place et ouvrir le fichier plus facilement ?
-
-
-## Screenshots des rapports
-
-TODO : faire à la fin du projet
-
-
-
-# Création d'une API pour la db
-
-- L'utilité peut par exemple être de requêter la base de données `francetravail` à travers l'interface OpenAPI (ex-swagger) pour récupérer certaines informations.
-
-- Utilisation de `FastAPI`.
-
-- Pour les réponses, on utilisera la librairie `tabulate` avec `media_type="text/plain"` pour afficher un tableau qui facilitera la lecture, et qui diminuera le nombre de lignes des réponses.
-
-
-## Screenshots
-
-TODO : faire à la fin du projet
+- Deux dashboards avec les 56 métriques préfixés par `airflow_*` et les 31 métriques préfixés par `go_*` ont été créés à but informatif, plus de détails [ici](readme_files/README_additional_notes.md#métriques-avec-préfixes).

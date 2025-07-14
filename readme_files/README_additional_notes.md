@@ -438,7 +438,7 @@ Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code
     - Tous les métriques Airflow sont disponibles dans cette [doc](https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/logging-monitoring/metrics.html#metric-descriptions).
 
     - Pour une raison que je n'ai pas réussi à comprendre, certaines métriques de ce dernier lien ne sont pas exposées par statsd-exporter (par exemple `dag.<dag_id>.<task_id>.duration` ou `task.duration`...).
-    - Voici la liste des métriques exposée par statsd-exporter avec le descriptif en anglais repris de la doc :
+    - Voici la liste des métriques exposée par `statsd-exporter` avec le descriptif en anglais repris de la doc, par ordre alphabétique :
 
       - `airflow_asset_orphaned` : Number of assets marked as orphans because they are no longer referenced in DAG schedule parameters or task outlets
       - `airflow_dag_<dag_id>_<task_id>_scheduled_duration` : Milliseconds a task spends in the Scheduled state, before being Queued
@@ -455,7 +455,7 @@ Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code
       - `airflow_dagrun_dependency_check` : Milliseconds taken to check DAG dependencies. Metric with dag_id tagging.
       - `airflow_dagrun_duration_failed_<dag_id>` : Milliseconds taken for a DagRun to reach failed state
       - `airflow_dagrun_duration_failed` : Milliseconds taken for a DagRun to reach failed state. Metric with dag_id and run_type tagging.
-      - `airflow_dagrun_duration_success_<dag_id>` : Milliseconds taken for a DagRun to reach success state
+      - `airflow_dagrun_duration_success_<dag_id>` (utilisé dans grafana) : Milliseconds taken for a DagRun to reach success state
       - `airflow_dagrun_duration_success` : Milliseconds taken for a DagRun to reach success state. Metric with dag_id and run_type tagging.
       - `airflow_dagrun_first_task_scheduling_delay` : Milliseconds elapsed between first task start_date and dagrun expected start. Metric with dag_id and run_type tagging.
       - `airflow_executor_open_slots` : Number of open slots on executor
@@ -490,6 +490,9 @@ Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code
       - `airflow_triggerer_heartbeat` : Triggerer heartbeats
       - `airflow_triggers_blocked_main_thread` : Number of triggers that blocked the main thread (likely due to not being fully asynchronous)
       - `airflow_triggers_running` : Number of triggers currently running for a triggerer (described by hostname). Metric with hostname tagging.
+
+        - note : `ti` = Task Instance
+
 
   - 31 métriques préfixés par `go_*` :
 
