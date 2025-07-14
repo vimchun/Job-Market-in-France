@@ -1,6 +1,26 @@
-# Présentation du projet
+- Bienvenue sur mon projet, que j'ai réalisé seul entièrement, dans le cadre de ma formation "Data Engineer" chez Data Scientest.
 
-- J'ai réalisé ce projet seul de bout en bout, dans le cadre de ma formation "Data Engineer" chez Data Scientest.
+- Sommaire :
+
+  [0. Présentation du projet](#0-Présentation-du-projet)
+  [1. Environnement](#1-Environnement)
+  [2. Extraction des données par API](#2-Extraction-des-données-par-API)
+  [3. Transformations des données](#3-Transformations-des-données)
+  [4. Chargement des données dans une base de données relationnelle](#4-Chargement-des-données-dans-une-base-de-données-relationnelle)
+  [5. Data Viz avec Power BI](#5-Data-Viz-avec-Power-BI)
+  [6. Création d'une API pour la db](#6-Création-d'une-API-pour-la-db)
+  [7. Workflow du projet avec Airflow](#7-Workflow-du-projet-avec-Airflow)
+  [8. Prometheus](#8-Prometheus)
+  [9. Grafana](#9-Grafana)
+
+
+- Slideshow :
+
+  todo : un gif peut être pas mal
+
+
+
+# 0. Présentation du projet
 
 - Les objectifs sont globalement de :
 
@@ -20,12 +40,6 @@
 - Pour ne pas surcharger cette page principale, une autre page avec des informations supplémentaires moins importantes est disponible [ici](readme_files/README_additional_notes.md).
 
 
-## Slideshow
-
-- Voici un aperçu du projet :
-
-  todo : un gif peut être pas mal
-
 
 ## Compétences techniques
 
@@ -34,22 +48,15 @@
   | Domaine                          | Outils & Technologies                      |
   | -------------------------------- | ------------------------------------------ |
   | Langages & programmation         | `Python`, `SQL`, `Bash`/`Linux`, `FastAPI` |
-  | Pipeline ETL/ELT & orchestration | `Apache Airflow 3.0`                       |
   | Containerisation & versioning    | `Docker`, `Git`                            |
+  | Pipeline ETL/ELT & orchestration | `Apache Airflow 3.0`                       |
   | Monitoring                       | `Prometheus`, `Grafana`                    |
   | Data Visualisation               | `Power BI`                                 |
   | Modélisation & architecture      | `UML`                                      |
 
 
-## Sommaire
 
-- Le plan suivant présente un plan logique plutôt que de présenter les étapes qui ont été effectuées par ordre chronologique :
-
-  todo : toc
-
-
-
-# Environnement
+# 1. Environnement
 
 - Développements et tests sous :
 
@@ -251,7 +258,7 @@
 
 
 
-# Extraction des données par API
+# 2. Extraction des données par API
 
 - France Travail (https://francetravail.io/data/api) met à disposition plusieurs APIs, dont "Offres d'emploi v2" (`GET https://api.francetravail.io/partenaire/offresdemploi`).
 
@@ -312,7 +319,7 @@
 
 
 
-# Transformations des données
+# 3. Transformations des données
 
 ## Transformations des données en amont (côté Python)
 
@@ -345,7 +352,7 @@ Ces transformations sont faites dans le `DAG 2`, faites via des requêtes SQL et
 
 
 
-# Chargement des données dans une base de données relationnelle
+# 4. Chargement des données dans une base de données relationnelle
 
 - L'API de France Travail contient beaucoup d'attibuts pour une offre d'emploi, qui seront quasiment tous exploités par la suite.
 
@@ -387,7 +394,7 @@ Ces transformations sont faites dans le `DAG 2`, faites via des requêtes SQL et
 
 
 
-# Data Viz avec Power BI
+# 5. Data Viz avec Power BI
 
 - Power BI servira ici pour la data visualisation.
 
@@ -416,7 +423,7 @@ TODO : faire à la fin du projet
 
 
 
-# Création d'une API pour la db
+# 6. Création d'une API pour la db
 
 - L'utilité peut par exemple être de requêter la base de données `francetravail` à travers l'interface OpenAPI (ex-swagger) pour récupérer certaines informations.
 
@@ -430,7 +437,7 @@ TODO : faire à la fin du projet
 TODO : faire à la fin du projet
 
 
-# Workflow du projet avec Airflow
+# 7. Workflow du projet avec Airflow
 
 ## Avant Airflow
 
@@ -695,9 +702,7 @@ Plusieurs `SQLExecuteQueryOperator()` qui exécutent séquentiellement les tâch
 
 
 
-
-
-# Prometheus
+# 8. Prometheus
 
 ## Configuration de Prometheus
 
@@ -715,7 +720,6 @@ Plusieurs `SQLExecuteQueryOperator()` qui exécutent séquentiellement les tâch
 - Exemple de requête PromQL qui renvoie les conteneurs docker :
 
   <img src="readme_files/screenshots/prometheus_cadvisor.png" alt="cadvisor opérationnel" style="width:30%"/>
-
 
 
 ## Métriques exposées par les différents services
@@ -790,15 +794,15 @@ TODO : refaire le fichier quand les DAGs seront figés
 
 
 
-# Grafana
+# 9. Grafana
 
 ## Configuration automatique après installation
 
-- Après (ré)installation, la datasource `Prometheus` est crée automatiquement grâce au fichier `grafana/volumes/provisioning/datasources/datasources.yml` qui est copié dans `/grafana/provisioning/datasources/datasources.yml` grâce au montage de volume, comme montré ici :
+- Après (ré)installation, la datasource `Prometheus` est crée automatiquement grâce au fichier `grafana/provisioning/datasources/datasources.yml` qui est copié dans `/grafana/provisioning/datasources/datasources.yml` grâce au montage de volume, comme montré ici :
 
   <img src="readme_files/screenshots/grafana_datasource_prometheus.png" alt="datasource Prometheus dans Grafana" style="width:30%"/>
 
-- Les dashboards placés dans `grafana/volumes/provisioning/dashboards/` sont également importés automatiquement.
+- Les dashboards placés dans `grafana/provisioning/dashboards/` sont également importés automatiquement.
 
 
 todo : mettre screenshots quand ca sera bon
@@ -808,38 +812,38 @@ todo : mettre screenshots quand ca sera bon
 
 ### Import automatique après installation
 
-- Les dashboards (.json) peuvent être déposés dans `grafana/volumes/provisioning/dashboards`, dossier monté dans le conteneur `grafana` sous `/grafana/provisioning/dashboards`.
+- Les dashboards (.json) peuvent être déposés dans `grafana/provisioning/dashboards`, dossier monté dans le conteneur `grafana` sous `/grafana/provisioning/dashboards`.
 
-- Ceci est défini dans le fichier de configuration `grafana/volumes/provisioning/dashboards/providers.yml`, qui contient également `foldersFromFilesStructure: true`, qui permet de retrouver dans la GUI de Grafana la même architecture de dossier que dans `grafana/volumes/provisioning/dashboards`.
+- Ceci est défini dans le fichier de configuration `grafana/provisioning/dashboards/providers.yml`, qui contient également `foldersFromFilesStructure: true`, qui permet de retrouver dans la GUI de Grafana la même architecture de dossier que dans `grafana/provisioning/dashboards`.
 
   todo : screenshot archi dossier vs dossier grafana
 
 - Pour que Grafana recharge le contenu du dossier, on peut simplement redémarrer le conteneur : `docker compose restart grafana`.
 
 
-### Dashboards téléchargés
+### Dossier "others"
 
-- Le [site de Grafana](https://grafana.com/grafana/dashboards/) propose des dashboards téléchargeables, publiés par la communauté ou par `Grafana Labs`.
+- Le dossier "others" contient des :
 
-  - [1860-node-exporter-full](https://grafana.com/grafana/dashboards/1860-node-exporter-full/) fournit un dashboard pour le node-exporter, disponible sous `grafana/volumes/provisioning/dashboards/1860_node-exporter-full_rev41.json` :
+  - dashboards téléchargées depuis le [site de Grafana](https://grafana.com/grafana/dashboards/), qui propose des dashboards publiés par la communauté ou par `Grafana Labs`.
 
-    <img src="readme_files/screenshots/grafana/dashboard_node_exporter_during_dag_execution.png" alt="dashboard node-exporter pendant exécution d'un dag" style="width:100%"/>
+      - [downloaded_1860_node-exporter-full_rev41](https://grafana.com/grafana/dashboards/1860-node-exporter-full/) fournit un dashboard pour le `node-exporter`, disponible sous `grafana/provisioning/dashboards/others/downloaded_1860_node-exporter-full_rev41.json` :
 
-
-  - [9628-postgres-exporter](https://grafana.com/grafana/dashboards/9628-postgresql-database/) fournit un dashboard pour le postgres-exporter, disponible sous `grafana/volumes/provisioning/dashboards/9628_postgres-exporter_rev8.json` :
-
-    <img src="readme_files/screenshots/grafana/dashboard_postgres_exporter.png" alt="dashboard postgres-exporter" style="width:100%"/>
+        <img src="readme_files/screenshots/grafana/dashboard_node_exporter_during_dag_execution.png" alt="dashboard node-exporter pendant exécution d'un dag" style="width:100%"/>
 
 
-### Dashboards créés
+      - [downloaded_9628_postgres-exporter_rev8](https://grafana.com/grafana/dashboards/9628-postgresql-database/) fournit un dashboard pour le `postgres-exporter`, disponible sous `grafana/provisioning/dashboards/others/downloaded_9628_postgres-exporter_rev8.json` :
 
-#### Mon dashboard
-
-- Le dashboard `my dashboard` (`grafana/provisioning/dashboards/mine/my_dashboard.json`) contient uniquement des visualisations jugées utiles.
-
-  - Il reprend des visualisations de `1860_node-exporter-full_rev41.json` (122 panels) et de `9628_postgres-exporter_rev8.json` (32 panels).
+        <img src="readme_files/screenshots/grafana/dashboard_postgres_exporter.png" alt="dashboard postgres-exporter" style="width:100%"/>
 
 
-#### Dashboard avec les métriques préfixées
+  - dashboards créés :
 
-- Deux dashboards avec les 56 métriques préfixés par `airflow_*` et les 31 métriques préfixés par `go_*` ont été créés à but informatif, plus de détails [ici](readme_files/README_additional_notes.md#métriques-avec-préfixes).
+    - Deux dashboards avec les 56 métriques préfixés par `airflow_*` et les 31 métriques préfixés par `go_*` ont été créés à but informatif, plus de détails [ici](readme_files/README_additional_notes.md#métriques-avec-préfixes).
+
+
+### Dossier "mine"
+
+- Le dossier "mine" contient le dashboard `my dashboard` (`grafana/provisioning/dashboards/mine/my_dashboard.json`) contient uniquement des visualisations jugées utiles.
+
+  todo : gif
