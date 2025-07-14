@@ -2,16 +2,16 @@
 
 - Sommaire :
 
-  [0. Présentation du projet](#0-Présentation-du-projet)
-  [1. Environnement](#1-Environnement)
-  [2. Extraction des données par API](#2-Extraction-des-données-par-API)
-  [3. Transformations des données](#3-Transformations-des-données)
-  [4. Chargement des données dans une base de données relationnelle](#4-Chargement-des-données-dans-une-base-de-données-relationnelle)
-  [5. Data Viz avec Power BI](#5-Data-Viz-avec-Power-BI)
-  [6. Création d'une API pour la db](#6-Création-d'une-API-pour-la-db)
-  [7. Workflow du projet avec Airflow](#7-Workflow-du-projet-avec-Airflow)
-  [8. Prometheus](#8-Prometheus)
-  [9. Grafana](#9-Grafana)
+  - [0. Présentation du projet](#0-Présentation-du-projet)
+  - [1. Environnement](#1-Environnement)
+  - [2. Extraction des données par API](#2-Extraction-des-données-par-API)
+  - [3. Transformations des données](#3-Transformations-des-données)
+  - [4. Chargement des données dans une base de données relationnelle](#4-Chargement-des-données-dans-une-base-de-données-relationnelle)
+  - [5. Data Viz avec Power BI](#5-Data-Viz-avec-Power-BI)
+  - [6. Création d'une API pour la db](#6-Création-d'une-API-pour-la-db)
+  - [7. Workflow du projet avec Airflow](#7-Workflow-du-projet-avec-Airflow)
+  - [8. Prometheus](#8-Prometheus)
+  - [9. Grafana](#9-Grafana)
 
 
 - Slideshow :
