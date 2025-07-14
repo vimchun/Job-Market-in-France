@@ -106,6 +106,11 @@
   git clone git@github.com:vimchun/Job-Market-in-France.git
 ```
 
+- Copier-coller les credentials (`identifiant client` + `clé secrète`) dans le fichier `airflow/data/resources/api_credentials.yml` depuis le site `https://francetravail.io/`, après avoir créé un compte :
+
+  <img src="readme_files/screenshots/francetravail_io_credentials.png" alt="credentials france travail" style="width:50%"/>
+
+
 - Si environnement Windows + WSL, utiliser `Docker CE` dans WSL, plutôt qu'utiliser `Docker Desktop` (voir cette [procédure](readme_files/README_additional_notes.md#Installer-et-utiliser-Docker-CE-dans-WSL))
 
 
@@ -123,7 +128,7 @@
 
   - `DAG 1` et `DAG 2` doivent être activés dans la GUI (par défaut, ils sont désactivés après une réinitialisation d'environnement) :
 
-    - TODO : screenshot
+    <img src="readme_files/screenshots/airflow_dags_enabled.png" alt="dags activés" style="width:50%"/>
 
     - `DAG 1` doit être activé sinon la planification du DAG ne déclenchera pas du tout (`DAG 1` n'est pas en `Queued` sur cette version, mais c'est tout comme, car le DAG se déclenchera lorsqu'il sera activé).
 
