@@ -1,20 +1,13 @@
 __pycache__
 _notes_perso/
 .venv/
-api_credentials_minh.yml
-api_extract__transform/outputs/*.json
-api_extract__transform/outputs/offres/0--original_json_files_from_api/*.json
-api_extract__transform/outputs/offres/0--original_json_files_from_api/archives
-api_extract__transform/outputs/offres/1--generated_json_file/*.json
-api_extract__transform/outputs/offres/1--generated_json_file/archive_json_files
-api_extract__transform/outputs/offres/1--generated_json_file/troubleshooting/archives
 
 airflow/logs
-airflow/plugins
 airflow/data/outputs/offres/0--original_json_files_from_api/*.json
 airflow/data/outputs/offres/1--generated_json_file/archives/*.json
 airflow/data/outputs/offres/1--generated_json_file/*.json
 airflow/data/outputs/offres/1--generated_json_file/split_json_files/*.json
+airflow/data/resources/api_credentials.yml
 
 # temporairement le temps du dev
 # airflow/data/outputs/offres/1--generated_json_file/_json_files_history.csv

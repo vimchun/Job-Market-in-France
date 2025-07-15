@@ -22,7 +22,7 @@ OUTPUTS_DIR = os.path.join(CURRENT_DIR, "..", "data", "outputs")
 DOWNLOADED_JSONS_FROM_API_DIR = os.path.join(OUTPUTS_DIR, "offres", "0--original_json_files_from_api")
 AGGREGATED_JSON_DIR = os.path.join(OUTPUTS_DIR, "offres", "1--generated_json_file")
 
-CREDENTIAL_FILENAME = os.path.join(RESOURCES_DIR, "api_credentials_minh.yml")
+CREDENTIAL_FILENAME = os.path.join(RESOURCES_DIR, "api_credentials.yml")
 CODES_APPELLATION_FILENAME = os.path.join(RESOURCES_DIR, "code_appellation_libelle.yml")
 LOCATION_CSV_FILENAME = os.path.join(RESOURCES_DIR, "code_name__city_department_region.csv")
 AGGREGATED_JSON_FILENAME = "all_in_one.json"
