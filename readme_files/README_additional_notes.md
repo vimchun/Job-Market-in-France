@@ -1,7 +1,136 @@
 Cette page complète la [page principale](../README.md).
 
+# 1. Environnement
 
-# Environnement
+## Utilisation de Docker CE dans WSL pour cAdvisor
+
+- Développant sur Windows 11 et WSL avec Ubuntu 22.04, pour que cAdvisor soit fonctionnel, il faut :
+
+  - Activer `docker CE` sur WSL :
+    - la procédure est décrite [ici](#Installer-et-utiliser-Docker-CE-dans-WSL).
+
+  - Désactiver `Docker Desktop` :
+    - dans la GUI : aller dans `Settings` > `Resources` > `WSL Integration`, et décocher `Enable integration with my default WSL distro` et tout autre case cochée concernant `Ubuntu-22.04`.
+
+
+### Pourquoi utiliser Docker CE
+
+- C'est pour avoir nativement un environnement Docker pur Linux, contrôlé par `systemd`, parfaitement compatible avec `cAdvisor`.
+
+- En effet, `cAdvisor` a notamment besoin pour fonctionner d'avoir accès à `/var/lib/docker/image/overlay2/layerdb/mounts/<conteneur_id>/mount-id`, sinon on a le problème décrit [ici](#Problème-avec-Docker-Desktop).
+  - Ce dossier existe nativement avec `Docker CE`.
+  - Ce dossier n'existe pas avec `Docker Destop` (si un dossier équivalent existait, on aurait pu faire un montage, mais ce n'est pas le cas sur `Ubuntu 22.04`).
+
+
+### Problème avec Docker Desktop
+
+- En utilisant `Docker Desktop` uniquement, tous les services Docker de ce projet sont fonctionnels sauf `cAdvisor`, qui affichent notamment les logs d'erreur suivants au démarrage :
+
+```bash
+  docker logs cadvisor
+  ##==> ...
+  ##==> E0709 23:59:51.210495       1 manager.go:1116] Failed to create existing container: /docker/5d59c6de7d670a827e0eec5751c77dbb805be1deacdde52fbdcd323a4360e6a8: failed to identify the read-write layer ID for container "5d59c6de7d670a827e0eec5751c77dbb805be1deacdde52fbdcd323a4360e6a8". - open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/5d59c6de7d670a827e0eec5751c77dbb805be1deacdde52fbdcd323a4360e6a8/mount-id: no such file or directory
+  ##==> E0709 23:59:51.237487       1 manager.go:1116] Failed to create existing container: /docker/3567368bffadb8d183ad3cd8cfc57e5cf9c8cde98853389d5ac7b05959b98ec7: failed to identify the read-write layer ID for container "3567368bffadb8d183ad3cd8cfc57e5cf9c8cde98853389d5ac7b05959b98ec7". - open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/3567368bffadb8d183ad3cd8cfc57e5cf9c8cde98853389d5ac7b05959b98ec7/mount-id: no such file or directory
+  ##==> ...
+```
+
+  - Le problème `open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/<conteneur_id>/mount-id: no such file or directory` avec `Docker Desktop` est connu et remonté à travers ce ticket : https://github.com/vacp2p/wakurtosis/issues/58.
+
+    - Pour le contourner, certaines forums proposent de faire un montage sur `\\wsl$\docker-desktop-data\data\docker` mais ce dossier n'existe pas sur la distribution `Ubuntu 22.04`, et faire un montage avec le dossier existant `\\wsl.localhost\docker-desktop\mnt\docker-desktop-disk\data\docker` ne fonctionne pas non plus car il n'y a pas le fichier `mount-id`.
+
+- La section [suivante](#Installer-et-utiliser-Docker-CE-dans-WSL) présente la procédure complète pour installer `Docker CE` dans WSL2 Ubuntu 22.04 avec systemd.
+
+
+### Installer et utiliser Docker CE dans WSL
+
+1. Activer systemd dans WSL2, puis redémarrer WSL avec PowerShell :
+
+```bash
+  vi /etc/wsl.conf
+  ##==> [boot]
+  ##==> systemd=true
+  ```
+```powershell
+  wsl --shutdown  # avec powershell
+  ```
+
+2. Vérifier que `systemd` fonctionne :
+
+```bash
+  systemctl --no-pager status user.slice
+  ##==> ● user.slice - User and Session Slice
+  ##==>      Loaded: loaded (/lib/systemd/system/user.slice; static)
+  ##==>      Active: active since Thu 2025-07-10 08:44:30 CEST; 1h 13min ago      <== systemd est "actif"
+  ##==>        ...
+  ```
+
+3. Installer Docker CE :
+
+```bash
+  # Installer les dépendances
+  sudo apt update
+  sudo apt install apt-transport-https ca-certificates curl gnupg lsb-release software-properties-common -y
+
+  # Ajouter la clé GPG officielle et le dépôt Docker
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  echo \
+    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+    https://download.docker.com/linux/ubuntu \
+    $(. /etc/os-release && echo $VERSION_CODENAME) stable" | \
+    sudo tee /etc/apt/sources.list.d/docker.list
+
+  # Mettre à jour et installer
+  sudo apt update
+  sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+```
+
+4. Corriger iptables pour une compatibilité avec WSL2 afin de permettre à Docker de démarrer correctement :
+
+```bash
+  # Ubuntu 22.04 utilise `nftables` par défaut, incompatible avec Docker sur WSL2, il faut basculer vers l'option `legacy` :
+  sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
+  sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
+  ##==> update-alternatives: using /usr/sbin/iptables-legacy to provide /usr/sbin/iptables (iptables) in manual mode
+  ##==> update-alternatives: using /usr/sbin/ip6tables-legacy to provide /usr/sbin/ip6tables (ip6tables) in manual mode
+```
+
+5. Configuration de l'utilisateur :
+
+```bash
+# Ajouter l'utilisateur au groupe docker
+sudo usermod -aG docker $USER
+```
+
+```powershell
+  wsl --shutdown  # avec powershell
+  ```
+
+6. Activer et démarrer Docker au démarrage :
+
+```bash
+  # Activer le service Docker
+  sudo systemctl enable docker.service
+  ##==> Synchronizing state of docker.service with SysV service script with /lib/systemd/systemd-sysv-install.
+  ##==> Executing: /lib/systemd/systemd-sysv-install enable docker
+
+  # Vérifier le statut
+  systemctl status docker.service
+    ##==> ● docker.service - Docker Application Container Engine
+    ##==>      Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled)
+    ##==>      Active: active (running) since Thu 2025-07-10 10:07:48 CEST; 1min 18s ago             <== c'est bon
+    ##==>        ...
+```
+
+
+7. Désactiver la variable `DOCKER_HOST`, souvent utilisée pour pointer vers `Docker Desktop` :
+
+```bash
+  env | grep -i DOCKER_HOST
+  # il faut qu'il n'y ait rien de retourner
+```
+
+Si une ligne comme `DOCKER_HOST=tcp://localhost:2375` s'affiche, alors il faut faire `unset DOCKER_HOST`.
+
 
 ## Services Docker
 
@@ -79,7 +208,7 @@ Cette section montre les commandes pour retrouver les versions des différents s
     ##==> Version 12.0.2 (commit: 5bda17e7c1cb313eb96266f2fdda73a6b35c3977, branch: HEAD)
 ```
 
-# Transformations des données en amont
+# 3. Transformations des données
 
 ## Transformations des données en amont (côté Python)
 
@@ -241,7 +370,6 @@ Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code
 
 
 - On pourrait aller plus loin, et tenter de retrouver l'information dans l'intitulé ou la description de l'offre d'emploi, mais on ne le fera pas ici.
-
 
 
 ## Transformations des données en aval (côté SQL)
@@ -424,165 +552,7 @@ Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code
 - A noter aussi que les salaires des offres en alternance seront exclues ici car leur salaire est très majoritairement inférieur au seuil minimum qu'on a défini ici.
 
 
-
-# Prometheus
-
-## StatsD Exporter
-
-### Métriques disponibles de StatsD Exporter
-
-- Voici la liste des métriques disponibles avec préfixe sans les détails ni les valeurs :
-
-  - 50 métriques préfixés par `airflow_*` :
-
-    - Tous les métriques Airflow sont disponibles dans cette [doc](https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/logging-monitoring/metrics.html#metric-descriptions).
-
-    - Pour une raison que je n'ai pas réussi à comprendre, certaines métriques de ce dernier lien ne sont pas exposées par statsd-exporter (par exemple `dag.<dag_id>.<task_id>.duration` ou `task.duration`...).
-    - Voici la liste des métriques exposée par `statsd-exporter` avec le descriptif en anglais repris de la doc, par ordre alphabétique :
-
-      - `airflow_asset_orphaned` : Number of assets marked as orphans because they are no longer referenced in DAG schedule parameters or task outlets
-      - `airflow_dag_<dag_id>_<task_id>_scheduled_duration` : Milliseconds a task spends in the Scheduled state, before being Queued
-      - `airflow_dag_processing_file_path_queue_size` : Number of DAG files to be considered for the next scan
-      - `airflow_dag_processing_file_path_queue_update_count` : Number of times we’ve scanned the filesystem and queued all existing dags
-      - `airflow_dag_processing_import_errors` (utilisé dans grafana) : Number of errors from trying to parse DAG files
-      - `airflow_dag_processing_other_callback_count` : Number of non-SLA callbacks received
-      - `airflow_dag_processing_processes` : Relative number of currently running DAG parsing processes (ie this delta is negative when, since the last metric was sent, processes have completed). Metric with file_path and action tagging.
-      - `airflow_dag_processing_total_parse_time` : Seconds taken to scan and import dag_processing.file_path_queue_size DAG files
-      - `airflow_dag_processor_heartbeat` : Standalone DAG processor heartbeats
-      - `airflow_dagbag_size` (utilisé dans grafana) : Number of dags found when the scheduler ran a scan based on its configuration
-      - `airflow_dagrun_<dag_id>_first_task_scheduling_delay` : Milliseconds elapsed between first task start_date and dagrun expected start
-      - `airflow_dagrun_dependency-check_<dag_id>` : Milliseconds taken to check DAG dependencies
-      - `airflow_dagrun_dependency_check` : Milliseconds taken to check DAG dependencies. Metric with dag_id tagging.
-      - `airflow_dagrun_duration_failed_<dag_id>` : Milliseconds taken for a DagRun to reach failed state
-      - `airflow_dagrun_duration_failed` : Milliseconds taken for a DagRun to reach failed state. Metric with dag_id and run_type tagging.
-      - `airflow_dagrun_duration_success_<dag_id>` (utilisé dans grafana) : Milliseconds taken for a DagRun to reach success state
-      - `airflow_dagrun_duration_success` : Milliseconds taken for a DagRun to reach success state. Metric with dag_id and run_type tagging.
-      - `airflow_dagrun_first_task_scheduling_delay` : Milliseconds elapsed between first task start_date and dagrun expected start. Metric with dag_id and run_type tagging.
-      - `airflow_executor_open_slots` : Number of open slots on executor
-      - `airflow_executor_queued_tasks` : Number of queued tasks on executor
-      - `airflow_executor_running_tasks` : Number of running tasks on executor
-      - `airflow_operator_failures_<operator_name>` : Operator <operator_name> failures
-      - `airflow_operator_failures` : Operator <operator_name> failures. Metric with operator_name tagging.
-      - `airflow_pool_deferred_slots` : Number of deferred slots in the pool. Metric with pool_name tagging.
-      - `airflow_pool_open_slots` : Number of open slots on executor
-      - `airflow_pool_queued_slots` : Number of queued slots in the pool. Metric with pool_name tagging.
-      - `airflow_pool_running_slots` : Number of running slots in the pool. Metric with pool_name tagging.
-      - `airflow_pool_scheduled_slots` : Number of scheduled slots in the pool. Metric with pool_name tagging.
-      - `airflow_pool_starving_tasks` : Number of starving tasks in the pool. Metric with pool_name tagging.
-      - `airflow_scheduler_critical_section_query_duration` : Milliseconds spent running the critical section task instance query
-      - `airflow_scheduler_heartbeat` : Scheduler heartbeats
-      - `airflow_scheduler_orphaned_tasks_adopted` : Number of Orphaned tasks adopted by the Scheduler
-      - `airflow_scheduler_orphaned_tasks_cleared` : Number of Orphaned tasks cleared by the Scheduler
-      - `airflow_scheduler_scheduler_loop_duration` : Milliseconds spent running one scheduler loop
-      - `airflow_scheduler_tasks_executable` : Number of tasks that are ready for execution (set to queued) with respect to pool limits, DAG concurrency, executor state, and priority.
-      - `airflow_scheduler_tasks_killed_externally` : Number of tasks killed externally. Metric with dag_id and task_id tagging.
-      - `airflow_scheduler_tasks_starving` : Number of tasks that cannot be scheduled because of no open slot in pool
-      - `airflow_schedulerjobrunner_end` : pas dans la doc ?
-      - `airflow_serde_load_serializers` : pas dans la doc ?
-      - `airflow_task_instance_created_<operator_name>` : Number of tasks instances created for a given Operator
-      - `airflow_task_instance_created` : Number of tasks instances created for a given Operator. Metric with dag_id and run_type tagging.
-      - `airflow_task_instances_without_heartbeats_killed` : Task instances without heartbeats killed. Metric with dag_id and task_id tagging.
-      - `airflow_task_scheduled_duration` : Milliseconds a task spends in the Scheduled state, before being Queued. Metric with dag_id and task_id tagging.
-      - `airflow_ti_failures` : Overall task instances failures. Metric with dag_id and task_id tagging.
-      - `airflow_ti_running_<queue>_<dag_id>_<task_id>` : Number of running tasks in a given dag. As ti.start and ti.finish can run out of sync this metric shows all running tis.
-      - `airflow_ti_running` : Number of running tasks in a given dag. As ti.start and ti.finish can run out of sync this metric shows all running tis. Metric with queue, dag_id and task_id tagging.
-      - `airflow_triggerer_capacity_left` : Capacity left on a triggerer to run triggers (described by hostname). Metric with hostname tagging.
-      - `airflow_triggerer_heartbeat` : Triggerer heartbeats
-      - `airflow_triggers_blocked_main_thread` : Number of triggers that blocked the main thread (likely due to not being fully asynchronous)
-      - `airflow_triggers_running` : Number of triggers currently running for a triggerer (described by hostname). Metric with hostname tagging.
-
-        - note : `ti` = Task Instance
-
-
-  - 31 métriques préfixés par `go_*` :
-
-    - `go_gc_duration_seconds{quantile="xxx"}`, `go_gc_duration_seconds_sum`, `go_gc_duration_seconds_count`, `go_gc_gogc_percent`, `go_gc_gomemlimit_bytes`, `go_goroutines`, `go_info{version="go1.23.2"}`, `go_memstats_alloc_bytes`, `go_memstats_alloc_bytes_total`, `go_memstats_buck_hash_sys_bytes`, `go_memstats_frees_total`, `go_memstats_gc_sys_bytes`, `go_memstats_heap_alloc_bytes`, `go_memstats_heap_idle_bytes`, `go_memstats_heap_inuse_bytes`, `go_memstats_heap_objects`, `go_memstats_heap_released_bytes`, `go_memstats_heap_sys_bytes`, `go_memstats_last_gc_time_seconds`, `go_memstats_mallocs_total`, `go_memstats_mcache_inuse_bytes`, `go_memstats_mcache_sys_bytes`, `go_memstats_mspan_inuse_bytes`, `go_memstats_mspan_sys_bytes`, `go_memstats_next_gc_bytes`, `go_memstats_other_sys_bytes`, `go_memstats_stack_inuse_bytes`, `go_memstats_stack_sys_bytes`, `go_memstats_sys_bytes`, `go_sched_gomaxprocs_threads`, `go_threads`
-
-  - 9 métriques préfixés par `process_*` :
-
-    - `process_cpu_seconds_total`, `process_max_fds`, `process_network_receive_bytes_total`, `process_network_transmit_bytes_total`, `process_open_fds`, `process_resident_memory_bytes`, `process_start_time_seconds`, `process_virtual_memory_bytes`, `process_virtual_memory_max_bytes`
-
-  - 4 métriques préfixés par `promhttp_*` :
-
-    - `promhttp_metric_handler_requests_in_flight`, `promhttp_metric_handler_requests_total{code="200"}`, `promhttp_metric_handler_requests_total{code="500"}`, `promhttp_metric_handler_requests_total{code="503"}`
-
-  - 24 métriques préfixés par `statsd_*` :
-    - `statsd_exporter_build_info{branch="HEAD",goarch="amd64",goos="linux",goversion="go1.23.2",revision="c0a390a2c43f77863278615b47d46e886bdca726",tags="unknown",version="0.28.0"}`, `statsd_exporter_event_queue_flushed_total`, `statsd_exporter_events_actions_total{action="map"}`, `statsd_exporter_events_total{type="counter"}`, `statsd_exporter_events_total{type="gauge"}`, `statsd_exporter_events_total{type="observer"}`, `statsd_exporter_events_unmapped_total`, `statsd_exporter_lines_total`, `statsd_exporter_loaded_mappings`, `statsd_exporter_metrics_total{type="counter"}`, `statsd_exporter_metrics_total{type="gauge"}`, `statsd_exporter_metrics_total{type="summary"}`, `statsd_exporter_samples_total`, `statsd_exporter_tag_errors_total`, `statsd_exporter_tags_total`, `statsd_exporter_tcp_connection_errors_total`, `statsd_exporter_tcp_connections_total`, `statsd_exporter_tcp_too_long_lines_total`, `statsd_exporter_udp_packet_drops_total`, `statsd_exporter_udp_packets_total`, `statsd_exporter_unixgram_packets_total`, `statsd_metric_mapper_cache_gets_total`, `statsd_metric_mapper_cache_hits_total`, `statsd_metric_mapper_cache_length`
-
-
-
-
-### Vérifier la validité d'un mapping dans `statsd.yaml`
-
-- Pour vérifier qu'un mapping est valide ou pas :
-
-```bash
-      # commande en local
-      curl http://localhost:9102/metrics | grep <match>
-```
-
-- Par exemple, pour tester la validité des mappings `custom_counter_job_start` et `custom_counter_job_end`, tirés de ce [repo](https://github.com/databand-ai/airflow-dashboards/blob/main/statsd/statsd.conf) :
-
-
-
-### Exemple avec `custom_counter_job_start` (mapping valide)
-
-```yaml
-  - match: "(.+)\\.(.+)_start$"
-    match_metric_type: counter
-    name: "custom_counter_job_start"
-    match_type: regex
-    labels:
-      airflow_id: "$1"
-      job_name: "$2"
-```
-
-On exécute la commande suivante :
-
-```bash
-  curl http://localhost:9102/metrics | grep _start
-  ##==>   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-  ##==>                                  Dload  Upload   Total   Spent    Left  Speed
-  ##==>   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0# HELP custom_counter_job_start Metric autogenerated by statsd_exporter.
-  ##==> # TYPE custom_counter_job_start counter
-  ##==> custom_counter_job_start{airflow_id="airflow",job_name="job"} 3
-  ##==> # HELP process_start_time_seconds Start time of the process since unix epoch in seconds.
-  ##==> # TYPE process_start_time_seconds gauge
-  ##==> process_start_time_seconds 1.75174726436e+09
-  ##==> 100 72669    0 72669    0     0  6295k      0 --:--:-- --:--:-- --:--:-- 7096k
-
-```
-
-Conclusion : `custom_counter_job_start` est fonctionnel, et exécutera `process_start_time_seconds`.
-
-
-
-### Exemple avec  `custom_counter_job_end` (mapping non valide)
-
-```yaml
-  - match: "(.+)\\.(.+)_end$"
-    match_metric_type: counter
-    name: "custom_counter_job_end"
-    match_type: regex
-    labels:
-      airflow_id: "$1"
-      job_name: "$2"
-```
-
-On exécute la commande suivante :
-
-```bash
-  curl http://localhost:9102/metrics | grep _end
-  ##==>   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-  ##==>                                  Dload  Upload   Total   Spent    Left  Speed
-  ##==> 100 72657    0 72657    0     0  5504k      0 --:--:-- --:--:-- --:--:-- 5912k
-```
-
-Conclusion : `custom_counter_job_end` n'est pas fonctionnel.
-
-
-
-# Chargement des données dans une base de données relationnelle
+# 4. Chargement des données dans une base de données relationnelle
 
 ## Mise à jour de la base de données après récupération de nouvelles offres
 
@@ -663,7 +633,7 @@ Même problématique avec certaines offres qui voient la valeur de l'attribut `e
   <img src="screenshots/db_update.png" alt="db_update" style="width:100%"/>
 
 
-# Power BI
+# 5. Data Viz avec Power BI
 
 ## Connexion avec la db
 
@@ -815,7 +785,7 @@ Voici les items sur lesquels il faut cliquer :
     <img src="screenshots/power_bi/region_Occitanie_OK.png" alt="Occitanie colorié entièrement" style="width:20%"/>
 
 
-# Airflow
+# 7. Workflow du projet avec Airflow
 
 ## SQLExecuteQueryOperator vs PostgresOperator avec Airflow 3.0
 
@@ -941,7 +911,161 @@ Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6
 ```
 
 
-# Grafana
+# 8. Prometheus
+
+## StatsD Exporter
+
+### Métriques disponibles de StatsD Exporter
+
+- Voici la liste des métriques disponibles avec préfixe sans les détails ni les valeurs :
+
+  - 50 métriques préfixés par `airflow_*` :
+
+    - Tous les métriques Airflow sont disponibles dans cette [doc](https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/logging-monitoring/metrics.html#metric-descriptions).
+
+    - Pour une raison que je n'ai pas réussi à comprendre, certaines métriques de ce dernier lien ne sont pas exposées par statsd-exporter (par exemple `dag.<dag_id>.<task_id>.duration` ou `task.duration`...).
+    - Voici la liste des métriques exposée par `statsd-exporter` avec le descriptif en anglais repris de la doc, par ordre alphabétique :
+
+      - `airflow_asset_orphaned` : Number of assets marked as orphans because they are no longer referenced in DAG schedule parameters or task outlets
+      - `airflow_dag_<dag_id>_<task_id>_scheduled_duration` : Milliseconds a task spends in the Scheduled state, before being Queued
+      - `airflow_dag_processing_file_path_queue_size` : Number of DAG files to be considered for the next scan
+      - `airflow_dag_processing_file_path_queue_update_count` : Number of times we’ve scanned the filesystem and queued all existing dags
+      - `airflow_dag_processing_import_errors` (utilisé dans grafana) : Number of errors from trying to parse DAG files
+      - `airflow_dag_processing_other_callback_count` : Number of non-SLA callbacks received
+      - `airflow_dag_processing_processes` : Relative number of currently running DAG parsing processes (ie this delta is negative when, since the last metric was sent, processes have completed). Metric with file_path and action tagging.
+      - `airflow_dag_processing_total_parse_time` : Seconds taken to scan and import dag_processing.file_path_queue_size DAG files
+      - `airflow_dag_processor_heartbeat` : Standalone DAG processor heartbeats
+      - `airflow_dagbag_size` (utilisé dans grafana) : Number of dags found when the scheduler ran a scan based on its configuration
+      - `airflow_dagrun_<dag_id>_first_task_scheduling_delay` : Milliseconds elapsed between first task start_date and dagrun expected start
+      - `airflow_dagrun_dependency-check_<dag_id>` : Milliseconds taken to check DAG dependencies
+      - `airflow_dagrun_dependency_check` : Milliseconds taken to check DAG dependencies. Metric with dag_id tagging.
+      - `airflow_dagrun_duration_failed_<dag_id>` : Milliseconds taken for a DagRun to reach failed state
+      - `airflow_dagrun_duration_failed` : Milliseconds taken for a DagRun to reach failed state. Metric with dag_id and run_type tagging.
+      - `airflow_dagrun_duration_success_<dag_id>` (utilisé dans grafana) : Milliseconds taken for a DagRun to reach success state
+      - `airflow_dagrun_duration_success` : Milliseconds taken for a DagRun to reach success state. Metric with dag_id and run_type tagging.
+      - `airflow_dagrun_first_task_scheduling_delay` : Milliseconds elapsed between first task start_date and dagrun expected start. Metric with dag_id and run_type tagging.
+      - `airflow_executor_open_slots` : Number of open slots on executor
+      - `airflow_executor_queued_tasks` : Number of queued tasks on executor
+      - `airflow_executor_running_tasks` : Number of running tasks on executor
+      - `airflow_operator_failures_<operator_name>` : Operator <operator_name> failures
+      - `airflow_operator_failures` : Operator <operator_name> failures. Metric with operator_name tagging.
+      - `airflow_pool_deferred_slots` : Number of deferred slots in the pool. Metric with pool_name tagging.
+      - `airflow_pool_open_slots` : Number of open slots on executor
+      - `airflow_pool_queued_slots` : Number of queued slots in the pool. Metric with pool_name tagging.
+      - `airflow_pool_running_slots` : Number of running slots in the pool. Metric with pool_name tagging.
+      - `airflow_pool_scheduled_slots` : Number of scheduled slots in the pool. Metric with pool_name tagging.
+      - `airflow_pool_starving_tasks` : Number of starving tasks in the pool. Metric with pool_name tagging.
+      - `airflow_scheduler_critical_section_query_duration` : Milliseconds spent running the critical section task instance query
+      - `airflow_scheduler_heartbeat` : Scheduler heartbeats
+      - `airflow_scheduler_orphaned_tasks_adopted` : Number of Orphaned tasks adopted by the Scheduler
+      - `airflow_scheduler_orphaned_tasks_cleared` : Number of Orphaned tasks cleared by the Scheduler
+      - `airflow_scheduler_scheduler_loop_duration` : Milliseconds spent running one scheduler loop
+      - `airflow_scheduler_tasks_executable` : Number of tasks that are ready for execution (set to queued) with respect to pool limits, DAG concurrency, executor state, and priority.
+      - `airflow_scheduler_tasks_killed_externally` : Number of tasks killed externally. Metric with dag_id and task_id tagging.
+      - `airflow_scheduler_tasks_starving` : Number of tasks that cannot be scheduled because of no open slot in pool
+      - `airflow_schedulerjobrunner_end` : pas dans la doc ?
+      - `airflow_serde_load_serializers` : pas dans la doc ?
+      - `airflow_task_instance_created_<operator_name>` : Number of tasks instances created for a given Operator
+      - `airflow_task_instance_created` : Number of tasks instances created for a given Operator. Metric with dag_id and run_type tagging.
+      - `airflow_task_instances_without_heartbeats_killed` : Task instances without heartbeats killed. Metric with dag_id and task_id tagging.
+      - `airflow_task_scheduled_duration` : Milliseconds a task spends in the Scheduled state, before being Queued. Metric with dag_id and task_id tagging.
+      - `airflow_ti_failures` : Overall task instances failures. Metric with dag_id and task_id tagging.
+      - `airflow_ti_running_<queue>_<dag_id>_<task_id>` : Number of running tasks in a given dag. As ti.start and ti.finish can run out of sync this metric shows all running tis.
+      - `airflow_ti_running` : Number of running tasks in a given dag. As ti.start and ti.finish can run out of sync this metric shows all running tis. Metric with queue, dag_id and task_id tagging.
+      - `airflow_triggerer_capacity_left` : Capacity left on a triggerer to run triggers (described by hostname). Metric with hostname tagging.
+      - `airflow_triggerer_heartbeat` : Triggerer heartbeats
+      - `airflow_triggers_blocked_main_thread` : Number of triggers that blocked the main thread (likely due to not being fully asynchronous)
+      - `airflow_triggers_running` : Number of triggers currently running for a triggerer (described by hostname). Metric with hostname tagging.
+
+        - note : `ti` = Task Instance
+
+
+  - 31 métriques préfixés par `go_*` :
+
+    - `go_gc_duration_seconds{quantile="xxx"}`, `go_gc_duration_seconds_sum`, `go_gc_duration_seconds_count`, `go_gc_gogc_percent`, `go_gc_gomemlimit_bytes`, `go_goroutines`, `go_info{version="go1.23.2"}`, `go_memstats_alloc_bytes`, `go_memstats_alloc_bytes_total`, `go_memstats_buck_hash_sys_bytes`, `go_memstats_frees_total`, `go_memstats_gc_sys_bytes`, `go_memstats_heap_alloc_bytes`, `go_memstats_heap_idle_bytes`, `go_memstats_heap_inuse_bytes`, `go_memstats_heap_objects`, `go_memstats_heap_released_bytes`, `go_memstats_heap_sys_bytes`, `go_memstats_last_gc_time_seconds`, `go_memstats_mallocs_total`, `go_memstats_mcache_inuse_bytes`, `go_memstats_mcache_sys_bytes`, `go_memstats_mspan_inuse_bytes`, `go_memstats_mspan_sys_bytes`, `go_memstats_next_gc_bytes`, `go_memstats_other_sys_bytes`, `go_memstats_stack_inuse_bytes`, `go_memstats_stack_sys_bytes`, `go_memstats_sys_bytes`, `go_sched_gomaxprocs_threads`, `go_threads`
+
+  - 9 métriques préfixés par `process_*` :
+
+    - `process_cpu_seconds_total`, `process_max_fds`, `process_network_receive_bytes_total`, `process_network_transmit_bytes_total`, `process_open_fds`, `process_resident_memory_bytes`, `process_start_time_seconds`, `process_virtual_memory_bytes`, `process_virtual_memory_max_bytes`
+
+  - 4 métriques préfixés par `promhttp_*` :
+
+    - `promhttp_metric_handler_requests_in_flight`, `promhttp_metric_handler_requests_total{code="200"}`, `promhttp_metric_handler_requests_total{code="500"}`, `promhttp_metric_handler_requests_total{code="503"}`
+
+  - 24 métriques préfixés par `statsd_*` :
+    - `statsd_exporter_build_info{branch="HEAD",goarch="amd64",goos="linux",goversion="go1.23.2",revision="c0a390a2c43f77863278615b47d46e886bdca726",tags="unknown",version="0.28.0"}`, `statsd_exporter_event_queue_flushed_total`, `statsd_exporter_events_actions_total{action="map"}`, `statsd_exporter_events_total{type="counter"}`, `statsd_exporter_events_total{type="gauge"}`, `statsd_exporter_events_total{type="observer"}`, `statsd_exporter_events_unmapped_total`, `statsd_exporter_lines_total`, `statsd_exporter_loaded_mappings`, `statsd_exporter_metrics_total{type="counter"}`, `statsd_exporter_metrics_total{type="gauge"}`, `statsd_exporter_metrics_total{type="summary"}`, `statsd_exporter_samples_total`, `statsd_exporter_tag_errors_total`, `statsd_exporter_tags_total`, `statsd_exporter_tcp_connection_errors_total`, `statsd_exporter_tcp_connections_total`, `statsd_exporter_tcp_too_long_lines_total`, `statsd_exporter_udp_packet_drops_total`, `statsd_exporter_udp_packets_total`, `statsd_exporter_unixgram_packets_total`, `statsd_metric_mapper_cache_gets_total`, `statsd_metric_mapper_cache_hits_total`, `statsd_metric_mapper_cache_length`
+
+
+### Vérifier la validité d'un mapping dans `statsd.yaml`
+
+- Pour vérifier qu'un mapping est valide ou pas :
+
+```bash
+      # commande en local
+      curl http://localhost:9102/metrics | grep <match>
+```
+
+- Par exemple, pour tester la validité des mappings `custom_counter_job_start` et `custom_counter_job_end`, tirés de ce [repo](https://github.com/databand-ai/airflow-dashboards/blob/main/statsd/statsd.conf) :
+
+
+
+### Exemple avec `custom_counter_job_start` (mapping valide)
+
+```yaml
+  - match: "(.+)\\.(.+)_start$"
+    match_metric_type: counter
+    name: "custom_counter_job_start"
+    match_type: regex
+    labels:
+      airflow_id: "$1"
+      job_name: "$2"
+```
+
+On exécute la commande suivante :
+
+```bash
+  curl http://localhost:9102/metrics | grep _start
+  ##==>   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+  ##==>                                  Dload  Upload   Total   Spent    Left  Speed
+  ##==>   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0# HELP custom_counter_job_start Metric autogenerated by statsd_exporter.
+  ##==> # TYPE custom_counter_job_start counter
+  ##==> custom_counter_job_start{airflow_id="airflow",job_name="job"} 3
+  ##==> # HELP process_start_time_seconds Start time of the process since unix epoch in seconds.
+  ##==> # TYPE process_start_time_seconds gauge
+  ##==> process_start_time_seconds 1.75174726436e+09
+  ##==> 100 72669    0 72669    0     0  6295k      0 --:--:-- --:--:-- --:--:-- 7096k
+
+```
+
+Conclusion : `custom_counter_job_start` est fonctionnel, et exécutera `process_start_time_seconds`.
+
+
+
+### Exemple avec  `custom_counter_job_end` (mapping non valide)
+
+```yaml
+  - match: "(.+)\\.(.+)_end$"
+    match_metric_type: counter
+    name: "custom_counter_job_end"
+    match_type: regex
+    labels:
+      airflow_id: "$1"
+      job_name: "$2"
+```
+
+On exécute la commande suivante :
+
+```bash
+  curl http://localhost:9102/metrics | grep _end
+  ##==>   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+  ##==>                                  Dload  Upload   Total   Spent    Left  Speed
+  ##==> 100 72657    0 72657    0     0  5504k      0 --:--:-- --:--:-- --:--:-- 5912k
+```
+
+Conclusion : `custom_counter_job_end` n'est pas fonctionnel.
+
+
+# 9. Grafana
 
 ## Dashboards
 
@@ -965,132 +1089,3 @@ Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6
 
 - Ces 2 dashboards ont été créés pour avoir une idée de quoi ressemblent ces métriques.
 
-
-# Utilisation de Docker CE dans WSL pour cAdvisor
-
-- Développant sur Windows 11 et WSL avec Ubuntu 22.04, pour que cAdvisor soit fonctionnel, il faut :
-
-  - Activer `docker CE` sur WSL :
-    - la procédure est décrite [ici](#Installer-et-utiliser-Docker-CE-dans-WSL).
-
-  - Désactiver `Docker Desktop` :
-    - dans la GUI : aller dans `Settings` > `Resources` > `WSL Integration`, et décocher `Enable integration with my default WSL distro` et tout autre case cochée concernant `Ubuntu-22.04`.
-
-
-## Pourquoi utiliser Docker CE
-
-- C'est pour avoir nativement un environnement Docker pur Linux, contrôlé par `systemd`, parfaitement compatible avec `cAdvisor`.
-
-- En effet, `cAdvisor` a notamment besoin pour fonctionner d'avoir accès à `/var/lib/docker/image/overlay2/layerdb/mounts/<conteneur_id>/mount-id`, sinon on a le problème décrit [ici](#Problème-avec-Docker-Desktop).
-  - Ce dossier existe nativement avec `Docker CE`.
-  - Ce dossier n'existe pas avec `Docker Destop` (si un dossier équivalent existait, on aurait pu faire un montage, mais ce n'est pas le cas sur `Ubuntu 22.04`).
-
-
-## Problème avec Docker Desktop
-
-- En utilisant `Docker Desktop` uniquement, tous les services Docker de ce projet sont fonctionnels sauf `cAdvisor`, qui affichent notamment les logs d'erreur suivants au démarrage :
-
-```bash
-  docker logs cadvisor
-  ##==> ...
-  ##==> E0709 23:59:51.210495       1 manager.go:1116] Failed to create existing container: /docker/5d59c6de7d670a827e0eec5751c77dbb805be1deacdde52fbdcd323a4360e6a8: failed to identify the read-write layer ID for container "5d59c6de7d670a827e0eec5751c77dbb805be1deacdde52fbdcd323a4360e6a8". - open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/5d59c6de7d670a827e0eec5751c77dbb805be1deacdde52fbdcd323a4360e6a8/mount-id: no such file or directory
-  ##==> E0709 23:59:51.237487       1 manager.go:1116] Failed to create existing container: /docker/3567368bffadb8d183ad3cd8cfc57e5cf9c8cde98853389d5ac7b05959b98ec7: failed to identify the read-write layer ID for container "3567368bffadb8d183ad3cd8cfc57e5cf9c8cde98853389d5ac7b05959b98ec7". - open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/3567368bffadb8d183ad3cd8cfc57e5cf9c8cde98853389d5ac7b05959b98ec7/mount-id: no such file or directory
-  ##==> ...
-```
-
-  - Le problème `open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/<conteneur_id>/mount-id: no such file or directory` avec `Docker Desktop` est connu et remonté à travers ce ticket : https://github.com/vacp2p/wakurtosis/issues/58.
-
-    - Pour le contourner, certaines forums proposent de faire un montage sur `\\wsl$\docker-desktop-data\data\docker` mais ce dossier n'existe pas sur la distribution `Ubuntu 22.04`, et faire un montage avec le dossier existant `\\wsl.localhost\docker-desktop\mnt\docker-desktop-disk\data\docker` ne fonctionne pas non plus car il n'y a pas le fichier `mount-id`.
-
-- La section [suivante](#Installer-et-utiliser-Docker-CE-dans-WSL) présente la procédure complète pour installer `Docker CE` dans WSL2 Ubuntu 22.04 avec systemd.
-
-
-## Installer et utiliser Docker CE dans WSL
-
-1. Activer systemd dans WSL2, puis redémarrer WSL avec PowerShell :
-
-```bash
-  vi /etc/wsl.conf
-  ##==> [boot]
-  ##==> systemd=true
-  ```
-```powershell
-  wsl --shutdown  # avec powershell
-  ```
-
-2. Vérifier que `systemd` fonctionne :
-
-```bash
-  systemctl --no-pager status user.slice
-  ##==> ● user.slice - User and Session Slice
-  ##==>      Loaded: loaded (/lib/systemd/system/user.slice; static)
-  ##==>      Active: active since Thu 2025-07-10 08:44:30 CEST; 1h 13min ago      <== systemd est "actif"
-  ##==>        ...
-  ```
-
-3. Installer Docker CE :
-
-```bash
-  # Installer les dépendances
-  sudo apt update
-  sudo apt install apt-transport-https ca-certificates curl gnupg lsb-release software-properties-common -y
-
-  # Ajouter la clé GPG officielle et le dépôt Docker
-  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-  echo \
-    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
-    https://download.docker.com/linux/ubuntu \
-    $(. /etc/os-release && echo $VERSION_CODENAME) stable" | \
-    sudo tee /etc/apt/sources.list.d/docker.list
-
-  # Mettre à jour et installer
-  sudo apt update
-  sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
-```
-
-4. Corriger iptables pour une compatibilité avec WSL2 afin de permettre à Docker de démarrer correctement :
-
-```bash
-  # Ubuntu 22.04 utilise `nftables` par défaut, incompatible avec Docker sur WSL2, il faut basculer vers l'option `legacy` :
-  sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
-  sudo update-alternatives --set ip6tables /usr/sbin/ip6tables-legacy
-  ##==> update-alternatives: using /usr/sbin/iptables-legacy to provide /usr/sbin/iptables (iptables) in manual mode
-  ##==> update-alternatives: using /usr/sbin/ip6tables-legacy to provide /usr/sbin/ip6tables (ip6tables) in manual mode
-```
-
-5. Configuration de l'utilisateur :
-
-```bash
-# Ajouter l'utilisateur au groupe docker
-sudo usermod -aG docker $USER
-```
-
-```powershell
-  wsl --shutdown  # avec powershell
-  ```
-
-6. Activer et démarrer Docker au démarrage :
-
-```bash
-  # Activer le service Docker
-  sudo systemctl enable docker.service
-  ##==> Synchronizing state of docker.service with SysV service script with /lib/systemd/systemd-sysv-install.
-  ##==> Executing: /lib/systemd/systemd-sysv-install enable docker
-
-  # Vérifier le statut
-  systemctl status docker.service
-    ##==> ● docker.service - Docker Application Container Engine
-    ##==>      Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled)
-    ##==>      Active: active (running) since Thu 2025-07-10 10:07:48 CEST; 1min 18s ago             <== c'est bon
-    ##==>        ...
-```
-
-
-7. Désactiver la variable `DOCKER_HOST`, souvent utilisée pour pointer vers `Docker Desktop` :
-
-```bash
-  env | grep -i DOCKER_HOST
-  # il faut qu'il n'y ait rien de retourner
-```
-
-Si une ligne comme `DOCKER_HOST=tcp://localhost:2375` s'affiche, alors il faut faire `unset DOCKER_HOST`.
