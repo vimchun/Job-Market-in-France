@@ -1,3 +1,5 @@
+# Introduction
+
 - Bienvenue sur mon projet, que j'ai réalisé seul entièrement, dans le cadre de ma formation "Data Engineer" chez Data Scientest.
 
 - Sommaire :
@@ -37,7 +39,7 @@
   - monitoring avec Prometheus et Grafana
 
 
-- Pour ne pas surcharger cette page principale, une autre page avec des informations supplémentaires moins importantes est disponible [ici](readme_files/README_additional_notes.md).
+- Pour ne pas surcharger cette page principale, une autre page avec des informations supplémentaires moins importantes est disponible [ici](readme_files/README_additional_notes.md#introduction).
 
 
 
@@ -128,7 +130,7 @@
 
   - `DAG 1` et `DAG 2` doivent être activés dans la GUI (par défaut, ils sont désactivés après une réinitialisation d'environnement) :
 
-    <img src="readme_files/screenshots/airflow_dags_enabled.png" alt="dags activés" style="width:50%"/>
+    <img src="readme_files/screenshots/airflow_dags_enabled.png" alt="dags activés" style="width:30%"/>
 
     - `DAG 1` doit être activé sinon la planification du DAG ne déclenchera pas du tout (`DAG 1` n'est pas en `Queued` sur cette version, mais c'est tout comme, car le DAG se déclenchera lorsqu'il sera activé).
 
@@ -720,7 +722,7 @@ Plusieurs `SQLExecuteQueryOperator()` qui exécutent séquentiellement les tâch
 
 ## Configuration Docker pour cAdvisor
 
-- Comme écrit dans cette [section](#Environnement), il est préférable `Docker CE dans WSL` au profit de `Docker Desktop`.
+- Comme écrit dans cette [section](#1-environnement), il est préférable `Docker CE dans WSL` au profit de `Docker Desktop`.
 
 - Exemple de requête PromQL qui renvoie les conteneurs docker :
 

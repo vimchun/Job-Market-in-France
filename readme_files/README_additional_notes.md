@@ -1,4 +1,6 @@
-Cette page complète la [page principale](../README.md).
+# Introduction
+
+Cette page complète la [page principale](../README.md#introduction).
 
 # 1. Environnement
 
@@ -169,7 +171,7 @@ Cette section montre les commandes pour retrouver les versions des différents s
     ##==> Redis server v=8.0.2 sha=00000000:1 malloc=jemalloc-5.3.0 bits=64 build=e26b76554fc1ebea
 
   # Airflow
-  # Version défini dans le [Dockerfile](../airflow/Dockerfile)
+  # 3.0.2 (défini dans "airflow/Dockerfile")
 
   # Statsd-exporter
   docker run --rm --entrypoint statsd_exporter prom/statsd-exporter --version
@@ -1073,7 +1075,7 @@ Conclusion : `custom_counter_job_end` n'est pas fonctionnel.
 
 #### Métriques avec préfixes
 
-- Cette [section](../README.md#métriques-disponibles) fait état de métriques préfixés.
+- Cette [section](../README.md#métriques-de-statsd-exporter) fait état de métriques préfixés.
 
 - Un dashboard a été créé :
 
