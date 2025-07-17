@@ -156,8 +156,8 @@ def get_creds_from_yaml_file(file_path):
     with open(file_path, "r") as file:
         creds = yaml.safe_load(file)
 
-    identifiant_client = creds["API_FRANCE_TRAVAIL"]["IDENTIFIANT_CLIENT"]
-    cle_secrete = creds["API_FRANCE_TRAVAIL"]["CLE_SECRETE"]
+    identifiant_client = creds["FRANCE_TRAVAIL_API_CREDENTIALS"]["IDENTIFIANT_CLIENT"]
+    cle_secrete = creds["FRANCE_TRAVAIL_API_CREDENTIALS"]["CLE_SECRETE"]
 
     dict_ = {"identifiant_client": identifiant_client, "cle_secrete": cle_secrete}
 
@@ -1207,14 +1207,16 @@ with DAG(
 
         write_history = write_to_history_csv_file(AGGREGATED_JSON_DIR)  #### task A10
 
-        trigger_dag2 = TriggerDagRunOperator(  #### task finale qui déclenche le DAG 2 si DAG 1 en "success"
-            task_id="trigger_dag_2",
-            trigger_dag_id="DAG_2_WRITE_TO_DATABASE",
-            wait_for_completion=False,
-            reset_dag_run=True,
-        )
-
         api_requests >> tl
-        [file0, file1] >> write_history >> trigger_dag2
+        [file0, file1] >> write_history
+
+    trigger_dag2 = TriggerDagRunOperator(  #### task finale qui déclenche le DAG 2 si DAG 1 en "success"
+        task_id="trigger_dag_2",
+        trigger_dag_id="DAG_2_WRITE_TO_DATABASE",
+        wait_for_completion=False,
+        reset_dag_run=True,
+    )
+
+    write_history >> trigger_dag2
 
     setup >> etl
