@@ -2,8 +2,9 @@ import json
 import logging
 import os
 
+from datetime import timedelta
+
 import psycopg2
-import requests
 
 from airflow import DAG
 from airflow.decorators import task
@@ -39,6 +40,9 @@ def get_token():
     """
     Récupère le bearer token pour pouvoir faire les requêtes pour GET et POST les connections.
     """
+
+    import requests
+
     response = requests.post(
         "http://airflow-apiserver:8080/auth/token",
         json={"username": "airflow", "password": "airflow"},
@@ -54,6 +58,9 @@ def ensure_postgres_connexion(postgres_connection_name):
     """
     Vérifie que la connexion postgres nommée "postgres_connection_name" existe, et la crée le cas échéant (comme si on le faisait depuis la GUI d'Airflow).
     """
+
+    import requests
+
     token = get_token()
 
     for _ in range(2):
@@ -1285,7 +1292,20 @@ def insert_into_offre_permisconduire(folder, json_filename):
 
 keep_generated_split_jsons = 1  # (mode dev) False pour ne pas supprimer les jsons splittés générés
 
-with DAG(dag_id="DAG_2_WRITE_TO_DATABASE", tags=["project"]):
+# définition de paramètres liés au mécanisme de retry pour une tâche
+default_args = {
+    "retries": 5,  # nombre de tentatives de ré-exécution en cas d’échec d’une tâche
+    "retry_delay": timedelta(minutes=1),  # délai entre deux tentatives de retry (après un échec)
+    "retry_exponential_backoff": True,  # si True : le délai entre les retries augmente de façon exponentielle (ex: 2 min → 4 min → 8 min → ...)
+    "max_retry_delay": timedelta(minutes=5),  # délai maximum entre deux retries, même si activation de backoff exponentiel
+}
+
+
+with DAG(
+    dag_id="DAG_2_WRITE_TO_DATABASE",
+    tags=["project"],
+    default_args=default_args,
+):
     with TaskGroup(group_id="SETUP") as setup:
         json_file_path = check_only_one_json_file_in_folder(AGGREGATED_JSON_DIR)
 

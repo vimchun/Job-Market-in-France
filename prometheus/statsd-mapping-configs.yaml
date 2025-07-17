@@ -1,0 +1,33 @@
+# Exemple sur : https://github.com/databand-ai/airflow-dashboards/blob/main/statsd/statsd.conf
+#   où la plupart des mappings n'est plus plus d'actualité car
+#   il s'agit certainement d'un fichier de conf qui a été fait pour Airflow 2.x,
+#   le fichier ayant été mis à jour la dernière fois le 25/03/2021, il y a 4 ans
+#    (Airflow 3.x est sorti en 2025).
+#
+# Trois mappings valides sont conservés pour garder cette possibilité de paramétrer les mappings.
+#  Ils sont nommés de cette manière : `custom_[type]_[nom]` (`type` étant `counter`, `gauge`, `observer`).
+
+mappings:
+  # === Counters ===
+  - match: "(.+)\\.(.+)_start$"
+    match_metric_type: counter
+    name: "custom_counter_job_start"
+    match_type: regex
+    labels:
+      airflow_id: "$1"
+      job_name: "$2"
+
+  # === Gauges ===
+  - match: "*.dag_processing.last_run.seconds_ago.*"
+    match_metric_type: gauge
+    name: "custom_gauge_dag_processing_last_run_seconds"
+    labels:
+      airflow_id: "$1"
+      dag_file: "$2"
+
+  # === Timers ===
+  - match: "*.scheduler.critical_section_duration"
+    match_metric_type: observer
+    name: "custom_summary_scheduler_critical_section_duration"
+    labels:
+      airflow_id: "$1"
