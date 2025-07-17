@@ -14,6 +14,7 @@
   - [7. Workflow du projet avec Airflow](#7-Workflow-du-projet-avec-Airflow)
   - [8. Prometheus](#8-Prometheus)
   - [9. Grafana](#9-Grafana)
+  - [10. Difficultés rencontrées](#10-Difficultés-rencontrées)
 
 
 - Slideshow :
@@ -24,22 +25,24 @@
 
 # 0. Présentation du projet
 
-- Les objectifs sont globalement de :
+- L'objectif principal de ce projet est d'analyser le marché du travail en France Métropolitaine à travers des données réels.
+
+- Voici un résumé de ce qui a été effectué pour ce projet :
 
   - mettre en place un pipeline ETL/ELT pour récupérer les offres d'emploi par API sur https://francetravail.io/data/api, étudier les attributs disponibles et faire le diagramme UML, effectuer des transformations en amont ou en aval de l'écriture des données dans une base de données Postgres,
 
-  - consommer les données avec la mise en place de rapports avec Power BI,
-
   - travailler avec un environnement docker,
 
-  - mettre en place une API pour qu'un utilisateur puisse requêter la base de données via une interface graphique,
-
   - orchestrer les tâches avec Airflow,
+
+  - consommer les données avec la mise en place de rapports avec Power BI,
+
+  - mettre en place une API pour qu'un utilisateur puisse requêter la base de données via une interface graphique,
 
   - monitoring avec Prometheus et Grafana
 
 
-- Pour ne pas surcharger cette page principale, une autre page avec des informations supplémentaires moins importantes est disponible [ici](readme_files/README_additional_notes.md#introduction).
+- Pour ne pas surcharger cette page principale, une seconde page avec des informations supplémentaires moins essentielles est disponible [ici](readme_files/APPENDIX.md#readme-secondaire).
 
 
 
@@ -66,23 +69,25 @@
 
     - Note importante : on n'utilise pas `Docker Desktop` mais `Docker CE dans WSL` car `cadvisor` n'est pas opérationnel dans l'environnement WSL avec Ubuntu 22.04 + Docker Desktop.
 
-      - Voir [ici](readme_files/README_additional_notes.md#Utilisation-de-Docker-CE-dans-WSL-pour-cAdvisor) pour les explications et pour la procudure d'installation de `Docker CE` dans WSL.
+      - Voir [ici](readme_files/APPENDIX.md#Utilisation-de-Docker-CE-dans-WSL-pour-cAdvisor) pour les explications et pour la procédure d'installation de `Docker CE` dans WSL.
 
-  - Environnement virtuel, Python 3.12.9 (février 2025)
+  - Python 3.12.9 (février 2025) avec environnement virtuel
 
 
 ## Services Docker
 
 ### Schéma
 
-+ Screenshot environnement avec les différents services Docker
+- Le fichier `drawio_files/docker_services.drawio` donne une vue des principaux services Docker déployée :
+
+  <img src="readme_files/screenshots/drawio/docker_services.png" alt="screenshot des services docker" style="width:100%"/>
 
 
 ### Versions testées
 
 - Le ficher `docker-compose.yml` ne spécifiant pas les versions pour les différents services (tag `latest` par défaut), il est important de noter les versions des services de l'écosystème.
 
-- Ce [lien](readme_files/README_additional_notes.md#versions-testées) donne les commandes permettant de récupérer les versions.
+- Ce [lien](readme_files/APPENDIX.md#récupération-des-versions) donne les commandes permettant de récupérer les versions.
 
 - Tableau avec les versions utilisées :
 
@@ -110,10 +115,10 @@
 
 - Copier-coller les credentials (`identifiant client` + `clé secrète`) dans le fichier `airflow/data/resources/api_credentials.yml` depuis le site `https://francetravail.io/`, après avoir créé un compte :
 
-  <img src="readme_files/screenshots/francetravail_io_credentials.png" alt="credentials france travail" style="width:50%"/>
+  <img src="readme_files/screenshots/misc/francetravail_io_credentials.png" alt="credentials france travail" style="width:50%"/>
 
 
-- Si environnement Windows + WSL, utiliser `Docker CE` dans WSL, plutôt qu'utiliser `Docker Desktop` (voir cette [procédure](readme_files/README_additional_notes.md#Installer-et-utiliser-Docker-CE-dans-WSL))
+- Si environnement Windows + WSL, utiliser `Docker CE` dans WSL, plutôt qu'utiliser `Docker Desktop` (voir cette [procédure](readme_files/APPENDIX.md#Installer-et-utiliser-Docker-CE-dans-WSL))
 
 
 - Avoir les services Docker qui tournent :
@@ -130,7 +135,7 @@
 
   - `DAG 1` et `DAG 2` doivent être activés dans la GUI (par défaut, ils sont désactivés après une réinitialisation d'environnement) :
 
-    <img src="readme_files/screenshots/airflow_dags_enabled.png" alt="dags activés" style="width:30%"/>
+    <img src="readme_files/screenshots/airflow/dags_enabled.png" alt="dags activés" style="width:30%"/>
 
     - `DAG 1` doit être activé sinon la planification du DAG ne déclenchera pas du tout (`DAG 1` n'est pas en `Queued` sur cette version, mais c'est tout comme, car le DAG se déclenchera lorsqu'il sera activé).
 
@@ -233,19 +238,8 @@
 
   - `postgres`,
   - `fastapi`,
-  - `redis`,
-  - `airflow-apiserver`,
-  - `airflow-scheduler`,
-  - `airflow-dag-processor`,
-  - `airflow-worker`,
-  - `airflow-triggerer`,
-  - `airflow-init`,
-  - `airflow-cli`,
-  - `flower`,
-  - `statsd-exporter`,
-  - `node-exporter`,
-  - `postgres-exporter`,
-  - `cAdvisor`,
+  - `redis`, `airflow-apiserver`, `airflow-scheduler`, `airflow-dag-processor`, `airflow-worker`, `airflow-triggerer`, `airflow-init`, `airflow-cli`, `flower`,
+  - `statsd-exporter`, `node-exporter`, `postgres-exporter`, `cAdvisor`,
   - `prometheus`,
   - `grafana`
 
@@ -334,9 +328,9 @@ Ces transformations sont faites dans le `DAG 1`, faites via Python et en amont d
 
   - Concaténation des 61 fichiers json dans un seul fichier json, avec suppression des doublons
 
-  - Conservation des offres en France Métropolitaine uniquement, [détails ici](readme_files/README_additional_notes.md#conservation-des-offres-en-France-Métropolitaine-uniquement).
+  - Conservation des offres en France Métropolitaine uniquement, [détails ici](readme_files/APPENDIX.md#conservation-des-offres-en-France-Métropolitaine-uniquement).
 
-  - Ajout des attributs de localisation des offres (noms et codes des villes, départements, départements et régions), [détails ici](readme_files/README_additional_notes.md#attributs-de-localisation-des-offres-noms-et-codes-des-villes-communes-départements-et-régions).
+  - Ajout des attributs de localisation des offres (noms et codes des villes, départements, départements et régions), [détails ici](readme_files/APPENDIX.md#attributs-de-localisation-des-offres-noms-et-codes-des-villes-communes-départements-et-régions).
 
   - Ajout des attributs `date_premiere_ecriture` et `date_extraction` :
 
@@ -351,11 +345,11 @@ Ces transformations sont faites dans le `DAG 2`, faites via des requêtes SQL et
 
   - pour créer et écrire l'attribut `metier_data` : pour chaque offre, on comparera l'attribut `intitule_offre` avec des regex afin de déterminer s'il s'agit d'une offre pour un `Data Engineer`, un `Data Analyst`, ou un `Data Scientist`.
 
-    - [détails ici](readme_files/README_additional_notes.md#attribut-metier_data)
+    - [détails ici](readme_files/APPENDIX.md#attribut-metier_data)
 
   - pour créer et écrire les attributs `salaire_min` et `salaire_max` en fonction d'un algorithme expliqué
 
-    - [détails ici](readme_files/README_additional_notes.md#attributs-salaire_min-et-salaire_max)
+    - [détails ici](readme_files/APPENDIX.md#attributs-salaire_min-et-salaire_max)
 
 
 
@@ -368,7 +362,7 @@ Ces transformations sont faites dans le `DAG 2`, faites via des requêtes SQL et
 
 - Pour la suite, une modélisation `snowflake` est utilisée, dont le diagramme UML est le suivant :
 
-  <img src="readme_files/screenshots/UML.png" alt="diagramme" style="width:100%"/>
+  <img src="readme_files/screenshots/drawio/UML.png" alt="diagramme" style="width:100%"/>
 
   TODO : justifier ce choix
 
@@ -397,7 +391,7 @@ Ces transformations sont faites dans le `DAG 2`, faites via des requêtes SQL et
 
 - Ainsi, pour une offre, si un attribut d'une table de dimension associé à la table de liaison a évolué, alors on ne conservera que l'offre avec `date_extraction` le plus récent.
 
-- Plus de détails [ici](readme_files/README_additional_notes.md#mise-à-jour-de-la-base-de-données-après-récupération-de-nouvelles-offres).
+- Plus de détails [ici](readme_files/APPENDIX.md#mise-à-jour-de-la-base-de-données-après-récupération-de-nouvelles-offres).
 
 
 
@@ -410,18 +404,14 @@ Ces transformations sont faites dans le `DAG 2`, faites via des requêtes SQL et
 
 - Ci-dessous des liens expliquant les différentes manipulations faites pour :
 
-  - [connecter Power BI avec la db postgres](readme_files/README_additional_notes.md#connexion-avec-la-db)
+  - [connecter Power BI avec la db postgres](readme_files/APPENDIX.md#connexion-avec-la-db)
 
-  - [modifier le Model view](readme_files/README_additional_notes.md#model-view)
+  - [modifier le Model view](readme_files/APPENDIX.md#model-view)
 
-  - [modifier le Table view](readme_files/README_additional_notes.md#table-view)
+  - [modifier le Table view](readme_files/APPENDIX.md#table-view)
 
-  - [faire les transformations](readme_files/README_additional_notes.md#transformations)
+  - [faire les transformations](readme_files/APPENDIX.md#transformations)
 
-
-## Fichier .pbix
-
-- Sauvegarder petit fichier, puis charger pour gain de place et ouvrir le fichier plus facilement ?
 
 
 ## Screenshots des rapports
@@ -453,7 +443,7 @@ TODO : faire à la fin du projet
   - Le premier récupérait les données de France Travail, faisait des transformations, et chargeait les offres d'emploi dans un json.
   - Le second lisait le json puis écrivait les offres d'emploi dans la base de données, et effectuait un deuxième lot de transformations à partir de fichier sql.
 
-  <img src="readme_files/screenshots/workflow_before_airflow.png" alt="screenshot du workflow" style="width:100%"/>
+  <img src="readme_files/screenshots/drawio/workflow_before_airflow.png" alt="screenshot du workflow" style="width:100%"/>
 
 
 - Reprendre ces scripts pour avoir Airflow dans le projet a été bénéfique :
@@ -599,7 +589,7 @@ TODO : screenshot de DAG 1 à la fin du projet
 
   - `A7_special_jsons_concat`
 
-    - Concaténation spéciale entre le json existant et le nouveau json, détails de l'algo ([ici](readme_files/README_additional_notes.md#concaténation-spéciale-entre-le-json-existant-et-le-nouveau-json)) [pandas]
+    - Concaténation spéciale entre le json existant et le nouveau json, détails de l'algo ([ici](readme_files/APPENDIX.md#concaténation-spéciale-entre-le-json-existant-et-le-nouveau-json)) [pandas]
 
     - Renommage du fichier `all_in_one.json` en `date__extraction_occurence_N+1.json`, si le fichier existant était nommé `date__extraction_occurence_N.json`.
 
@@ -647,7 +637,7 @@ TODO : screenshot de DAG 2 à la fin du projet
 
   - Note : on peut vérifier que la connexion est bien créée via la GUI comme montré sur le screenshot suivant :
 
-    <img src="readme_files/screenshots/airflow_gui_edit_connection.png" alt="airflow_edit_connection" style="width:100%"/>
+    <img src="readme_files/screenshots/airflow/gui_edit_connection.png" alt="airflow_edit_connection" style="width:100%"/>
 
     (si la connexion n'est pas bien définie, alors le `DAG 2` posera problème puisqu'il ne pourra pas intéragir avec la base de donnée `francetravail`)
 
@@ -717,7 +707,7 @@ Plusieurs `SQLExecuteQueryOperator()` qui exécutent séquentiellement les tâch
 
 - Lorsqu'on se connecte sur la [GUI](http://localhost:9092/) de Prometheus, on doit voir que l'état de chaque target est à `UP`, comme le montre dans le screenshot suivant :
 
-  <img src="readme_files/screenshots/prometheus_targets.png" alt="prometheus targets" style="width:60%"/>
+  <img src="readme_files/screenshots/prometheus/targets.png" alt="prometheus targets" style="width:60%"/>
 
 
 ## Configuration Docker pour cAdvisor
@@ -726,7 +716,7 @@ Plusieurs `SQLExecuteQueryOperator()` qui exécutent séquentiellement les tâch
 
 - Exemple de requête PromQL qui renvoie les conteneurs docker :
 
-  <img src="readme_files/screenshots/prometheus_cadvisor.png" alt="cadvisor opérationnel" style="width:30%"/>
+  <img src="readme_files/screenshots/prometheus/cadvisor.png" alt="cadvisor opérationnel" style="width:30%"/>
 
 
 ## Métriques exposées par les différents services
@@ -780,7 +770,7 @@ TODO : refaire le fichier quand les DAGs seront figés
   - 24 métriques préfixés par `statsd_*`
 
 
-- Le lien suivant renvoie vers la liste des métriques avec un préfixe : [lien](readme_files/README_additional_notes.md#métriques-disponibles-de-statsd-exporter).
+- Le lien suivant renvoie vers la liste des métriques avec un préfixe : [lien](readme_files/APPENDIX.md#métriques-disponibles-de-statsd-exporter).
 
 
 ### Personnalisation des mappings statsd
@@ -797,7 +787,7 @@ TODO : refaire le fichier quand les DAGs seront figés
     ##==>  SUCCESS: /etc/prometheus/prometheus.yaml is valid prometheus config file syntax
 ```
 
-  - Pour vérifier la validité d'un mapping du fichier `airflow/config/statsd.yaml` : [lien](readme_files/README_additional_notes.md#vérifier-la-validité-dun-mapping-dans-statsdyaml).
+  - Pour vérifier la validité d'un mapping du fichier `airflow/config/statsd.yaml` : [lien](readme_files/APPENDIX.md#vérifier-la-validité-dun-mapping-dans-statsdyaml).
 
 
 
@@ -807,7 +797,7 @@ TODO : refaire le fichier quand les DAGs seront figés
 
 - Après (ré)installation, la datasource `Prometheus` est crée automatiquement grâce au fichier `grafana/provisioning/datasources/datasources.yml` qui est copié dans `/grafana/provisioning/datasources/datasources.yml` grâce au montage de volume, comme montré ici :
 
-  <img src="readme_files/screenshots/grafana_datasource_prometheus.png" alt="datasource Prometheus dans Grafana" style="width:30%"/>
+  <img src="readme_files/screenshots/grafana/datasource_prometheus.png" alt="datasource Prometheus dans Grafana" style="width:30%"/>
 
 - Les dashboards placés dans `grafana/provisioning/dashboards/` sont également importés automatiquement.
 
@@ -846,7 +836,7 @@ todo : mettre screenshots quand ca sera bon
 
   - dashboards créés :
 
-    - Deux dashboards avec les 56 métriques préfixés par `airflow_*` et les 31 métriques préfixés par `go_*` ont été créés à but informatif, plus de détails [ici](readme_files/README_additional_notes.md#métriques-avec-préfixes).
+    - Deux dashboards avec les 56 métriques préfixés par `airflow_*` et les 31 métriques préfixés par `go_*` ont été créés à but informatif, plus de détails [ici](readme_files/APPENDIX.md#métriques-avec-préfixes).
 
 
 ### Dossier "mine"
@@ -854,3 +844,11 @@ todo : mettre screenshots quand ca sera bon
 - Le dossier "mine" contient le dashboard `my dashboard` (`grafana/provisioning/dashboards/mine/my_dashboard.json`) contient uniquement des visualisations jugées utiles.
 
   todo : gif
+
+
+
+# 10. Difficultés rencontrées
+
+- Les points suivants illustrent des difficultés auxquelles je me suis heurté mais que j'ai fini par résoudre :
+
+todo
