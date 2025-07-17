@@ -152,16 +152,16 @@
 
 (todo : + screenshots)
 
-  | Application       | Url                                                    |
-  | ----------------- | ------------------------------------------------------ |
-  | FastAPI           | http://localhost:8000/docs                             |
-  | Airflow           | http://localhost:8080/                                 |
-  | StatsD Exporter   | http://localhost:9102/ + http://localhost:9102/metrics |
-  | Node Exporter     | http://localhost:9100/ + http://localhost:9100/metrics |
-  | Postgres Exporter | http://localhost:9187/ + http://localhost:9187/metrics |
-  | cAdvisor          | http://localhost:8081/ + http://localhost:8081/metrics |
-  | Prometheus        | http://localhost:9092/ + http://localhost:9092/metrics |
-  | Grafana           | http://localhost:3000/                                 |
+  | Application       | Url                                                    | credentials       |
+  | ----------------- | ------------------------------------------------------ | ----------------- |
+  | FastAPI           | http://localhost:8000/docs                             |                   |
+  | Airflow           | http://localhost:8080/                                 | airflow / airflow |
+  | StatsD Exporter   | http://localhost:9102/ + http://localhost:9102/metrics |                   |
+  | Node Exporter     | http://localhost:9100/ + http://localhost:9100/metrics |                   |
+  | Postgres Exporter | http://localhost:9187/ + http://localhost:9187/metrics |                   |
+  | cAdvisor          | http://localhost:8081/ + http://localhost:8081/metrics |                   |
+  | Prometheus        | http://localhost:9092/ + http://localhost:9092/metrics |                   |
+  | Grafana           | http://localhost:3000/                                 | grafana / grafana |
 
 
 

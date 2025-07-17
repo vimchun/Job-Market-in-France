@@ -1,30 +1,48 @@
 # Reste à faire (ou pas)
 
-### P0
+### à voir après soutenance (28/07/2025)
+
+  - alert manager
 
   - github actions (dossier .workflow)
 
-  - ajout prom/grafana au docker compose
+  - pytest
 
-### P1
+  - mettre en place dbt
 
-  - mettre en place dbt ?
 
-  - airflow : utiliser log au lieu de print ?
-        log.info("") au lieu de print ?
+### P0
 
-### P2
+  - pb avec `airflow\dags\sql\transformation_4_update__table_contrat__columns__salaire_min__salaire_max.sql` => n'écrit rien dans les colonnes ?
 
   - fastapi idées :
     - création offre (id offre obligatoire, mais doit être unique)
     - suppression offre
     - ajouter une route comme /healthcheck ou /status qui permet de vérifier que la base est connectée (test SELECT 1).
 
+  - airflow : update to 3.0.3 ?
+    https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html#airflow-3-0-3-2025-07-14 ?
+
+
+### P1
+
+  - airflow : activer les dags au démarrage après un reboot (possible ?)
+
+
+### P2
+
+  - script pour générer le rapport en pdf à partir des .md (avec modifs des urls)
+
+  - pb pbi avec certaines villes mal situées (ex: Buc pas en IDF)
+
   - script "2--script_insert_into_tables.py" => option pour ne prendre en compte que les dernières offres (pour que le script tourne plus vite)
 
   - attribut `liste_mots_cles` : faisabilité regex sur le mot entier (exemple si on cherche le langage `R`)
 
   - renommer les fichiers sql en anglais ?
+
+  - airflow : utiliser log au lieu de print ?
+        log.info("") au lieu de print ?
 
 
 ### P3
@@ -35,3 +53,5 @@
   - transformation pour avoir les années d'exp. (table experience)
 
   - export db ?
+
+  - Power BI : Sauvegarder petit fichier, puis charger pour gain de place et ouvrir le fichier plus facilement ?
