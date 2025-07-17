@@ -800,6 +800,16 @@ Voici les items sur lesquels il faut cliquer :
 
 # 7. Workflow du projet avec Airflow
 
+## Clé fernet
+
+- Une clé doit être générée pour la clé `AIRFLOW__CORE__FERNET_KEY` du fichier de configuration d'Airflow (aussi disponible dans le fichier `docker-compose.yml`).
+
+```bash
+  python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+  ##==> m0XspG5J7rDL3xRpMM5k0LzC6M6x73dOPnbrjX3_cug=
+```
+
+
 ## SQLExecuteQueryOperator vs PostgresOperator avec Airflow 3.0
 
 - `PostgresOperator` est deprecated au profil de `SQLExecuteQueryOperator` avec la version `apache-airflow-providers-postgres` utilisée (6.1.3).
