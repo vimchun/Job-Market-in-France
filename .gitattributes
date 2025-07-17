@@ -1,4 +1,5 @@
 # pour que github ne prenne pas en compte les notebooks dans le calcul des stats dans la partie "Languages"
 _archives/notebooks/** linguist-vendored
+_archives/notebooks/** linguist-vendored=true
 _archives/notebooks/**/*.ipynb linguist-vendored=true
 _archives/notebooks/*.ipynb linguist-vendored=true
