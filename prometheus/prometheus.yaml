@@ -1,0 +1,29 @@
+# Configuration globale
+global:
+  scrape_interval: 15s # default : 1 minute
+  evaluation_interval: 15s # default : 1 minute
+
+# Configuration de l'alert manager
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093
+
+# Configuration des services à surveiller
+scrape_configs:
+  - job_name: statsd-exporter
+    static_configs:
+      - targets: ["statsd-exporter:9102"]
+
+  - job_name: node-exporter
+    static_configs:
+      - targets: ["node-exporter:9100"]
+
+  - job_name: postgres-exporter
+    static_configs:
+      - targets: ["postgres-exporter:9187"]
+
+  - job_name: cadvisor
+    static_configs:
+      - targets: ["cadvisor:8080"]
