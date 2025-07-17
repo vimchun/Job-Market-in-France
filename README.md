@@ -66,13 +66,13 @@
 
 - Développements et tests sous :
 
-  - Windows 11 + WSL2 avec Ubuntu 22.04
+  - `Windows 11 + WSL2 avec Ubuntu 22.04`
 
-    - Note importante : on n'utilise pas `Docker Desktop` mais `Docker CE dans WSL` car `cadvisor` n'est pas opérationnel dans l'environnement WSL avec Ubuntu 22.04 + Docker Desktop.
+    - Note importante : on n'utilise pas `Docker Desktop` mais `Docker CE dans WSL` car `cAdvisor` (Container Advisor) n'est pas opérationnel dans l'environnement WSL avec Ubuntu 22.04 + Docker Desktop.
 
       - Voir [ici](readme_files/APPENDIX.md#Utilisation-de-Docker-CE-dans-WSL-pour-cAdvisor) pour les explications et pour la procédure d'installation de `Docker CE` dans WSL.
 
-  - Python 3.12.9 (février 2025) avec environnement virtuel
+  - `Python 3.12.9` (février 2025) avec environnement virtuel (formatteur `Ruff`)
 
 
 ## Services Docker
@@ -470,21 +470,21 @@ TODO : faire à la fin du projet
 
 ## Version utilisée
 
-- Au moment d'écrire les DAGs, il y avait deux versions majeures : la 2.11.0 et la 3.0.2.
+- Au moment d'écrire ces lignes, deux branches majeures : la `2.x` et la `3.x`.
 
-- Finalement, le choix se portera sur la version 3.0.2 car cette nouvelle branche a des évolutions majeures (https://airflow.apache.org/blog/airflow-three-point-oh-is-here/).
+- Finalement, le choix se portera sur la branche `3.x` (avec la récente `3.0.2`) qui contient des évolutions majeures (détails [ici](https://airflow.apache.org/blog/airflow-three-point-oh-is-here/)).
 
 
 ## Description du worflow des DAGs
 
-Ci-dessous le nom d'une `tâche` avec une description.
+- Ci-dessous le nom d'une `tâche` avec une description.
 
-Pour alléger le texte, on écrira :
+- Pour alléger le texte, on écrira :
 
-- `fichier_existant.json` : fichier json aggrégeant les fichiers jsons téléchargés.
-- `dossier_A` : dossier contenant tous les fichiers json téléchargés par api.
-- `dossier_B` : dossier contenant le json `fichier_existant.json`.
-- `all_in_one.json` : fichier json aggrégeant les fichiers jsons téléchargés en cours de construction, avant renommage.
+  - `fichier_existant.json` : fichier json aggrégeant les fichiers jsons téléchargés.
+  - `dossier_A` : dossier contenant tous les fichiers json téléchargés par api.
+  - `dossier_B` : dossier contenant le json `fichier_existant.json`.
+  - `all_in_one.json` : fichier json aggrégeant les fichiers jsons téléchargés en cours de construction, avant renommage.
 
 
 ### DAG 1
@@ -496,40 +496,40 @@ TODO : screenshot de DAG 1 à la fin du projet
 ##### Task group "check_files_in_folders"
 
 
-- `S1_delete_all_in_one_json`
+- `S1_delete_all_in_one_json` :
 
   - Suppression du fichier `all_in_one.json` s'il existe dans le `dossier_B`.
 
 
-- tâches en parallèle :
+- Tâches en parallèle :
 
-  - `S1_count_number_of_json_file`
+  - `S1_count_number_of_json_file` :
 
     - Vérification du nombre de fichiers json dans le `dossier_B` :
       - s'il y a plusieurs fichiers json : fin du DAG (exception levée).
-      - s'il y a 0 ou 1 fichier json `fichier_existant.json` : on continue et on retourne "count", qui représente le nombre de fichiers json (0 ou 1 donc) et qui servira plus tard dans ce DAG.
+      - s'il y a 0 ou 1 fichier json `fichier_existant.json` : on continue et on retourne `count`, qui représente le nombre de fichiers json (0 ou 1 donc) et qui servira plus tard dans ce DAG.
 
 
-  - `S1_check_csv_file_exists`, `S1_check_appellation_yaml_file_exists`, `S1_check_credentials_yaml_file_exists`
+  - `S1_check_csv_file_exists`, `S1_check_appellation_yaml_file_exists`, `S1_check_credentials_yaml_file_exists` :
 
     - Vérification de la présence de ces fichiers :
-      - si un des fichiers n'existe pas : fin du DAG (exception levée).
+      - Si un des fichiers n'existe pas : fin du DAG (exception levée).
 
 
 ##### Task group "after_checks"
 
-- `S2_remove_all_json_files`
+- `S2_remove_all_json_files` :
 
   - Suppression des fichiers json dans le `dossier_A`.
     - Après suppression, on vérifie qu'il n'y a plus de fichier json (s'il reste un fichier json : fin du script).
 
 
-- `S2_load_appellations_yaml_file`
+- `S2_load_appellations_yaml_file` :
 
   - Chargement du fichier yaml avec les 61 métiers de la tech.
 
 
-- `S2_get_creds_from_yaml_file` puis `S2_get_token`
+- `S2_get_creds_from_yaml_file` puis `S2_get_token` :
 
   - La première tâche récupère des credentials depuis le fichier.
   - La seconde tâche récupère le token API pour la suite.
@@ -538,34 +538,33 @@ TODO : screenshot de DAG 1 à la fin du projet
 
 #### Task group "ETL"
 
-
-- `A1_get_offers`
+- `A1_get_offers` :
 
   - Récupération et écriture des offres d'emploi dans des fichiers json dans le `dossier_A` [requests] + vérification de la validité des fichiers json.
   - Le fichier yaml décrivant 61 métiers, Airflow exécute ici 61 `mapped tasks` en parallèle.
 
 
-- `A2_all_json_in_one`
+- `A2_all_json_in_one` :
 
   - Consolidation de tous les fichiers json du `dossier_A` en un seul fichier json `all_in_one.json` dans le `dossier_B` et suppression des doublons [pandas].
 
 
-- `A3_only_metropole`
+- `A3_only_metropole` :
 
   - Conservation uniquement dans les offres d'emploi en France Métropolitaine dans `all_in_one.json` [pandas].
 
 
-- `A4_add_location_attrs`
+- `A4_add_location_attrs` :
 
   - Ajout d'attributs dans `all_in_one.json` : `nom_commune`, `nom_ville`, `code_departement`, `nom_departement`, `code_region`, `nom_region`, à partir du code insee, coordonnées GPS et autres infos [pandas/geopy].
 
 
-- `A5_add_dateExtraction_attr`
+- `A5_add_dateExtraction_attr` :
 
   - Ajout d'un attribut dans `all_in_one.json` : `date_extraction`, pour connaitre la date d'extraction et la date où on écrit la première fois dans la base [pandas].
 
 
-- `A6_0_or_1_json_on_setup`
+- `A6_0_or_1_json_on_setup` :
 
   - Vérification du nombre de fichiers json dans le `dossier_B`.
 
@@ -574,12 +573,12 @@ TODO : screenshot de DAG 1 à la fin du projet
 
 - Cas où il n'y a pas de fichier json dans le `dossier_B` (variable `count=0`).
 
-  - `A8_add_date_premiere_ecriture_attr`
+  - `A8_add_date_premiere_ecriture_attr` :
 
     - Ajout d'un attribut dans `all_in_one.json` : `date_premiere_ecriture` [pandas].
 
 
-  - `A9_rename_json_file`
+  - `A9_rename_json_file` :
 
     - Renommage du fichier `all_in_one.json` en `date__extraction_occurence_1.json` (car il s'agit de la première extraction)
 
@@ -588,7 +587,7 @@ TODO : screenshot de DAG 1 à la fin du projet
 
 - Cas où il y a 1 fichier json `fichier_existant.json` dans le `dossier_B` (variable `count=1`).
 
-  - `A7_special_jsons_concat`
+  - `A7_special_jsons_concat` :
 
     - Concaténation spéciale entre le json existant et le nouveau json, détails de l'algo ([ici](readme_files/APPENDIX.md#concaténation-spéciale-entre-le-json-existant-et-le-nouveau-json)) [pandas]
 
@@ -597,18 +596,18 @@ TODO : screenshot de DAG 1 à la fin du projet
     - Déplacement de l'ancien json existant `date__extraction_occurence_N.json` dans le dossier `archives`.
 
 
-  - `A8_add_date_premiere_ecriture_attr`
+  - `A8_add_date_premiere_ecriture_attr` :
 
     - Ajout d'un attribut dans `all_in_one.json` : `date_premiere_ecriture` [pandas].
 
       - Notes : l'attribut `date_premiere_ecriture` prendra la date du jour pour toutes les nouvelles offres, et conservera l'ancienne valeur pour les anciennes offres.
 
 
-- `A10_write_to_history`
+- `A10_write_to_history` :
 
   - Ecriture de l'historique du fichier json dans `_json_files_history.csv` (ajout nom json restant dans le dossier et le nombre de lignes).
 
-- `trigger_dag_2`
+- `trigger_dag_2` :
 
   - Déclenchement du `DAG 2` si `DAG` OK
 
@@ -617,19 +616,19 @@ TODO : screenshot de DAG 1 à la fin du projet
 
 TODO : screenshot de DAG 2 à la fin du projet
 
-#### setup
+#### Task group "setup"
 
-- `check_only_one_json_in_folder`
+- `check_only_one_json_in_folder` :
 
   - Vérification qu'il n'y ait qu'un json `fichier_existant.json` dans `dossier_B`
 
 
-- `remove_all_split_jsons`
+- `remove_all_split_jsons` :
 
   - Suppression des fichiers json dans le `dossier_A`.
 
 
-- `ensure_postgres_connexion`
+- `ensure_postgres_connexion` :
 
   - Vérification de l'existence de la connexion postgres nommée `connection_postgres`, et que ses paramètres sont conformes à celles spécifiés dans le script.
     - Suppression et création de celle-ci en cas de paramètres non conformes.
@@ -643,20 +642,19 @@ TODO : screenshot de DAG 2 à la fin du projet
     (si la connexion n'est pas bien définie, alors le `DAG 2` posera problème puisqu'il ne pourra pas intéragir avec la base de donnée `francetravail`)
 
 
-- `split_large_json`
+- `split_large_json` :
 
   - Split le gros fichier json final en plusieurs jsons dédiés pour les tâches suivantes du DAG.
   - L'intérêt est que toutes les tâches ne lisent pas le même gros fichier json, et que chaque tâche lise chacun son fichier json dédié.
 
 
-- `SQLExecuteQueryOperator()` avec le fichier `sql/create_all_tables.sql`
+- `SQLExecuteQueryOperator()` avec le fichier `sql/create_all_tables.sql` :
 
   - Création de toutes les tables du projet si elles n'existent pas.
 
 
 
-
-#### without_junction
+#### Task group "without_junction"
 
 Ce groupe exécute en parallèle les tâches suivantes, qui consistent à récupérer les informations dans les fichiers json dédiés (générés par la tâche `split_large_json`) et exécutent des `INSERT INTO` dans les tâches dédiés :
 
@@ -668,29 +666,29 @@ Ce groupe exécute en parallèle les tâches suivantes, qui consistent à récup
 
 
 
-#### with_junction
+#### Task group "with_junction"
 
-Ce groupe exécute les actions suivantes :
+- Ce groupe exécute les actions suivantes (prenons pour exemple, `Competence` puis `Offre_Competence`) :
 
-Prenons pour exemple, `Competence` puis `Offre_Competence`
-
-  1/ `INSERT INTO` pour la table de dimension
-  2/ Requête pour connaitre la correspondance entre `offre_id` et `competence_id` avant de faire des `INSERT INTO` pour la table de liaison
-  3/ Conservation de l'offre la plus récente, si `competence_id` a évolué
+  - 1. `INSERT INTO` pour la table de dimension
+  - 2. Requête pour connaitre la correspondance entre `offre_id` et `competence_id` avant de faire des `INSERT INTO` pour la table de liaison
+  - 3. Conservation de l'offre la plus récente, si `competence_id` a évolué
 
 
-- `Competence` puis `Offre_Competence`
-- `Experience` puis `Offre_Experience`
-- `Formation` puis `Offre_Formation`
-- `QualiteProfessionnelle` puis `Offre_QualiteProfessionnelle`
-- `Qualification` puis `Offre_Qualification`
-- `Langue` puis `Offre_Langue`
-- `PermisConduire` puis `Offre_PermisConduire`
+- Même chose pour :
+
+  - `Competence` puis `Offre_Competence`
+  - `Experience` puis `Offre_Experience`
+  - `Formation` puis `Offre_Formation`
+  - `QualiteProfessionnelle` puis `Offre_QualiteProfessionnelle`
+  - `Qualification` puis `Offre_Qualification`
+  - `Langue` puis `Offre_Langue`
+  - `PermisConduire` puis `Offre_PermisConduire`
 
 
-#### transformations
+#### Task group "transformations"
 
-Plusieurs `SQLExecuteQueryOperator()` qui exécutent séquentiellement les tâches suivantes, dont les fichiers SQL du dossier `airflow/dags/sql` sont :
+- Plusieurs `SQLExecuteQueryOperator()` qui exécutent séquentiellement les tâches suivantes, dont les fichiers SQL du dossier `airflow/dags/sql` sont :
 
   - `update_descriptionoffre_metier_data_DE`
   - `update_descriptionoffre_metier_data_DA`
@@ -704,7 +702,7 @@ Plusieurs `SQLExecuteQueryOperator()` qui exécutent séquentiellement les tâch
 
 ## Configuration de Prometheus
 
-- La section `scrape_configs` du fichier de configuration `prometheus/prometheus.yaml` définit les `targets` des différents services à surveiller : `statsd-exporter`, `node-exporter`, `postgres-exporter` et `cadvisor`.
+- La section `scrape_configs` du fichier de configuration `prometheus/prometheus.yaml` définit les `targets` des différents services à surveiller : `statsd-exporter`, `node-exporter`, `postgres-exporter` et `cAdvisor`.
 
 - Lorsqu'on se connecte sur la [GUI](http://localhost:9092/) de Prometheus, on doit voir que l'état de chaque target est à `UP`, comme le montre dans le screenshot suivant :
 
@@ -717,26 +715,25 @@ Plusieurs `SQLExecuteQueryOperator()` qui exécutent séquentiellement les tâch
 
 - Exemple de requête PromQL qui renvoie les conteneurs docker :
 
-  <img src="readme_files/screenshots/prometheus/cadvisor.png" alt="cadvisor opérationnel" style="width:30%"/>
+  <img src="readme_files/screenshots/prometheus/cAdvisor.png" alt="cAdvisor opérationnel" style="width:30%"/>
 
 
 ## Métriques exposées par les différents services
 
 - Les métriques citées ci-dessous traduisent la liste des commandes qu'on peut taper sur la barre `Expression` sur la [GUI de Prometheus](http://localhost:9092/graph).
 
+
 ### Utilité
 
-todo : à remplir
+- Airflow envoie des métriques au format `StatsD`, et `StatsD` et de les exposer via un `statsd-exporter` configuré pour Prometheus.
 
-- `StatsD` est un collecteur de métriques qui permet à Airflow d'envoyer des données sous forme de métriques formatées en StatsD, et de les exposer via un `statsd-exporter` configuré pour Prometheus.
+- `StatsD-exporter` reçoit des métriques formatées `StatsD`, et expose à Prometheus des métriques formatées `Prometheus`.
 
-- `Statsd-exporter` ...
+- `Node-exporter` expose à Prometheus des métriques hardware et OS (notamment ce qui concerne cpu, ram, disque, etc...).
 
-- `Node-exporter` service permet la récupération de métriques intéressantes concernant la partie cpu, ram, disque, etc..., qu'on pourra exposer à travers un dashboard Grafana.
+- `Postgres-exporter` expose à Prometheus des métriques sur les bases de données dont celle de `francetravail`.
 
-- `Postgres-exporter` permet la récupération de métriques intéressantes concernant la partie écriture dans les bases de données dont celle de `francetravail`, (... todo : à compléter), qu'on pourra exposer à travers un dashboard Grafana.
-
-- `cAdvisor` permet d'analyser l'usage des ressources et les caractéristiques de performance des conteneurs docker en cours d'exécution.
+- `cAdvisor` expose à Prometheus des métriques sur l'usage des ressources et les caractéristiques de performance des conteneurs docker en cours d'exécution.
 
 
 ### Dump des métriques
@@ -796,17 +793,15 @@ TODO : refaire le fichier quand les DAGs seront figés
 
 ## Configuration automatique après installation
 
-- Après (ré)installation, la datasource `Prometheus` est crée automatiquement grâce au fichier `grafana/provisioning/datasources/datasources.yml` qui est copié dans `/grafana/provisioning/datasources/datasources.yml` grâce au montage de volume, comme montré ici :
+- Les points suivants sont effectués automatiquement après une installation :
+
+
+### Création automatique du datasource
+
+- Le datasource `Prometheus` est créée automatiquement grâce au fichier `grafana/provisioning/datasources/datasources.yml` (dossier monté dans le conteneur `grafana` sous `/grafana/provisioning/datasources/datasources.yml`), comme montré ici :
 
   <img src="readme_files/screenshots/grafana/datasource_prometheus.png" alt="datasource Prometheus dans Grafana" style="width:30%"/>
 
-- Les dashboards placés dans `grafana/provisioning/dashboards/` sont également importés automatiquement.
-
-
-todo : mettre screenshots quand ca sera bon
-
-
-## Dashboards
 
 ### Import automatique après installation
 
@@ -814,10 +809,15 @@ todo : mettre screenshots quand ca sera bon
 
 - Ceci est défini dans le fichier de configuration `grafana/provisioning/dashboards/providers.yml`, qui contient également `foldersFromFilesStructure: true`, qui permet de retrouver dans la GUI de Grafana la même architecture de dossier que dans `grafana/provisioning/dashboards`.
 
-  todo : screenshot archi dossier vs dossier grafana
+- Les dashboards placés dans `grafana/provisioning/dashboards/` sont également importés automatiquement.
 
-- Pour que Grafana recharge le contenu du dossier, on peut simplement redémarrer le conteneur : `docker compose restart grafana`.
+  <img src="readme_files/screenshots/grafana/dashboards_folder.png" alt="dossier dashboards" style="width:50%"/>
 
+
+- Note : Grafana peut recharger le contenu du dossier après un redémarrage du conteneur : `docker compose restart grafana`.
+
+
+## Dashboards
 
 ### Dossier "others"
 
@@ -863,7 +863,7 @@ todo : mettre screenshots quand ca sera bon
       - j'aurais pu rester sur une version 2.11.0, mais j'ai trouvé pertinent de me mettre à jour
 
     - utilisation de `cAdvisor`, non fonctionnel avec `Docker Desktop`
-      - détails [ici](readme_files/APPENDIX.md#utilisation-de-docker-ce-dans-wsl-pour-cadvisor)
+      - détails [ici](readme_files/APPENDIX.md#utilisation-de-docker-ce-dans-wsl-pour-cAdvisor)
 
 
   - récupération des données :
