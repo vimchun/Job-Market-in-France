@@ -625,7 +625,7 @@ Même problématique avec certaines offres qui voient la valeur de l'attribut `e
 
 ## Concaténation spéciale entre le json existant et le nouveau json
 
-- A la fin du DAG 1, une concaténation spéciale a lieu entre le json exitant (qu'on appelle `json_A` pour simplifier) et le nouveau json (`json_B`).
+- A la fin du `DAG 1`, une concaténation spéciale a lieu entre le json exitant (qu'on appelle `json_A` pour simplifier) et le nouveau json (`json_B`).
 
 - Elle permet de :
 

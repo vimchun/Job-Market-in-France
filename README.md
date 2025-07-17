@@ -15,6 +15,7 @@
   - [8. Prometheus](#8-Prometheus)
   - [9. Grafana](#9-Grafana)
   - [10. Difficultés rencontrées](#10-Difficultés-rencontrées)
+  - [11. Evolution](#11-Evolution)
 
 
 - Slideshow :
@@ -461,7 +462,7 @@ TODO : faire à la fin du projet
   - avoir une vision claire du workflow complet à travers la vue Graph du DAG
   - voir quelle fonction pose problème d'un coup d'oeil en cas d'échec et voir les logs associés à la tâche en échec
   - lancer le workflow complet à la fréquence désirée (par exemple, tous les jours à 20h)
-  - et surtout obtenir un gain de temps avec la parallélisation de certaines tâches :
+  - et surtout obtenir une optimisation et un gain de temps considérable, avec la parallélisation de certaines tâches :
     - requêtes API pour récupérér les offres d'emploi pour x métiers en parallèle,
     - requêtes SQL pour remplir x tables en parallèle,
     - requêtes SQL pour effectuer x transformations en parallèle.
@@ -849,6 +850,32 @@ todo : mettre screenshots quand ca sera bon
 
 # 10. Difficultés rencontrées
 
-- Les points suivants illustrent des difficultés auxquelles je me suis heurté mais que j'ai fini par résoudre :
+- Les points suivants illustrent des difficultés auxquelles je me suis heurté mais que j'ai fini par résoudre.
 
-todo
+- La plupart de ces points étaient plus "facultatifs", mais j'ai trouvé qu'ils apportaient un plus au projet :
+
+  - environnement :
+
+    - conf docker compose, avec l'ajout de services au fur et à mesure du projet
+      - beaucoup de tests avant d'avoir une version fonctionnelle
+
+    - installation et utilisation de Airflow 3.0 (version majeure sortie au cours de ce projet)
+      - j'aurais pu rester sur une version 2.11.0, mais j'ai trouvé pertinent de me mettre à jour
+
+    - utilisation de `cAdvisor`, non fonctionnel avec `Docker Desktop`
+      - détails [ici](readme_files/APPENDIX.md#utilisation-de-docker-ce-dans-wsl-pour-cadvisor)
+
+
+  - récupération des données :
+
+    - algorithme pour mettre à jour le fichier json avec les nouvelles offres
+      - détails [ici](readme_files/APPENDIX.md#concaténation-spéciale-entre-le-json-existant-et-le-nouveau-json)
+
+
+  - transformations :
+
+    - récupération de la localisation des offres d'emploi (noms et codes des villes, départements, départements et régions)
+      - détails [ici](readme_files/APPENDIX.md#attributs-de-localisation-des-offres-noms-et-codes-des-villes-communes-départements-et-régions)
+
+    - algorithme pour avoir le salaire annuel min et max
+      - détails [ici](readme_files/APPENDIX.md#attributs-salaire_min-et-salaire_max)
