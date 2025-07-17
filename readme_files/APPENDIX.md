@@ -1,6 +1,17 @@
-# Introduction
+# README secondaire
 
 Cette page complète la [page principale](../README.md#introduction).
+
+Le sommaire de cette page est aligné à celui de la page principale, à savoir :
+
+  - [1. Environnement](#1-Environnement)
+  - [3. Transformations des données](#3-Transformations-des-données)
+  - [4. Chargement des données dans une base de données relationnelle](#4-Chargement-des-données-dans-une-base-de-données-relationnelle)
+  - [5. Data Viz avec Power BI](#5-Data-Viz-avec-Power-BI)
+  - [7. Workflow du projet avec Airflow](#7-Workflow-du-projet-avec-Airflow)
+  - [8. Prometheus](#8-Prometheus)
+  - [9. Grafana](#9-Grafana)
+
 
 # 1. Environnement
 
@@ -136,7 +147,7 @@ Si une ligne comme `DOCKER_HOST=tcp://localhost:2375` s'affiche, alors il faut f
 
 ## Services Docker
 
-### Versions testées
+### Récupération des versions
 
 Cette section montre les commandes pour retrouver les versions des différents services.
 
@@ -229,7 +240,7 @@ Cette section montre les commandes pour retrouver les versions des différents s
 
 - Le screenshot suivant (issu du fichier `step_1__location_cases.xlsx`) résume la partie décrite ci-dessous :
 
-  <img src="screenshots/location_attributes_cases.png" alt="cas avec les attributs de localisation" style="width:100%"/>
+  <img src="screenshots/misc/location_attributes_cases.png" alt="cas avec les attributs de localisation" style="width:100%"/>
 
 - Le fichier `airflow/data/resources/code_name__city_department_region.csv` :
 
@@ -632,7 +643,7 @@ Même problématique avec certaines offres qui voient la valeur de l'attribut `e
 
 - En voici un screenshot :
 
-  <img src="screenshots/db_update.png" alt="db_update" style="width:100%"/>
+  <img src="screenshots/drawio/db_update.png" alt="db_update" style="width:100%"/>
 
 
 # 5. Data Viz avec Power BI
