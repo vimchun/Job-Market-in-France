@@ -1,4 +1,4 @@
--- voir readme_pages/step_3__sql_requests_and_power_bi.md pour plus d'explications
+-- voir "readme_files/APPENDIX.md" section "Attributs "salaire_min" et "salaire_max"" pour plus d'explications
 -- reset des colonnes :
 -- UPDATE
 --     contrat
@@ -10,31 +10,25 @@ ALTER TABLE contrat
     ADD COLUMN IF NOT EXISTS salaire_max INTEGER;
 
 WITH constante (
-    seuil_salaire_mensuel_min
-    , seuil_salaire_mensuel_max
-    , seuil_salaire_annuel_min
-    , seuil_salaire_annuel_max
+    seuil_salaire_mensuel_min , seuil_salaire_mensuel_max
+    , seuil_salaire_annuel_min , seuil_salaire_annuel_max
 ) AS (
-    VALUES (1666
-            , 12500 --salaire mensuel ∈ [1 666, 12 500]
-            , 20000
-            , 150000) --salaire annuel ∈ [20 000, 150 000]
+    VALUES (1666 , 12500 --salaire mensuel ∈ [1 666, 12 500]
+            , 20000 , 150000 --salaire annuel ∈ [20 000, 150 000]
+    )
 )
 , salaire AS (
     SELECT
         salaire_libelle
         ,
-        -- 1 AS get_salaire_min
-        CAST(REGEXP_SUBSTR (REGEXP_REPLACE(salaire_libelle
-                    , '[.,]\d{1,2}'
-                    , '') -- on supprime les . et les ,
-                , '(\d+)') AS INTEGER) AS get_salaire_min
-        , CAST(REGEXP_SUBSTR (REGEXP_REPLACE(salaire_libelle
-                    , '[.,]\d{1,2}'
-                    , '') -- on supprime les . et les ,
-                , '(\d+)'
-                , 1
-                , 2) AS INTEGER) AS get_salaire_max
+        CAST(REGEXP_SUBSTR (
+                REGEXP_REPLACE(salaire_libelle , '[.,]\d{1,2}' , '') -- REGEXP_REPLACE() recherche "." ou "," suivi d'exactement 1 ou 2 chiffres, et supprime ce pattern (supprime les centimes de "salaire_libelle")
+                , '(\d+)')  -- REGEXP_SUBSTR() extrait le premier groupe de chiffres
+                AS INTEGER) AS get_salaire_min
+        , CAST(REGEXP_SUBSTR (
+                REGEXP_REPLACE(salaire_libelle , '[.,]\d{1,2}' , '') -- REGEXP_REPLACE() recherche "." ou "," suivi d'exactement 1 ou 2 chiffres, et supprime ce pattern (supprime les centimes de "salaire_libelle")
+                , '(\d+)' , 1 , 2) -- REGEXP_SUBSTR() extrait le second groupe de chiffres
+                AS INTEGER) AS get_salaire_max
     FROM
         contrat)
 UPDATE
