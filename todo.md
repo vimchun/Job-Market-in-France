@@ -13,18 +13,17 @@
 
 ### P0
 
-  - pb avec `airflow\dags\sql\transformation_4_update__table_contrat__columns__salaire_min__salaire_max.sql` => n'écrit rien dans les colonnes ?
-
   - fastapi idées :
     - création offre (id offre obligatoire, mais doit être unique)
     - suppression offre
     - ajouter une route comme /healthcheck ou /status qui permet de vérifier que la base est connectée (test SELECT 1).
 
-  - airflow : update to 3.0.3 ?
-    https://airflow.apache.org/docs/apache-airflow/stable/release_notes.html#airflow-3-0-3-2025-07-14 ?
-
 
 ### P1
+
+  - pb avec `airflow\dags\sql\transformation_4_update__table_contrat__columns__salaire_min__salaire_max.sql` => n'écrit rien dans les colonnes ?
+
+  - grafana : ajouter les locks/conflicts de postgres
 
   - airflow : activer les dags au démarrage après un reboot (possible ?)
 
@@ -35,7 +34,7 @@
 
   - pb pbi avec certaines villes mal situées (ex: Buc pas en IDF)
 
-  - script "2--script_insert_into_tables.py" => option pour ne prendre en compte que les dernières offres (pour que le script tourne plus vite)
+  - DAG 2 => option pour ne prendre en compte que les dernières offres (pour que le script tourne plus vite)
 
   - attribut `liste_mots_cles` : faisabilité regex sur le mot entier (exemple si on cherche le langage `R`)
 

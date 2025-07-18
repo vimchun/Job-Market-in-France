@@ -15,7 +15,7 @@
   - [8. Prometheus](#8-Prometheus)
   - [9. Grafana](#9-Grafana)
   - [10. Difficultés rencontrées](#10-Difficultés-rencontrées)
-  - [11. Evolution](#11-Evolution)
+  - [11. Evolutions possibles du projet](#11-Evolutions-possibles-du-projet)
 
 
 - Slideshow :
@@ -97,7 +97,7 @@
   | FastAPI           | 0.115.12 | 03/2025            | https://github.com/fastapi/fastapi/releases                        |
   | Postgres          | 16.9     | 05/2025            | https://github.com/postgres/postgres/tags                          |
   | Redis             | 8.0.2    | 05/2025            | https://github.com/redis/redis/releases                            |
-  | Airflow           | 3.0.2    | 06/2025            | https://github.com/apache/airflow/releases                         |
+  | Airflow           | 3.0.3    | 07/2025            | https://github.com/apache/airflow/releases                         |
   | StatsD-exporter   | 0.28.0   | 10/2024            | https://github.com/prometheus/statsd_exporter/releases             |
   | Node-exporter     | 1.9.1    | 04/2025            | https://github.com/prometheus/node_exporter/releases               |
   | Postgres-exporter | 0.17.1   | 02/2025            | https://github.com/prometheus-community/postgres_exporter/releases |
@@ -114,9 +114,19 @@
   git clone git@github.com:vimchun/Job-Market-in-France.git
 ```
 
-- Copier-coller les credentials (`identifiant client` + `clé secrète`) dans le fichier `airflow/data/resources/api_credentials.yml` depuis le site `https://francetravail.io/`, après avoir créé un compte :
+- Sur `https://francetravail.io/` :
+  - Créer un compte
+  - Ajouter les accès aux APIS `Marché du travail v1` et `Offres d'emploi v2` (voir screenshot)
+  - Copier-coller les credentials (`identifiant client` + `clé secrète`) dans un nouveau fichier `airflow/data/resources/api_credentials.yml` (voir screenshot)
 
-  <img src="readme_files/screenshots/misc/francetravail_io_credentials.png" alt="credentials france travail" style="width:50%"/>
+    ```yaml
+      # contenu du fichier `airflow/data/resources/api_credentials.yml`
+      FRANCE_TRAVAIL_API_CREDENTIALS:
+        IDENTIFIANT_CLIENT: <à_remplir>
+        CLE_SECRETE: <à_remplir>
+    ```
+
+    <img src="readme_files/screenshots/misc/francetravail_io_credentials.png" alt="credentials france travail" style="width:50%"/>
 
 
 - Si environnement Windows + WSL, utiliser `Docker CE` dans WSL, plutôt qu'utiliser `Docker Desktop` (voir cette [procédure](readme_files/APPENDIX.md#Installer-et-utiliser-Docker-CE-dans-WSL))
@@ -472,7 +482,7 @@ TODO : faire à la fin du projet
 
 - Au moment d'écrire ces lignes, deux branches majeures : la `2.x` et la `3.x`.
 
-- Finalement, le choix se portera sur la branche `3.x` (avec la récente `3.0.2`) qui contient des évolutions majeures (détails [ici](https://airflow.apache.org/blog/airflow-three-point-oh-is-here/)).
+- Finalement, le choix se portera sur la branche `3.x` (avec la récente `3.0.3`) qui contient des évolutions majeures (détails [ici](https://airflow.apache.org/blog/airflow-three-point-oh-is-here/)).
 
 
 ## Description du worflow des DAGs
@@ -489,11 +499,14 @@ TODO : faire à la fin du projet
 
 ### DAG 1
 
-TODO : screenshot de DAG 1 à la fin du projet
+- Vue "graph" du `DAG 1` :
 
-#### Task group "setup"
+  <img src="readme_files/screenshots/airflow/graph_dag_1.png" alt="graph du DAG 1" style="width:100%"/>
 
-##### Task group "check_files_in_folders"
+
+#### Task Group "setup"
+
+##### Sub Task Group "check_files_in_folders"
 
 
 - `S1_delete_all_in_one_json` :
@@ -516,7 +529,7 @@ TODO : screenshot de DAG 1 à la fin du projet
       - Si un des fichiers n'existe pas : fin du DAG (exception levée).
 
 
-##### Task group "after_checks"
+##### Sub Task Group "after_checks"
 
 - `S2_remove_all_json_files` :
 
@@ -536,7 +549,7 @@ TODO : screenshot de DAG 1 à la fin du projet
 
 
 
-#### Task group "ETL"
+#### Task Group "ETL"
 
 - `A1_get_offers` :
 
@@ -569,7 +582,7 @@ TODO : screenshot de DAG 1 à la fin du projet
   - Vérification du nombre de fichiers json dans le `dossier_B`.
 
 
-##### Task group "0_file_in_folder"
+##### Sub Task Group "0_file_in_folder"
 
 - Cas où il n'y a pas de fichier json dans le `dossier_B` (variable `count=0`).
 
@@ -583,7 +596,7 @@ TODO : screenshot de DAG 1 à la fin du projet
     - Renommage du fichier `all_in_one.json` en `date__extraction_occurence_1.json` (car il s'agit de la première extraction)
 
 
-##### Task group "1_file_in_folder"
+##### Sub Task Group "1_file_in_folder"
 
 - Cas où il y a 1 fichier json `fichier_existant.json` dans le `dossier_B` (variable `count=1`).
 
@@ -614,9 +627,11 @@ TODO : screenshot de DAG 1 à la fin du projet
 
 ### DAG 2
 
+- Vue "graph" du `DAG 2` :
+
 TODO : screenshot de DAG 2 à la fin du projet
 
-#### Task group "setup"
+#### Task Group "SETUP"
 
 - `check_only_one_json_in_folder` :
 
@@ -654,7 +669,7 @@ TODO : screenshot de DAG 2 à la fin du projet
 
 
 
-#### Task group "without_junction"
+#### Task Group "INSERT_INTO_TABLES_WITHOUT_JUNCTION"
 
 Ce groupe exécute en parallèle les tâches suivantes, qui consistent à récupérer les informations dans les fichiers json dédiés (générés par la tâche `split_large_json`) et exécutent des `INSERT INTO` dans les tâches dédiés :
 
@@ -666,18 +681,17 @@ Ce groupe exécute en parallèle les tâches suivantes, qui consistent à récup
 
 
 
-#### Task group "with_junction"
+#### Task group "INSERT_INTO_TABLES_WITH_JUNCTION"
 
 - Ce groupe exécute les actions suivantes (prenons pour exemple, `Competence` puis `Offre_Competence`) :
 
-  - 1. `INSERT INTO` pour la table de dimension
-  - 2. Requête pour connaitre la correspondance entre `offre_id` et `competence_id` avant de faire des `INSERT INTO` pour la table de liaison
+  - 1. `INSERT INTO` pour la table de dimension `Competence`
+  - 2. Requête pour connaitre la correspondance entre `offre_id` et `competence_id` avant de faire des `INSERT INTO` pour la table de liaison `Offre_Competence`
   - 3. Conservation de l'offre la plus récente, si `competence_id` a évolué
 
 
 - Même chose pour :
 
-  - `Competence` puis `Offre_Competence`
   - `Experience` puis `Offre_Experience`
   - `Formation` puis `Offre_Formation`
   - `QualiteProfessionnelle` puis `Offre_QualiteProfessionnelle`
@@ -686,9 +700,9 @@ Ce groupe exécute en parallèle les tâches suivantes, qui consistent à récup
   - `PermisConduire` puis `Offre_PermisConduire`
 
 
-#### Task group "transformations"
+#### Task group "TRANSFORMATIONS"
 
-- Plusieurs `SQLExecuteQueryOperator()` qui exécutent séquentiellement les tâches suivantes, dont les fichiers SQL du dossier `airflow/dags/sql` sont :
+- `SQLExecuteQueryOperator()` qui exécutent séquentiellement les tâches suivantes, dont les fichiers SQL du dossier `airflow/dags/sql` sont :
 
   - `update_descriptionoffre_metier_data_DE`
   - `update_descriptionoffre_metier_data_DA`
@@ -879,3 +893,9 @@ TODO : refaire le fichier quand les DAGs seront figés
 
     - algorithme pour avoir le salaire annuel min et max
       - détails [ici](readme_files/APPENDIX.md#attributs-salaire_min-et-salaire_max)
+
+
+
+# 11. Evolutions possibles du projet
+
+todo

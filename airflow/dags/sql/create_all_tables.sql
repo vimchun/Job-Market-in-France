@@ -1,6 +1,6 @@
 -- Suppression avec CASCADE pour prendre en compte les clés étrangères
 -- todo : à supprimer à la fin du dev
-DROP TABLE IF EXISTS Offre_Competence , Offre_Experience , Offre_Formation , Offre_QualiteProfessionnelle , Offre_Qualification , Offre_Langue , Offre_PermisConduire , PermisConduire , Langue , Qualification , QualiteProfessionnelle , Formation , Experience , Competence , Localisation , DescriptionOffre , Entreprise , Contrat , OffreEmploi CASCADE;
+-- DROP TABLE IF EXISTS Offre_Competence , Offre_Experience , Offre_Formation , Offre_QualiteProfessionnelle , Offre_Qualification , Offre_Langue , Offre_PermisConduire , PermisConduire , Langue , Qualification , QualiteProfessionnelle , Formation , Experience , Competence , Localisation , DescriptionOffre , Entreprise , Contrat , OffreEmploi CASCADE;
 
 -------------------
 -- table de fait --
