@@ -1136,8 +1136,8 @@ def write_to_history_csv_file(aggregated_json_directory):
     return None
 
 
-@task(task_id="A11_extract_offer_ids_for_fastapi", trigger_rule=TriggerRule.NONE_FAILED_MIN_ONE_SUCCESS)
-def extract_offers_ids(aggregated_json_directory):
+@task(task_id="A11_write_offers_ids_list_on_file_for_fastapi", trigger_rule=TriggerRule.NONE_FAILED_MIN_ONE_SUCCESS)
+def write_offers_ids_list_on_file_for_fastapi(aggregated_json_directory):
     """
     Extrait tous les "id" (tous les "offre_id" du json), et l'écrit dans un fichier, qui servira pour FastAPI.
     """
@@ -1162,7 +1162,7 @@ def extract_offers_ids(aggregated_json_directory):
 
     # enregistrer les identifiants dans un fichier texte
     ids.to_csv(
-        os.path.join(CURRENT_DIR, "..", "..", "fastapi", "offers_ids.txt"),  # dans le montage
+        os.path.join(CURRENT_DIR, "..", "fastapi", "offers_ids.txt"),  # dans le montage
         index=False,
         header=False,
         lineterminator="\n",
@@ -1242,11 +1242,11 @@ with DAG(
             branch >> file1
 
         write_history = write_to_history_csv_file(AGGREGATED_JSON_DIR)  #### task A10
-        extract_ids = extract_offers_ids(AGGREGATED_JSON_DIR)  #### task A11
+        write_offers_ids = write_offers_ids_list_on_file_for_fastapi(AGGREGATED_JSON_DIR)  #### task A11
 
         api_requests >> tl
         [file0, file1] >> write_history
-        [file0, file1] >> extract_ids
+        [file0, file1] >> write_offers_ids
 
     trigger_dag2 = TriggerDagRunOperator(  #### task finale qui déclenche le DAG 2 si DAG 1 en "success"
         task_id="trigger_dag_2",
