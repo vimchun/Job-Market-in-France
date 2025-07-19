@@ -1,5 +1,6 @@
 import csv
 import json
+import logging
 import os
 import shutil
 import time
@@ -1135,6 +1136,41 @@ def write_to_history_csv_file(aggregated_json_directory):
     return None
 
 
+@task(task_id="A11_extract_offer_ids_for_fastapi", trigger_rule=TriggerRule.NONE_FAILED_MIN_ONE_SUCCESS)
+def extract_offers_ids(aggregated_json_directory):
+    """
+    Extrait tous les "id" (tous les "offre_id" du json), et l'écrit dans un fichier, qui servira pour FastAPI.
+    """
+
+    import pandas as pd
+
+    json_file_in_generated_directory = [file for file in os.listdir(aggregated_json_directory) if file.endswith(".json")]
+
+    remaining_json_file = json_file_in_generated_directory[0]
+
+    df = pd.read_json(
+        os.path.join(aggregated_json_directory, remaining_json_file),
+        dtype=False,  # pour ne pas inférer les dtypes
+    )
+
+    ids = df["id"]  # extraire la colonne 'id'
+
+    logging.info(f'Nombre de "ids" à écrire : {len(df)}')
+
+    cwd = os.getcwd()
+    print(f"curdir : {cwd}")
+
+    # enregistrer les identifiants dans un fichier texte
+    ids.to_csv(
+        os.path.join(CURRENT_DIR, "..", "..", "fastapi", "offers_ids.txt"),  # dans le montage
+        index=False,
+        header=False,
+        lineterminator="\n",
+    )
+
+    return None
+
+
 # définition de paramètres liés au mécanisme de retry pour une tâche
 default_args = {
     "retries": 5,  # nombre de tentatives de ré-exécution en cas d’échec d’une tâche
@@ -1206,9 +1242,11 @@ with DAG(
             branch >> file1
 
         write_history = write_to_history_csv_file(AGGREGATED_JSON_DIR)  #### task A10
+        extract_ids = extract_offers_ids(AGGREGATED_JSON_DIR)  #### task A11
 
         api_requests >> tl
         [file0, file1] >> write_history
+        [file0, file1] >> extract_ids
 
     trigger_dag2 = TriggerDagRunOperator(  #### task finale qui déclenche le DAG 2 si DAG 1 en "success"
         task_id="trigger_dag_2",
