@@ -10,8 +10,7 @@ from typing import List, Optional
 import pandas as pd
 import psycopg2
 
-from colorama import Fore, Style, init
-from pydantic import BaseModel, field_validator
+from colorama import Fore, Style, init  # todo : à supprimer ?
 from tabulate import tabulate  # pour afficher les résultats sous forme de tableau
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Response  # status
@@ -19,16 +18,24 @@ from fastapi import Depends, FastAPI, HTTPException, Query, Response  # status
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
 
-tag_all_offres = "Pour toutes les offres d'emploi"
+tag_one_offer = "Pour une seule offre d'emploi"
+tag_all_offers = "Pour toutes les offres d'emploi"
 tag_location_mapping_name_code = 'Mapping "nom <> code" pour les régions, départements, villes et communes'
-
-message_on_endpoints_about_fields = "<u>Paramètres :</u> chaque champ est facultatif (champ vide = pas de filtre)."
 
 description_metier_data = 'Filtrer sur le métier "Data Engineer" `DE`, "Data Analyst" `DA` ou "Data Scientist `DS` (`--` pour ne pas filtrer sur ces métiers)'
 description_offres_dispo_only = "`True` pour filtrer sur les offres disponibles uniquement (disponibles au jour où l'extraction des données a eu lieu), `False` sinon."
 description_empty_field = "_(champ vide = pas de filtre)_"
 
 enable_secondary_routes = 1
+
+# valeurs définies dans le "docker-compose.yml"
+psycopg2_connect_dict = {
+    "host": os.getenv("DB_HOST", "localhost"),
+    "port": os.getenv("DB_PORT", 5432),
+    "database": os.getenv("DB_NAME", "francetravail"),
+    "user": os.getenv("DB_USER", "mhh"),
+    "password": os.getenv("DB_PASSWORD", "mhh"),
+}
 
 """
 Si `enable_secondary_routes = 0`, les routes "secondaires" suivantes seront désactivées :
@@ -96,11 +103,15 @@ app = FastAPI(
       <br>
       - Pour connaître les valeurs possibles, lancer la requête associée sous la partie `{tag_location_mapping_name_code}`.
       <br>
-      - Un code postal peut avoir plusieurs codes insee (exemple : le code postal 78310 est partagé entre la commune de Coignières (code insee 78168), et la commune de Maurepas (code insee 78383)).
-      """),
+      - Un code postal peut avoir plusieurs codes insee (exemple : le <u>code postal 78310</u> est partagé entre la commune de Coignières (<u>code insee 78168</u>), et la commune de Maurepas (<u>code insee 78383</u>)).
+      """),  # noqa
     openapi_tags=[
         {
-            "name": tag_all_offres,
+            "name": tag_one_offer,
+            "description": "à compléter plus tard",
+        },
+        {
+            "name": tag_all_offers,
             "description": "à compléter plus tard",
         },
         {
@@ -127,7 +138,6 @@ DEFAULT_CSV_PATH = os.path.join(
 
 # variable "location_csv_file" écrasée par la valeur définie dans le Dockerfile si script exécuté dans le conteneur
 location_csv_file = os.getenv("LOCATION_CSV_PATH", DEFAULT_CSV_PATH)
-
 
 print(f"Chargement du fichier CSV depuis : {location_csv_file}")
 
@@ -206,6 +216,8 @@ def execute_modified_sql_request_with_filters(
     fetch="all",
 ):
     """
+    Fonction utilisée pour les routes dont le tag est "tag_all_offers".
+
     Prend en entrée le fichier sql dont le chemin se termine par la paramètre "sql_files_directory_part_2"
       et applique les filtres en remplaçant les placeholders sur la requête SQL en fonction des paramètres fournis.
 
@@ -264,14 +276,7 @@ def execute_modified_sql_request_with_filters(
 
         modified_sql_file_content = sql_file_content
 
-        # connexion en lien avec les variables définies dans le "docker-compose.yml" :
-        with psycopg2.connect(
-            host=os.getenv("DB_HOST", "localhost"),
-            port=os.getenv("DB_PORT", 5432),
-            database=os.getenv("DB_NAME", "francetravail"),
-            user=os.getenv("DB_USER", "mhh"),
-            password=os.getenv("DB_PASSWORD", "mhh"),
-        ) as conn:
+        with psycopg2.connect(**psycopg2_connect_dict) as conn:
             with conn.cursor() as cursor:
                 print(f'\n{Fore.CYAN}===> Requête SQL depuis le fichier "{sql_files_directory_part_2}" :')
                 print(f"{Style.DIM}{modified_sql_file_content}")
@@ -286,8 +291,34 @@ def execute_modified_sql_request_with_filters(
 
 
 @app.get(
+    "/offre/{offre_id}/some_transformations_attributes",
+    tags=[tag_one_offer],
+    summary="Afficher quelques attributs issues des transformations",
+)
+def get_attributes_for_a_specific_offer(offre_id: str):
+    if len(offre_id) != 7:
+        raise HTTPException(status_code=400, detail=f"'offre_id' doit être sur 7 digits.")
+
+    sql_file_directory_part_2 = os.path.join("misc", "for_a_specific_offer.pgsql")
+    with open(os.path.join(sql_file_directory_part_1, sql_file_directory_part_2), "r") as file:
+        sql = file.read().replace("placeholder_offre_id", offre_id)
+
+        with psycopg2.connect(**psycopg2_connect_dict) as conn:
+            with conn.cursor() as cursor:
+                print(f'\n{Fore.CYAN}===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :')
+                print(f"{Style.DIM}{sql}")
+
+                cursor.execute(sql)
+
+                return cursor.fetchone()
+
+
+##########################
+
+
+@app.get(
     "/stats/total_offres",
-    tags=[tag_all_offres],
+    tags=[tag_all_offers],
     summary="Nombre total d'offres d'emploi",
 )
 def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
@@ -298,7 +329,7 @@ def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
     return Response(content=f"total: {total_offres:,} offres".replace(",", " "), media_type="text/plain")  # espace pour séparer les milliers
 
 
-@app.get("/stats/classement/region", tags=[tag_all_offres], summary="Classement des régions qui recrutent le plus", description="<u> Tri :</u> par nombre d'offres (DESC).")
+@app.get("/stats/classement/region", tags=[tag_all_offers], summary="Classement des régions qui recrutent le plus", description="<u> Tri :</u> par nombre d'offres (DESC).")
 def get_regions_ranking(
     metier_data: Optional[MetierDataEnum] = Query(default=None, description=description_metier_data),
     offres_dispo_only: Optional[bool] = Query(default=False, description=description_offres_dispo_only),
@@ -311,7 +342,7 @@ def get_regions_ranking(
     return Response(content=table, media_type="text/plain")
 
 
-@app.get("/stats/classement/departement", tags=[tag_all_offres], summary="Classement des départements qui recrutent le plus (top 30)", description="<u> Tri :</u> par nombre d'offres (DESC).")
+@app.get("/stats/classement/departement", tags=[tag_all_offers], summary="Classement des départements qui recrutent le plus (top 30)", description="<u> Tri :</u> par nombre d'offres (DESC).")
 def get_departements_ranking(
     metier_data: Optional[MetierDataEnum] = Query(default=None, description=description_metier_data),
     offres_dispo_only: Optional[bool] = Query(default=False, description=description_offres_dispo_only),
@@ -324,7 +355,7 @@ def get_departements_ranking(
     return Response(content=table, media_type="text/plain")
 
 
-@app.get("/stats/classement/ville", tags=[tag_all_offres], summary="Classement des villes qui recrutent le plus (top 30)", description="<u> Tri :</u> par nombre d'offres (DESC).")
+@app.get("/stats/classement/ville", tags=[tag_all_offers], summary="Classement des villes qui recrutent le plus (top 30)", description="<u> Tri :</u> par nombre d'offres (DESC).")
 def get_villes_ranking(
     metier_data: Optional[MetierDataEnum] = Query(default=None, description=description_metier_data),
     offres_dispo_only: Optional[bool] = Query(default=False, description=description_offres_dispo_only),
@@ -342,7 +373,7 @@ def get_villes_ranking(
 
 @app.get(
     "/criteres_recruteurs/competences",
-    tags=[tag_all_offres],
+    tags=[tag_all_offers],
     summary="Compétences (techniques, managériales...) demandées par les recruteurs",
     description="<u> Tri :</u> <b>1/</b> par code exigence (<b>E</b>xigé d'abord, puis <b>S</b>ouhaité), puis <b>2/</b> par nombre d'occurences (DESC), puis <b>3/</b> par code (ASC).",
 )
@@ -359,7 +390,7 @@ def get_competences(filters: dict = Depends(set_endpoints_filters)):
 
 @app.get(
     "/criteres_recruteurs/experiences",
-    tags=[tag_all_offres],
+    tags=[tag_all_offers],
     summary="Expériences (études, diplôme, années expérience...) demandées par les recruteurs",
     description=dedent("""\
     <u> Tri :</u> <b>1/</b> par code exigence (<b>D</b>ébutant d'abord, <b>S</b>ouhaité, puis <b>E</b>xigé), puis <b>2/</b> par nombre d'occurences (DESC), puis <b>3/</b> par libellé (ASC).
@@ -377,7 +408,7 @@ def get_experiences(filters: dict = Depends(set_endpoints_filters)):
 
 @app.get(
     "/criteres_recruteurs/qualites_professionnelles",
-    tags=[tag_all_offres],
+    tags=[tag_all_offers],
     summary="Qualités professionnelles demandées par les recruteurs",
     description="<u> Tri :</u> par nombre d'occurences (DESC).",
 )
@@ -438,7 +469,7 @@ if enable_secondary_routes:
 
     @app.get(
         "/criteres_recruteurs/qualifications",
-        tags=[tag_all_offres],
+        tags=[tag_all_offers],
         summary="Niveaux de qualification professionnelle demandés par les recruteurs",
         description="<u> Tri :</u> par nombre d'occurences (DESC).",
     )
@@ -451,7 +482,7 @@ if enable_secondary_routes:
 
     @app.get(
         "/criteres_recruteurs/formations",
-        tags=[tag_all_offres],
+        tags=[tag_all_offers],
         summary="Formations (domaines, nombre d'années d'études) demandées par les recruteurs",
         description="<u> Tri :</u> <b>1/</b> par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis <b>2/</b> par nombre d'occurences (DESC), puis <b>3/</b> par code (ASC), puis <b>4/</b> par niveau (ASC).",  # noqa
     )
@@ -464,7 +495,7 @@ if enable_secondary_routes:
 
     @app.get(
         "/criteres_recruteurs/permis_conduire",
-        tags=[tag_all_offres],
+        tags=[tag_all_offers],
         summary="Permis de conduire demandés par les recruteurs",
         description="<u> Tri :</u> <b>1/</b> par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis <b>2/</b> par nombre d'occurences (DESC), puis <b>3/</b> par permis de conduire (ASC).",
     )
@@ -477,7 +508,7 @@ if enable_secondary_routes:
 
     @app.get(
         "/criteres_recruteurs/langues",
-        tags=[tag_all_offres],
+        tags=[tag_all_offers],
         summary="Langues demandées par les recruteurs",
         description="<u> Tri :</u> <b>1/</b> par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis <b>2/</b> par nombre d'occurences (DESC), puis <b>3/</b> par langue (ASC).",
     )
