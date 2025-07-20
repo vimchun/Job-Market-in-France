@@ -14,6 +14,8 @@ from colorama import Fore, Style, init  # todo : à supprimer ?
 from tabulate import tabulate  # pour afficher les résultats sous forme de tableau
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Response  # status
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 
 init(autoreset=True)  # pour colorama, inutile de reset si on colorie
 
@@ -327,12 +329,63 @@ def get_attributes_for_a_specific_offer(filters: str = Depends(set_endpoints_fil
 
         with psycopg2.connect(**psycopg2_connect_dict) as conn:
             with conn.cursor() as cursor:
-                print(f'\n{Fore.CYAN}===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :')
-                print(f"{Style.DIM}{sql}")
+                # print(f'\n{Fore.CYAN}===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :')
+                # print(f"{Style.DIM}{sql}")
 
                 cursor.execute(sql, params)
 
-                return cursor.fetchone()
+                row = cursor.fetchone()
+                ##==> exemple : ('6352644', '"Développeur Web FullStack Senior ReactJS/NodeJS H/F"', '"Laval"', '"Mayenne"', '"Pays de la Loire"', None, 60000, 70000, <description_offre>)
+                print(row)
+
+                # construction du json à afficher (mais pas encore ordonné)
+                dict_1 = {
+                    "offre_id": row[0],
+                    "metier_data": row[5],
+                    "salaire_min": row[6],
+                    "salaire_max": row[7],
+                }
+
+                location_unstripped = {  # contient des leading/trailing "
+                    "intitule": row[1],
+                    "ville": row[2],
+                    "département": row[3],
+                    "région": row[4],
+                    "description": row[8],
+                }
+
+                location_stripped = {}
+                for key, val in location_unstripped.items():
+                    if isinstance(val, str):
+                        location_stripped[key] = val.strip('"')  # pour supprimer les leading/trailing "
+                    else:
+                        location_stripped[key] = val  # cas où on a None par exemple (erreur si None.strip('"'))
+
+                d = {**dict_1, **location_stripped}  # fusionner les 2 dictionnaires
+
+                # on ordonne le dictionnaire (dans un nouveau dictionnaire)
+
+                from collections import OrderedDict
+
+                order_list = [
+                    "offre_id",
+                    "intitule",
+                    "ville",
+                    "département",
+                    "région",
+                    "metier_data",
+                    "salaire_min",
+                    "salaire_max",
+                    "description",
+                ]
+
+                ordered_dict = OrderedDict((k, d[k]) for k in order_list if k in d)
+
+                for k, v in d.items():
+                    if k not in ordered_dict:
+                        ordered_dict[k] = v
+
+                return JSONResponse(content=jsonable_encoder(ordered_dict))
 
 
 ##########################

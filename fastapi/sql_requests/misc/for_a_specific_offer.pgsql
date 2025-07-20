@@ -7,6 +7,7 @@ SELECT
     , metier_data
     , salaire_min
     , salaire_max
+    , dof.description_offre
 FROM
     offreemploi ofe
     JOIN descriptionoffre dof ON ofe.offre_id = dof.offre_id
