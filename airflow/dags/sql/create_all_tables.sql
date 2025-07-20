@@ -70,6 +70,7 @@ CREATE TABLE IF NOT EXISTS DescriptionOffre (
     , appellation_rome VARCHAR(100)
     , difficile_a_pourvoir BOOLEAN
     , accessible_travailleurs_handicapes BOOLEAN
+    , url_france_travail VARCHAR(65)
 );
 
 ----------------------------------------------
