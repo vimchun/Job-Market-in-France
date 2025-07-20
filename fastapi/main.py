@@ -326,56 +326,20 @@ def get_attributes_for_a_specific_offer(filters: str = Depends(set_endpoints_fil
                 print(row)
                 ##==> exemple : ('6352644', '"Développeur Web FullStack Senior ReactJS/NodeJS H/F"', '"Laval"', '"Mayenne"', '"Pays de la Loire"', None, 60000, 70000, <description_offre>)
 
-                # construction du json à afficher (mais pas encore ordonné)
                 dict_1 = {
                     "offre_id": row[0],
-                    "metier_data": row[5],
-                    "salaire_min": row[6],
-                    "salaire_max": row[7],
-                    "liste_mots_cles": row[8],
-                }
-
-                location_unstripped = {  # contient des leading/trailing "
-                    "intitule": row[1],
+                    "intitulé": row[1],
                     "ville": row[2],
                     "département": row[3],
                     "région": row[4],
+                    "metier data": row[5],
+                    "salaire min": row[6],
+                    "salaire max": row[7],
+                    "liste mots clés": row[8],
                     "description": row[9],
                 }
 
-                location_stripped = {}
-                for key, val in location_unstripped.items():
-                    if isinstance(val, str):
-                        location_stripped[key] = val.strip('"')  # pour supprimer les leading/trailing "
-                    else:
-                        location_stripped[key] = val  # cas où on a None par exemple (erreur si None.strip('"'))
-
-                d = {**dict_1, **location_stripped}  # fusionner les 2 dictionnaires
-
-                # on ordonne le dictionnaire (dans un nouveau dictionnaire)
-
-                from collections import OrderedDict
-
-                order_list = [
-                    "offre_id",
-                    "intitule",
-                    "ville",
-                    "département",
-                    "région",
-                    "metier_data",
-                    "salaire_min",
-                    "salaire_max",
-                    "liste_mots_cles",
-                    "description",
-                ]
-
-                ordered_dict = OrderedDict((k, d[k]) for k in order_list if k in d)
-
-                for k, v in d.items():
-                    if k not in ordered_dict:
-                        ordered_dict[k] = v
-
-                return JSONResponse(content=jsonable_encoder(ordered_dict))
+                return JSONResponse(content=jsonable_encoder(dict_1))
 
 
 ##########################
