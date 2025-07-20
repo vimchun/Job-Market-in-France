@@ -1,5 +1,4 @@
-# cd fastapi/  &&  uvicorn main:app --reload
-# cd fastapi/  &&  uvicorn main:app --reload  --log-level debug
+# pour investiguer : "docker logs -f fastapi"
 
 import os
 
@@ -10,15 +9,11 @@ from typing import List, Optional
 import pandas as pd
 import psycopg2
 
-from colorama import Fore, Style, init  # todo : à supprimer ?
 from tabulate import tabulate  # pour afficher les résultats sous forme de tableau
 
-from fastapi import Depends, FastAPI, HTTPException, Query, Response  # status
+from fastapi import Depends, FastAPI, HTTPException, Query, Response
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-
-init(autoreset=True)  # pour colorama, inutile de reset si on colorie
-
 
 tag_one_offer = "Pour une seule offre d'emploi"
 tag_all_offers = "Pour toutes les offres d'emploi"
@@ -39,17 +34,12 @@ psycopg2_connect_dict = {
     "password": os.getenv("DB_PASSWORD", "mhh"),
 }
 
-"""
-Si `enable_secondary_routes = 0`, les routes "secondaires" suivantes seront désactivées :
-
-  - "/criteres_recruteurs/qualifications",
-  - "/criteres_recruteurs/formations",
-  - "/criteres_recruteurs/permis_conduire",
-  - "/criteres_recruteurs/langues",
-
-    (elles n'apportent pas d'information importante, et polluent open api)
-"""
-
+# Si `enable_secondary_routes = 0`, les routes "secondaires" suivantes seront désactivées :
+#
+#   - "/criteres_recruteurs/qualifications",
+#   - "/criteres_recruteurs/formations",
+#   - "/criteres_recruteurs/permis_conduire",
+#   - "/criteres_recruteurs/langues",
 
 ###### définitions de mini fonctions()
 
@@ -86,14 +76,12 @@ def strip_accents(text):
 
     return "".join(c for c in unicodedata.normalize("NFD", text) if unicodedata.category(c) != "Mn")
 
-    """
-    Ainsi, on aura :
-
-    print(
-        strip_accents("Île-de-France"),  ##==> Ile-de-France (la fonction remplace les accents)
-        strip_accents("Saint-Cyr-l'École"),  ##==> Saint-Cyr-l'Ecole
-    )
-    """
+    # Ainsi, on aura :
+    #
+    # print(
+    #     strip_accents("Île-de-France"),  ##==> Ile-de-France (la fonction remplace les accents)
+    #     strip_accents("Saint-Cyr-l'École"),  ##==> Saint-Cyr-l'Ecole
+    # )
 
 
 app = FastAPI(
@@ -280,10 +268,10 @@ def execute_modified_sql_request_with_filters(
 
         with psycopg2.connect(**psycopg2_connect_dict) as conn:
             with conn.cursor() as cursor:
-                print(f'\n{Fore.CYAN}===> Requête SQL depuis le fichier "{sql_files_directory_part_2}" :')
-                print(f"{Style.DIM}{modified_sql_file_content}")
-                print(f"{Fore.CYAN}===> paramètres :")
-                print(f"{Fore.CYAN}{Style.DIM}{params}")
+                print(f'\n===> Requête SQL depuis le fichier "{sql_files_directory_part_2}" :')
+                print(modified_sql_file_content)
+                print("===> paramètres :")
+                print(params)
 
                 cursor.execute(modified_sql_file_content, tuple(params))
                 if fetch == "all":
@@ -293,7 +281,7 @@ def execute_modified_sql_request_with_filters(
 
 
 def set_endpoints_filters_2(
-    offre_id: Optional[str] = Query(default="*joker*", description='"offre_id" sur 7 digits (laisser "*joker*" pour avoir une offre aléatoire'),
+    offre_id: Optional[str] = Query(default="*joker*", description='"offre_id" sur 7 digits (laisser "*joker*" pour avoir une offre aléatoire)'),
 ):
     if len(offre_id) != 7:
         raise HTTPException(status_code=400, detail=f"'offre_id' doit être sur 7 digits.")
@@ -329,8 +317,8 @@ def get_attributes_for_a_specific_offer(filters: str = Depends(set_endpoints_fil
 
         with psycopg2.connect(**psycopg2_connect_dict) as conn:
             with conn.cursor() as cursor:
-                # print(f'\n{Fore.CYAN}===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :')
-                # print(f"{Style.DIM}{sql}")
+                # print(f'\n===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :')
+                # print(sql)
 
                 cursor.execute(sql, params)
 
