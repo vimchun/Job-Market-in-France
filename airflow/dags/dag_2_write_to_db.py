@@ -202,12 +202,13 @@ def split_large_json(filename):
         seen_permisconduire,
     ) = [set() for _ in range(7)]
 
-    def strip_and_quote(string_):
+    def strip_string(string_):
         """
-        Retourne le string strip (en supprimant les leading et trailing whitespaces, sans espace à gauche et à droite), en entourant par des guillemets.
+        Mini-fonction pour simplifier l'écriture.
+        Retourne le string strip (en supprimant les leading et trailing whitespaces, sans espace à gauche et à droite).
         S'applique aux VARCHAR (voir "create_all_tables.sql").
         """
-        return f'"{string_.strip()}"' if string_ else None
+        return f"{string_.strip()}" if string_ else None
 
     for offre in offres:
         offre_id = offre.get("id")
@@ -229,20 +230,20 @@ def split_large_json(filename):
         contrat.append(
             {
                 "offre_id": offre_id,
-                "type_contrat": strip_and_quote(offre.get("typeContrat")),
-                "type_contrat_libelle": strip_and_quote(offre.get("typeContratLibelle")),
-                "duree_travail_libelle": strip_and_quote(offre.get("dureeTravailLibelle")),
-                "duree_travail_libelle_converti": strip_and_quote(offre.get("dureeTravailLibelleConverti")),
-                "nature_contrat": strip_and_quote(offre.get("natureContrat")),
-                "salaire_libelle": strip_and_quote(offre.get("salaire").get("libelle")),
-                "salaire_complement_1": strip_and_quote(offre.get("salaire").get("complement1")),
-                "salaire_complement_2": strip_and_quote(offre.get("salaire").get("complement2")),
-                "salaire_commentaire": strip_and_quote(offre.get("salaire").get("commentaire")),
+                "type_contrat": strip_string(offre.get("typeContrat")),
+                "type_contrat_libelle": strip_string(offre.get("typeContratLibelle")),
+                "duree_travail_libelle": strip_string(offre.get("dureeTravailLibelle")),
+                "duree_travail_libelle_converti": strip_string(offre.get("dureeTravailLibelleConverti")),
+                "nature_contrat": strip_string(offre.get("natureContrat")),
+                "salaire_libelle": strip_string(offre.get("salaire").get("libelle")),
+                "salaire_complement_1": strip_string(offre.get("salaire").get("complement1")),
+                "salaire_complement_2": strip_string(offre.get("salaire").get("complement2")),
+                "salaire_commentaire": strip_string(offre.get("salaire").get("commentaire")),
                 "alternance": offre.get("alternance"),
                 "deplacement_code": offre.get("deplacementCode"),
-                "deplacement_libelle": strip_and_quote(offre.get("deplacementLibelle")),
-                "temps_travail": strip_and_quote(offre.get("complementExercice")),
-                "condition_specifique": strip_and_quote(offre.get("conditionExercice")),
+                "deplacement_libelle": strip_string(offre.get("deplacementLibelle")),
+                "temps_travail": strip_string(offre.get("complementExercice")),
+                "condition_specifique": strip_string(offre.get("conditionExercice")),
             }
         )
 
@@ -250,10 +251,10 @@ def split_large_json(filename):
         entreprise.append(
             {
                 "offre_id": offre_id,
-                "nom_entreprise": strip_and_quote(offre.get("entreprise").get("nom")),
-                "description_entreprise": strip_and_quote(offre.get("entreprise").get("description")),
+                "nom_entreprise": strip_string(offre.get("entreprise").get("nom")),
+                "description_entreprise": strip_string(offre.get("entreprise").get("description")),
                 "code_naf": offre.get("codeNAF"),
-                "secteur_activite_libelle": strip_and_quote(offre.get("secteurActiviteLibelle")),
+                "secteur_activite_libelle": strip_string(offre.get("secteurActiviteLibelle")),
                 "entreprise_adaptee": offre.get("entreprise").get("entrepriseAdaptee"),
             }
         )
@@ -263,13 +264,13 @@ def split_large_json(filename):
             {
                 "offre_id": offre_id,
                 "code_insee": offre.get("code_insee"),  # sur 5 chars
-                "nom_commune": strip_and_quote(offre.get("nom_commune")),
+                "nom_commune": strip_string(offre.get("nom_commune")),
                 "code_postal": offre.get("code_postal"),  # sur 5 chars
-                "nom_ville": strip_and_quote(offre.get("nom_ville")),
+                "nom_ville": strip_string(offre.get("nom_ville")),
                 "code_departement": offre.get("code_departement"),  # sur 3 chars
-                "nom_departement": strip_and_quote(offre.get("nom_departement")),
+                "nom_departement": strip_string(offre.get("nom_departement")),
                 "code_region": offre.get("code_region"),  # sur 2 chars
-                "nom_region": strip_and_quote(offre.get("nom_region")),
+                "nom_region": strip_string(offre.get("nom_region")),
                 "lieu_cas": offre.get("lieu_cas"),  # sur 5 chars
             }
         )
@@ -278,12 +279,12 @@ def split_large_json(filename):
         descriptionoffre.append(
             {
                 "offre_id": offre_id,
-                "intitule_offre": strip_and_quote(offre.get("intitule")),
-                "description_offre": strip_and_quote(offre.get("description")),  # todo : à mettre dans une table à part car trop gros ?
-                "nom_partenaire": strip_and_quote(offre.get("origineOffre").get("partenaires", [{}])[0].get("nom")),
+                "intitule_offre": strip_string(offre.get("intitule")),
+                "description_offre": strip_string(offre.get("description")),  # todo : à mettre dans une table à part car trop gros ?
+                "nom_partenaire": strip_string(offre.get("origineOffre").get("partenaires", [{}])[0].get("nom")),
                 "rome_code": offre.get("romeCode"),  # sur 5 chars
-                "rome_libelle": strip_and_quote(offre.get("romeLibelle")),
-                "appellation_rome": strip_and_quote(offre.get("appellationlibelle")),
+                "rome_libelle": strip_string(offre.get("romeLibelle")),
+                "appellation_rome": strip_string(offre.get("appellationlibelle")),
                 "difficile_a_pourvoir": offre.get("offresManqueCandidats"),
                 "accessible_travailleurs_handicapes": offre.get("accessibleTH"),
             }
@@ -305,7 +306,7 @@ def split_large_json(filename):
                     {
                         "offre_id": offre_id,
                         "competence_code": values[0],
-                        "competence_libelle": strip_and_quote(values[1]),
+                        "competence_libelle": strip_string(values[1]),
                         "competence_code_exigence": values[2],
                         "date_extraction": offre.get("dateExtraction"),
                     }
@@ -317,7 +318,7 @@ def split_large_json(filename):
                     competence.append(
                         {
                             "competence_code": values[0],
-                            "competence_libelle": strip_and_quote(values[1]),
+                            "competence_libelle": strip_string(values[1]),
                             "competence_code_exigence": values[2],
                         }
                     )
@@ -333,9 +334,9 @@ def split_large_json(filename):
         offre_experience.append(
             {
                 "offre_id": offre_id,
-                "experience_libelle": strip_and_quote(values[0]),
+                "experience_libelle": strip_string(values[0]),
                 "experience_code_exigence": values[1],
-                "experience_commentaire": strip_and_quote(values[2]),
+                "experience_commentaire": strip_string(values[2]),
                 "date_extraction": offre.get("dateExtraction"),
             }
         )
@@ -345,9 +346,9 @@ def split_large_json(filename):
             seen_experience.add(values)
             experience.append(
                 {
-                    "experience_libelle": strip_and_quote(values[0]),
+                    "experience_libelle": strip_string(values[0]),
                     "experience_code_exigence": values[1],
-                    "experience_commentaire": strip_and_quote(values[2]),
+                    "experience_commentaire": strip_string(values[2]),
                 }
             )
 
@@ -369,9 +370,9 @@ def split_large_json(filename):
                     {
                         "offre_id": offre_id,
                         "formation_code": values[0],
-                        "formation_domaine_libelle": strip_and_quote(values[1]),
-                        "formation_niveau_libelle": strip_and_quote(values[2]),
-                        "formation_commentaire": strip_and_quote(values[3]),
+                        "formation_domaine_libelle": strip_string(values[1]),
+                        "formation_niveau_libelle": strip_string(values[2]),
+                        "formation_commentaire": strip_string(values[3]),
                         "formation_code_exigence": values[4],
                         "date_extraction": offre.get("dateExtraction"),
                     }
@@ -383,9 +384,9 @@ def split_large_json(filename):
                     formation.append(
                         {
                             "formation_code": values[0],
-                            "formation_domaine_libelle": strip_and_quote(values[1]),
-                            "formation_niveau_libelle": strip_and_quote(values[2]),
-                            "formation_commentaire": strip_and_quote(values[3]),
+                            "formation_domaine_libelle": strip_string(values[1]),
+                            "formation_niveau_libelle": strip_string(values[2]),
+                            "formation_commentaire": strip_string(values[3]),
                             "formation_code_exigence": values[4],
                         }
                     )
@@ -403,8 +404,8 @@ def split_large_json(filename):
                 offre_qualiteprofessionnelle.append(
                     {
                         "offre_id": offre_id,
-                        "qualite_professionnelle_libelle": strip_and_quote(values[0]),
-                        "qualite_professionnelle_description": strip_and_quote(values[1]),
+                        "qualite_professionnelle_libelle": strip_string(values[0]),
+                        "qualite_professionnelle_description": strip_string(values[1]),
                         "date_extraction": offre.get("dateExtraction"),
                     }
                 )
@@ -414,8 +415,8 @@ def split_large_json(filename):
                     seen_qualiteprofessionnelle.add(values)
                     qualiteprofessionnelle.append(
                         {
-                            "qualite_professionnelle_libelle": strip_and_quote(values[0]),
-                            "qualite_professionnelle_description": strip_and_quote(values[1]),
+                            "qualite_professionnelle_libelle": strip_string(values[0]),
+                            "qualite_professionnelle_description": strip_string(values[1]),
                         }
                     )
 
@@ -439,7 +440,7 @@ def split_large_json(filename):
             qualification.append(
                 {
                     "qualification_code": values[0],
-                    "qualification_libelle": strip_and_quote(values[1]),
+                    "qualification_libelle": strip_string(values[1]),
                 }
             )
 
@@ -457,7 +458,7 @@ def split_large_json(filename):
                 offre_langue.append(
                     {
                         "offre_id": offre_id,
-                        "langue_libelle": strip_and_quote(values[0]),
+                        "langue_libelle": strip_string(values[0]),
                         "langue_code_exigence": values[1],
                         "date_extraction": offre.get("dateExtraction"),
                     }
@@ -468,7 +469,7 @@ def split_large_json(filename):
                     seen_langue.add(values)
                     langue.append(
                         {
-                            "langue_libelle": strip_and_quote(values[0]),
+                            "langue_libelle": strip_string(values[0]),
                             "langue_code_exigence": values[1],
                         }
                     )
@@ -487,7 +488,7 @@ def split_large_json(filename):
                 offre_permisconduire.append(
                     {
                         "offre_id": offre_id,
-                        "permis_libelle": strip_and_quote(values[0]),
+                        "permis_libelle": strip_string(values[0]),
                         "permis_code_exigence": values[1],
                         "date_extraction": offre.get("dateExtraction"),
                     }
@@ -498,7 +499,7 @@ def split_large_json(filename):
                     seen_permisconduire.add(values)
                     permisconduire.append(
                         {
-                            "permis_libelle": strip_and_quote(values[0]),
+                            "permis_libelle": strip_string(values[0]),
                             "permis_code_exigence": values[1],
                         }
                     )
