@@ -290,25 +290,47 @@ def execute_modified_sql_request_with_filters(
                     return cursor.fetchone()
 
 
-@app.get(
-    "/offre/{offre_id}/some_transformations_attributes",
-    tags=[tag_one_offer],
-    summary="Afficher quelques attributs issues des transformations",
-)
-def get_attributes_for_a_specific_offer(offre_id: str):
+def set_endpoints_filters_2(
+    offre_id: Optional[str] = Query(default="*joker*", description='"offre_id" sur 7 digits (laisser "*joker*" pour avoir une offre aléatoire'),
+):
     if len(offre_id) != 7:
         raise HTTPException(status_code=400, detail=f"'offre_id' doit être sur 7 digits.")
 
+    return offre_id
+
+
+@app.get(
+    "/offre/quelques_attributs_provenant_des_transformations",
+    tags=[tag_one_offer],
+    summary="Afficher quelques attributs issues des transformations",
+)
+def get_attributes_for_a_specific_offer(filters: str = Depends(set_endpoints_filters_2)):
+    offre_id = filters
+
+    # on choisit un offre_id parmi ceux existant (grâce au fichier créé par le "DAG 1", tâche "A11")
+    if offre_id == "*joker*":
+        offres_ids_list = []
+        with open("offers_ids.txt", "r") as file:
+            for line in file:
+                line = line.strip()  # .strip() sinon on aura les retours à la ligne "\n"
+                if line:  # pour prendre que les lignes avec du texte
+                    offres_ids_list.append(line)
+
+        import random
+
+        offre_id = random.choice(offres_ids_list)
+
     sql_file_directory_part_2 = os.path.join("misc", "for_a_specific_offer.pgsql")
     with open(os.path.join(sql_file_directory_part_1, sql_file_directory_part_2), "r") as file:
-        sql = file.read().replace("placeholder_offre_id", offre_id)
+        sql = file.read()
+        params = (offre_id,)
 
         with psycopg2.connect(**psycopg2_connect_dict) as conn:
             with conn.cursor() as cursor:
                 print(f'\n{Fore.CYAN}===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :')
                 print(f"{Style.DIM}{sql}")
 
-                cursor.execute(sql)
+                cursor.execute(sql, params)
 
                 return cursor.fetchone()
 

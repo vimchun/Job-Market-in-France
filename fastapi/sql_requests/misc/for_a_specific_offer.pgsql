@@ -13,7 +13,7 @@ FROM
     JOIN contrat c ON c.offre_id = dof.offre_id
     JOIN localisation loc ON loc.offre_id = dof.offre_id
 WHERE
-    ofe.offre_id = 'placeholder_offre_id'
+    ofe.offre_id = %s;
     -- ofe.offre_id = '3169670'
-LIMIT 10;
+-- LIMIT 10;
 
