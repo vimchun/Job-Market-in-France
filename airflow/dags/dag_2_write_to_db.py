@@ -287,6 +287,7 @@ def split_large_json(filename):
                 "appellation_rome": strip_string(offre.get("appellationlibelle")),
                 "difficile_a_pourvoir": offre.get("offresManqueCandidats"),
                 "accessible_travailleurs_handicapes": offre.get("accessibleTH"),
+                "url_france_travail": offre.get("origineOffre").get("urlOrigine"),
             }
         )
 
@@ -728,6 +729,7 @@ def insert_into_description_offre(folder, json_filename):
                     "appellation_rome": offre.get("appellation_rome"),
                     "difficile_a_pourvoir": offre.get("difficile_a_pourvoir"),
                     "accessible_travailleurs_handicapes": offre.get("accessible_travailleurs_handicapes"),
+                    "url_france_travail": offre.get("url_france_travail"),
                 }
 
                 # print(json.dumps(values_dict, indent=4, ensure_ascii=False))  # print pour investigation
