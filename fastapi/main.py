@@ -15,7 +15,7 @@ from fastapi import Depends, FastAPI, HTTPException, Query, Response
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
-tag_one_offer = "Pour une seule offre d'emploi"
+tag_one_or_many_offers = "Pour une ou plusieurs offres d'emploi"
 tag_all_offers = "Pour toutes les offres d'emploi"
 tag_location_mapping_name_code = 'Mapping "nom <> code" pour les régions, départements, villes et communes'
 
@@ -97,7 +97,7 @@ app = FastAPI(
       """),  # noqa
     openapi_tags=[
         {
-            "name": tag_one_offer,
+            "name": tag_one_or_many_offers,
             "description": "à compléter plus tard",
         },
         {
@@ -291,7 +291,7 @@ def set_endpoints_filters_2(
 
 @app.get(
     "/offre/attributs_from_transformations",
-    tags=[tag_one_offer],
+    tags=[tag_one_or_many_offers],
     summary="Afficher les attributs issues des transformations",
 )
 def get_attributes_for_a_specific_offer(filters: str = Depends(set_endpoints_filters_2)):
@@ -317,14 +317,14 @@ def get_attributes_for_a_specific_offer(filters: str = Depends(set_endpoints_fil
 
         with psycopg2.connect(**psycopg2_connect_dict) as conn:
             with conn.cursor() as cursor:
-                # print(f'\n===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :')
-                # print(sql)
+                # print(f'\n===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :') # pour investigation
+                # print(sql) # pour investigation
 
                 cursor.execute(sql, params)
 
                 row = cursor.fetchone()
-                ##==> exemple : ('6352644', '"Développeur Web FullStack Senior ReactJS/NodeJS H/F"', '"Laval"', '"Mayenne"', '"Pays de la Loire"', None, 60000, 70000, <description_offre>)
                 print(row)
+                ##==> exemple : ('6352644', '"Développeur Web FullStack Senior ReactJS/NodeJS H/F"', '"Laval"', '"Mayenne"', '"Pays de la Loire"', None, 60000, 70000, <description_offre>)
 
                 # construction du json à afficher (mais pas encore ordonné)
                 dict_1 = {
@@ -376,6 +376,30 @@ def get_attributes_for_a_specific_offer(filters: str = Depends(set_endpoints_fil
                         ordered_dict[k] = v
 
                 return JSONResponse(content=jsonable_encoder(ordered_dict))
+
+
+##########################
+
+
+@app.get(
+    "/plusieurs_offres",
+    tags=[tag_one_or_many_offers],
+    summary="Afficher les 10 offres les plus récentes",
+)
+def get_availables_offers(filters: str = Depends(set_endpoints_filters)):
+    sql_file_directory_part_2 = os.path.join("misc", "several_offers.pgsql")
+
+    result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
+
+    truncated_result = [(row[0], row[1][:30], f"{row[2]} - {row[3]}", row[4], row[5], row[6]) for row in result]
+
+    table = tabulate(
+        truncated_result,
+        headers=["offre_id", "intitulé (30 chars max)", "dates création - actualisation", "ville", "département", "région"],
+        tablefmt="psql",
+    )
+
+    return Response(content=table, media_type="text/plain")
 
 
 ##########################
