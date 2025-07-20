@@ -281,7 +281,7 @@ def execute_modified_sql_request_with_filters(
 
 
 def set_endpoints_filters_2(
-    offre_id: Optional[str] = Query(default="*joker*", description='"offre_id" sur 7 digits (laisser "*joker*" pour avoir une offre aléatoire)'),
+    offre_id: Optional[str] = Query(default="*joker*", description='"offre_id" sur 7 digits (laisser `*joker*` pour avoir une offre aléatoire)'),
 ):
     if len(offre_id) != 7:
         raise HTTPException(status_code=400, detail=f"'offre_id' doit être sur 7 digits.")
@@ -290,9 +290,9 @@ def set_endpoints_filters_2(
 
 
 @app.get(
-    "/offre/quelques_attributs_provenant_des_transformations",
+    "/offre/attributs_from_transformations",
     tags=[tag_one_offer],
-    summary="Afficher quelques attributs issues des transformations",
+    summary="Afficher les attributs issues des transformations",
 )
 def get_attributes_for_a_specific_offer(filters: str = Depends(set_endpoints_filters_2)):
     offre_id = filters
@@ -310,7 +310,7 @@ def get_attributes_for_a_specific_offer(filters: str = Depends(set_endpoints_fil
 
         offre_id = random.choice(offres_ids_list)
 
-    sql_file_directory_part_2 = os.path.join("misc", "for_a_specific_offer.pgsql")
+    sql_file_directory_part_2 = os.path.join("misc", "transformations_attrs_for_one_offer.pgsql")
     with open(os.path.join(sql_file_directory_part_1, sql_file_directory_part_2), "r") as file:
         sql = file.read()
         params = (offre_id,)
@@ -332,6 +332,7 @@ def get_attributes_for_a_specific_offer(filters: str = Depends(set_endpoints_fil
                     "metier_data": row[5],
                     "salaire_min": row[6],
                     "salaire_max": row[7],
+                    "liste_mots_cles": row[8],
                 }
 
                 location_unstripped = {  # contient des leading/trailing "
@@ -339,7 +340,7 @@ def get_attributes_for_a_specific_offer(filters: str = Depends(set_endpoints_fil
                     "ville": row[2],
                     "département": row[3],
                     "région": row[4],
-                    "description": row[8],
+                    "description": row[9],
                 }
 
                 location_stripped = {}
@@ -364,6 +365,7 @@ def get_attributes_for_a_specific_offer(filters: str = Depends(set_endpoints_fil
                     "metier_data",
                     "salaire_min",
                     "salaire_max",
+                    "liste_mots_cles",
                     "description",
                 ]
 

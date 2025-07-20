@@ -7,6 +7,7 @@ SELECT
     , metier_data
     , salaire_min
     , salaire_max
+    , dof.liste_mots_cles
     , dof.description_offre
 FROM
     offreemploi ofe
@@ -15,6 +16,4 @@ FROM
     JOIN localisation loc ON loc.offre_id = dof.offre_id
 WHERE
     ofe.offre_id = %s;
-    -- ofe.offre_id = '3169670'
--- LIMIT 10;
 
