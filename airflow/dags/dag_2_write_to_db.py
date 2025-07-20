@@ -1397,6 +1397,7 @@ with DAG(
             sql=os.path.join("sql", "transformation_5_update__table_descriptionoffre__column__liste_mots_cles.sql"),
         )
 
-        [t1, t2, t3, t4] >> t5
+        [t1, t2, t3] >> t5
+        t4
 
     setup >> without_junction >> with_junction >> transformations
