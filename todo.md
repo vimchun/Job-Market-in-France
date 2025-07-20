@@ -14,19 +14,39 @@
 ### P0
 
   - fastapi idées :
-    - création offre (id offre obligatoire, mais doit être unique)
-    - suppression offre
-    - ajouter une route comme /healthcheck ou /status qui permet de vérifier que la base est connectée (test SELECT 1).
+
+    - tag : pour une offre:
+
+      - création offre
+        - id offre obligatoire, mais doit être unique
+
+      - suppression offre
+
+      - afficher 10 premières offres DE / DA... dispo ou pas... => ajout url
+
+
+
+  - remplir tables : ajout url pour postuler
+
+        "origineOffre": {
+            "origine": "2",
+            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/9635836",
+        }
+
 
 
 ### P1
 
-  - pb avec `airflow\dags\sql\transformation_4_update__table_contrat__columns__salaire_min__salaire_max.sql` => n'écrit rien dans les colonnes ?
+  - pb avec `airflow\dags\sql\transformation_4_update__table_contrat__columns__salaire_min__salaire_max.sql`
+  => n'écrit rien dans les colonnes ?
+  => résolu par la suppression des leading/trailing " ???
+
 
   - grafana : ajouter les locks/conflicts de postgres
 
   - airflow : activer les dags au démarrage après un reboot (possible ?)
 
+  - mettre description_offre de la table descriptionoffre dans un fichier à part (trop gros)
 
 ### P2
 
@@ -42,6 +62,11 @@
 
   - airflow : utiliser log au lieu de print ?
         log.info("") au lieu de print ?
+
+  - fastapi idées :
+
+    - ajouter une route comme /healthcheck ou /status qui permet de vérifier que la base est connectée (test SELECT 1).
+    - ajouter une route qui fait le "docker ps"
 
 
 ### P3
