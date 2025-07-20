@@ -68,6 +68,7 @@ WITH liste_mots_cles AS (
             , 'power automate' -- pas de e volontairement
             , 'power apps'
             -- cloud
+            , 'cloud'
             , 'aws'
             , 'gcp'
             , 'azure'
