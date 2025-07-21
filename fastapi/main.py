@@ -352,14 +352,15 @@ def get_attributes_for_a_specific_offer(filters: str = Depends(set_endpoints_fil
                 dict_1 = {
                     "offre_id": row[0],
                     "intitulé": row[1],
-                    "ville": row[2],
-                    "département": row[3],
-                    "région": row[4],
-                    "metier data": row[5],
-                    "salaire min": row[6],
-                    "salaire max": row[7],
-                    "liste mots clés": row[8],
-                    "description": row[9],
+                    "date création": row[2],
+                    "ville": row[3],
+                    "département": row[4],
+                    "région": row[5],
+                    "metier data": row[6],
+                    "salaire min": row[7],
+                    "salaire max": row[8],
+                    "liste mots clés": row[9],
+                    "description": row[10],
                 }
 
                 return JSONResponse(content=jsonable_encoder(dict_1))
