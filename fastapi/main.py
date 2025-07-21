@@ -84,6 +84,26 @@ def strip_accents(text):
     # )
 
 
+def generate_unique_offer_id(ids_file):
+    """
+    Génère un offre_id sur 7 caractères qui ne figure pas dans le fichier "ids_file"
+    """
+
+    import random
+    import string
+
+    with open(ids_file, "r") as f:
+        lignes = f.readlines()
+        existing_ids = set(l.strip() for l in lignes)  # set avec les identifiants existants
+
+    alphabet = string.ascii_uppercase + string.digits  # A-Z + 0-9
+
+    while True:
+        offer_id = "".join(random.choices(alphabet, k=7))
+        if offer_id not in existing_ids:
+            return offer_id
+
+
 app = FastAPI(
     title="API sur les offres d'emploi chez France Travail",
     description=dedent(f"""
@@ -343,6 +363,7 @@ def get_attributes_for_a_specific_offer(filters: str = Depends(set_endpoints_fil
                 }
 
                 return JSONResponse(content=jsonable_encoder(dict_1))
+                # todo : gérer erreur 500 si aucun résultat
 
 
 ##########################
@@ -386,6 +407,32 @@ def get_availables_offers(filters: str = Depends(set_endpoints_filters)):
     )
 
     return Response(content=table, media_type="text/plain")
+
+
+##########################
+
+
+@app.post(
+    "/offre/ajout_offre_factice",
+    tags=[tag_one_or_many_offers],
+    summary='Créer une nouvelle offre factice (car trop d\'attributs à renseigner si on veut une offre "réelle"',
+)
+def add_offer():
+    sql_file_directory_part_2 = os.path.join("misc", "create_offer.pgsql")
+
+    offre_id = generate_unique_offer_id("offers_ids.txt")
+
+    with open(os.path.join(sql_file_directory_part_1, sql_file_directory_part_2), "r") as file:
+        sql_file_content = file.read()
+
+    with psycopg2.connect(**psycopg2_connect_dict) as conn:
+        with conn.cursor() as cur:
+            # print(f'\n===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :')  # pour investigation
+            # print(sql_file_content)  # pour investigation
+            cur.execute(sql_file_content, (offre_id, offre_id, offre_id, offre_id))
+
+    # return {"message": f"Offre {offre_id} ajoutée avec succès"}
+    return f"Offre {offre_id} ajoutée avec succès"
 
 
 ##########################
