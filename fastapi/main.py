@@ -87,8 +87,11 @@ def strip_accents(text):
 app = FastAPI(
     title="API sur les offres d'emploi chez France Travail",
     description=dedent(f"""
-    - Notes concernant les paramètres de localisation `code_region`, `code_departement`, `code_postal` et `code_insee` :
-      <br> <br>
+    <u>Notes :</u>
+    - Pour ouvrir le lien d'une offre d'emploi : `https://candidat.francetravail.fr/offres/recherche/detail/<offre_id>` (remplacer `offre_id` dans ce [lien](https://candidat.francetravail.fr/offres/recherche/detail/offre_id)).
+      <br>
+    - Concernant les paramètres de localisation `code_region`, `code_departement`, `code_postal` et `code_insee` :
+      <br>
       - Remplir ces champs est facultatif (pas de valeur = pas de filtre).
       <br>
       - Pour connaître les valeurs possibles, lancer la requête associée sous la partie `{tag_location_mapping_name_code}`.
@@ -268,10 +271,10 @@ def execute_modified_sql_request_with_filters(
 
         with psycopg2.connect(**psycopg2_connect_dict) as conn:
             with conn.cursor() as cursor:
-                print(f'\n===> Requête SQL depuis le fichier "{sql_files_directory_part_2}" :')
-                print(modified_sql_file_content)
-                print("===> paramètres :")
-                print(params)
+                print(f'\n===> Requête SQL depuis le fichier "{sql_files_directory_part_2}" :')  # pour investigation
+                # print(modified_sql_file_content)  # pour investigation
+                # print("===> paramètres :")  # pour investigation
+                # print(params)  # pour investigation
 
                 cursor.execute(modified_sql_file_content, tuple(params))
                 if fetch == "all":
@@ -323,7 +326,7 @@ def get_attributes_for_a_specific_offer(filters: str = Depends(set_endpoints_fil
                 cursor.execute(sql, params)
 
                 row = cursor.fetchone()
-                print(row)
+                # print(row)
                 ##==> exemple : ('6352644', '"Développeur Web FullStack Senior ReactJS/NodeJS H/F"', '"Laval"', '"Mayenne"', '"Pays de la Loire"', None, 60000, 70000, <description_offre>)
 
                 dict_1 = {
@@ -355,11 +358,30 @@ def get_availables_offers(filters: str = Depends(set_endpoints_filters)):
 
     result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
 
-    truncated_result = [(row[0], row[1][:30], f"{row[2]} - {row[3]}", row[4], row[5], row[6]) for row in result]
+    truncated_result = [
+        (
+            row[0],
+            row[1][:30],
+            f"{row[2]} / {row[3]}",
+            row[4],
+            row[5],
+            row[6],
+            # row[7],  # url bien affiché mais pas de lien cliquable :(
+        )
+        for row in result
+    ]
 
     table = tabulate(
         truncated_result,
-        headers=["offre_id", "intitulé (30 chars max)", "dates création - actualisation", "ville", "département", "région"],
+        headers=[
+            "offre_id",
+            "intitulé (30 chars max)",
+            "créé / actualisé",
+            "ville",
+            "département",
+            "région",
+            # "url",
+        ],
         tablefmt="psql",
     )
 

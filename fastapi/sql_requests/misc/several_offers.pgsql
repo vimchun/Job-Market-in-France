@@ -13,7 +13,7 @@ SELECT
     , nom_ville
     , nom_departement
     , nom_region
-    -- ajouter url quand ca sera dispo
+    -- , url_france_travail
 FROM
     offreemploi ofe
     JOIN descriptionoffre dof ON ofe.offre_id = dof.offre_id
@@ -31,4 +31,3 @@ WHERE
 ORDER BY
     date_creation DESC
 LIMIT 10;
-
