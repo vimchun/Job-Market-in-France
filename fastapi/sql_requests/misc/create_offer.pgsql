@@ -9,11 +9,11 @@ INSERT INTO OffreEmploi (
 )
 VALUES (
     %s,
-    CURRENT_DATE,
-    CURRENT_DATE,
-    CURRENT_DATE,
-    CURRENT_DATE,
-    1
+    '2020-01-01',
+    '2020-01-01',
+    '2020-01-01',
+    '2020-01-01',
+1
 );
 
 -- === DescriptionOffre
