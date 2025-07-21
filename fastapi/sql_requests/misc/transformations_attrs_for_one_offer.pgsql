@@ -1,6 +1,7 @@
 SELECT
     ofe.offre_id as offre
     , intitule_offre
+    , date_creation
     , nom_ville
     , nom_departement
     , nom_region
