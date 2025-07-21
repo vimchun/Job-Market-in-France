@@ -431,8 +431,27 @@ def add_offer():
             # print(sql_file_content)  # pour investigation
             cur.execute(sql_file_content, (offre_id, offre_id, offre_id, offre_id))
 
-    # return {"message": f"Offre {offre_id} ajoutée avec succès"}
     return f"Offre {offre_id} ajoutée avec succès"
+
+
+@app.delete(
+    "/offre/suppression_offre",
+    tags=[tag_one_or_many_offers],
+    summary="Supprimer une offre à partir de son identifiant",
+)
+def remove_offer(offre_id):
+    sql_file_directory_part_2 = os.path.join("misc", "delete_offer.pgsql")
+
+    with open(os.path.join(sql_file_directory_part_1, sql_file_directory_part_2), "r") as file:
+        sql_file_content = file.read()
+
+    with psycopg2.connect(**psycopg2_connect_dict) as conn:
+        with conn.cursor() as cur:
+            # print(f'\n===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :')  # pour investigation
+            # print(sql_file_content)  # pour investigation
+            cur.execute(sql_file_content, (offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id))
+
+    return f"Offre {offre_id} supprimée avec succès"
 
 
 ##########################
