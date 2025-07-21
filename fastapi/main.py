@@ -361,7 +361,7 @@ def get_availables_offers(filters: str = Depends(set_endpoints_filters)):
     truncated_result = [
         (
             row[0],
-            row[1][:30],
+            row[1][:50],
             f"{row[2]} / {row[3]}",
             row[4],
             row[5],
@@ -375,10 +375,10 @@ def get_availables_offers(filters: str = Depends(set_endpoints_filters)):
         truncated_result,
         headers=[
             "offre_id",
-            "intitulé (30 chars max)",
+            "intitulé (50 chars max)",
             "créé / actualisé",
+            "expérience",
             "ville",
-            "département",
             "région",
             # "url",
         ],
