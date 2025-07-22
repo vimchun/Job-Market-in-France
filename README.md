@@ -2,9 +2,10 @@
 
 - Bienvenue sur mon projet, que j'ai réalisé seul entièrement, dans le cadre de ma formation "Data Engineer" chez Data Scientest.
 
-- Sommaire :
+- Sommaire avec les sections principales :
 
   - [0. Présentation du projet](#0-présentation-du-projet)
+    - [Compétences techniques](#compétences-techniques)
   - [1. Environnement](#1-environnement)
     - [Configuration pré-requise](#configuration-pré-requise)
     - [Configuration Docker](#Configuration-Docker)
@@ -16,9 +17,8 @@
     - [Chargement des données dans une base de données relationnelle](#chargement-des-données-dans-une-base-de-données-relationnelle)
     - [Workflow du projet avec Airflow](#workflow-du-projet-avec-airflow)
     - [Airflow](#airflow)
-    - [Description des DAGs](#description-des-dags)
-      - [DAG 1](#dag-1)
-      - [DAG 2](#dag-2)
+      - [Description de DAG 1](#description-de-dag-1)
+      - [Description de DAG 2](#description-de-dag-2)
   - [3. Création d'une API avec FastAPI](#3-création-dune-api-avec-fastapi)
   - [4. Data Viz avec Power BI](#4-data-viz-avec-power-bi)
   - [5. Monitoring avec Prometheus et Grafana](#5-monitoring-avec-prometheus-et-grafana)
@@ -53,6 +53,11 @@
   - monitoring avec Prometheus et Grafana
 
 
+- Le fichier `drawio_files/architecture.drawio` donne une vue sur l'architecture du projet :
+
+  <img src="readme_files/screenshots/drawio/architecture.png" alt="architecture du projet" style="width:100%"/>
+
+
 - Pour ne pas surcharger cette page principale, une seconde page avec des informations supplémentaires moins essentielles est disponible [ici](readme_files/APPENDIX.md#readme-secondaire).
 
 
@@ -61,15 +66,15 @@
 
 - Les compétences travaillées sur ce projet sont les suivantes :
 
-  | Domaine                          | Outils & Technologies                      |
-  | -------------------------------- | ------------------------------------------ |
-  | Langages & programmation         | `Python`, `SQL`, `Bash`/`Linux`, `FastAPI` |
-  | Containerisation & versioning    | `Docker`, `Git`                            |
-  | Pipeline ETL/ELT & orchestration | `Apache Airflow 3.0`                       |
-  | Monitoring                       | `Prometheus`, `Grafana`                    |
-  | Data Visualisation               | `Power BI`                                 |
-  | Modélisation & architecture      | `UML`                                      |
-
+  | Domaine                          | Outils & Technologies           |
+  | -------------------------------- | ------------------------------- |
+  | Langages & programmation         | `Python`, `SQL`, `Bash`/`Linux` |
+  | Containerisation & versioning    | `Docker`, `Git`                 |
+  | Pipeline ETL/ELT & orchestration | `Apache Airflow 3.0`            |
+  | Création d'APIs                  | `FastAPI`                       |
+  | Data Visualisation               | `Power BI`                      |
+  | Monitoring                       | `Prometheus`, `Grafana`         |
+  | Modélisation & architecture      | `UML`                           |
 
 
 # 1. Environnement
@@ -82,7 +87,7 @@
 
       - Voir [ici](readme_files/APPENDIX.md#Utilisation-de-Docker-CE-dans-WSL-pour-cAdvisor) pour les explications et pour la procédure d'installation de `Docker CE` dans WSL.
 
-  - `Python 3.12.9` (février 2025) avec environnement virtuel (formatteur `Ruff`)
+  - `Python 3.12.9` (février 2025) avec environnement virtuel (formatteur `Ruff`).
 
 
 ## Configuration pré-requise
@@ -123,7 +128,7 @@
 
 - Côté Airflow :
 
-  - `DAG 1` et `DAG 2` doivent être activés dans la GUI (par défaut, ils sont désactivés après une réinitialisation d'environnement) :
+  - Activer `DAG 1` et `DAG 2` dans la [GUI](http://localhost:8080/dags) (par défaut, ils sont désactivés après une réinitialisation d'environnement) :
 
     <img src="readme_files/screenshots/airflow/dags_enabled.png" alt="dags activés" style="width:30%"/>
 
@@ -139,19 +144,7 @@
 
 ## Configuration Docker
 
-- Les différents services sont déployés grâce à `docker compose`.
-
-
-### Schéma
-
-- Le fichier `drawio_files/architecture.drawio` donne une vue des principaux services Docker déployée :
-
-  <img src="readme_files/screenshots/drawio/architecture.png" alt="screenshot des services docker" style="width:100%"/>
-
-
-### Versions des services testés
-
-- Le fichier `docker-compose.yml` décrit les différents services déployés suivants :
+- Les différents services sont déployés grâce à `docker compose`, avec le `docker-compose.yml` qui décrit les services suivants :
 
   - `postgres`,
   - `fastapi`,
@@ -160,6 +153,15 @@
   - `prometheus`,
   - `grafana`
 
+
+### Schéma
+
+- Le fichier `drawio_files/architecture.drawio` donne une vue des principaux services Docker déployée :
+
+  <img src="readme_files/screenshots/drawio/architecture.png" alt="services docker" style="width:100%"/>
+
+
+### Versions des services testés
 
 - Le ficher `docker-compose.yml` ne spécifiant pas les versions pour les différents services (tag `latest` par défaut), il est important de noter les versions des services de l'écosystème.
 
@@ -182,7 +184,7 @@
 
 
 
-## Urls des GUIs
+### Urls des GUIs
 
 (todo : + screenshots)
 
@@ -336,7 +338,7 @@
 
 ### Transformations des données en amont (côté Python)
 
-Ces transformations sont faites dans le `DAG 1`, faites via Python et en amont du chargement dans la base Postgres :
+- Ces transformations sont faites dans le `DAG 1`, faites via Python et en amont du chargement dans la base Postgres :
 
   - Concaténation des 61 fichiers json dans un seul fichier json, avec suppression des doublons
 
@@ -353,7 +355,7 @@ Ces transformations sont faites dans le `DAG 1`, faites via Python et en amont d
 
 ### Transformations des données en aval (côté SQL)
 
-Ces transformations sont faites dans le `DAG 2`, faites via des requêtes SQL et effectuées en aval de l'écriture dans la base Postgres :
+- Ces transformations sont faites dans le `DAG 2`, faites via des requêtes SQL et effectuées en aval de l'écriture dans la base Postgres :
 
   - pour créer et écrire l'attribut `metier_data` : pour chaque offre, on comparera l'attribut `intitule_offre` avec des regex afin de déterminer s'il s'agit d'une offre pour un `Data Engineer`, un `Data Analyst`, ou un `Data Scientist`.
 
@@ -459,7 +461,7 @@ Ces transformations sont faites dans le `DAG 2`, faites via des requêtes SQL et
   - `all_in_one.json` : fichier json aggrégeant les fichiers jsons téléchargés en cours de construction, avant renommage.
 
 
-### DAG 1
+### Description de DAG 1
 
 - Vue "graph" du `DAG 1` :
 
@@ -593,7 +595,7 @@ Ces transformations sont faites dans le `DAG 2`, faites via des requêtes SQL et
   - Déclenchement du `DAG 2` si `DAG` OK
 
 
-### DAG 2
+### Description de DAG 2
 
 - Vue "graph" du `DAG 2` :
 
@@ -639,13 +641,9 @@ TODO : screenshot de DAG 2 à la fin du projet
 
 #### Task Group "INSERT_INTO_TABLES_WITHOUT_JUNCTION"
 
-Ce groupe exécute en parallèle les tâches suivantes, qui consistent à récupérer les informations dans les fichiers json dédiés (générés par la tâche `split_large_json`) et exécutent des `INSERT INTO` dans les tâches dédiés :
+- Ce groupe exécute les tâches suivantes, qui consistent à récupérer les informations dans les fichiers json dédiés (générés par la tâche `split_large_json`) et exécutent des `INSERT INTO` dans les tâches dédiées :
 
-- `OffreEmploi`
-- `Contrat`
-- `Entreprise`
-- `Localisation`
-- `DescriptionOffre`
+  - `OffreEmploi`, puis les tâches suivantes en parallèle : `Contrat`, `Entreprise`, `Localisation` et `DescriptionOffre`.
 
 
 
@@ -670,12 +668,15 @@ Ce groupe exécute en parallèle les tâches suivantes, qui consistent à récup
 
 #### Task group "TRANSFORMATIONS"
 
-- `SQLExecuteQueryOperator()` qui exécutent séquentiellement les tâches suivantes, dont les fichiers SQL du dossier `airflow/dags/sql` sont :
+- `SQLExecuteQueryOperator()` qui exécutent les tâches suivantes en parallèle, dont les fichiers SQL du dossier `airflow/dags/sql` sont :
 
   - `update_descriptionoffre_metier_data_DE`
   - `update_descriptionoffre_metier_data_DA`
   - `update_descriptionoffre_metier_data_DS`
   - `update_contrat_salaires_min_max`
+
+- puis :
+
   - `update_descriptionoffre_column_liste_mots_cles`
 
 
@@ -822,7 +823,7 @@ TODO : faire à la fin du projet
 
 ### Configuration Docker pour cAdvisor
 
-- Comme écrit dans cette [section](#1-environnement), il est préférable `Docker CE dans WSL` au profit de `Docker Desktop`.
+- Comme décrit dans cette [section](#1-environnement), il faut utiliser `Docker CE dans WSL`, et non pas `Docker Desktop`.
 
 - Exemple de requête PromQL qui renvoie les conteneurs docker :
 
@@ -995,4 +996,12 @@ TODO : refaire le fichier quand les DAGs seront figés
 
 # 7. Evolutions possibles du projet
 
-todo
+- Le projet est fonctionnel, mais certaines features peuvent le rendre plus robustes ou plus intéressantes :
+
+  - `alert manager`
+
+  - `github actions`
+
+  - `pytest`
+
+  - `dbt`
