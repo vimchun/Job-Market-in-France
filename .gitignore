@@ -9,6 +9,8 @@ airflow/data/outputs/offres/1--generated_json_file/*.json
 airflow/data/outputs/offres/1--generated_json_file/split_json_files/*.json
 airflow/data/resources/api_credentials.yml
 
+fastapi/offers_ids.txt
+
 # temporairement le temps du dev
 # airflow/data/outputs/offres/1--generated_json_file/_json_files_history.csv
 
