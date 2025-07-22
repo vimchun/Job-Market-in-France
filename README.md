@@ -10,7 +10,7 @@
   - [3. Transformations des données](#3-Transformations-des-données)
   - [4. Chargement des données dans une base de données relationnelle](#4-Chargement-des-données-dans-une-base-de-données-relationnelle)
   - [5. Data Viz avec Power BI](#5-Data-Viz-avec-Power-BI)
-  - [6. Création d'une API pour la db](#6-Création-d'une-API-pour-la-db)
+  - [6. Création d'une API](#6-Création-dune-API)
   - [7. Workflow du projet avec Airflow](#7-Workflow-du-projet-avec-Airflow)
   - [8. Prometheus](#8-Prometheus)
   - [9. Grafana](#9-Grafana)
@@ -419,25 +419,98 @@ Ces transformations sont faites dans le `DAG 2`, faites via des requêtes SQL et
 
   - [modifier le Model view](readme_files/APPENDIX.md#model-view)
 
+    <img src="readme_files/screenshots/power_bi/model_view.png" alt="model view power bi" style="width:100%"/>
+
   - [modifier le Table view](readme_files/APPENDIX.md#table-view)
 
   - [faire les transformations](readme_files/APPENDIX.md#transformations)
 
 
 
-## Screenshots des rapports
+## Rapport
 
 TODO : faire à la fin du projet
 
 
 
-# 6. Création d'une API pour la db
+# 6. Création d'une API
 
-- L'utilité peut par exemple être de requêter la base de données `francetravail` à travers l'interface OpenAPI (ex-swagger) pour récupérer certaines informations.
+- Pour créer l'API, la librairie `FastAPI` sera utilisée.
 
-- Utilisation de `FastAPI`.
+- A travers l'[interface OpenAPI](http://localhost:8000/docs#/) (`ex-swagger`), l'utilisateur peut requêter la base de données `francetravail`.
 
-- Pour les réponses, on utilisera la librairie `tabulate` avec `media_type="text/plain"` pour afficher un tableau qui facilitera la lecture, et qui diminuera le nombre de lignes des réponses.
+- L'interface se décline ici sous 3 tags :
+
+  - `Pour une seule offre d'emploi` :
+
+    - todo : screenshot
+
+
+    - route `GET /offre/quelques_attributs_provenant_des_transformations` :
+
+      - prend en entrée l'identifiant de l'offre sur 7 digits, par défaut "*******" (si on laisse ce string par défaut, le script va récupérer une offre au hasard)
+      - permet d'afficher quelques attributs issues des transformations (Python + SQL)
+
+
+    - route `...` :
+
+      - todo
+      - permet d'ajouter une offre (avec un identifiant inconnu de la base, d'où l'utilité de la tâche `A11` du `DAG 1`)
+
+
+    - route `...` :
+
+      - todo
+      - permet de supprimer une offre à partir de l'identifiant
+
+
+    - Note pour ces routes :
+
+      - Le script utilise un fichier .txt généré par airflow (tâche `A11` du `DAG 1`)
+
+
+  - `Pour toutes les offres d'emploi` :
+
+    - todo : screenshot
+
+    - que des requêtes GET :
+
+
+      | route                                                | retourne                                                                         |
+      | ---------------------------------------------------- | -------------------------------------------------------------------------------- |
+      | `GET /stats/total_offres`                            | Nombre total d'offres d'emploi                                                   |
+      | `GET /stats/classement/region`                       | Classement des régions qui recrutent le plus                                     |
+      | `GET /stats/classement/departement`                  | Classement des départements qui recrutent le plus (top 30)                       |
+      | `GET /stats/classement/ville`                        | Classement des villes qui recrutent le plus (top 30)                             |
+      | `GET /criteres_recruteurs/competences`               | Compétences (techniques, managériales...) demandées par les recruteurs           |
+      | `GET /criteres_recruteurs/experiences`               | Expériences (études, diplôme, années expérience...) demandées par les recruteurs |
+      | `GET /criteres_recruteurs/qualites_professionnelles` | Qualités professionnelles demandées par les recruteurs                           |
+      | `GET /criteres_recruteurs/qualifications`            | Niveaux de qualification professionnelle demandés par les recruteurs             |
+      | `GET /criteres_recruteurs/formations`                | Formations (domaines, nombre d'années d'études) demandées par les recruteurs     |
+      | `GET /criteres_recruteurs/permis_conduire`           | Permis de conduire demandés par les recruteurs                                   |
+      | `GET /criteres_recruteurs/langues`                   | Langues demandées par les recruteurs                                             |
+
+    - toutes les requêtes GET ont plusieurs filtres disponibles
+
+  - `Mapping "nom <> code" pour les régions, départements, villes et communes`
+
+    - todo : screenshot
+
+    - que des reqûetes GET
+
+    - donne le mapping entre le nom et le code d'une région, département, ville, commune :
+
+      | route                               | retourne                                           |
+      | ----------------------------------- | -------------------------------------------------- |
+      | `GET /mapping_nom_code/region`      | Mapping entre le nom de la région et de son code   |
+      | `GET /mapping_nom_code/departement` | Mapping entre le nom du département et de son code |
+      | `GET /mapping_nom_code/ville`       | Mapping entre le nom du ville et de son code       |
+      | `GET /mapping_nom_code/commune`     | Mapping entre le nom de la commune et de son code  |
+
+
+- Notes :
+
+  - Pour les réponses, on utilisera la librairie `tabulate` avec `media_type="text/plain"` pour afficher un tableau qui facilitera la lecture, et qui diminuera le nombre de lignes des réponses, plutôt que d'afficher un `json`.
 
 
 ## Screenshots
@@ -619,6 +692,12 @@ TODO : faire à la fin du projet
 - `A10_write_to_history` :
 
   - Ecriture de l'historique du fichier json dans `_json_files_history.csv` (ajout nom json restant dans le dossier et le nombre de lignes).
+
+
+- `A11_write_offers_ids_list_on_file_for_fastapi` :
+
+  - Génération d'un fichier txt contenant la liste des `id` de toutes les offres (ce fichier sera utilisé par `FastAPI`).
+
 
 - `trigger_dag_2` :
 
@@ -899,3 +978,12 @@ TODO : refaire le fichier quand les DAGs seront figés
 # 11. Evolutions possibles du projet
 
 todo
+
+
+# todo
+
+à écrire quelque part :
+
+    - Pour ouvrir le lien d'une offre d'emploi : `https://candidat.francetravail.fr/offres/recherche/detail/<offre_id>` (remplacer `offre_id` dans ce [lien](https://candidat.francetravail.fr/offres/recherche/detail/offre_id)).
+
+
