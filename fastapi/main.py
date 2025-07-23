@@ -375,7 +375,7 @@ def get_attributes_for_a_specific_offer(filters: str = Depends(set_endpoints_fil
     tags=[tag_one_or_many_offers],
     summary="Afficher les 10 offres les plus récentes",
 )
-def get_availables_offers(filters: str = Depends(set_endpoints_filters)):
+def get_several_offers(filters: str = Depends(set_endpoints_filters)):
     sql_file_directory_part_2 = os.path.join("misc", "several_offers.pgsql")
 
     result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
@@ -398,7 +398,7 @@ def get_availables_offers(filters: str = Depends(set_endpoints_filters)):
         headers=[
             "offre_id",
             "intitulé (50 chars max)",
-            "créé / actualisé",
+            "créé le / actualisé le",
             "expérience",
             "ville",
             "région",
@@ -433,6 +433,50 @@ def add_offer():
             cur.execute(sql_file_content, (offre_id, offre_id, offre_id, offre_id))
 
     return f"Offre {offre_id} ajoutée avec succès"
+
+
+##########################
+
+
+@app.get(
+    "/offres_factices",
+    tags=[tag_one_or_many_offers],
+    summary="Afficher le nombre d'offres factices total et leurs identifiants",
+)
+def get_fake_offers():
+    sql_file_directory_part_2 = os.path.join("misc", "fake_offers.pgsql")
+
+    with open(os.path.join(sql_file_directory_part_1, sql_file_directory_part_2), "r") as file:
+        sql_file_content = file.read()
+
+        sql_requests = sql_file_content.split("SEPARATEUR POUR FASTAPI")  # liste de requête, car 2 requêtes dans le fichier
+        # print(sql_requests[0])  # pour investigation
+        # print("==============")  # pour investigation
+        # print(sql_requests[1])  # pour investigation
+
+    with psycopg2.connect(**psycopg2_connect_dict) as conn:
+        with conn.cursor() as cur:
+            # print(f'\n===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :')  # pour investigation
+            # print(sql_file_content)  # pour investigation
+
+            results = []
+            for sql_request in sql_requests:
+                cur.execute(sql_request, ())
+                results.append(cur.fetchall())
+
+                # exemple de résultats :
+                # [
+                #   [ [ 3 ] ],
+                #   [ [ "S498U3H" ], [ "NVLACT9" ], [ "S2C4561" ] ]
+                # ]
+
+            fake_list = []
+
+            for i in results[1]:
+                print(i[0])
+                fake_list.append(i[0])
+
+            return f"{results[0][0][0]} offres factices => {fake_list}"
 
 
 @app.delete(
