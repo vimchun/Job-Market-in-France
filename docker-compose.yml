@@ -84,8 +84,8 @@ services:
       - DB_PASSWORD=mhh
     volumes:
       # utile en mode dev (montage de volumes pour ne pas avoir à relancer docker-compose après chaque modif)
-      - ./fastapi:/app  # pour avoir le "main.py" et tous les fichiers pgsql (que je modifie régulièrement en mode dev)
-      - ./airflow/data/resources:/app/locations_information
+      - ./fastapi:/app  # pour avoir le "main.py" et tous les fichiers pgsql (modifiés régulièrement en mode dev)
+      - ./airflow/data/resources/code_name__city_department_region.csv:/app/code_name__city_department_region.csv
     depends_on:
       - postgres
 

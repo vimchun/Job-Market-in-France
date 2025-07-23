@@ -17,8 +17,8 @@
     - [Chargement des données dans une base de données relationnelle](#chargement-des-données-dans-une-base-de-données-relationnelle)
     - [Workflow du projet avec Airflow](#workflow-du-projet-avec-airflow)
     - [Airflow](#airflow)
-      - [Description de DAG 1](#description-de-dag-1)
-      - [Description de DAG 2](#description-de-dag-2)
+      - [Description du DAG 1](#description-du-dag-1)
+      - [Description du DAG 2](#description-du-dag-2)
   - [3. Création d'une API avec FastAPI](#3-création-dune-api-avec-fastapi)
   - [4. Data Viz avec Power BI](#4-data-viz-avec-power-bi)
   - [5. Monitoring avec Prometheus et Grafana](#5-monitoring-avec-prometheus-et-grafana)
@@ -206,50 +206,52 @@
 
 ```bash
   .
-  ├── _archives/                       # fichiers archivés non importants
-  │   └── notebooks/                   # fichiers notebooks qui ont servi pour créer les scripts
+  ├── _archives/                                 # fichiers archivés non importants
+  │   └── notebooks/                             # fichiers notebooks qui ont servi pour créer les scripts
   │
-  ├── .venv/                           # environnements virtuels
+  ├── .venv/                                     # environnements virtuels
   │
-  ├── airflow/                         # application Airflow
-  │   ├── dags/                        # contient "DAG 1", "DAG 2", et un dossier contenant des scripts sql pour les transformations
+  ├── airflow/                                   # application Airflow
+  │   ├── dags/                                  # contient "DAG 1", "DAG 2", et un dossier contenant des scripts sql pour les transformations
   │   ├── data/
-  │   │   ├── outputs/                 # contient les jsons récupérés par API, et le json qui les aggrège avec les transformations Python
-  │   │   └── resources/               # contient les différents fichiers nécessaires au lancement du DAG 1
-  │   ├── logs/                        # contient les logs des DAGs
-  │   └── airflow.cfg                  # fichier de conf
+  │   │   ├── outputs/                           # contient les jsons récupérés par API, et le json qui les aggrège avec les transformations Python
+  │   │   └── resources/                         # contient les différents fichiers nécessaires au lancement du DAG 1
+  │   ├── logs/                                  # contient les logs des DAGs
+  │   └── airflow.cfg                            # fichier de conf
   │  
-  ├── drawio_files/                    # fichiers .drawio (schémas explicatifs)
+  ├── drawio_files/                              # fichiers .drawio (schémas explicatifs)
   │  
-  ├── fastapi/                         # application FastAPI
-  │   ├── sql_requests/                # requêtes SQL utilisées par le script fastapi
-  │   └── main.py                      # script fastapi
+  ├── fastapi/                                   # application FastAPI
+  │   ├── sql_requests/                          # requêtes SQL utilisées par le script fastapi
+  │   ├── code_name__city_department_region.csv  # même fichier quand dans "airflow/data/resources", copié par point de montage
+  │   ├── main.py                                # script fastapi
+  │   └── offers_id.txt                          # fichier généré par le "DAG 1" qui contient uniquement les identifiants des offres d'emploi
   │  
   ├── grafana/
   │   └── provisioning/
-  │       ├── dashboards/              # contient un fichier de conf permettant notamment de ranger les dashboards dans leur dossier dans la GUI
-  │       │   ├── mine/                # contient mon dashboard
-  │       │   └── others/              # contient des dashboards téléchargés sur le site de grafana, et des dashboards avec les métriques préfixées par "airflow_" et "go_"
-  │       └── datasources/             # contient un fichier de conf qui permet la création du datasource "Prometheus"
+  │       ├── dashboards/                        # contient un fichier de conf permettant notamment de ranger les dashboards dans leur dossier dans la GUI
+  │       │   ├── mine/                          # contient mon dashboard
+  │       │   └── others/                        # contient des dashboards téléchargés sur le site de grafana, et des dashboards avec les métriques préfixées par "airflow_" et "go_"
+  │       └── datasources/                       # contient un fichier de conf qui permet la création du datasource "Prometheus"
   │  
-  ├── power_bi/                        # contient le fichier .pbix
+  ├── power_bi/                                  # contient le fichier .pbix
   │  
   ├── prometheus/
-  │   ├── available_metrics/           # donne les métriques exposées relatives à (node|postgres|statsd)_exporter
-  │   ├── prometheus.yaml              # fichier de conf
-  │   └── statsd-mapping-configs.yaml  # fichier de conf
+  │   ├── available_metrics/                     # donne les métriques exposées relatives à (node|postgres|statsd)_exporter
+  │   ├── prometheus.yaml                        # fichier de conf
+  │   └── statsd-mapping-configs.yaml            # fichier de conf
   │  
-  ├── readme_files/                    # contient `README_additional_notes.md` et d'autres fichiers (screenshots...)
+  ├── readme_files/                              # contient `README_additional_notes.md` et d'autres fichiers (screenshots...)
   │  
-  ├── scripts/                         # contient des scripts bash
+  ├── scripts/                                   # contient des scripts bash
   │  
-  ├── .env                             # fichier utile pour Airflow
-  ├── .gitattributes                   # calcul stats sur github
-  ├── .gitignore                       # ne pas pousser les fichiers spécifiés sur git
-  ├── README.md                        # doc principale
-  ├── requirements.txt                 # libs python utilisés dans le projet
-  ├── ruff.toml                        # fichier de conf ruff pour le formattage python
-  └── todo.md                          # fichiers listant les idées/actions prévues
+  ├── .env                                       # fichier utile pour Airflow
+  ├── .gitattributes                             # calcul stats sur github
+  ├── .gitignore                                 # ne pas pousser les fichiers spécifiés sur git
+  ├── README.md                                  # doc principale
+  ├── requirements.txt                           # libs python utilisés dans le projet
+  ├── ruff.toml                                  # fichier de conf ruff pour le formattage python
+  └── todo.md                                    # fichiers listant les idées/actions prévues
   ```
 
 
@@ -473,7 +475,7 @@
   - `all_in_one.json` : fichier json aggrégeant les fichiers jsons téléchargés en cours de construction, avant renommage.
 
 
-### Description de DAG 1
+### Description du DAG 1
 
 - Vue "graph" du `DAG 1` :
 
@@ -607,11 +609,12 @@
   - Déclenchement du `DAG 2` si `DAG` OK
 
 
-### Description de DAG 2
+### Description du DAG 2
 
 - Vue "graph" du `DAG 2` :
 
-TODO : screenshot de DAG 2 à la fin du projet
+  <img src="readme_files/screenshots/airflow/graph_dag_2.png" alt="graph du DAG 2" style="width:100%"/>
+
 
 #### Task Group "SETUP"
 
