@@ -6,8 +6,8 @@ SELECT
     , nom_departement
     , nom_region
     , metier_data
-    , salaire_min
-    , salaire_max
+    -- , salaire_min
+    -- , salaire_max
     , dof.liste_mots_cles
     , dof.description_offre
 FROM

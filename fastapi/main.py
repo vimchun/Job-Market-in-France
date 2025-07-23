@@ -357,10 +357,10 @@ def get_attributes_for_a_specific_offer(filters: str = Depends(set_endpoints_fil
                     "département": row[4],
                     "région": row[5],
                     "metier data": row[6],
-                    "salaire min": row[7],
-                    "salaire max": row[8],
-                    "liste mots clés": row[9],
-                    "description": row[10],
+                    # "salaire min": row[7],
+                    # "salaire max": row[8],
+                    "liste mots clés": row[7],
+                    "description": row[8],
                 }
 
                 return JSONResponse(content=jsonable_encoder(dict_1))
@@ -371,7 +371,7 @@ def get_attributes_for_a_specific_offer(filters: str = Depends(set_endpoints_fil
 
 
 @app.get(
-    "/plusieurs_offres",
+    "/offre/plusieurs_offres",
     tags=[tag_one_or_many_offers],
     summary="Afficher les 10 offres les plus récentes",
 )
