@@ -1,22 +1,19 @@
 __pycache__
-_notes_perso/
 .venv/
 
 airflow/logs
-airflow/data/outputs/offres/0--original_json_files_from_api/*.json
-airflow/data/outputs/offres/1--generated_json_file/archives/*.json
-airflow/data/outputs/offres/1--generated_json_file/*.json
-airflow/data/outputs/offres/1--generated_json_file/split_json_files/*.json
+airflow/data/outputs/offers/0--original_json_files_from_api/*.json
+airflow/data/outputs/offers/1--generated_json_file/archives/*.json
+airflow/data/outputs/offers/1--generated_json_file/*.json
+airflow/data/outputs/offers/1--generated_json_file/split_json_files/*.json
+airflow/data/outputs/offers/1--generated_json_file/_json_files_history.csv
 airflow/data/resources/api_credentials.yml
 
 fastapi/offers_ids.txt
-
-# temporairement le temps du dev
-# airflow/data/outputs/offres/1--generated_json_file/_json_files_history.csv
 
 power_bi/archives_pbi
 node_modules
 package-lock.json
 package.json
 
-# fichier > 100MB
+# fichiers > 100MB ci-dessous :
