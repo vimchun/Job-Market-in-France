@@ -1,6 +1,6 @@
 <mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/27.0.9 Chrome/134.0.6998.205 Electron/35.4.0 Safari/537.36" version="27.0.9">
   <diagram name="uml" id="PEG4fmZPOcqcN3tmb9fP">
-    <mxGraphModel dx="7372" dy="1250" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="4681" pageHeight="3300" background="#99CCFF" math="0" shadow="0">
+    <mxGraphModel dx="7058" dy="1458" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="4681" pageHeight="3300" background="#99CCFF" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -202,7 +202,7 @@
             <mxRectangle width="30" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="g42hDst7DQJScSwPhzBg-4" value="&lt;span style=&quot;background-color: rgb(230, 255, 204);&quot;&gt;salaire_min&lt;/span&gt;&lt;span style=&quot;color: rgb(255, 51, 51); background-color: rgb(230, 255, 204);&quot;&gt;(**)&lt;/span&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&lt;b&gt;integer&lt;/b&gt;" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;rounded=0;fontFamily=Courier New;fontSize=16;strokeColor=#000000;" parent="g42hDst7DQJScSwPhzBg-2" vertex="1">
+        <mxCell id="g42hDst7DQJScSwPhzBg-4" value="&lt;strike&gt;&lt;span style=&quot;background-color: rgb(230, 255, 204);&quot;&gt;salaire_min&lt;/span&gt;&lt;span style=&quot;color: rgb(255, 51, 51); background-color: rgb(230, 255, 204);&quot;&gt;(**)&lt;/span&gt;&lt;/strike&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&lt;b style=&quot;&quot;&gt;&lt;strike&gt;integer&lt;/strike&gt;&lt;/b&gt;" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;rounded=0;fontFamily=Courier New;fontSize=16;strokeColor=#000000;" parent="g42hDst7DQJScSwPhzBg-2" vertex="1">
           <mxGeometry x="30" width="434" height="30" as="geometry">
             <mxRectangle width="434" height="30" as="alternateBounds" />
           </mxGeometry>
@@ -215,7 +215,7 @@
             <mxRectangle width="30" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="g42hDst7DQJScSwPhzBg-7" value="&lt;span style=&quot;background-color: rgb(230, 255, 204);&quot;&gt;salaire_max&lt;/span&gt;&lt;span style=&quot;color: rgb(255, 51, 51); background-color: rgb(230, 255, 204);&quot;&gt;(**)&lt;/span&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&lt;b&gt;integer&lt;/b&gt;" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;rounded=0;fontFamily=Courier New;fontSize=16;strokeColor=#000000;" parent="g42hDst7DQJScSwPhzBg-5" vertex="1">
+        <mxCell id="g42hDst7DQJScSwPhzBg-7" value="&lt;strike&gt;&lt;span style=&quot;background-color: rgb(230, 255, 204);&quot;&gt;salaire_max&lt;/span&gt;&lt;span style=&quot;color: rgb(255, 51, 51); background-color: rgb(230, 255, 204);&quot;&gt;(**)&lt;/span&gt;&lt;/strike&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&lt;b&gt;&lt;strike&gt;integer&lt;/strike&gt;&lt;/b&gt;" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;rounded=0;fontFamily=Courier New;fontSize=16;strokeColor=#000000;" parent="g42hDst7DQJScSwPhzBg-5" vertex="1">
           <mxGeometry x="30" width="434" height="30" as="geometry">
             <mxRectangle width="434" height="30" as="alternateBounds" />
           </mxGeometry>
@@ -1287,15 +1287,15 @@
             <mxRectangle width="487" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="JwSB-wNslwHa9Nwpxi3y-2" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=0;rounded=0;fontFamily=Courier New;fontSize=16;strokeColor=#000000;" vertex="1" parent="jDI96cK5oBP2eikoeisR-202">
+        <mxCell id="JwSB-wNslwHa9Nwpxi3y-2" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=0;rounded=0;fontFamily=Courier New;fontSize=16;strokeColor=#000000;" parent="jDI96cK5oBP2eikoeisR-202" vertex="1">
           <mxGeometry y="305" width="517" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="JwSB-wNslwHa9Nwpxi3y-3" value="" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;editable=1;overflow=hidden;whiteSpace=wrap;html=1;rounded=0;fontFamily=Courier New;fontSize=16;strokeColor=#000000;" vertex="1" parent="JwSB-wNslwHa9Nwpxi3y-2">
+        <mxCell id="JwSB-wNslwHa9Nwpxi3y-3" value="" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;editable=1;overflow=hidden;whiteSpace=wrap;html=1;rounded=0;fontFamily=Courier New;fontSize=16;strokeColor=#000000;" parent="JwSB-wNslwHa9Nwpxi3y-2" vertex="1">
           <mxGeometry width="30" height="30" as="geometry">
             <mxRectangle width="30" height="30" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="JwSB-wNslwHa9Nwpxi3y-4" value="url_france_travail&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&amp;nbsp;&lt;b style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); background-color: transparent;&quot;&gt;varchar(65)&lt;/b&gt;" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;rounded=0;fontFamily=Courier New;fontSize=16;strokeColor=#000000;" vertex="1" parent="JwSB-wNslwHa9Nwpxi3y-2">
+        <mxCell id="JwSB-wNslwHa9Nwpxi3y-4" value="url_france_travail&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp;&amp;nbsp;&lt;b style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); background-color: transparent;&quot;&gt;varchar(65)&lt;/b&gt;" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;whiteSpace=wrap;html=1;rounded=0;fontFamily=Courier New;fontSize=16;strokeColor=#000000;" parent="JwSB-wNslwHa9Nwpxi3y-2" vertex="1">
           <mxGeometry x="30" width="487" height="30" as="geometry">
             <mxRectangle width="487" height="30" as="alternateBounds" />
           </mxGeometry>
@@ -1739,22 +1739,22 @@
             <mxPoint x="-3042" y="2154" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="JwSB-wNslwHa9Nwpxi3y-1" value="&lt;u&gt;Note :&lt;/u&gt;&lt;div&gt;Une offre d&#39;emploi avec la&amp;nbsp;&lt;span style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); background-color: rgb(230, 255, 204);&quot;&gt;date_extraction&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;la plus&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;récente&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;est&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;une offre toujours disponible&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;(à cette date).&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+        <mxCell id="JwSB-wNslwHa9Nwpxi3y-1" value="&lt;u&gt;Note :&lt;/u&gt;&lt;div&gt;Une offre d&#39;emploi avec la&amp;nbsp;&lt;span style=&quot;color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255)); background-color: rgb(230, 255, 204);&quot;&gt;date_extraction&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;la plus&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;récente&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;est&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;une offre toujours disponible&amp;nbsp;&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;(à cette date).&lt;/span&gt;&lt;/div&gt;" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" parent="1" vertex="1">
           <mxGeometry x="-3050" y="1564" width="309" height="55" as="geometry" />
         </mxCell>
-        <mxCell id="JwSB-wNslwHa9Nwpxi3y-5" value="" style="endArrow=none;html=1;rounded=0;entryX=0.065;entryY=0.02;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.998;exitY=0.087;exitDx=0;exitDy=0;exitPerimeter=0;dashed=1;dashPattern=1 4;" edge="1" parent="1">
+        <mxCell id="JwSB-wNslwHa9Nwpxi3y-5" value="" style="endArrow=none;html=1;rounded=0;entryX=0.065;entryY=0.02;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.998;exitY=0.087;exitDx=0;exitDy=0;exitPerimeter=0;dashed=1;dashPattern=1 4;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-2557" y="2184" as="sourcePoint" />
             <mxPoint x="-3042" y="2184" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="JwSB-wNslwHa9Nwpxi3y-8" value="" style="endArrow=none;html=1;rounded=0;dashed=1;dashPattern=1 4;" edge="1" parent="1">
+        <mxCell id="JwSB-wNslwHa9Nwpxi3y-8" value="" style="endArrow=none;html=1;rounded=0;dashed=1;dashPattern=1 4;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-1601" y="2089" as="sourcePoint" />
             <mxPoint x="-1940" y="2090" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="JwSB-wNslwHa9Nwpxi3y-9" value="" style="endArrow=none;html=1;rounded=0;dashed=1;dashPattern=1 4;" edge="1" parent="1">
+        <mxCell id="JwSB-wNslwHa9Nwpxi3y-9" value="" style="endArrow=none;html=1;rounded=0;dashed=1;dashPattern=1 4;" parent="1" edge="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="-1602" y="1970" as="sourcePoint" />
             <mxPoint x="-1941" y="1971" as="targetPoint" />

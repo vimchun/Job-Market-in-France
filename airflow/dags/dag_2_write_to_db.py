@@ -1331,37 +1331,39 @@ with DAG(
 
     with TaskGroup(group_id="INSERT_INTO_TABLES_WITHOUT_JUNCTION") as without_junction:
         """ "INSERT INTO" pour les tables qui n'ont pas de tables de liaison """
-        insert_into_offreemploi(SPLIT_JSONS_DIR, "offreemploi.json")
-        insert_into_contrat(SPLIT_JSONS_DIR, "contrat.json")
-        insert_into_entreprise(SPLIT_JSONS_DIR, "entreprise.json")
-        insert_into_localisation(SPLIT_JSONS_DIR, "localisation.json")
-        insert_into_description_offre(SPLIT_JSONS_DIR, "descriptionoffre.json")
+        i1 = insert_into_offreemploi(SPLIT_JSONS_DIR, "offreemploi.json")
+        i2 = insert_into_contrat(SPLIT_JSONS_DIR, "contrat.json")
+        i3 = insert_into_entreprise(SPLIT_JSONS_DIR, "entreprise.json")
+        i4 = insert_into_localisation(SPLIT_JSONS_DIR, "localisation.json")
+        i5 = insert_into_description_offre(SPLIT_JSONS_DIR, "descriptionoffre.json")
+
+        i1 >> [i2, i3, i4, i5]
 
     with TaskGroup(group_id="INSERT_INTO_TABLES_WITH_JUNCTION", tooltip="xxx") as with_junction:
         """ "INSERT INTO" pour les tables qui ont un lieu avec une table de liaison : tables de dimension d'abord, tables de liaison après """
-        i1 = insert_into_competence(SPLIT_JSONS_DIR, "competence.json")
-        i2 = insert_into_experience(SPLIT_JSONS_DIR, "experience.json")
-        i3 = insert_into_formation(SPLIT_JSONS_DIR, "formation.json")
-        i4 = insert_into_qualiteprofessionnelle(SPLIT_JSONS_DIR, "qualiteprofessionnelle.json")
-        i5 = insert_into_qualification(SPLIT_JSONS_DIR, "qualification.json")
-        i6 = insert_into_langue(SPLIT_JSONS_DIR, "langue.json")
-        i7 = insert_into_permisconduire(SPLIT_JSONS_DIR, "permisconduire.json")
+        j1 = insert_into_competence(SPLIT_JSONS_DIR, "competence.json")
+        j2 = insert_into_experience(SPLIT_JSONS_DIR, "experience.json")
+        j3 = insert_into_formation(SPLIT_JSONS_DIR, "formation.json")
+        j4 = insert_into_qualiteprofessionnelle(SPLIT_JSONS_DIR, "qualiteprofessionnelle.json")
+        j5 = insert_into_qualification(SPLIT_JSONS_DIR, "qualification.json")
+        j6 = insert_into_langue(SPLIT_JSONS_DIR, "langue.json")
+        j7 = insert_into_permisconduire(SPLIT_JSONS_DIR, "permisconduire.json")
 
-        j1 = insert_into_offre_competence(SPLIT_JSONS_DIR, "offre_competence.json")
-        j2 = insert_into_offre_experience(SPLIT_JSONS_DIR, "offre_experience.json")
-        j3 = insert_into_offre_formation(SPLIT_JSONS_DIR, "offre_formation.json")
-        j4 = insert_into_offre_qualiteprofessionnelle(SPLIT_JSONS_DIR, "offre_qualiteprofessionnelle.json")
-        j5 = insert_into_offre_qualification(SPLIT_JSONS_DIR, "offre_qualification.json")
-        j6 = insert_into_offre_langue(SPLIT_JSONS_DIR, "offre_langue.json")
-        j7 = insert_into_offre_permisconduire(SPLIT_JSONS_DIR, "offre_permisconduire.json")
+        k1 = insert_into_offre_competence(SPLIT_JSONS_DIR, "offre_competence.json")
+        k2 = insert_into_offre_experience(SPLIT_JSONS_DIR, "offre_experience.json")
+        k3 = insert_into_offre_formation(SPLIT_JSONS_DIR, "offre_formation.json")
+        k4 = insert_into_offre_qualiteprofessionnelle(SPLIT_JSONS_DIR, "offre_qualiteprofessionnelle.json")
+        k5 = insert_into_offre_qualification(SPLIT_JSONS_DIR, "offre_qualification.json")
+        k6 = insert_into_offre_langue(SPLIT_JSONS_DIR, "offre_langue.json")
+        k7 = insert_into_offre_permisconduire(SPLIT_JSONS_DIR, "offre_permisconduire.json")
 
-        i1 >> j1
-        i2 >> j2
-        i3 >> j3
-        i4 >> j4
-        i5 >> j5
-        i6 >> j6
-        i7 >> j7
+        j1 >> k1
+        j2 >> k2
+        j3 >> k3
+        j4 >> k4
+        j5 >> k5
+        j6 >> k6
+        j7 >> k7
 
     with TaskGroup(group_id="TRANSFORMATIONS") as transformations:
         """
@@ -1371,35 +1373,35 @@ with DAG(
 
         t1 = SQLExecuteQueryOperator(
             conn_id=conn_id,
-            task_id="update_descriptionoffre_metier_data_DE",
-            sql=os.path.join("sql", "transformation_1_update__table_descriptionoffre__column__metier_data__DE.sql"),
+            task_id="add_attribute__metier_data_DE",
+            sql=os.path.join("sql", "transformations", "1_update__descriptionoffre__metier_data__DE.sql"),
         )
 
         t2 = SQLExecuteQueryOperator(
             conn_id=conn_id,
-            task_id="update_descriptionoffre_metier_data_DA",
-            sql=os.path.join("sql", "transformation_2_update__table_descriptionoffre__column__metier_data__DA.sql"),
+            task_id="add_attribute__metier_data_DA",
+            sql=os.path.join("sql", "transformations", "2_update__descriptionoffre__metier_data__DA.sql"),
         )
 
         t3 = SQLExecuteQueryOperator(
             conn_id=conn_id,
-            task_id="update_descriptionoffre_metier_data_DS",
-            sql=os.path.join("sql", "transformation_3_update__table_descriptionoffre__column__metier_data__DS.sql"),
+            task_id="add_attribute__metier_data_DS",
+            sql=os.path.join("sql", "transformations", "3_update__descriptionoffre__metier_data__DS.sql"),
         )
 
-        t4 = SQLExecuteQueryOperator(
-            conn_id=conn_id,
-            task_id="update_contrat_salaires_min_max",
-            sql=os.path.join("sql", "transformation_4_update__table_contrat__columns__salaire_min__salaire_max.sql"),
-        )
+        # t4 = SQLExecuteQueryOperator(  # non retenu car risque d'erreurs dans les salaires min et max récupérés
+        #     conn_id=conn_id,
+        #     task_id="add_attribute__salaires_min_max",
+        #     sql=os.path.join("sql", "transformations", "update__table_contrat__salaire_min__salaire_max.sql"),
+        # )
 
         t5 = SQLExecuteQueryOperator(
             conn_id=conn_id,
-            task_id="update_descriptionoffre_column_liste_mots_cles",
-            sql=os.path.join("sql", "transformation_5_update__table_descriptionoffre__column__liste_mots_cles.sql"),
+            task_id="add_attribute__liste_mots_cles",
+            sql=os.path.join("sql", "transformations", "4_update__descriptionoffre__liste_mots_cles.sql"),
         )
 
         [t1, t2, t3] >> t5
-        t4
+        # t4
 
     setup >> without_junction >> with_junction >> transformations
