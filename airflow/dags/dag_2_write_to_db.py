@@ -19,7 +19,7 @@ DB_PARAM = {"database": "francetravail", "host": "postgres", "user": "mhh", "pas
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUTS_DIR = os.path.join(CURRENT_DIR, "..", "data", "outputs")
 
-AGGREGATED_JSON_DIR = os.path.join(OUTPUTS_DIR, "offres", "1--generated_json_file")
+AGGREGATED_JSON_DIR = os.path.join(OUTPUTS_DIR, "offers", "1--generated_json_file")
 SPLIT_JSONS_DIR = os.path.join(AGGREGATED_JSON_DIR, "split_json_files")
 
 

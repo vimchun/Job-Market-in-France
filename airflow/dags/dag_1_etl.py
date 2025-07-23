@@ -20,8 +20,8 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 RESOURCES_DIR = os.path.join(CURRENT_DIR, "..", "data", "resources")
 OUTPUTS_DIR = os.path.join(CURRENT_DIR, "..", "data", "outputs")
 
-DOWNLOADED_JSONS_FROM_API_DIR = os.path.join(OUTPUTS_DIR, "offres", "0--original_json_files_from_api")
-AGGREGATED_JSON_DIR = os.path.join(OUTPUTS_DIR, "offres", "1--generated_json_file")
+DOWNLOADED_JSONS_FROM_API_DIR = os.path.join(OUTPUTS_DIR, "offers", "0--original_json_files_from_api")
+AGGREGATED_JSON_DIR = os.path.join(OUTPUTS_DIR, "offers", "1--generated_json_file")
 
 CREDENTIAL_FILENAME = os.path.join(RESOURCES_DIR, "api_credentials.yml")
 CODES_APPELLATION_FILENAME = os.path.join(RESOURCES_DIR, "code_appellation_libelle.yml")
@@ -39,7 +39,7 @@ def delete_all_in_one_json():
     (si ce fichier est existant, on peut se retrouver avec 2 fichiers json
       dans le dossier  "1--generated_json_file", ce qui pose problème).
     """
-    file_to_remove = os.path.join(OUTPUTS_DIR, "offres", "1--generated_json_file", "all_in_one.json")
+    file_to_remove = os.path.join(OUTPUTS_DIR, "offers", "1--generated_json_file", "all_in_one.json")
     try:
         os.remove(file_to_remove)
     except FileNotFoundError:
@@ -257,7 +257,7 @@ def get_offers(token, code_libelle_list):
     code_appellation = code_libelle_list["code"]
     libelle = code_libelle_list["libelle"]
 
-    output_file = os.path.join(OUTPUTS_DIR, "offres", "0--original_json_files_from_api", f"{code_appellation}_{libelle}.json")
+    output_file = os.path.join(OUTPUTS_DIR, "offers", "0--original_json_files_from_api", f"{code_appellation}_{libelle}.json")
 
     if os.path.exists(output_file):
         os.remove(output_file)
