@@ -355,15 +355,27 @@
 
 ### Transformations des données en aval (côté SQL)
 
-- Ces transformations sont faites dans le `DAG 2`, faites via des requêtes SQL et effectuées en aval de l'écriture dans la base Postgres :
+- Ces transformations sont effectuées dans le `DAG 2`, faites via des requêtes `SQL` et effectuées en aval de l'écriture dans la base Postgres :
 
-  - pour créer et écrire l'attribut `metier_data` : pour chaque offre, on comparera l'attribut `intitule_offre` avec des regex afin de déterminer s'il s'agit d'une offre pour un `Data Engineer`, un `Data Analyst`, ou un `Data Scientist`.
+  - Pour créer et écrire l'attribut `metier_data` :
+
+    - Pour chaque offre, on comparera l'attribut `intitule_offre` avec des regex afin de déterminer s'il s'agit d'une offre pour un `Data Engineer`, un `Data Analyst`, ou un `Data Scientist`.
 
     - [détails ici](readme_files/APPENDIX.md#attribut-metier_data)
 
-  - pour créer et écrire les attributs `salaire_min` et `salaire_max` en fonction d'un algorithme expliqué
 
-    - [détails ici](readme_files/APPENDIX.md#attributs-salaire_min-et-salaire_max)
+  - Pour créer et écrire l'attribut `liste_mots_cles` :
+
+    - Pour chaque offre, si un mot-clé parmi la liste de strings prédéfinie ici[script](airflow/dags/sql/transformation_4_update__table_descriptionoffre__column__liste_mots_cles.sql), ce mot-clé sera ajouté dans l'attribut (qui est une liste).
+
+
+- Note :
+
+  - Une transformation a été créée pour récupérer les valeurs pour les attributs `salaire_min` et `salaire_max` à partir de l'attribut `salaire_libelle`, en fonction d'un algorithme expliqué [ici](readme_files/APPENDIX.md#attributs-salaire_min-et-salaire_max).
+
+  - Dans la plupart des cas, les salaires récupérés sont corrects, mais il reste parfois certaines incohérences, liés aux erreurs de saisie de la part des recruteurs dans l'attribut `salaire_libelle`, qui amènent à trop de cas d'erreurs à traiter.
+
+    - Par conséquent, cette transformation ne sera pas retenue.
 
 
 
@@ -673,7 +685,6 @@ TODO : screenshot de DAG 2 à la fin du projet
   - `update_descriptionoffre_metier_data_DE`
   - `update_descriptionoffre_metier_data_DA`
   - `update_descriptionoffre_metier_data_DS`
-  - `update_contrat_salaires_min_max`
 
 - puis :
 
@@ -696,7 +707,7 @@ TODO : screenshot de DAG 2 à la fin du projet
 
     - route `GET /offre/quelques_attributs_provenant_des_transformations` :
 
-      - prend en entrée l'identifiant de l'offre sur 7 digits, par défaut "*******" (si on laisse ce string par défaut, le script va récupérer une offre au hasard)
+      - prend en entrée l'identifiant de l'offre sur 7 digits, par défaut `*JOKER*` (si on laisse ce string par défaut, le script va récupérer une offre au hasard)
       - permet d'afficher quelques attributs issues des transformations (Python + SQL)
 
 
@@ -989,19 +1000,15 @@ TODO : refaire le fichier quand les DAGs seront figés
     - récupération de la localisation des offres d'emploi (noms et codes des villes, départements, départements et régions)
       - détails [ici](readme_files/APPENDIX.md#attributs-de-localisation-des-offres-noms-et-codes-des-villes-communes-départements-et-régions)
 
-    - algorithme pour avoir le salaire annuel min et max
-      - détails [ici](readme_files/APPENDIX.md#attributs-salaire_min-et-salaire_max)
-
-
 
 # 7. Evolutions possibles du projet
 
 - Le projet est fonctionnel, mais certaines features peuvent le rendre plus robustes ou plus intéressantes :
 
-  - `alert manager`
+  - `Alert Manager`
 
-  - `github actions`
+  - `Github Actions`
 
-  - `pytest`
+  - `Pytest`
 
-  - `dbt`
+  - `DBT`
