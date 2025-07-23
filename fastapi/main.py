@@ -108,7 +108,7 @@ app = FastAPI(
     title="API sur les offres d'emploi chez France Travail",
     description=dedent(f"""
     <u>Notes :</u>
-    - Pour ouvrir le lien d'une offre d'emploi : `https://candidat.francetravail.fr/offres/recherche/detail/<offre_id>` (remplacer `offre_id` dans ce [lien](https://candidat.francetravail.fr/offres/recherche/detail/offre_id)).
+    - Pour ouvrir le lien d'une offre d'emploi : `https://candidat.francetravail.fr/offres/recherche/detail/<offre_id>` (remplacer `offre_id` sur ce [lien](https://candidat.francetravail.fr/offres/recherche/detail/offre_id)).
       <br>
     - Concernant les paramètres de localisation `code_region`, `code_departement`, `code_postal` et `code_insee` :
       <br>
@@ -438,10 +438,49 @@ def add_offer():
 ##########################
 
 
-@app.get(
-    "/offres_factices",
+@app.delete(
+    "/offre/suppression_offre",
     tags=[tag_one_or_many_offers],
-    summary="Afficher le nombre d'offres factices total et leurs identifiants",
+    summary="Supprimer une offre à partir de son identifiant",
+)
+def remove_offer(offre_id):
+    sql_file_directory_part_2 = os.path.join("misc", "delete_offer.pgsql")
+
+    with open(os.path.join(sql_file_directory_part_1, sql_file_directory_part_2), "r") as file:
+        sql_file_content = file.read()
+
+    with psycopg2.connect(**psycopg2_connect_dict) as conn:
+        with conn.cursor() as cur:
+            # print(f'\n===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :')  # pour investigation
+            # print(sql_file_content)  # pour investigation
+            cur.execute(sql_file_content, (offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id))
+
+    return f"Offre {offre_id} supprimée avec succès"
+
+
+##########################
+
+
+##########################
+
+
+@app.get(
+    "/stats/total_offres",
+    tags=[tag_all_offers],
+    summary="Afficher le nombre total d'offres d'emploi",
+)
+def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
+    sql_file_directory_part_2 = os.path.join("00_table_OffreEmploi", "total_offres.pgsql")
+    result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="one")
+    total_offres = result[0] if result else 0
+
+    return Response(content=f"total: {total_offres:,} offres".replace(",", " "), media_type="text/plain")  # espace pour séparer les milliers
+
+
+@app.get(
+    "/stats/total_offres_factices",
+    tags=[tag_all_offers],
+    summary="Afficher le nombre d'offres factices total (créées par FastAPI) et leurs identifiants",
 )
 def get_fake_offers():
     sql_file_directory_part_2 = os.path.join("misc", "fake_offers.pgsql")
@@ -480,31 +519,8 @@ def get_fake_offers():
 
 
 @app.delete(
-    "/offre/suppression_offre",
-    tags=[tag_one_or_many_offers],
-    summary="Supprimer une offre à partir de son identifiant",
-)
-def remove_offer(offre_id):
-    sql_file_directory_part_2 = os.path.join("misc", "delete_offer.pgsql")
-
-    with open(os.path.join(sql_file_directory_part_1, sql_file_directory_part_2), "r") as file:
-        sql_file_content = file.read()
-
-    with psycopg2.connect(**psycopg2_connect_dict) as conn:
-        with conn.cursor() as cur:
-            # print(f'\n===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :')  # pour investigation
-            # print(sql_file_content)  # pour investigation
-            cur.execute(sql_file_content, (offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id))
-
-    return f"Offre {offre_id} supprimée avec succès"
-
-
-##########################
-
-
-@app.delete(
-    "/offres/suppression_all_offres_factices",
-    tags=[tag_one_or_many_offers],
+    "/suppression_all_offres_factices",
+    tags=[tag_all_offers],
     summary="Supprimer toutes les offres factices créées par l'API",
 )
 def remove_fake_offers():
@@ -526,22 +542,6 @@ def remove_fake_offers():
                 cur.execute(sql_file_content, (offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id))
 
     return f"Offre(s) supprimée(s) avec succès : {fake_list}"
-
-
-##########################
-
-
-@app.get(
-    "/stats/total_offres",
-    tags=[tag_all_offers],
-    summary="Nombre total d'offres d'emploi",
-)
-def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
-    sql_file_directory_part_2 = os.path.join("00_table_OffreEmploi", "total_offres.pgsql")
-    result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="one")
-    total_offres = result[0] if result else 0
-
-    return Response(content=f"total: {total_offres:,} offres".replace(",", " "), media_type="text/plain")  # espace pour séparer les milliers
 
 
 @app.get("/stats/classement/region", tags=[tag_all_offers], summary="Classement des régions qui recrutent le plus", description="<u> Tri :</u> par nombre d'offres (DESC).")
