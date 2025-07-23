@@ -476,7 +476,7 @@ def get_fake_offers():
                 print(i[0])
                 fake_list.append(i[0])
 
-            return f"{results[0][0][0]} offres factices => {fake_list}"
+            return f"{results[0][0][0]} offre(s) factice(s)", fake_list  # "fake_list" à part car utilisé dans la fonction "remove_fake_offers()"
 
 
 @app.delete(
@@ -497,6 +497,35 @@ def remove_offer(offre_id):
             cur.execute(sql_file_content, (offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id))
 
     return f"Offre {offre_id} supprimée avec succès"
+
+
+##########################
+
+
+@app.delete(
+    "/offres/suppression_all_offres_factices",
+    tags=[tag_one_or_many_offers],
+    summary="Supprimer toutes les offres factices créées par l'API",
+)
+def remove_fake_offers():
+    # PARTIE 1 : fonction "get_fake_offers()" déjà existante pour récupérer la liste des offres factices
+    _, fake_list = get_fake_offers()
+    # print(type(fake_list))  ##==> liste
+
+    # PARTIE 2/2 : on supprime les offres de cette liste
+    sql_file_directory_part_2 = os.path.join("misc", "delete_offer.pgsql")
+
+    with open(os.path.join(sql_file_directory_part_1, sql_file_directory_part_2), "r") as file:
+        sql_file_content = file.read()
+
+    with psycopg2.connect(**psycopg2_connect_dict) as conn:
+        with conn.cursor() as cur:
+            # print(f'\n===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :')  # pour investigation
+            # print(sql_file_content)  # pour investigation
+            for offre_id in fake_list:
+                cur.execute(sql_file_content, (offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id))
+
+    return f"Offre(s) supprimée(s) avec succès : {fake_list}"
 
 
 ##########################
