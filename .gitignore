@@ -4,12 +4,12 @@ __pycache__
 airflow/logs
 airflow/data/outputs/offers/0--original_json_files_from_api/*.json
 airflow/data/outputs/offers/1--generated_json_file/archives/*.json
-airflow/data/outputs/offers/1--generated_json_file/*.json
 airflow/data/outputs/offers/1--generated_json_file/split_json_files/*.json
 airflow/data/outputs/offers/1--generated_json_file/_json_files_history.csv
+airflow/data/outputs/offers/1--generated_json_file/*.json
 airflow/data/resources/api_credentials.yml
 
-fastapi/offers_ids.txt
+fastapi/code_name__city_department_region.csv
 
 power_bi/archives_pbi
 node_modules

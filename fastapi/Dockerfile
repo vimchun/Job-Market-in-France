@@ -9,11 +9,8 @@ WORKDIR /app
 # Copier le script "main.py" dans "/app"
 COPY fastapi/main.py  .
 
-# Copier le "code_name__city_department_region.csv" dans "/app/locations_information" (commenté car utilisation d'un volume)
-# COPY api_extract__transform/locations_information/code_name__city_department_region.csv  ./locations_information/
-
 # Ecraser le chemin du fichier csv
-ENV LOCATION_CSV_PATH=/app/locations_information/code_name__city_department_region.csv
+ENV LOCATION_CSV_PATH=/app/code_name__city_department_region.csv
 
 # Copier le "requirements.txt" dans "/app"
 COPY fastapi/requirements.txt  .
