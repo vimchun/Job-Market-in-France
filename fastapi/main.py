@@ -17,13 +17,13 @@ from fastapi.responses import JSONResponse
 
 tag_one_or_many_offers = "Pour une ou plusieurs offres d'emploi"
 tag_all_offers = "Pour toutes les offres d'emploi"
-tag_location_mapping_name_code = 'Mapping "nom <> code" pour les régions, départements, villes et communes'
+tag_location_mapping_name_code = "Correspondance entre le nom et le code des régions, départements, villes, communes"
 
 description_metier_data = 'Filtrer sur le métier "Data Engineer" `DE`, "Data Analyst" `DA` ou "Data Scientist `DS` (`--` pour ne pas filtrer sur ces métiers)'
 description_offres_dispo_only = "`True` pour filtrer sur les offres disponibles uniquement (disponibles au jour où l'extraction des données a eu lieu), `False` sinon."
 description_empty_field = "_(champ vide = pas de filtre)_"
 
-enable_secondary_routes = 1
+enable_secondary_routes = 0
 
 # valeurs définies dans le "docker-compose.yml"
 psycopg2_connect_dict = {
@@ -105,12 +105,12 @@ def generate_unique_offer_id(ids_file):
 
 
 app = FastAPI(
-    title="API sur les offres d'emploi chez France Travail",
+    title="API sur les offres d'emploi publiées par France Travail",
     description=dedent(f"""
     <u>Notes :</u>
-    - Pour ouvrir le lien d'une offre d'emploi : `https://candidat.francetravail.fr/offres/recherche/detail/<offre_id>` (remplacer `offre_id` sur ce [lien](https://candidat.francetravail.fr/offres/recherche/detail/offre_id)).
+    - Pour voir l'offre d'emploi sur le site de France Travail : [lien](https://candidat.francetravail.fr/offres/recherche/detail/offre_id) (modifier `offre_id`).
       <br>
-    - Concernant les paramètres de localisation `code_region`, `code_departement`, `code_postal` et `code_insee` :
+    - Concernant les filtres de localisation `code_region`, `code_departement`, `code_postal` et `code_insee` :
       <br>
       - Remplir ces champs est facultatif (pas de valeur = pas de filtre).
       <br>
@@ -119,18 +119,9 @@ app = FastAPI(
       - Un code postal peut avoir plusieurs codes insee (exemple : le <u>code postal 78310</u> est partagé entre la commune de Coignières (<u>code insee 78168</u>), et la commune de Maurepas (<u>code insee 78383</u>)).
       """),  # noqa
     openapi_tags=[
-        {
-            "name": tag_one_or_many_offers,
-            "description": "à compléter plus tard",
-        },
-        {
-            "name": tag_all_offers,
-            "description": "à compléter plus tard",
-        },
-        {
-            "name": tag_location_mapping_name_code,
-            "description": "Correspondance entre le <b>nom</b> et le <b>code</b><br> d'une région, département, ville, commune",
-        },
+        {"name": tag_one_or_many_offers},  # champ "description" possible
+        {"name": tag_all_offers},
+        {"name": tag_location_mapping_name_code},
     ],
     # pour désactiver la coloration syntaxique sinon dans une réponse de type text/plain, on peut avoir du blanc, du rouge, du vert, du orange suivant les chars...
     swagger_ui_parameters={"syntaxHighlight": False},  # https://fastapi.tiangolo.com/ru/how-to/configure-swagger-ui/#disable-syntax-highlighting
@@ -315,7 +306,7 @@ def set_endpoints_filters_2(
 @app.get(
     "/offre/attributs_from_transformations",
     tags=[tag_one_or_many_offers],
-    summary="Afficher les attributs issues des transformations",
+    summary="Attributs issues des transformations",
 )
 def get_attributes_for_a_specific_offer(filters: str = Depends(set_endpoints_filters_2)):
     offre_id = filters
@@ -370,10 +361,58 @@ def get_attributes_for_a_specific_offer(filters: str = Depends(set_endpoints_fil
 ##########################
 
 
+@app.post(
+    "/offre/ajout_offre_factice",
+    tags=[tag_one_or_many_offers],
+    summary="Création d'une nouvelle offre factice (avec attributs prédéfinis car trop d'attributs à renseigner si on veut une offre \"réelle\")",
+)
+def add_offer():
+    sql_file_directory_part_2 = os.path.join("misc", "create_offer.pgsql")
+
+    offre_id = generate_unique_offer_id("offers_ids.txt")
+
+    with open(os.path.join(sql_file_directory_part_1, sql_file_directory_part_2), "r") as file:
+        sql_file_content = file.read()
+
+    with psycopg2.connect(**psycopg2_connect_dict) as conn:
+        with conn.cursor() as cur:
+            # print(f'\n===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :')  # pour investigation
+            # print(sql_file_content)  # pour investigation
+            cur.execute(sql_file_content, (offre_id, offre_id, offre_id, offre_id))
+
+    return f"Offre {offre_id} ajoutée avec succès"
+
+
+##########################
+
+
+@app.delete(
+    "/offre/suppression_offre",
+    tags=[tag_one_or_many_offers],
+    summary="Suppression d'une offre à partir de son identifiant",
+)
+def remove_offer(offre_id):
+    sql_file_directory_part_2 = os.path.join("misc", "delete_offer.pgsql")
+
+    with open(os.path.join(sql_file_directory_part_1, sql_file_directory_part_2), "r") as file:
+        sql_file_content = file.read()
+
+    with psycopg2.connect(**psycopg2_connect_dict) as conn:
+        with conn.cursor() as cur:
+            # print(f'\n===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :')  # pour investigation
+            # print(sql_file_content)  # pour investigation
+            cur.execute(sql_file_content, (offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id))
+
+    return f"Offre {offre_id} supprimée avec succès"
+
+
+##########################
+
+
 @app.get(
     "/offre/plusieurs_offres",
     tags=[tag_one_or_many_offers],
-    summary="Afficher les 10 offres les plus récentes",
+    summary="10 offres les plus récentes",
 )
 def get_several_offers(filters: str = Depends(set_endpoints_filters)):
     sql_file_directory_part_2 = os.path.join("misc", "several_offers.pgsql")
@@ -413,61 +452,10 @@ def get_several_offers(filters: str = Depends(set_endpoints_filters)):
 ##########################
 
 
-@app.post(
-    "/offre/ajout_offre_factice",
-    tags=[tag_one_or_many_offers],
-    summary='Créer une nouvelle offre factice (car trop d\'attributs à renseigner si on veut une offre "réelle"',
-)
-def add_offer():
-    sql_file_directory_part_2 = os.path.join("misc", "create_offer.pgsql")
-
-    offre_id = generate_unique_offer_id("offers_ids.txt")
-
-    with open(os.path.join(sql_file_directory_part_1, sql_file_directory_part_2), "r") as file:
-        sql_file_content = file.read()
-
-    with psycopg2.connect(**psycopg2_connect_dict) as conn:
-        with conn.cursor() as cur:
-            # print(f'\n===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :')  # pour investigation
-            # print(sql_file_content)  # pour investigation
-            cur.execute(sql_file_content, (offre_id, offre_id, offre_id, offre_id))
-
-    return f"Offre {offre_id} ajoutée avec succès"
-
-
-##########################
-
-
-@app.delete(
-    "/offre/suppression_offre",
-    tags=[tag_one_or_many_offers],
-    summary="Supprimer une offre à partir de son identifiant",
-)
-def remove_offer(offre_id):
-    sql_file_directory_part_2 = os.path.join("misc", "delete_offer.pgsql")
-
-    with open(os.path.join(sql_file_directory_part_1, sql_file_directory_part_2), "r") as file:
-        sql_file_content = file.read()
-
-    with psycopg2.connect(**psycopg2_connect_dict) as conn:
-        with conn.cursor() as cur:
-            # print(f'\n===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :')  # pour investigation
-            # print(sql_file_content)  # pour investigation
-            cur.execute(sql_file_content, (offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id))
-
-    return f"Offre {offre_id} supprimée avec succès"
-
-
-##########################
-
-
-##########################
-
-
 @app.get(
     "/stats/total_offres",
     tags=[tag_all_offers],
-    summary="Afficher le nombre total d'offres d'emploi",
+    summary="Nombre total d'offres d'emploi",
 )
 def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
     sql_file_directory_part_2 = os.path.join("00_table_OffreEmploi", "total_offres.pgsql")
@@ -480,7 +468,7 @@ def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
 @app.get(
     "/stats/total_offres_factices",
     tags=[tag_all_offers],
-    summary="Afficher le nombre d'offres factices total (créées par FastAPI) et leurs identifiants",
+    summary="Nombre d'offres factices total (créées par FastAPI) et leurs identifiants",
 )
 def get_fake_offers():
     sql_file_directory_part_2 = os.path.join("misc", "fake_offers.pgsql")
@@ -521,7 +509,7 @@ def get_fake_offers():
 @app.delete(
     "/suppression_all_offres_factices",
     tags=[tag_all_offers],
-    summary="Supprimer toutes les offres factices créées par l'API",
+    summary="Suppression de toutes les offres factices créées par l'API",
 )
 def remove_fake_offers():
     # PARTIE 1 : fonction "get_fake_offers()" déjà existante pour récupérer la liste des offres factices
@@ -656,25 +644,25 @@ def get_sorted_table_from_df(df, name, code):
     return tabulate(df_sorted.values.tolist(), headers=[name, code], tablefmt="psql")
 
 
-@app.get("/mapping_nom_code/region", tags=[tag_location_mapping_name_code], summary="Mapping entre le nom de la région et de son code")
+@app.get("/mapping_localisation/region", tags=[tag_location_mapping_name_code], summary="Mapping entre le nom de la région et son code")
 def get_mapping_region():
     table = get_sorted_table_from_df(df_location, "nom_region", "code_region")
     return Response(content=table, media_type="text/plain")
 
 
-@app.get("/mapping_nom_code/departement", tags=[tag_location_mapping_name_code], summary="Mapping entre le nom du département et de son code")
+@app.get("/mapping_localisation/departement", tags=[tag_location_mapping_name_code], summary="Mapping entre le nom du département et son code")
 def get_mapping_departement():
     table = get_sorted_table_from_df(df_location, "nom_departement", "code_departement")
     return Response(content=table, media_type="text/plain")
 
 
-@app.get("/mapping_nom_code/ville", tags=[tag_location_mapping_name_code], summary="Mapping entre le nom du ville et de son code")
+@app.get("/mapping_localisation/ville", tags=[tag_location_mapping_name_code], summary="Mapping entre le nom du ville et son code")
 def get_mapping_ville():
     table = get_sorted_table_from_df(df_location, "nom_ville", "code_postal")
     return Response(content=table, media_type="text/plain")
 
 
-@app.get("/mapping_nom_code/commune", tags=[tag_location_mapping_name_code], summary="Mapping entre le nom de la commune et de son code")
+@app.get("/mapping_localisation/commune", tags=[tag_location_mapping_name_code], summary="Mapping entre le nom de la commune et son code")
 def get_mapping_commune():
     table = get_sorted_table_from_df(df_location, "nom_commune", "code_insee")
     return Response(content=table, media_type="text/plain")
