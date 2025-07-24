@@ -34,7 +34,7 @@
 
   - architecture :
 
-    <img src="readme_files/screenshots/drawio/architecture/architecture__1sec.gif" alt="architecture gif" style="width:100%"/>
+    <img src="readme_files/screenshots/drawio/gif/architecture_00--ALL.gif" alt="architecture gif" style="width:100%"/>
 
 
 # 0. Présentation du projet
@@ -58,7 +58,7 @@
 
 - Le fichier `drawio_files/architecture.drawio` donne une vue sur l'architecture du projet :
 
-  <img src="readme_files/screenshots/drawio/architecture/architecture_01--all.png" alt="architecture du projet" style="width:100%"/>
+  <img src="readme_files/screenshots/drawio/architecture_00--ALL.png" alt="architecture du projet" style="width:100%"/>
 
 
 - Pour ne pas surcharger cette page principale, une seconde page avec des informations supplémentaires moins essentielles est disponible [ici](readme_files/APPENDIX.md#readme-secondaire).
@@ -161,7 +161,7 @@
 
 - Le fichier `drawio_files/architecture.drawio` donne une vue des principaux services Docker déployée :
 
-  <img src="readme_files/screenshots/drawio/architecture/architecture_01--all.png" alt="architecture" style="width:100%"/>
+  <img src="readme_files/screenshots/drawio/architecture_00--ALL.png" alt="architecture" style="width:100%"/>
 
 
 ### Versions des services testés
@@ -276,7 +276,7 @@
 
 # 2. ETL avec Airflow
 
-  <img src="readme_files/screenshots/drawio/architecture/architecture_02--ETL.png" alt="architecture focus ETL" style="width:100%"/>
+  <img src="readme_files/screenshots/drawio/gif/architecture_01--ETL.gif" alt="architecture focus ETL" style="width:100%"/>
 
 ## Extraction des données par API
 
@@ -702,7 +702,7 @@
 
 # 3. Création d'une API avec FastAPI
 
-  <img src="readme_files/screenshots/drawio/architecture/architecture_03--API.png" alt="architecture focus API" style="width:100%"/>
+  <img src="readme_files/screenshots/drawio/gif/architecture_02--API.gif" alt="architecture focus API" style="width:100%"/>
 
 - Pour créer l'API, la librairie `FastAPI` sera utilisée.
 
@@ -804,7 +804,7 @@ TODO : faire à la fin du projet
 
 # 4. Data Viz avec Power BI
 
-  <img src="readme_files/screenshots/drawio/architecture/architecture_04--VIZ.png" alt="architecture focus VIZ" style="width:100%"/>
+  <img src="readme_files/screenshots/drawio/gif/architecture_03--VIZ.gif" alt="architecture focus VIZ" style="width:100%"/>
 
 - Power BI servira ici pour la data visualisation.
 
@@ -833,7 +833,7 @@ TODO : faire à la fin du projet
 
 # 5. Monitoring avec Prometheus et Grafana
 
-  <img src="readme_files/screenshots/drawio/architecture/architecture_05--MON.png" alt="architecture focus MON" style="width:100%"/>
+  <img src="readme_files/screenshots/drawio/gif/architecture_04--MON.gif" alt="architecture focus MON" style="width:100%"/>
 
 ## Prometheus
 
