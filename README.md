@@ -1,6 +1,13 @@
+# Slideshow
+
+- architecture :
+
+  <img src="readme_files/screenshots/drawio/gif/architecture_00--ALL.gif" alt="architecture gif" style="width:100%"/>
+
+
 # Introduction
 
-- Bienvenue sur mon projet, que j'ai réalisé seul entièrement, dans le cadre de ma formation "Data Engineer" chez Data Scientest.
+- Bienvenue sur mon projet, que j'ai réalisé seul entièrement, dans le cadre de ma formation `Data Engineer` chez Data Scientest.
 
 - Sommaire avec les sections principales :
 
@@ -27,14 +34,6 @@
   - [6. Difficultés rencontrées](#6-difficultés-rencontrées)
   - [7. Evolutions possibles du projet](#7-evolutions-possibles-du-projet)
 
-
-- Slideshow :
-
-  todo : un gif rapide de toutes les images importantes peut être pas mal
-
-  - architecture :
-
-    <img src="readme_files/screenshots/drawio/gif/architecture_00--ALL.gif" alt="architecture gif" style="width:100%"/>
 
 
 # 0. Présentation du projet
@@ -702,89 +701,122 @@
 
 # 3. Création d'une API avec FastAPI
 
-  <img src="readme_files/screenshots/drawio/gif/architecture_02--API.gif" alt="architecture focus API" style="width:100%"/>
+<img src="readme_files/screenshots/drawio/gif/architecture_02--API.gif" alt="architecture focus API" style="width:100%"/>
 
-- Pour créer l'API, la librairie `FastAPI` sera utilisée.
+
+- Pour créer nos endpoints, la librairie `FastAPI` sera utilisée.
+
 
 - A travers l'[interface OpenAPI](http://localhost:8000/docs#/) (`ex-swagger`), l'utilisateur peut requêter la base de données `francetravail`.
 
-- L'interface se décline ici sous 3 tags :
-
-  - `Pour une seule offre d'emploi` :
-
-    - todo : screenshot
+  <img src="readme_files/screenshots/fastapi/fullscreen.png" alt="gui fastapi" style="width:100%"/>
 
 
-    - route `GET /offre/quelques_attributs_provenant_des_transformations` :
+## Tags
 
-      - prend en entrée l'identifiant de l'offre sur 7 digits, par défaut `*JOKER*` (si on laisse ce string par défaut, le script va récupérer une offre au hasard)
-      - permet d'afficher quelques attributs issues des transformations (Python + SQL)
+- L'interface finale se décline sous 3 tags :
 
-
-    - route `...` :
-
-      - todo
-      - permet d'ajouter une offre (avec un identifiant inconnu de la base, d'où l'utilité de la tâche `A11` du `DAG 1`)
+- Note : pour certaines réponses des endpoints, on utilisera la librairie `tabulate` avec `media_type="text/plain"` pour afficher un tableau qui facilitera la lecture, et qui diminuera le nombre de lignes des réponses, plutôt que d'afficher un `json`.
 
 
-    - route `...` :
+### Tag 1 : "Pour une seule offre d'emploi"
 
-      - todo
-      - permet de supprimer une offre à partir de l'identifiant
+<img src="readme_files/screenshots/fastapi/tag_1.png" alt="tag 1 fastapi" style="width:100%"/>
 
+- Liste des endpoints :
 
-    - Note pour ces routes :
-
-      - Le script utilise un fichier .txt généré par airflow (tâche `A11` du `DAG 1`)
-
-
-  - `Pour toutes les offres d'emploi` :
-
-    - todo : screenshot
-
-    - que des requêtes GET :
+  | id  | endpoint                                    | retourne                                                |
+  | --- | ------------------------------------------- | ------------------------------------------------------- |
+  | 1-1 | `GET /offre/attributs_from_transformations` | Quelques attributs dont ceux issues des transformations |
+  | 1-2 | `POST /offre/ajout_offre_factice`           | Création d'une offre factice                            |
+  | 1-3 | `DELETE /offre/suppression_offre`           | Suppression d'une offre                                 |
+  | 1-4 | `GET /offre/plusieurs_offres`               | 10 offres les plus récentes                             |
 
 
-      | route                                                | retourne                                                                         |
-      | ---------------------------------------------------- | -------------------------------------------------------------------------------- |
-      | `GET /stats/total_offres`                            | Nombre total d'offres d'emploi                                                   |
-      | `GET /stats/classement/region`                       | Classement des régions qui recrutent le plus                                     |
-      | `GET /stats/classement/departement`                  | Classement des départements qui recrutent le plus (top 30)                       |
-      | `GET /stats/classement/ville`                        | Classement des villes qui recrutent le plus (top 30)                             |
-      | `GET /criteres_recruteurs/competences`               | Compétences (techniques, managériales...) demandées par les recruteurs           |
-      | `GET /criteres_recruteurs/experiences`               | Expériences (études, diplôme, années expérience...) demandées par les recruteurs |
-      | `GET /criteres_recruteurs/qualites_professionnelles` | Qualités professionnelles demandées par les recruteurs                           |
-      | `GET /criteres_recruteurs/qualifications`            | Niveaux de qualification professionnelle demandés par les recruteurs             |
-      | `GET /criteres_recruteurs/formations`                | Formations (domaines, nombre d'années d'études) demandées par les recruteurs     |
-      | `GET /criteres_recruteurs/permis_conduire`           | Permis de conduire demandés par les recruteurs                                   |
-      | `GET /criteres_recruteurs/langues`                   | Langues demandées par les recruteurs                                             |
+- Notes :
+  - Endpoint 1 :
+    - Paramètre obligatoire : `offre_id` (sur 7 digits)
+      - Vaut par défaut `*JOKER*` (si on laisse ce string par défaut, le script va récupérer une offre au hasard, grâce au fichier `fastapi/offers_ids.txt` (généré par le `DAG 1`))
 
-    - toutes les requêtes GET ont plusieurs filtres disponibles
+  - Endpoint 2 :
+    - L'offre factice créée a des attributs prédéfinis.
+    - Se base sur le fichier `fastapi/offers_ids.txt` pour définir un nouveau `offre_id`
 
-  - `Mapping "nom <> code" pour les régions, départements, villes et communes`
+  - Endpoint 3 :
+    - Paramètre obligatoire : `offre_id`
 
-    - todo : screenshot
+  - Endpoint 4 :
+    - Paramètres (tous optionnels) : `metier_data`, `offres_dispo_only`, `code_region`, `code_departement`, `code_postal`, `code_insee`
 
-    - que des reqûetes GET
 
-    - donne le mapping entre le nom et le code d'une région, département, ville, commune :
+#### Quelques screenshots
 
-      | route                               | retourne                                           |
-      | ----------------------------------- | -------------------------------------------------- |
-      | `GET /mapping_nom_code/region`      | Mapping entre le nom de la région et de son code   |
-      | `GET /mapping_nom_code/departement` | Mapping entre le nom du département et de son code |
-      | `GET /mapping_nom_code/ville`       | Mapping entre le nom du ville et de son code       |
-      | `GET /mapping_nom_code/commune`     | Mapping entre le nom de la commune et de son code  |
+  <img src="readme_files/screenshots/fastapi/responses/1-1a.png" alt="screenshot fastapi (zoom chrome 75%)" style="width:100%"/>
+  <img src="readme_files/screenshots/fastapi/responses/1-1b.png" alt="screenshot fastapi" style="width:100%"/>
+  <img src="readme_files/screenshots/fastapi/responses/1-2.png" alt="screenshot fastapi" style="width:100%"/>
+  <img src="readme_files/screenshots/fastapi/responses/1-3.png" alt="screenshot fastapi" style="width:100%"/>
+  <img src="readme_files/screenshots/fastapi/responses/1-4.png.png" alt="screenshot fastapi" style="width:100%"/>
+
+
+
+### Tag 2 : "Pour toutes les offres d'emploi"
+
+<img src="readme_files/screenshots/fastapi/tag_2.png" alt="tag 2 fastapi" style="width:100%"/>
+
+- Liste des endpoints :
+
+  | id  | endpoint                                             | retourne                                                                         |
+  | --- | ---------------------------------------------------- | -------------------------------------------------------------------------------- |
+  | 2-1 | `GET /stats/total_offres`                            | Nombre total d'offres d'emploi                                                   |
+  | 2-2 | `GET /stats/total_offres_factices`                   | Nombre total d'offres factices (créées par FastAPI) et leurs identifiants        |
+  | 2-3 | `DELETE /suppression_all_offres_factices`            | Suppression de toutes les offres factices créées par l'API                       |
+  | 2-4 | `GET /stats/classement/region`                       | Classement des régions qui recrutent le plus                                     |
+  | 2-5 | `GET /stats/classement/departement`                  | Classement des départements qui recrutent le plus (top 30)                       |
+  | 2-6 | `GET /stats/classement/ville`                        | Classement des villes qui recrutent le plus (top 30)                             |
+  | 2-7 | `GET /criteres_recruteurs/competences`               | Compétences (techniques, managériales...) demandées par les recruteurs           |
+  | 2-8 | `GET /criteres_recruteurs/experiences`               | Expériences (études, diplôme, années expérience...) demandées par les recruteurs |
+  | 2-9 | `GET /criteres_recruteurs/qualites_professionnelles` | Qualités professionnelles demandées par les recruteurs                           |
 
 
 - Notes :
 
-  - Pour les réponses, on utilisera la librairie `tabulate` avec `media_type="text/plain"` pour afficher un tableau qui facilitera la lecture, et qui diminuera le nombre de lignes des réponses, plutôt que d'afficher un `json`.
+  - Endpoints 1, 2, 3, 4, 5, 6 :
+    - Pas de paramètres
+
+  - Endpoints 7, 8, 9 :
+    - Paramètres (tous optionnels) : `metier_data`, `offres_dispo_only`, `code_region`, `code_departement`, `code_postal`, `code_insee`
 
 
-## Screenshots
+#### Quelques screenshots
 
-TODO : faire à la fin du projet
+  <img src="readme_files/screenshots/fastapi/responses/2-1.png" alt="screenshot fastapi" style="width:100%"/>
+  <img src="readme_files/screenshots/fastapi/responses/2-2.png" alt="screenshot fastapi" style="width:100%"/>
+  <img src="readme_files/screenshots/fastapi/responses/2-3.png" alt="screenshot fastapi" style="width:100%"/>
+  <img src="readme_files/screenshots/fastapi/responses/2-5.png" alt="screenshot fastapi" style="width:100%"/>
+  <img src="readme_files/screenshots/fastapi/responses/2-8.png" alt="screenshot fastapi" style="width:100%"/>
+
+
+
+### Tag 3 : "Correspondance entre le nom et le code des régions, départements, villes, communes"
+
+<img src="readme_files/screenshots/fastapi/tag_3.png" alt="tag 3 fastapi" style="width:100%"/>
+
+- que des reqûetes GET
+
+- donne le mapping entre le nom et le code d'une région, département, ville, commune :
+
+  | id  | route                                   | retourne                                        |
+  | --- | --------------------------------------- | ----------------------------------------------- |
+  | 3-1 | `GET /mapping_localisation/region`      | Mapping entre le nom de la région et son code   |
+  | 3-2 | `GET /mapping_localisation/departement` | Mapping entre le nom du département et son code |
+  | 3-3 | `GET /mapping_localisation/ville`       | Mapping entre le nom de la ville et son code       |
+  | 3-4 | `GET /mapping_localisation/commune`     | Mapping entre le nom de la commune et son code  |
+
+
+#### Quelques screenshots
+
+  <img src="readme_files/screenshots/fastapi/responses/3-1.png" alt="screenshot fastapi" style="width:100%"/>
+
 
 
 ## Configuration Fastapi
