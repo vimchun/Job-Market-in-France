@@ -364,7 +364,7 @@ def get_attributes_for_a_specific_offer(filters: str = Depends(set_endpoints_fil
 @app.post(
     "/offre/ajout_offre_factice",
     tags=[tag_one_or_many_offers],
-    summary="Création d'une nouvelle offre factice (avec attributs prédéfinis car trop d'attributs à renseigner si on veut une offre \"réelle\")",
+    summary="Création d'une offre factice (avec attributs prédéfinis car trop d'attributs à renseigner si on veut une offre \"réelle\")",
 )
 def add_offer():
     sql_file_directory_part_2 = os.path.join("misc", "create_offer.pgsql")
@@ -380,7 +380,7 @@ def add_offer():
             # print(sql_file_content)  # pour investigation
             cur.execute(sql_file_content, (offre_id, offre_id, offre_id, offre_id))
 
-    return f"Offre {offre_id} ajoutée avec succès"
+    return f"Offre {offre_id} ajoutée"
 
 
 ##########################
@@ -403,7 +403,7 @@ def remove_offer(offre_id):
             # print(sql_file_content)  # pour investigation
             cur.execute(sql_file_content, (offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id))
 
-    return f"Offre {offre_id} supprimée avec succès"
+    return f"Offre {offre_id} supprimée"
 
 
 ##########################
@@ -468,7 +468,7 @@ def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
 @app.get(
     "/stats/total_offres_factices",
     tags=[tag_all_offers],
-    summary="Nombre d'offres factices total (créées par FastAPI) et leurs identifiants",
+    summary="Nombre total d'offres factices (créées par FastAPI) et leurs identifiants",
 )
 def get_fake_offers():
     sql_file_directory_part_2 = os.path.join("misc", "fake_offers.pgsql")
@@ -509,7 +509,7 @@ def get_fake_offers():
 @app.delete(
     "/suppression_all_offres_factices",
     tags=[tag_all_offers],
-    summary="Suppression de toutes les offres factices créées par l'API",
+    summary="Suppression de toutes les offres factices (créées par l'API)",
 )
 def remove_fake_offers():
     # PARTIE 1 : fonction "get_fake_offers()" déjà existante pour récupérer la liste des offres factices
@@ -529,7 +529,7 @@ def remove_fake_offers():
             for offre_id in fake_list:
                 cur.execute(sql_file_content, (offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id))
 
-    return f"Offre(s) supprimée(s) avec succès : {fake_list}"
+    return f"{len(fake_list)} offre(s) supprimée(s) : {fake_list}"
 
 
 @app.get("/stats/classement/region", tags=[tag_all_offers], summary="Classement des régions qui recrutent le plus", description="<u> Tri :</u> par nombre d'offres (DESC).")
@@ -656,7 +656,7 @@ def get_mapping_departement():
     return Response(content=table, media_type="text/plain")
 
 
-@app.get("/mapping_localisation/ville", tags=[tag_location_mapping_name_code], summary="Mapping entre le nom du ville et son code")
+@app.get("/mapping_localisation/ville", tags=[tag_location_mapping_name_code], summary="Mapping entre le nom de la ville et son code")
 def get_mapping_ville():
     table = get_sorted_table_from_df(df_location, "nom_ville", "code_postal")
     return Response(content=table, media_type="text/plain")
