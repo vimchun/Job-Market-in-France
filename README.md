@@ -702,6 +702,7 @@
 - Fréquence :
   - Tous les jours à 21h30
 
+    <img src="readme_files/screenshots/airflow/frequency.png" alt="fréquence" style="width:100%"/>
 
 - Durée des DAGs :
   - ~10 minutes pour `DAG 1`
