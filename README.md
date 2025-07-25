@@ -22,7 +22,6 @@
     - [Extraction des données par API](#extraction-des-données-par-api)
     - [Transformations des données](#transformations-des-données)
     - [Chargement des données dans une base de données relationnelle](#chargement-des-données-dans-une-base-de-données-relationnelle)
-    - [Workflow du projet avec Airflow](#workflow-du-projet-avec-airflow)
     - [Airflow](#airflow)
       - [Description du DAG 1](#description-du-dag-1)
       - [Description du DAG 2](#description-du-dag-2)
@@ -698,6 +697,18 @@
   - `update_descriptionoffre_column_liste_mots_cles`
 
 
+## Fréquence et durée
+
+- Fréquence :
+  - Tous les jours à 21h30
+
+
+- Durée des DAGs :
+  - ~10 minutes pour `DAG 1`
+  - ~5 minutes pour `DAG 2`
+
+    <img src="readme_files/screenshots/airflow/duration_dags.png" alt="durée des DAGs" style="width:100%"/>
+
 
 # 3. Création d'une API avec FastAPI
 
@@ -856,10 +867,88 @@
   - [faire les transformations](readme_files/APPENDIX.md#transformations)
 
 
+## Mise à jour des données
 
-## Rapport
+- Après une exécution du pipeline ETL (c'est-à-dire après exécution des 2 DAGs Airflow), il suffit d'ouvrir le projet Power BI (`power_bi/project.pbix`), et de cliquer sur l'item `refresh` :
 
-TODO : faire à la fin du projet
+  <img src="readme_files/screenshots/power_bi/refresh.png" alt="refresh" style="width:100%"/>
+
+
+## Screenshots de rapports et commentaires
+
+1. Offres (all)
+
+  <img src="readme_files/screenshots/power_bi/reports/1--all-offers.png" alt="screenshot rapport" style="width:100%"/>
+  <img src="readme_files/screenshots/power_bi/reports/1--all-offers-DA-DE-DS.png" alt="screenshot rapport" style="width:100%"/>
+  <img src="readme_files/screenshots/power_bi/reports/1--all-offers-DA-DE-DS-available.png" alt="screenshot rapport" style="width:100%"/>
+
+  - Filtres possibles sur les métiers de la data `DA`, `DE` ou `DS`, et sur les offres dispo ou pas.
+
+  - Graph 1 :
+    - [0 filtre] 3% des offres liées aux offres DA/DE/DS.
+    - `Metier_data` vaut `DA`, `DE` ou `DS` suivant les regex qui matchent dans l'intitulé d'une offre.
+
+
+  - [filtres DA/DE/DS] Les offres `DE` dominent, un peu moins d'offrjes `DA` et beaucoup moins d'offres en `DS`, ce qui confirme les analyses lues sur Linkedin, à savoir qu'il y a de moins en moins d'offres de `DS`, et de plus en plus d'offres de `DE`.
+  - [filtre dispo only] A peu près la même proportion des offres.
+
+
+  - Graph 2 :
+    - offres créés :
+      - le plus souvent en milieu de semaine.
+      - le moins souvent le lundi.
+      - même le week-end.
+
+
+2. Compétences/expériences
+
+  <img src="readme_files/screenshots/power_bi/reports/2--competences-experience.png" alt="screenshot rapport" style="width:100%"/>
+  <img src="readme_files/screenshots/power_bi/reports/2--competences-experiences-DE.png" alt="screenshot rapport" style="width:100%"/>
+
+  - Graph 1 (compétences) :
+    - Compétences "exigées" ou "souhaitées"
+    - [filtre DE + filtre exigé/souhaité] : C'est la compétence `Analyser, exploiter, structurer des données` qui arrive en tête.
+
+  - Graph 2 (expériences) :
+    - [filtre DE] Plus de moitié des offres acceptent les débutants.
+
+
+3. Qualités/qualifs
+
+  <img src="readme_files/screenshots/power_bi/reports/3--qualites-qualifications.png" alt="screenshot rapport" style="width:100%"/>
+  <img src="readme_files/screenshots/power_bi/reports/3--qualites-qualifications-DE.png" alt="screenshot rapport" style="width:100%"/>
+
+  - Graph 1 (qualités pro) :
+    - [filtre DE + sans filtre] C'est les qualités professionnelles `Faire preuve d'autonomie` et `Faire preuve de rigueur et de précision` (aussi vrai pour les offres DE et pour toutes les offres confondues).
+
+  - Graph 2 (qualification) :
+    - [filtre DE + sans filtre] Les offres sont principalement pour les cadres, que ce soit pour les offres DE ou pour toutes les offres (rappel : ce sont des offres de la tech).
+
+
+4. Localisation
+
+  <img src="readme_files/screenshots/power_bi/reports/4--location.png" alt="screenshot rapport" style="width:100%"/>
+  <img src="readme_files/screenshots/power_bi/reports/4--location-DE.png" alt="screenshot rapport" style="width:100%"/>
+
+  - Issue de transformations Python (avec la librairie `Geopy`)
+
+  - 3 colonnes, de gauche à droite : par région, par département et par ville.
+
+  - La région qui recrutent le plus : `IDF`, et le département/ville qui recrute le plus : `Paris` (vrai pour toutes offres et DE).
+
+
+5. keywords
+
+  <img src="readme_files/screenshots/power_bi/reports/5--keywords.png" alt="screenshot rapport" style="width:100%"/>
+  <img src="readme_files/screenshots/power_bi/reports/5--keywords-DE.png" alt="screenshot rapport" style="width:100%"/>
+
+  - Issue d'une transformation SQL
+
+  - Pour chaque offre, si un mot-clé parmi la liste de strings prédéfinie ici[script](airflow/dags/sql/transformation_4_update__table_descriptionoffre__column__liste_mots_cles.sql), ce mot-clé sera ajouté dans l'attribut (qui est une liste).
+  - Une transformation côté Power BI permet de splitter une offre sur x lignes si cette offre a x mots-clés dans la liste (voir détails [ici](readme_files/APPENDIX.md#attribut-liste-mots-clés)).
+
+
+  - [filtre DE et sans filtre] : on retrouve le trio tant cité sur Linkedin : `Python`, `SQL` et `Git`, et aussi `cloud`.
 
 
 
