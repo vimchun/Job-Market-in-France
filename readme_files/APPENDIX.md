@@ -724,13 +724,15 @@ Voici les items sur lesquels il faut cliquer :
 
 ### Attribut "Liste Mots-Clés"
 
-- Exemple de valeur pour une offre : `{etl,git,"power bi",python,sql,tableau}`
+- Exemple de valeur pour une offre : `{cloud,git,linux,python}`
 
-- On supprime les accolades et les guillemets.
-  - ce qui donne pour l'exemple : `etl,git,power bi,python,sql,tableau`
+  - On supprime les accolades et les guillemets : `cloud,git,linux,python`
 
-- On éclate la colonne en faisant `Split Column` > `By delimiter` (Split into Rows)
-  - l'offre est donc splittée sur 6 lignes avec un seul mot-clé dans la colonne `Liste Mots Clés`
+  - On éclate la colonne en faisant `Split Column` > `By delimiter` (Split into Rows)
+
+  - L'offre est donc splittée sur 4 lignes avec un seul mot-clé dans la colonne `Liste Mots Clés`
+
+  <img src="screenshots/power_bi/keywords_PQ.png" alt="db_update" style="width:100%"/>
 
 
 ### Ajout de variables avec le nom des villes, départements et région modifiés pour la data viz
