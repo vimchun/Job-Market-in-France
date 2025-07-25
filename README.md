@@ -2,9 +2,11 @@
 
 - architecture :
 
-  <img src="readme_files/screenshots/drawio/gif/architecture_00--ALL.gif" alt="architecture gif" style="width:100%"/>
+  <img src="readme_files/screenshots/drawio/gif/architecture_00--ALL.gif" alt="slideshow architecture gif" style="width:100%"/>
 
 - Power BI :
+
+  <img src="readme_files/screenshots/power_bi/reports/slideshow/only-ALL-DE/slideshow-pbi-5s.gif" alt="slideshow power bi gif" style="width:100%"/>
 
 
 # Introduction
