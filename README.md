@@ -4,6 +4,8 @@
 
   <img src="readme_files/screenshots/drawio/gif/architecture_00--ALL.gif" alt="architecture gif" style="width:100%"/>
 
+- Power BI :
+
 
 # Introduction
 
@@ -27,6 +29,7 @@
       - [Description du DAG 2](#description-du-dag-2)
   - [3. Création d'une API avec FastAPI](#3-création-dune-api-avec-fastapi)
   - [4. Data Viz avec Power BI](#4-data-viz-avec-power-bi)
+    - [Rapports](#rapports)
   - [5. Monitoring avec Prometheus et Grafana](#5-monitoring-avec-prometheus-et-grafana)
     - [Prometheus](#prometheus)
     - [Grafana](#grafana)
@@ -871,7 +874,7 @@
 
   <img src="readme_files/screenshots/drawio/gif/architecture_03--VIZ.gif" alt="architecture focus VIZ" style="width:100%"/>
 
-- Power BI servira ici pour la data visualisation.
+- `Power BI` servira ici pour la data visualisation.
 
 
 ## Manipulations
@@ -891,41 +894,44 @@
 
 ## Mise à jour des données
 
-- Après une exécution du pipeline ETL (c'est-à-dire après exécution des 2 DAGs Airflow), il suffit d'ouvrir le projet Power BI (`power_bi/project.pbix`), et de cliquer sur l'item `refresh` :
+- Après une exécution du pipeline ETL (c'est-à-dire après exécution des 2 DAGs Airflow), il suffit d'ouvrir le projet Power BI (`power_bi/project.pbix`), et de cliquer sur l'item `Refresh` :
 
   <img src="readme_files/screenshots/power_bi/refresh.png" alt="refresh" style="width:100%"/>
 
 
-## Screenshots de rapports et commentaires
+## Rapports
 
-1. Offres (all)
+- Pour les sections suivantes, des `.gif` sont affichés pour ne pas mettre trop de screenshots dans cette page.
 
-  <img src="readme_files/screenshots/power_bi/reports/1--all-offers.png" alt="screenshot rapport" style="width:100%"/>
-  <img src="readme_files/screenshots/power_bi/reports/1--all-offers-DA-DE-DS.png" alt="screenshot rapport" style="width:100%"/>
-  <img src="readme_files/screenshots/power_bi/reports/1--all-offers-DA-DE-DS-available.png" alt="screenshot rapport" style="width:100%"/>
+- Si les images défilent trop rapidement, aller dans le dossier : [ici](readme_files/screenshots/power_bi/reports/) ou ouvrir la présentation dans le `Powerpoint` dans ce dossier : [ici](powerpoint/), partie 7.
 
-  - Filtres possibles sur les métiers de la data `DA`, `DE` ou `DS`, et sur les offres dispo ou pas.
+
+- Les filtres disponibles pour tous les slides du projet sont :
+  - le filtre sur les métiers de la data `DA`, `DE` ou `DS` (`Metier_data` vaut `DA`, `DE` ou `DS` suivant les regex qui matchent dans l'intitulé d'une offre),
+  - le filtre sur les offres disponibles ou pas.
+
+
+### 1. Offres (all)
+
+  <img src="readme_files/screenshots/power_bi/reports/1--all-offers/1-animated-5s.gif" alt="gif rapport" style="width:100%"/>
 
   - Graph 1 :
     - [0 filtre] 3% des offres liées aux offres DA/DE/DS.
-    - `Metier_data` vaut `DA`, `DE` ou `DS` suivant les regex qui matchent dans l'intitulé d'une offre.
 
-
-  - [filtres DA/DE/DS] Les offres `DE` dominent, un peu moins d'offrjes `DA` et beaucoup moins d'offres en `DS`, ce qui confirme les analyses lues sur Linkedin, à savoir qu'il y a de moins en moins d'offres de `DS`, et de plus en plus d'offres de `DE`.
+  - [filtres DA/DE/DS] Les offres `DE` dominent, un peu moins d'offres `DA` et beaucoup moins d'offres en `DS`, ce qui confirme les analyses lues sur Linkedin, à savoir qu'il y a de moins en moins d'offres de `DS`, et de plus en plus d'offres de `DE`.
   - [filtre dispo only] A peu près la même proportion des offres.
 
 
   - Graph 2 :
-    - offres créés :
-      - le plus souvent en milieu de semaine.
-      - le moins souvent le lundi.
+    - Les offres sont créés :
+      - le plus souvent en milieu de semaine,
+      - le moins souvent le lundi,
       - même le week-end.
 
 
-2. Compétences/expériences
+### 2. Compétences/expériences
 
-  <img src="readme_files/screenshots/power_bi/reports/2--competences-experience.png" alt="screenshot rapport" style="width:100%"/>
-  <img src="readme_files/screenshots/power_bi/reports/2--competences-experiences-DE.png" alt="screenshot rapport" style="width:100%"/>
+  <img src="readme_files/screenshots/power_bi/reports/2--competences-experiences/2-animated-5s.gif" alt="gif rapport" style="width:100%"/>
 
   - Graph 1 (compétences) :
     - Compétences "exigées" ou "souhaitées"
@@ -935,10 +941,9 @@
     - [filtre DE] Plus de moitié des offres acceptent les débutants.
 
 
-3. Qualités/qualifs
+### 3. Qualités/qualifications
 
-  <img src="readme_files/screenshots/power_bi/reports/3--qualites-qualifications.png" alt="screenshot rapport" style="width:100%"/>
-  <img src="readme_files/screenshots/power_bi/reports/3--qualites-qualifications-DE.png" alt="screenshot rapport" style="width:100%"/>
+  <img src="readme_files/screenshots/power_bi/reports/3--qualites-qualifications/3-animated-5s.gif" alt="gif rapport" style="width:100%"/>
 
   - Graph 1 (qualités pro) :
     - [filtre DE + sans filtre] C'est les qualités professionnelles `Faire preuve d'autonomie` et `Faire preuve de rigueur et de précision` (aussi vrai pour les offres DE et pour toutes les offres confondues).
@@ -947,10 +952,9 @@
     - [filtre DE + sans filtre] Les offres sont principalement pour les cadres, que ce soit pour les offres DE ou pour toutes les offres (rappel : ce sont des offres de la tech).
 
 
-4. Localisation
+### 4. Localisation
 
-  <img src="readme_files/screenshots/power_bi/reports/4--location.png" alt="screenshot rapport" style="width:100%"/>
-  <img src="readme_files/screenshots/power_bi/reports/4--location-DE.png" alt="screenshot rapport" style="width:100%"/>
+  <img src="readme_files/screenshots/power_bi/reports/4--location/4-animated-5s.gif" alt="gif rapport" style="width:100%"/>
 
   - Issue de transformations Python (avec la librairie `Geopy`)
 
@@ -959,10 +963,9 @@
   - La région qui recrutent le plus : `IDF`, et le département/ville qui recrute le plus : `Paris` (vrai pour toutes offres et DE).
 
 
-5. keywords
+### 5. Keywords
 
-  <img src="readme_files/screenshots/power_bi/reports/5--keywords.png" alt="screenshot rapport" style="width:100%"/>
-  <img src="readme_files/screenshots/power_bi/reports/5--keywords-DE.png" alt="screenshot rapport" style="width:100%"/>
+  <img src="readme_files/screenshots/power_bi/reports/5--keywords/5-animated-5s.gif" alt="gif rapport" style="width:100%"/>
 
   - Issue d'une transformation SQL
 
