@@ -326,6 +326,11 @@
 
   - Pour ouvrir le lien d'une offre d'emploi : `https://candidat.francetravail.fr/offres/recherche/detail/<offre_id>` (remplacer `offre_id` dans ce [lien](https://candidat.francetravail.fr/offres/recherche/detail/offre_id)).
 
+  - Exemple d'un document json extrait (pour une offre d'emploi donc) :
+
+  <img src="readme_files/screenshots/misc/json_document.png" alt="document json" style="width:100%"/>
+
+
 
 ### Pas d'autre source de données ?
 
@@ -333,9 +338,14 @@
 
 - Les raisons pour lesquelles on ne garde que la source de `France Travail` sont les suivantes :
 
-  - ~60 attributs pour chaque offre d'emploi récupérée chez `France Travail` vs -10 chez `The Muse` ou `Adzuna`
+  - ~60 attributs pour chaque offre d'emploi récupérée chez `France Travail` vs ~10 chez `The Muse` ou `Adzuna`
 
-  - impossible de traiter si une même offre est disponible entre deux sources (identifiant différent, url différent), donc impossible de merger les offres venant de ces différentes sources, sauf si avoir des doublons n'est pas un problème, ce qui n'est pas le cas sur ce projet où on se focalisera sur un jeu de données propre sans doublon.
+  - Impossible de traiter si une même offre est disponible entre deux sources (identifiant différent, url différent), donc impossible de merger les offres venant de ces différentes sources, sauf si avoir des doublons n'est pas un problème, ce qui n'est pas le cas sur ce projet où on se focalisera sur un jeu de données propre sans doublon.
+
+  - Identifiants des offres :
+    - "France Travail" : id sur 7 caractères alphanumériques
+    - "Adzuna" : sur 10 digits
+    - "The Muse" : 7 ou 8 digits
 
 
 
@@ -393,7 +403,12 @@
 
 - Pour la suite, une modélisation `snowflake` est utilisée, dont le diagramme UML est le suivant :
 
-  <img src="readme_files/screenshots/drawio/UML.png" alt="diagramme" style="width:100%"/>
+  <img src="readme_files/screenshots/drawio/UML.png" alt="diagramme UML" style="width:100%"/>
+
+  - Table de fait en vert
+  - Tables de liaison en gris
+  - Tables de dimension en vert
+
 
   TODO : justifier ce choix
 
@@ -829,6 +844,12 @@
 
   <img src="readme_files/screenshots/fastapi/responses/3-1.png" alt="screenshot fastapi" style="width:100%"/>
 
+
+## Filtres
+
+- Pour certains endpoints des 2 premiers tags, il est possible de filtrer par `metier_data`, sur les offres disponibles et par code région/département/ville/insee (d'où l'utilité du troisième tag) :
+
+  <img src="readme_files/screenshots/fastapi/filters.png" alt="filtres" style="width:100%"/>
 
 
 ## Configuration Fastapi
