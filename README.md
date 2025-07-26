@@ -4,16 +4,13 @@
 
 - L'objectif principal est d'analyser le marché du travail en France Métropolitaine à travers des offres d'emploi.
 
-- Avant de présenter le [sommaire](#sommaire), voici un résumé et aperçu de ce qui a été effectué à travers quelques `.gif` :
+- Avant de présenter le [sommaire](#sommaire), voici un résumé et aperçu de ce qui a été effectué à travers quelques `.gif` (⚠️ la page peut prendre du temps à charger) :
 
-  - `Architecture` :
-    - Environnement dockerisé déployé avec `docker compose`
+  - `Architecture` avec un environnement dockerisé déployé avec `docker compose`
 
-    <br> <img src="readme_files/screenshots/drawio/gif/architecture_00--ALL.gif" alt="slideshow architecture gif" style="width:100%"/> <br> <br>
+    <br> <img src="readme_files/screenshots/drawio/gif/architecture_00--ALL--compressed.gif" alt="slideshow architecture gif" style="width:100%"/> <br> <br>
 
-  - `Airflow` pour la mise en place du pipeline pipeline ETL avec deux DAGs :
-      - `DAG 1` récupère les offres d'emploi par API, effectue des transformations avant d'écrire toutes les offres d'emploi dans un fichier `json`.
-      - `DAG 2` écrit les offres dans une base de données `Postgres`.
+  - `Airflow` pour la mise en place du pipeline pipeline ETL avec deux DAGs : `DAG 1` récupère les offres d'emploi par API, effectue des transformations avant d'écrire toutes les offres d'emploi dans un fichier json, puis `DAG 2` écrit les offres dans une base de données `Postgres`.
 
     (TODO : gif)
 
@@ -23,11 +20,12 @@
     (TODO : gif)
 
 
-  - `Power BI` : consommation des données avec la mise en place de rapports avec Power BI
+  - `Power BI` pour la consommation des données avec la mise en place de rapports :
 
-    <br> <img src="readme_files/screenshots/power_bi/reports/slideshow/only-ALL-DE/slideshow-pbi-5s.gif" alt="slideshow power bi gif" style="width:100%"/> <br> <br>
+    <br> <img src="readme_files/screenshots/power_bi/reports/slideshow/only-ALL-DE/slideshow-pbi-5s--compressed.gif" alt="slideshow power bi gif" style="width:100%"/> <br> <br>
 
-  - `Prometheus et Grafana` : monitoring des `DAG`, de `Postgres`, du `noeud` et des `conteneurs Docker`
+
+  - `Prometheus et Grafana` pour le monitoring des `DAG`, de la base de données `Postgres`, du `noeud` et des `conteneurs Docker` :
 
     (TODO : gif)
 
@@ -266,7 +264,7 @@
 
 # 2. ETL avec Airflow
 
-  <img src="readme_files/screenshots/drawio/gif/architecture_01--ETL.gif" alt="architecture focus ETL" style="width:100%"/>
+  <img src="readme_files/screenshots/drawio/gif/architecture_01--ETL--compressed.gif" alt="architecture focus ETL" style="width:100%"/>
 
 ## Extraction des données par API
 
@@ -718,7 +716,7 @@
 
 # 3. Création d'une API avec FastAPI
 
-<img src="readme_files/screenshots/drawio/gif/architecture_02--API.gif" alt="architecture focus API" style="width:100%"/>
+<img src="readme_files/screenshots/drawio/gif/architecture_02--API--compressed.gif" alt="architecture focus API" style="width:100%"/>
 
 
 - Pour créer nos endpoints, la librairie `FastAPI` sera utilisée.
@@ -856,7 +854,7 @@
 
 # 4. Data Viz avec Power BI
 
-  <img src="readme_files/screenshots/drawio/gif/architecture_03--VIZ.gif" alt="architecture focus VIZ" style="width:100%"/>
+  <img src="readme_files/screenshots/drawio/gif/architecture_03--VIZ--compressed.gif" alt="architecture focus VIZ" style="width:100%"/>
 
 - `Power BI` servira ici pour la data visualisation.
 
@@ -897,7 +895,7 @@
 
 ### 1. Offres (all)
 
-  <img src="readme_files/screenshots/power_bi/reports/1--all-offers/1-animated-5s.gif" alt="gif rapport" style="width:100%"/>
+  <img src="readme_files/screenshots/power_bi/reports/1--all-offers/1-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
   - Graph 1 :
     - [0 filtre] 3% des offres liées aux offres DA/DE/DS.
@@ -915,7 +913,7 @@
 
 ### 2. Compétences/expériences
 
-  <img src="readme_files/screenshots/power_bi/reports/2--competences-experiences/2-animated-5s.gif" alt="gif rapport" style="width:100%"/>
+  <img src="readme_files/screenshots/power_bi/reports/2--competences-experiences/2-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
   - Graph 1 (compétences) :
     - Compétences "exigées" ou "souhaitées"
@@ -927,7 +925,7 @@
 
 ### 3. Qualités/qualifications
 
-  <img src="readme_files/screenshots/power_bi/reports/3--qualites-qualifications/3-animated-5s.gif" alt="gif rapport" style="width:100%"/>
+  <img src="readme_files/screenshots/power_bi/reports/3--qualites-qualifications/3-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
   - Graph 1 (qualités pro) :
     - [filtre DE + sans filtre] C'est les qualités professionnelles `Faire preuve d'autonomie` et `Faire preuve de rigueur et de précision` (aussi vrai pour les offres DE et pour toutes les offres confondues).
@@ -938,7 +936,7 @@
 
 ### 4. Localisation
 
-  <img src="readme_files/screenshots/power_bi/reports/4--location/4-animated-5s.gif" alt="gif rapport" style="width:100%"/>
+  <img src="readme_files/screenshots/power_bi/reports/4--location/4-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
   - Issue de transformations Python (avec la librairie `Geopy`)
 
@@ -949,7 +947,7 @@
 
 ### 5. Keywords
 
-  <img src="readme_files/screenshots/power_bi/reports/5--keywords/5-animated-5s.gif" alt="gif rapport" style="width:100%"/>
+  <img src="readme_files/screenshots/power_bi/reports/5--keywords/5-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
   - Issue d'une transformation SQL
 
@@ -963,7 +961,7 @@
 
 # 5. Monitoring avec Prometheus et Grafana
 
-  <img src="readme_files/screenshots/drawio/gif/architecture_04--MON.gif" alt="architecture focus MON" style="width:100%"/>
+  <img src="readme_files/screenshots/drawio/gif/architecture_04--MON--compressed.gif" alt="architecture focus MON" style="width:100%"/>
 
 ## Prometheus
 
