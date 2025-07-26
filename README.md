@@ -1,93 +1,84 @@
-# Slideshow
+# Présentation du projet
 
-- architecture :
+- Bienvenue sur mon projet, que j'ai réalisé seul entièrement, dans le cadre de ma formation `Data Engineer` chez Data Scientest en 2025.
 
-  <img src="readme_files/screenshots/drawio/gif/architecture_00--ALL.gif" alt="slideshow architecture gif" style="width:100%"/>
+- L'objectif principal est d'analyser le marché du travail en France Métropolitaine à travers des offres d'emploi.
 
-- Power BI :
+- Avant d'attaquer le [sommaire](#sommaire), voici un résumé et aperçu de ce qui a été effectué à travers quelques `.gif` :
 
-  <img src="readme_files/screenshots/power_bi/reports/slideshow/only-ALL-DE/slideshow-pbi-5s.gif" alt="slideshow power bi gif" style="width:100%"/>
+  - `Architecture` :
+    - Environnement dockerisé déployé avec `docker compose`
+
+<img src="readme_files/screenshots/drawio/gif/architecture_00--ALL.gif" alt="slideshow architecture gif" style="width:100%"/>
 
 
-# Introduction
+  - `Airflow` pour la mise en place du pipeline pipeline ETL avec deux DAGs :
+      - `DAG 1` récupère les offres d'emploi par API, effectue des transformations avant d'écrire toutes les offres d'emploi dans un fichier `json`.
+      - `DAG 2` écrit les offres dans une base de données `Postgres`.
 
-- Bienvenue sur mon projet, que j'ai réalisé seul entièrement, dans le cadre de ma formation `Data Engineer` chez Data Scientest.
+(TODO : gif)
 
-- Sommaire avec les sections principales :
 
-  - [0. Présentation du projet](#0-présentation-du-projet)
-    - [Compétences techniques](#compétences-techniques)
-  - [1. Environnement](#1-environnement)
-    - [Configuration pré-requise](#configuration-pré-requise)
-    - [Configuration Docker](#Configuration-Docker)
-    - [Version des services testés](#version-des-services-testés)
-    - [Arborescence des fichiers du projet](#arborescence-des-fichiers-du-projet)
-  - [2. ETL avec Airflow](#2-etl-avec-airflow)
-    - [Extraction des données par API](#extraction-des-données-par-api)
-    - [Transformations des données](#transformations-des-données)
-    - [Chargement des données dans une base de données relationnelle](#chargement-des-données-dans-une-base-de-données-relationnelle)
-    - [Airflow](#airflow)
-      - [Description du DAG 1](#description-du-dag-1)
-      - [Description du DAG 2](#description-du-dag-2)
-  - [3. Création d'une API avec FastAPI](#3-création-dune-api-avec-fastapi)
-  - [4. Data Viz avec Power BI](#4-data-viz-avec-power-bi)
-    - [Rapports](#rapports)
-  - [5. Monitoring avec Prometheus et Grafana](#5-monitoring-avec-prometheus-et-grafana)
-    - [Prometheus](#prometheus)
-    - [Grafana](#grafana)
-  - [6. Difficultés rencontrées](#6-difficultés-rencontrées)
-  - [7. Evolutions possibles du projet](#7-evolutions-possibles-du-projet)
+  - `FastAPI` pour la mise en place d'une API :
+
+(TODO : gif)
+
+
+  - `Power BI` : consommer les données avec la mise en place de rapports avec Power BI,
+
+<img src="readme_files/screenshots/power_bi/reports/slideshow/only-ALL-DE/slideshow-pbi-5s.gif" alt="slideshow power bi gif" style="width:100%"/>
+
+
+  - `Prometheus et Grafana` : monitoring des `DAG`, de `Postgres`, du `noeud` et des `conteneurs Docker`
+
+(TODO : gif)
 
 
 
-# 0. Présentation du projet
+# Sommaire
 
-- L'objectif principal de ce projet est d'analyser le marché du travail en France Métropolitaine à travers des offres d'emploi.
+(avec les sous-sections importantes uniquement)
 
-- Voici un résumé de ce qui a été effectué pour ce projet :
-
-  - mettre en place un pipeline ETL/ELT pour récupérer les offres d'emploi par API sur https://francetravail.io/data/api, étudier les attributs disponibles et faire le diagramme UML, effectuer des transformations en amont ou en aval de l'écriture des données dans une base de données Postgres,
-
-  - travailler avec un environnement docker,
-
-  - orchestrer les tâches avec Airflow,
-
-  - mettre en place une API pour qu'un utilisateur puisse requêter la base de données via une interface graphique,
-
-  - consommer les données avec la mise en place de rapports avec Power BI,
-
-  - monitoring avec Prometheus et Grafana
-
-
-- Le fichier `drawio_files/architecture.drawio` donne une vue sur l'architecture du projet :
-
-  <img src="readme_files/screenshots/drawio/architecture_00--ALL.png" alt="architecture du projet" style="width:100%"/>
+- [1. Environnement](#1-environnement)
+  - [Configuration pré-requise](#configuration-pré-requise)
+  - [Configuration Docker](#Configuration-Docker)
+  - [Version des services testés](#version-des-services-testés)
+  - [Arborescence des fichiers du projet](#arborescence-des-fichiers-du-projet)
+- [2. ETL avec Airflow](#2-etl-avec-airflow)
+  - [Extraction des données par API](#extraction-des-données-par-api)
+  - [Transformations des données](#transformations-des-données)
+  - [Chargement des données dans une base de données relationnelle](#chargement-des-données-dans-une-base-de-données-relationnelle)
+  - [Airflow](#airflow)
+    - [Description du DAG 1](#description-du-dag-1)
+    - [Description du DAG 2](#description-du-dag-2)
+- [3. Création d'une API avec FastAPI](#3-création-dune-api-avec-fastapi)
+- [4. Data Viz avec Power BI](#4-data-viz-avec-power-bi)
+  - [Rapports](#rapports)
+- [5. Monitoring avec Prometheus et Grafana](#5-monitoring-avec-prometheus-et-grafana)
+  - [Prometheus](#prometheus)
+  - [Grafana](#grafana)
+- [6. Conclusion](#6-conclusion)
+  - [Compétences techniques](#compétences-techniques)
+  - [Difficultés rencontrées](#difficultés-rencontrées)
+  - [Evolutions possibles du projet](#evolutions-possibles-du-projet)
 
 
 - Pour ne pas surcharger cette page principale, une seconde page avec des informations supplémentaires moins essentielles est disponible [ici](readme_files/APPENDIX.md#readme-secondaire).
 
 
 
-## Compétences techniques
-
-- Les compétences travaillées sur ce projet sont les suivantes :
-
-  | Domaine                          | Outils & Technologies           |
-  | -------------------------------- | ------------------------------- |
-  | Langages & programmation         | `Python`, `SQL`, `Bash`/`Linux` |
-  | Containerisation & versioning    | `Docker`, `Git`                 |
-  | Pipeline ETL/ELT & orchestration | `Apache Airflow 3.0`            |
-  | Création d'APIs                  | `FastAPI`                       |
-  | Data Visualisation               | `Power BI`                      |
-  | Monitoring                       | `Prometheus`, `Grafana`         |
-  | Modélisation & architecture      | `UML`                           |
-
-
 # 1. Environnement
 
-- Développements et tests sous :
+- Une très grande partie de l'environnement de ce projet est dockerisé.
 
-  - `Windows 11 + WSL2 avec Ubuntu 22.04`
+- Le fichier `drawio_files/architecture.drawio` donne une vue sur l'architecture du projet :
+
+  <img src="readme_files/screenshots/drawio/architecture_00--ALL.png" alt="architecture du projet" style="width:100%"/>
+
+
+- Le développement et les tests ont eu lieu sous :
+
+  - `Windows 11` + `WSL2` avec `Ubuntu 22.04`
 
     - Note importante : on n'utilise pas `Docker Desktop` mais `Docker CE dans WSL` car `cAdvisor` (Container Advisor) n'est pas opérationnel dans l'environnement WSL avec Ubuntu 22.04 + Docker Desktop.
 
@@ -1132,8 +1123,26 @@ TODO : refaire le fichier quand les DAGs seront figés
   todo : gif
 
 
+# 6. Conclusion
 
-# 6. Difficultés rencontrées
+- J'ai beaucoup appris à travers ce projet, que j'ai trouvé très intéressant, à tout point de vue.
+
+## Compétences techniques
+
+- Les compétences travaillées sont les suivantes :
+
+  | Domaine                          | Outils & Technologies           |
+  | -------------------------------- | ------------------------------- |
+  | Langages & programmation         | `Python`, `SQL`, `Bash`/`Linux` |
+  | Containerisation & versioning    | `Docker`, `Git`                 |
+  | Pipeline ETL/ELT & orchestration | `Apache Airflow 3.0`            |
+  | Création d'APIs                  | `FastAPI`                       |
+  | Data Visualisation               | `Power BI`                      |
+  | Monitoring                       | `Prometheus`, `Grafana`         |
+  | Modélisation & architecture      | `UML`                           |
+
+
+## Difficultés rencontrées
 
 - Les points suivants illustrent des difficultés auxquelles je me suis heurté mais que j'ai fini par résoudre.
 
@@ -1163,7 +1172,7 @@ TODO : refaire le fichier quand les DAGs seront figés
       - détails [ici](readme_files/APPENDIX.md#attributs-de-localisation-des-offres-noms-et-codes-des-villes-communes-départements-et-régions)
 
 
-# 7. Evolutions possibles du projet
+## Evolutions possibles du projet
 
 - Le projet est fonctionnel, mais certaines features peuvent le rendre plus robustes ou plus intéressantes :
 
