@@ -9,7 +9,7 @@
   - `Architecture` :
     - Environnement dockerisé déployé avec `docker compose`
 
-<img src="readme_files/screenshots/drawio/gif/architecture_00--ALL.gif" alt="slideshow architecture gif" style="width:100%"/>
+  <img src="readme_files/screenshots/drawio/gif/architecture_00--ALL.gif" alt="slideshow architecture gif" style="width:100%"/>
 
 
   - `Airflow` pour la mise en place du pipeline pipeline ETL avec deux DAGs :
