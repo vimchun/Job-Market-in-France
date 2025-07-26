@@ -4,34 +4,32 @@
 
 - L'objectif principal est d'analyser le marché du travail en France Métropolitaine à travers des offres d'emploi.
 
-- Avant d'attaquer le [sommaire](#sommaire), voici un résumé et aperçu de ce qui a été effectué à travers quelques `.gif` :
+- Avant de présenter le [sommaire](#sommaire), voici un résumé et aperçu de ce qui a été effectué à travers quelques `.gif` :
 
   - `Architecture` :
     - Environnement dockerisé déployé avec `docker compose`
 
-  <img src="readme_files/screenshots/drawio/gif/architecture_00--ALL.gif" alt="slideshow architecture gif" style="width:100%"/>
-
+    <br> <img src="readme_files/screenshots/drawio/gif/architecture_00--ALL.gif" alt="slideshow architecture gif" style="width:100%"/> <br> <br>
 
   - `Airflow` pour la mise en place du pipeline pipeline ETL avec deux DAGs :
       - `DAG 1` récupère les offres d'emploi par API, effectue des transformations avant d'écrire toutes les offres d'emploi dans un fichier `json`.
       - `DAG 2` écrit les offres dans une base de données `Postgres`.
 
-(TODO : gif)
+    (TODO : gif)
 
 
   - `FastAPI` pour la mise en place d'une API :
 
-(TODO : gif)
+    (TODO : gif)
 
 
-  - `Power BI` : consommer les données avec la mise en place de rapports avec Power BI,
+  - `Power BI` : consommation des données avec la mise en place de rapports avec Power BI
 
-<img src="readme_files/screenshots/power_bi/reports/slideshow/only-ALL-DE/slideshow-pbi-5s.gif" alt="slideshow power bi gif" style="width:100%"/>
-
+    <br> <img src="readme_files/screenshots/power_bi/reports/slideshow/only-ALL-DE/slideshow-pbi-5s.gif" alt="slideshow power bi gif" style="width:100%"/> <br> <br>
 
   - `Prometheus et Grafana` : monitoring des `DAG`, de `Postgres`, du `noeud` et des `conteneurs Docker`
 
-(TODO : gif)
+    (TODO : gif)
 
 
 
@@ -80,9 +78,7 @@
 
   - `Windows 11` + `WSL2` avec `Ubuntu 22.04`
 
-    - Note importante : on n'utilise pas `Docker Desktop` mais `Docker CE dans WSL` car `cAdvisor` (Container Advisor) n'est pas opérationnel dans l'environnement WSL avec Ubuntu 22.04 + Docker Desktop.
-
-      - Voir [ici](readme_files/APPENDIX.md#Utilisation-de-Docker-CE-dans-WSL-pour-cAdvisor) pour les explications et pour la procédure d'installation de `Docker CE` dans WSL.
+    > Note : on n'utilise pas `Docker Desktop` mais `Docker CE dans WSL` car `cAdvisor` (Container Advisor) n'est pas opérationnel dans l'environnement `WSL` avec `Ubuntu 22.04` + `rocker Desktop`, voir [ici](readme_files/APPENDIX.md#Utilisation-de-Docker-CE-dans-WSL-pour-cAdvisor) pour les explications et pour la procédure d'installation de `Docker CE` dans `WSL`.
 
   - `Python 3.12.9` (février 2025) avec environnement virtuel (formatteur `Ruff`).
 
@@ -164,19 +160,19 @@
 
 - Ce [lien](readme_files/APPENDIX.md#récupération-des-versions) donne les commandes permettant de récupérer les versions.
 
-- Tableau avec les versions utilisées :
+- Tableau avec les versions utilisées (pour un éco-système fonctionnel) :
 
   | service           | version  | date de la release | lien                                                               |
   | ----------------- | -------- | ------------------ | ------------------------------------------------------------------ |
   | FastAPI           | 0.115.12 | 03/2025            | https://github.com/fastapi/fastapi/releases                        |
   | Postgres          | 16.9     | 05/2025            | https://github.com/postgres/postgres/tags                          |
-  | Redis             | 8.0.2    | 05/2025            | https://github.com/redis/redis/releases                            |
+  | Redis             | 8.0.3    | 07/2025            | https://github.com/redis/redis/releases                            |
   | Airflow           | 3.0.3    | 07/2025            | https://github.com/apache/airflow/releases                         |
   | StatsD-exporter   | 0.28.0   | 10/2024            | https://github.com/prometheus/statsd_exporter/releases             |
   | Node-exporter     | 1.9.1    | 04/2025            | https://github.com/prometheus/node_exporter/releases               |
   | Postgres-exporter | 0.17.1   | 02/2025            | https://github.com/prometheus-community/postgres_exporter/releases |
   | cAdvisor          | v0.49.1  | 03/2024            | https://github.com/google/cadvisor/releases                        |
-  | Prometheus        | 2.53.5   | 06/2025            | https://github.com/prometheus/prometheus/releases                  |
+  | Prometheus        | 3.5.0   | 07/2025            | https://github.com/prometheus/prometheus/releases                  |
   | Grafana           | 12.0.2   | 06/2025            | https://github.com/grafana/grafana/releases                        |
 
 
@@ -314,17 +310,17 @@
 - Plusieurs transformations seront effectuées par la suite : [voir ici](#transformations-des-données-en-amont-côté-python).
 
 
-- Notes :
-
-  - Les paramètres liés aux dates (`minCreationDate`, `maxCreationDate`, `publieeDepuis`) ne permettent pas d'obtenir des offres expirées (par exemple celles qui ont permis de recruter quelqu'un).
-
-  - Les offres d'emploi retournées peuvent provenir soit de `FRANCE TRAVAIL`, soit des `partenaires` (par exemple `CADREMPLOI`, `DIRECTEMPLOI`, `INDEED`, etc...)
-
-  - Pour ouvrir le lien d'une offre d'emploi : `https://candidat.francetravail.fr/offres/recherche/detail/<offre_id>` (remplacer `offre_id` dans ce [lien](https://candidat.francetravail.fr/offres/recherche/detail/offre_id)).
-
-  - Exemple d'un document json extrait (pour une offre d'emploi donc) :
-
-  <img src="readme_files/screenshots/misc/json_document.png" alt="document json" style="width:100%"/>
+> Notes :
+>
+>  - Les paramètres liés aux dates (`minCreationDate`, `maxCreationDate`, `publieeDepuis`) ne permettent pas d'obtenir des offres expirées (par exemple celles qui ont permis de recruter quelqu'un).
+>
+>  - Les offres d'emploi retournées peuvent provenir soit de `FRANCE TRAVAIL`, soit des `partenaires` (par exemple `CADREMPLOI`, `DIRECTEMPLOI`, `INDEED`, etc...)
+>
+>  - Pour ouvrir le lien d'une offre d'emploi : `https://candidat.francetravail.fr/offres/recherche/detail/<offre_id>` (remplacer `offre_id` dans ce [lien](https://candidat.francetravail.fr/offres/recherche/detail/offre_id)).
+>
+>  - Exemple d'un document json extrait (pour une offre d'emploi donc) :
+>
+>  <img src="readme_files/screenshots/misc/json_document.png" alt="document json" style="width:100%"/>
 
 
 
@@ -380,13 +376,13 @@
     - Pour chaque offre, si un mot-clé parmi la liste de strings prédéfinie ici[script](airflow/dags/sql/transformation_4_update__table_descriptionoffre__column__liste_mots_cles.sql), ce mot-clé sera ajouté dans l'attribut (qui est une liste).
 
 
-- Note :
-
-  - Une transformation a été créée pour récupérer les valeurs pour les attributs `salaire_min` et `salaire_max` à partir de l'attribut `salaire_libelle`, en fonction d'un algorithme expliqué [ici](readme_files/APPENDIX.md#attributs-salaire_min-et-salaire_max).
-
-  - Dans la plupart des cas, les salaires récupérés sont corrects, mais il reste parfois certaines incohérences, liés aux erreurs de saisie de la part des recruteurs dans l'attribut `salaire_libelle`, qui amènent à trop de cas d'erreurs à traiter.
-
-    - Par conséquent, cette transformation ne sera pas retenue.
+> Note :
+>
+> - Une transformation a été créée pour récupérer les valeurs pour les attributs `salaire_min` et `salaire_max` à partir de l'attribut `salaire_libelle`, en fonction d'un algorithme expliqué [ici](readme_files/APPENDIX.md#attributs-salaire_min-et-salaire_max).
+>
+> - Dans la plupart des cas, les salaires récupérés sont corrects, mais il reste parfois certaines incohérences, liés aux erreurs de saisie de la part des recruteurs dans l'attribut `salaire_libelle`, qui amènent à trop de cas d'erreurs à traiter.
+>
+>   - Par conséquent, cette transformation ne sera pas retenue.
 
 
 
@@ -605,7 +601,7 @@
 
     - Ajout d'un attribut dans `all_in_one.json` : `date_premiere_ecriture` [pandas].
 
-      - Notes : l'attribut `date_premiere_ecriture` prendra la date du jour pour toutes les nouvelles offres, et conservera l'ancienne valeur pour les anciennes offres.
+      > Note : l'attribut `date_premiere_ecriture` prendra la date du jour pour toutes les nouvelles offres, et conservera l'ancienne valeur pour les anciennes offres.
 
 
 - `A10_write_to_history` :
@@ -649,11 +645,9 @@
 
   - Création de la connexion si connection inexistante.
 
-  - Note : on peut vérifier que la connexion est bien créée via la GUI comme montré sur le screenshot suivant :
-
-    <img src="readme_files/screenshots/airflow/gui_edit_connection.png" alt="airflow_edit_connection" style="width:100%"/>
-
-    (si la connexion n'est pas bien définie, alors le `DAG 2` posera problème puisqu'il ne pourra pas intéragir avec la base de donnée `francetravail`)
+  > Note : on peut vérifier que la connexion est bien créée via la GUI comme montré sur le screenshot suivant (si la connexion n'est pas bien définie, alors le `DAG 2` posera problème puisqu'il ne pourra pas intéragir avec la base de donnée `francetravail`):
+  >
+  >  <img src="readme_files/screenshots/airflow/gui_edit_connection.png" alt="airflow_edit_connection" style="width:100%"/>
 
 
 - `split_large_json` :
@@ -739,7 +733,7 @@
 
 - L'interface finale se décline sous 3 tags :
 
-- Note : pour certaines réponses des endpoints, on utilisera la librairie `tabulate` avec `media_type="text/plain"` pour afficher un tableau qui facilitera la lecture, et qui diminuera le nombre de lignes des réponses, plutôt que d'afficher un `json`.
+> Note : pour certaines réponses des endpoints, on utilisera la librairie `tabulate` avec `media_type="text/plain"` pour afficher un tableau qui facilitera la lecture, et qui diminuera le nombre de lignes des réponses, plutôt que d'afficher un `json`.
 
 
 ### Tag 1 : "Pour une seule offre d'emploi"
@@ -750,25 +744,24 @@
 
   | id  | endpoint                                    | retourne                                                |
   | --- | ------------------------------------------- | ------------------------------------------------------- |
-  | 1-1 | `GET /offre/attributs_from_transformations` | Quelques attributs dont ceux issues des transformations |
-  | 1-2 | `POST /offre/ajout_offre_factice`           | Création d'une offre factice                            |
-  | 1-3 | `DELETE /offre/suppression_offre`           | Suppression d'une offre                                 |
-  | 1-4 | `GET /offre/plusieurs_offres`               | 10 offres les plus récentes                             |
+  | `1-1` | `GET /offre/attributs_from_transformations` | Quelques attributs dont ceux issues des transformations |
+  | `1-2` | `POST /offre/ajout_offre_factice`           | Création d'une offre factice                            |
+  | `1-3` | `DELETE /offre/suppression_offre`           | Suppression d'une offre                                 |
+  | `1-4` | `GET /offre/plusieurs_offres`               | 10 offres les plus récentes                             |
 
 
-- Notes :
-  - Endpoint 1 :
+  - Endpoint `1-1` :
     - Paramètre obligatoire : `offre_id` (sur 7 digits)
       - Vaut par défaut `*JOKER*` (si on laisse ce string par défaut, le script va récupérer une offre au hasard, grâce au fichier `fastapi/offers_ids.txt` (généré par le `DAG 1`))
 
-  - Endpoint 2 :
+  - Endpoint `1-2` :
     - L'offre factice créée a des attributs prédéfinis.
     - Se base sur le fichier `fastapi/offers_ids.txt` pour définir un nouveau `offre_id`
 
-  - Endpoint 3 :
+  - Endpoint `1-3` :
     - Paramètre obligatoire : `offre_id`
 
-  - Endpoint 4 :
+  - Endpoint `1-4` :
     - Paramètres (tous optionnels) : `metier_data`, `offres_dispo_only`, `code_region`, `code_departement`, `code_postal`, `code_insee`
 
 
@@ -790,23 +783,21 @@
 
   | id  | endpoint                                             | retourne                                                                         |
   | --- | ---------------------------------------------------- | -------------------------------------------------------------------------------- |
-  | 2-1 | `GET /stats/total_offres`                            | Nombre total d'offres d'emploi                                                   |
-  | 2-2 | `GET /stats/total_offres_factices`                   | Nombre total d'offres factices (créées par FastAPI) et leurs identifiants        |
-  | 2-3 | `DELETE /suppression_all_offres_factices`            | Suppression de toutes les offres factices créées par l'API                       |
-  | 2-4 | `GET /stats/classement/region`                       | Classement des régions qui recrutent le plus                                     |
-  | 2-5 | `GET /stats/classement/departement`                  | Classement des départements qui recrutent le plus (top 30)                       |
-  | 2-6 | `GET /stats/classement/ville`                        | Classement des villes qui recrutent le plus (top 30)                             |
-  | 2-7 | `GET /criteres_recruteurs/competences`               | Compétences (techniques, managériales...) demandées par les recruteurs           |
-  | 2-8 | `GET /criteres_recruteurs/experiences`               | Expériences (études, diplôme, années expérience...) demandées par les recruteurs |
-  | 2-9 | `GET /criteres_recruteurs/qualites_professionnelles` | Qualités professionnelles demandées par les recruteurs                           |
+  | `2-1` | `GET /stats/total_offres`                            | Nombre total d'offres d'emploi                                                   |
+  | `2-2` | `GET /stats/total_offres_factices`                   | Nombre total d'offres factices (créées par FastAPI) et leurs identifiants        |
+  | `2-3` | `DELETE /suppression_all_offres_factices`            | Suppression de toutes les offres factices créées par l'API                       |
+  | `2-4` | `GET /stats/classement/region`                       | Classement des régions qui recrutent le plus                                     |
+  | `2-5` | `GET /stats/classement/departement`                  | Classement des départements qui recrutent le plus (top 30)                       |
+  | `2-6` | `GET /stats/classement/ville`                        | Classement des villes qui recrutent le plus (top 30)                             |
+  | `2-7` | `GET /criteres_recruteurs/competences`               | Compétences (techniques, managériales...) demandées par les recruteurs           |
+  | `2-8` | `GET /criteres_recruteurs/experiences`               | Expériences (études, diplôme, années expérience...) demandées par les recruteurs |
+  | `2-9` | `GET /criteres_recruteurs/qualites_professionnelles` | Qualités professionnelles demandées par les recruteurs                           |
 
 
-- Notes :
-
-  - Endpoints 1, 2, 3, 4, 5, 6 :
+  - Endpoints `2-1`, `2-2`, `2-3`, `2-4`, `2-5`, `2-6` :
     - Pas de paramètres
 
-  - Endpoints 7, 8, 9 :
+  - Endpoints `2-7`, `2-8`, `2-9` :
     - Paramètres (tous optionnels) : `metier_data`, `offres_dispo_only`, `code_region`, `code_departement`, `code_postal`, `code_insee`
 
 
@@ -830,13 +821,13 @@
 
   | id  | route                                   | retourne                                        |
   | --- | --------------------------------------- | ----------------------------------------------- |
-  | 3-1 | `GET /mapping_localisation/region`      | Mapping entre le nom de la région et son code   |
-  | 3-2 | `GET /mapping_localisation/departement` | Mapping entre le nom du département et son code |
-  | 3-3 | `GET /mapping_localisation/ville`       | Mapping entre le nom de la ville et son code       |
-  | 3-4 | `GET /mapping_localisation/commune`     | Mapping entre le nom de la commune et son code  |
+  | `3-1` | `GET /mapping_localisation/region`      | Mapping entre le nom de la région et son code   |
+  | `3-2` | `GET /mapping_localisation/departement` | Mapping entre le nom du département et son code |
+  | `3-3` | `GET /mapping_localisation/ville`       | Mapping entre le nom de la ville et son code       |
+  | `3-4` | `GET /mapping_localisation/commune`     | Mapping entre le nom de la commune et son code  |
 
 
-#### Quelques screenshots
+#### Screenshot
 
   <img src="readme_files/screenshots/fastapi/responses/3-1.png" alt="screenshot fastapi" style="width:100%"/>
 
@@ -852,14 +843,14 @@
 
 - Le `docker-compose.yml` décrit des montages de volumes pour ne pas avoir à redémarrer le `docker compose` après chaque modification de fichiers sql, par exemple.
 
-- A noter pour le `Dockerfile` :
-
-  - Lors de la phase de développement :
-    - l'option `--reload` peut être passée pour ne pas avoir à relancer la commande après une modification : `CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]`
-
-  - En phase de prod (développements terminés) :
-    - sans l'option `--reload` : `CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]`
-    - `COPY` du script python, et des fichiers nécessaires dans le conteneur (fichier csv, fichiers sql), au lieu de passer par des montages de volumes
+> A noter pour le `Dockerfile` :
+>
+> - Lors de la phase de développement :
+>   - l'option `--reload` peut être passée pour ne pas avoir à relancer la commande après une modification : `CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]`
+>
+> - En phase de prod (développements terminés) :
+>   - sans l'option `--reload` : `CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]`
+>   - `COPY` du script python, et des fichiers nécessaires dans le conteneur (fichier csv, fichiers sql), au lieu de passer par des montages de volumes
 
 
 
@@ -1025,10 +1016,9 @@
   curl http://localhost:8081/metrics > prometheus/available_metrics/metrics_cadvisor
 ```
 
-TODO : refaire le fichier quand les DAGs seront figés
-- Notes :
-  - Il faut exécuter les DAGs pour voir apparaitre les commandes liés aux tâches des DAGs.
-  - Des NaN peuvent apparaissent s'il n’y a pas assez de données récentes dans la fenêtre de calcul du quantile summary.
+> Notes :
+> - Il faut exécuter les DAGs pour voir apparaitre les commandes liés aux tâches des DAGs.
+> - Des NaN peuvent apparaissent s'il n’y a pas assez de données récentes dans la fenêtre de calcul du quantile summary.
 
 
 #### Métriques de StatsD-Exporter
@@ -1049,7 +1039,7 @@ TODO : refaire le fichier quand les DAGs seront figés
 
 #### Personnalisation des mappings statsd
 
-- A noter que le fichier de configuration `prometheus/statsd-mapping-configs.yaml` permet de définir des mappings à partir des métriques issues d'Airflow, avec la possibilité de modifier le nom de la requête promQL.
+- Le fichier de configuration `prometheus/statsd-mapping-configs.yaml` permet de définir des mappings à partir des métriques issues d'Airflow, avec la possibilité de modifier le nom de la requête promQL.
 
   - On peut vérifier la validité du fichier avec la ligne de commande suivante :
 
@@ -1090,7 +1080,7 @@ TODO : refaire le fichier quand les DAGs seront figés
   <img src="readme_files/screenshots/grafana/dashboards_folder.png" alt="dossier dashboards" style="width:50%"/>
 
 
-- Note : Grafana peut recharger le contenu du dossier après un redémarrage du conteneur : `docker compose restart grafana`.
+> Note : Grafana peut recharger le contenu du dossier après un redémarrage du conteneur : `docker compose restart grafana`.
 
 
 ### Dashboards
