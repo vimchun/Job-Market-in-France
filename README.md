@@ -27,7 +27,7 @@
 
   - `Prometheus et Grafana` pour le monitoring des `DAG`, de la base de données `Postgres`, du `noeud` et des `conteneurs Docker` :
 
-    (TODO : gif)
+    <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/with_annotations/slideshow-grafana-5s--compressed.gif" alt="slideshow grafana gif" style="width:100%"/>
 
 
 
@@ -170,7 +170,7 @@
   | Node-exporter     | 1.9.1    | 04/2025            | https://github.com/prometheus/node_exporter/releases               |
   | Postgres-exporter | 0.17.1   | 02/2025            | https://github.com/prometheus-community/postgres_exporter/releases |
   | cAdvisor          | v0.49.1  | 03/2024            | https://github.com/google/cadvisor/releases                        |
-  | Prometheus        | 3.5.0   | 07/2025            | https://github.com/prometheus/prometheus/releases                  |
+  | Prometheus        | 3.5.0    | 07/2025            | https://github.com/prometheus/prometheus/releases                  |
   | Grafana           | 12.0.2   | 06/2025            | https://github.com/grafana/grafana/releases                        |
 
 
@@ -404,9 +404,10 @@
 
 - Le SGBD `PostgreSQL` sera utilisé :
 
-  - Performant, sa fiable et sa flexible.
-  - Offre une grande transparence et une forte extensibilité, en tant que solution open source.
-  - Prend en charge des types de données complexes, respecte les principes ACID et bénéficie d’une communauté active assurant une évolution continue.
+  - Performant, sa fiable et sa flexibilité.
+  - Prise en charge des types de données complexes, respecte les principes ACID.
+  - Grande transparence en tant que solution open source.
+  - Communauté active assurant une évolution continue.
 
 - La base de données `francetravail` sera hébergée dans le conteneur Docker exécutant le service PostgreSQL.
 
@@ -689,27 +690,19 @@
 
 #### Task group "TRANSFORMATIONS"
 
-- `SQLExecuteQueryOperator()` qui exécutent les tâches suivantes en parallèle, dont les fichiers SQL du dossier `airflow/dags/sql` sont :
+- `SQLExecuteQueryOperator()` qui exécutent les tâches suivantes : `update_descriptionoffre_metier_data_DE`, `update_descriptionoffre_metier_data_DA` et `update_descriptionoffre_metier_data_DS` en parallèle, puis `update_descriptionoffre_column_liste_mots_cles`.
 
-  - `update_descriptionoffre_metier_data_DE`
-  - `update_descriptionoffre_metier_data_DA`
-  - `update_descriptionoffre_metier_data_DS`
+  - Les fichiers SQL associés sont dans le dossier `airflow/dags/sql`.
 
-- puis :
-
-  - `update_descriptionoffre_column_liste_mots_cles`
 
 
 ## Fréquence et durée
 
-- Fréquence :
-  - Tous les jours à 21h30
+- Le `DAG 1` (qui déclenche le `DAG 2`) est exécuté tous les jours à 21h30 :
 
     <img src="readme_files/screenshots/airflow/frequency.png" alt="fréquence" style="width:100%"/>
 
-- Durée des DAGs :
-  - ~10 minutes pour `DAG 1`
-  - ~5 minutes pour `DAG 2`
+- `DAG 1` prend ~10 minutes, et `DAG 2` prend ~5 minutes :
 
     <img src="readme_files/screenshots/airflow/duration_dags.png" alt="durée des DAGs" style="width:100%"/>
 
@@ -740,8 +733,8 @@
 
 - Liste des endpoints :
 
-  | id  | endpoint                                    | retourne                                                |
-  | --- | ------------------------------------------- | ------------------------------------------------------- |
+  | id    | endpoint                                    | retourne                                                |
+  | ----- | ------------------------------------------- | ------------------------------------------------------- |
   | `1-1` | `GET /offre/attributs_from_transformations` | Quelques attributs dont ceux issues des transformations |
   | `1-2` | `POST /offre/ajout_offre_factice`           | Création d'une offre factice                            |
   | `1-3` | `DELETE /offre/suppression_offre`           | Suppression d'une offre                                 |
@@ -779,8 +772,8 @@
 
 - Liste des endpoints :
 
-  | id  | endpoint                                             | retourne                                                                         |
-  | --- | ---------------------------------------------------- | -------------------------------------------------------------------------------- |
+  | id    | endpoint                                             | retourne                                                                         |
+  | ----- | ---------------------------------------------------- | -------------------------------------------------------------------------------- |
   | `2-1` | `GET /stats/total_offres`                            | Nombre total d'offres d'emploi                                                   |
   | `2-2` | `GET /stats/total_offres_factices`                   | Nombre total d'offres factices (créées par FastAPI) et leurs identifiants        |
   | `2-3` | `DELETE /suppression_all_offres_factices`            | Suppression de toutes les offres factices créées par l'API                       |
@@ -817,11 +810,11 @@
 
 - donne le mapping entre le nom et le code d'une région, département, ville, commune :
 
-  | id  | route                                   | retourne                                        |
-  | --- | --------------------------------------- | ----------------------------------------------- |
+  | id    | route                                   | retourne                                        |
+  | ----- | --------------------------------------- | ----------------------------------------------- |
   | `3-1` | `GET /mapping_localisation/region`      | Mapping entre le nom de la région et son code   |
   | `3-2` | `GET /mapping_localisation/departement` | Mapping entre le nom du département et son code |
-  | `3-3` | `GET /mapping_localisation/ville`       | Mapping entre le nom de la ville et son code       |
+  | `3-3` | `GET /mapping_localisation/ville`       | Mapping entre le nom de la ville et son code    |
   | `3-4` | `GET /mapping_localisation/commune`     | Mapping entre le nom de la commune et son code  |
 
 
