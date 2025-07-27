@@ -433,7 +433,7 @@
           "step": 2
         }
       ],
-      "title": "Tuples inserts/updates",
+      "title": "Insert data / Update data",
       "type": "timeseries"
     },
     {
@@ -759,7 +759,7 @@
               }
             ]
           },
-          "unit": "ops"
+          "unit": "short"
         },
         "overrides": []
       },
@@ -769,12 +769,16 @@
         "x": 0,
         "y": 36
       },
-      "id": 93,
+      "id": 100,
       "options": {
         "dataLinks": [],
         "legend": {
-          "calcs": [],
-          "displayMode": "list",
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "sum"
+          ],
+          "displayMode": "table",
           "placement": "bottom",
           "showLegend": true
         },
@@ -790,31 +794,24 @@
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
-          "expr": "sum(rate(pg_stat_database_tup_inserted{datname=~\"$datname\"}[5m]))",
+          "expr": "irate(pg_stat_database_xact_commit{instance=\"$instance\", datname=~\"$datname\"}[5m])",
           "format": "time_series",
-          "intervalFactor": 2,
-          "legendFormat": "insert",
-          "range": true,
-          "refId": "A",
-          "step": 2
+          "intervalFactor": 1,
+          "legendFormat": "{{datname}} commits",
+          "refId": "A"
         },
         {
           "datasource": {
             "uid": "${DS_PROMETHEUS}"
           },
-          "editorMode": "code",
-          "expr": "sum(rate(pg_stat_database_tup_updated{datname=~\"$datname\"}[5m]))",
+          "expr": "irate(pg_stat_database_xact_rollback{instance=\"$instance\", datname=~\"$datname\"}[5m])",
           "format": "time_series",
-          "hide": false,
-          "intervalFactor": 2,
-          "legendFormat": "update",
-          "range": true,
-          "refId": "B",
-          "step": 2
+          "intervalFactor": 1,
+          "legendFormat": "{{datname}} rollbacks",
+          "refId": "B"
         }
       ],
-      "title": "Tuples inserts/updates",
+      "title": "Transactions",
       "type": "timeseries"
     },
     {
@@ -970,7 +967,9 @@
           ],
           "displayMode": "table",
           "placement": "right",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Total",
+          "sortDesc": true
         },
         "tooltip": {
           "hideZeros": false,
@@ -2572,5 +2571,5 @@
   "timezone": "",
   "title": "my_dashboard",
   "uid": "50911dd6-fce2-47da-a168-09857915246d",
-  "version": 1
+  "version": 3
 }
