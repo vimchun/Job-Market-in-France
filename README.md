@@ -8,21 +8,21 @@
 
   - `Architecture` avec un environnement dockerisé déployé avec `docker compose`
 
-    <img src="readme_files/screenshots/drawio/gif/architecture_00--ALL--compressed.gif" alt="slideshow architecture gif" style="width:100%"/> <br> <br>
+    <img src="readme_files/screenshots/drawio/gif/architecture_00--ALL--compressed.gif" alt="slideshow architecture gif" style="width:100%"/> <br>
 
   - `Airflow` pour la mise en place du pipeline pipeline ETL avec deux DAGs : `DAG 1` récupère les offres d'emploi par API, effectue des transformations avant d'écrire toutes les offres d'emploi dans un fichier json, puis `DAG 2` écrit les offres dans une base de données `Postgres`.
 
-    (TODO : gif)
+    <img src="readme_files/screenshots/airflow/slideshow-airflow-5s--compressed.gif" alt="slideshow airflow gif" style="width:100%"/> <br>
 
 
   - `FastAPI` pour la mise en place d'une API :
 
-    (TODO : gif)
+    <img src="readme_files/screenshots/fastapi/slideshow/slideshow-fastapi-5s--compressed.gif" alt="slideshow fastapi gif" style="width:100%"/> <br>
 
 
   - `Power BI` pour la consommation des données avec la mise en place de rapports :
 
-    <img src="readme_files/screenshots/power_bi/reports/slideshow/only-ALL-DE/slideshow-pbi-5s--compressed.gif" alt="slideshow power bi gif" style="width:100%"/> <br> <br>
+    <img src="readme_files/screenshots/power_bi/reports/slideshow/only-ALL-DE/slideshow-pbi-5s--compressed.gif" alt="slideshow power bi gif" style="width:100%"/> <br>
 
 
   - `Prometheus et Grafana` pour le monitoring des `conteneurs Docker`, de la base de données `Postgres`, des `DAG`, et du `noeud` :
@@ -702,7 +702,7 @@
 
     <img src="readme_files/screenshots/airflow/frequency.png" alt="fréquence" style="width:100%"/>
 
-- `DAG 1` prend ~10 minutes, et `DAG 2` prend ~5 minutes :
+- `DAG 1` prend 10-15 minutes d'exécution, et `DAG 2` en prend 5-10 :
 
     <img src="readme_files/screenshots/airflow/duration_dags.png" alt="durée des DAGs" style="width:100%"/>
 
