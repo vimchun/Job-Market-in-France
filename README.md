@@ -4,11 +4,11 @@
 
 - L'objectif principal est d'analyser le marché du travail en France Métropolitaine à travers des offres d'emploi.
 
-- Avant de présenter le [sommaire](#sommaire), voici un résumé et aperçu de ce qui a été effectué à travers quelques `.gif` (⚠️ la page peut prendre du temps à charger) :
+- Avant de présenter le [sommaire](#sommaire), voici un résumé et aperçu de ce qui a été effectué à travers quelques `.gif` (⚠️ cette page peut prendre un certain temps à charger à cause de la taille des `.gif`) :
 
   - `Architecture` avec un environnement dockerisé déployé avec `docker compose`
 
-    <br> <img src="readme_files/screenshots/drawio/gif/architecture_00--ALL--compressed.gif" alt="slideshow architecture gif" style="width:100%"/> <br> <br>
+    <img src="readme_files/screenshots/drawio/gif/architecture_00--ALL--compressed.gif" alt="slideshow architecture gif" style="width:100%"/> <br> <br>
 
   - `Airflow` pour la mise en place du pipeline pipeline ETL avec deux DAGs : `DAG 1` récupère les offres d'emploi par API, effectue des transformations avant d'écrire toutes les offres d'emploi dans un fichier json, puis `DAG 2` écrit les offres dans une base de données `Postgres`.
 
@@ -22,10 +22,10 @@
 
   - `Power BI` pour la consommation des données avec la mise en place de rapports :
 
-    <br> <img src="readme_files/screenshots/power_bi/reports/slideshow/only-ALL-DE/slideshow-pbi-5s--compressed.gif" alt="slideshow power bi gif" style="width:100%"/> <br> <br>
+    <img src="readme_files/screenshots/power_bi/reports/slideshow/only-ALL-DE/slideshow-pbi-5s--compressed.gif" alt="slideshow power bi gif" style="width:100%"/> <br> <br>
 
 
-  - `Prometheus et Grafana` pour le monitoring des `DAG`, de la base de données `Postgres`, du `noeud` et des `conteneurs Docker` :
+  - `Prometheus et Grafana` pour le monitoring des `conteneurs Docker`, de la base de données `Postgres`, des `DAG`, et du `noeud` :
 
     <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/with_annotations/slideshow-grafana-5s--compressed.gif" alt="slideshow grafana gif" style="width:100%"/>
 
@@ -742,7 +742,7 @@
 
 
   - Endpoint `1-1` :
-    - Paramètre obligatoire : `offre_id` (sur 7 digits)
+    - Paramètre obligatoire : `offre_id` (sur 7 caractères alphanumériques)
       - Vaut par défaut `*JOKER*` (si on laisse ce string par défaut, le script va récupérer une offre au hasard, grâce au fichier `fastapi/offers_ids.txt` (généré par le `DAG 1`))
 
   - Endpoint `1-2` :
