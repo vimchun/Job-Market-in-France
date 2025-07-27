@@ -177,18 +177,16 @@
 
 ### Urls des GUIs
 
-(todo : + screenshots)
-
-  | Application       | Url                                                    | credentials       |
-  | ----------------- | ------------------------------------------------------ | ----------------- |
-  | FastAPI           | http://localhost:8000/docs                             |                   |
-  | Airflow           | http://localhost:8080/                                 | airflow / airflow |
-  | StatsD Exporter   | http://localhost:9102/ + http://localhost:9102/metrics |                   |
-  | Node Exporter     | http://localhost:9100/ + http://localhost:9100/metrics |                   |
-  | Postgres Exporter | http://localhost:9187/ + http://localhost:9187/metrics |                   |
-  | cAdvisor          | http://localhost:8081/ + http://localhost:8081/metrics |                   |
-  | Prometheus        | http://localhost:9092/ + http://localhost:9092/metrics |                   |
-  | Grafana           | http://localhost:3000/                                 | grafana / grafana |
+  | Application       | Url (credentials)                                      | screenshots                                                                                                          |
+  | ----------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+  | FastAPI           | http://localhost:8000/docs                             | <img src="readme_files/screenshots/gui/fastapi.png" alt="screenshot fastapi" style="width:10%"/>                     |
+  | Airflow           | http://localhost:8080/ (airflow / airflow)             | <img src="readme_files/screenshots/gui/airflow.png" alt="screenshot airflow" style="width:10%"/>                     |
+  | StatsD Exporter   | http://localhost:9102/ + http://localhost:9102/metrics | <img src="readme_files/screenshots/gui/statsd-exporter.png" alt="screenshot statsd exporter" style="width:10%"/>     |
+  | Node Exporter     | http://localhost:9100/ + http://localhost:9100/metrics | <img src="readme_files/screenshots/gui/node-exporter.png" alt="screenshot node exporter" style="width:10%"/>         |
+  | Postgres Exporter | http://localhost:9187/ + http://localhost:9187/metrics | <img src="readme_files/screenshots/gui/postgres-exporter.png" alt="screenshot postgres exporter" style="width:10%"/> |
+  | cAdvisor          | http://localhost:8081/ + http://localhost:8081/metrics | <img src="readme_files/screenshots/gui/cadvisor.png" alt="screenshot cadvisor" style="width:10%"/>                   |
+  | Prometheus        | http://localhost:9092/ + http://localhost:9092/metrics | <img src="readme_files/screenshots/gui/prometheus.png" alt="screenshot prometheus" style="width:10%"/>               |
+  | Grafana           | http://localhost:3000/ (grafana / grafana)             | <img src="readme_files/screenshots/gui/grafana.png" alt="screenshot grafana" style="width:10%"/>                     |
 
 
 ## Arborescence des fichiers du projet
@@ -391,7 +389,9 @@
   - Seuls les attributs liés aux `contacts` et aux `agences` ne seront pas conservés, n'apportant pas d'utilité.
 
 
-- Pour la suite, une modélisation `snowflake` est utilisée, dont le diagramme UML est le suivant :
+- Pour la suite, une modélisation `snowflake` est utilisée, permettant ainsi de réduire la redondance des données.
+
+- Le diagramme UML est le suivant :
 
   <img src="readme_files/screenshots/drawio/UML.png" alt="diagramme UML" style="width:100%"/>
 
@@ -399,8 +399,6 @@
   - Tables de liaison en gris
   - Tables de dimension en vert
 
-
-  TODO : justifier ce choix
 
 - Le SGBD `PostgreSQL` sera utilisé :
 
@@ -668,7 +666,7 @@
 
 
 
-#### Task group "INSERT_INTO_TABLES_WITH_JUNCTION"
+#### Task Group "INSERT_INTO_TABLES_WITH_JUNCTION"
 
 > - Ce groupe exécute les actions suivantes (prenons pour exemple, `Competence` puis `Offre_Competence`) :
 >
@@ -687,7 +685,7 @@
 >   - `PermisConduire` puis `Offre_PermisConduire`
 
 
-#### Task group "TRANSFORMATIONS"
+#### Task Group "TRANSFORMATIONS"
 
 > - `SQLExecuteQueryOperator()` qui exécutent les tâches suivantes : `update_descriptionoffre_metier_data_DE`, `update_descriptionoffre_metier_data_DA` et `update_descriptionoffre_metier_data_DS` en parallèle, puis `update_descriptionoffre_column_liste_mots_cles`.
 >
@@ -1099,8 +1097,7 @@
 
 - Le dossier "mine" contient le dashboard `my dashboard` (`grafana/provisioning/dashboards/mine/my_dashboard.json`) contient uniquement des visualisations jugées utiles.
 
-  todo : gif
-
+  <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/with_annotations/slideshow-grafana-5s--compressed.gif" alt="slideshow grafana gif" style="width:100%"/>
 
 # 6. Conclusion
 
