@@ -6,11 +6,11 @@
 
 - Avant de présenter le [sommaire](#sommaire), voici un résumé et aperçu de ce qui a été effectué à travers quelques `.gif` (⚠️ cette page peut prendre un certain temps à charger à cause de la taille des `.gif`) :
 
-  - `Architecture` avec un environnement dockerisé déployé avec `docker compose`
+  - Environnement dockerisé déployé avec `docker compose` :
 
     <img src="readme_files/screenshots/drawio/gif/architecture_00--ALL--compressed.gif" alt="slideshow architecture gif" style="width:100%"/> <br>
 
-  - `Airflow` pour la mise en place du pipeline pipeline ETL avec deux DAGs : `DAG 1` récupère les offres d'emploi par API, effectue des transformations avant d'écrire toutes les offres d'emploi dans un fichier json, puis `DAG 2` écrit les offres dans une base de données `Postgres`.
+  - `Airflow` pour la mise en place du pipeline pipeline ETL avec deux DAGs (`DAG 1` récupère les offres d'emploi par API, effectue des transformations avant d'écrire toutes les offres d'emploi dans un fichier json, puis `DAG 2` écrit les offres dans une base de données `Postgres`) :
 
     <img src="readme_files/screenshots/airflow/slideshow-airflow-5s--compressed.gif" alt="slideshow airflow gif" style="width:100%"/> <br>
 
@@ -20,7 +20,7 @@
     <img src="readme_files/screenshots/fastapi/slideshow/slideshow-fastapi-5s--compressed.gif" alt="slideshow fastapi gif" style="width:100%"/> <br>
 
 
-  - `Power BI` pour la consommation des données avec la mise en place de rapports :
+  - `Power BI` pour la consommation des données avec la création de rapports :
 
     <img src="readme_files/screenshots/power_bi/reports/slideshow/only-ALL-DE/slideshow-pbi-5s--compressed.gif" alt="slideshow power bi gif" style="width:100%"/> <br>
 
@@ -441,10 +441,10 @@
   - Le premier récupérait les données de France Travail, faisait des transformations, et chargeait les offres d'emploi dans un json.
   - Le second lisait le json puis écrivait les offres d'emploi dans la base de données, et effectuait un deuxième lot de transformations à partir de fichier sql.
 
-  <img src="readme_files/screenshots/drawio/archives/workflow_before_airflow.png" alt="screenshot du workflow" style="width:100%"/>
+  <img src="readme_files/screenshots/drawio/_archives/workflow_before_airflow.png" alt="screenshot du workflow" style="width:100%"/>
 
 
-- Reprendre ces scripts pour avoir Airflow dans le projet a été bénéfique :
+- Reprendre ces scripts pour intégrer Airflow dans le projet a été très bénéfique :
   - amélioration des fonctions définis
   - code plus compréhensible : factorisation de code, changement des noms de variables, revue des commentaires
   - meilleure façon d'écrire les offres d'emploi dans le json
@@ -454,7 +454,7 @@
 
 ### Avec Airflow
 
-- Les bénéfices d'Airflow sur ce projet sont multiples et évidents :
+- Les autres bénéfices d'Airflow sur ce projet sont multiples et évidents :
 
   - avoir une vision claire du workflow complet à travers la vue Graph du DAG
   - voir quelle fonction pose problème d'un coup d'oeil en cas d'échec et voir les logs associés à la tâche en échec
@@ -491,131 +491,130 @@
   <img src="readme_files/screenshots/airflow/graph_dag_1.png" alt="graph du DAG 1" style="width:100%"/>
 
 
-#### Task Group "setup"
+#### Task Group "SETUP"
 
-##### Sub Task Group "check_files_in_folders"
-
-
-- `S1_delete_all_in_one_json` :
-
-  - Suppression du fichier `all_in_one.json` s'il existe dans le `dossier_B`.
-
-
-- Tâches en parallèle :
-
-  - `S1_count_number_of_json_file` :
-
-    - Vérification du nombre de fichiers json dans le `dossier_B` :
-      - s'il y a plusieurs fichiers json : fin du DAG (exception levée).
-      - s'il y a 0 ou 1 fichier json `fichier_existant.json` : on continue et on retourne `count`, qui représente le nombre de fichiers json (0 ou 1 donc) et qui servira plus tard dans ce DAG.
-
-
-  - `S1_check_csv_file_exists`, `S1_check_appellation_yaml_file_exists`, `S1_check_credentials_yaml_file_exists` :
-
-    - Vérification de la présence de ces fichiers :
-      - Si un des fichiers n'existe pas : fin du DAG (exception levée).
-
-
-##### Sub Task Group "after_checks"
-
-- `S2_remove_all_json_files` :
-
-  - Suppression des fichiers json dans le `dossier_A`.
-    - Après suppression, on vérifie qu'il n'y a plus de fichier json (s'il reste un fichier json : fin du script).
-
-
-- `S2_load_appellations_yaml_file` :
-
-  - Chargement du fichier yaml avec les 61 métiers de la tech.
-
-
-- `S2_get_creds_from_yaml_file` puis `S2_get_token` :
-
-  - La première tâche récupère des credentials depuis le fichier.
-  - La seconde tâche récupère le token API pour la suite.
+> `Sub Task Group "check_files_in_folders"` :
+>
+> - `S1_delete_all_in_one_json` :
+>
+>   - Suppression du fichier `all_in_one.json` s'il existe dans le `dossier_B`.
+>
+>
+> - Tâches en parallèle :
+>
+>   - `S1_count_number_of_json_file` :
+>
+>     - Vérification du nombre de fichiers json dans le `dossier_B` :
+>       - s'il y a plusieurs fichiers json : fin du DAG (exception levée).
+>       - s'il y a 0 ou 1 fichier json `fichier_existant.json` : on continue et on retourne `count`, qui représente le nombre de fichiers json (0 ou 1 donc) et qui servira plus tard dans ce DAG.
+>
+>
+>   - `S1_check_csv_file_exists`, `S1_check_appellation_yaml_file_exists`, `S1_check_credentials_yaml_file_exists` :
+>
+>     - Vérification de la présence de ces fichiers :
+>       - Si un des fichiers n'existe pas : fin du DAG (exception levée).
+>
+>
+> ` Sub Task Group "after_checks"` :
+>
+> - `S2_remove_all_json_files` :
+>
+>   - Suppression des fichiers json dans le `dossier_A`.
+>     - Après suppression, on vérifie qu'il n'y a plus de fichier json (s'il reste un fichier json : fin du script).
+>
+>
+> - `S2_load_appellations_yaml_file` :
+>
+>   - Chargement du fichier yaml avec les 61 métiers de la tech.
+>
+>
+> - `S2_get_creds_from_yaml_file` puis `S2_get_token` :
+>
+>   - La première tâche récupère des credentials depuis le fichier.
+>   - La seconde tâche récupère le token API pour la suite.
 
 
 
 #### Task Group "ETL"
 
-- `A1_get_offers` :
-
-  - Récupération et écriture des offres d'emploi dans des fichiers json dans le `dossier_A` [requests] + vérification de la validité des fichiers json.
-  - Le fichier yaml décrivant 61 métiers, Airflow exécute ici 61 `mapped tasks` en parallèle.
-
-
-- `A2_all_json_in_one` :
-
-  - Consolidation de tous les fichiers json du `dossier_A` en un seul fichier json `all_in_one.json` dans le `dossier_B` et suppression des doublons [pandas].
-
-
-- `A3_only_metropole` :
-
-  - Conservation uniquement dans les offres d'emploi en France Métropolitaine dans `all_in_one.json` [pandas].
-
-
-- `A4_add_location_attrs` :
-
-  - Ajout d'attributs dans `all_in_one.json` : `nom_commune`, `nom_ville`, `code_departement`, `nom_departement`, `code_region`, `nom_region`, à partir du code insee, coordonnées GPS et autres infos [pandas/geopy].
-
-
-- `A5_add_dateExtraction_attr` :
-
-  - Ajout d'un attribut dans `all_in_one.json` : `date_extraction`, pour connaitre la date d'extraction et la date où on écrit la première fois dans la base [pandas].
-
-
-- `A6_0_or_1_json_on_setup` :
-
-  - Vérification du nombre de fichiers json dans le `dossier_B`.
-
-
-##### Sub Task Group "0_file_in_folder"
-
-- Cas où il n'y a pas de fichier json dans le `dossier_B` (variable `count=0`).
-
-  - `A8_add_date_premiere_ecriture_attr` :
-
-    - Ajout d'un attribut dans `all_in_one.json` : `date_premiere_ecriture` [pandas].
-
-
-  - `A9_rename_json_file` :
-
-    - Renommage du fichier `all_in_one.json` en `date__extraction_occurence_1.json` (car il s'agit de la première extraction)
-
-
-##### Sub Task Group "1_file_in_folder"
-
-- Cas où il y a 1 fichier json `fichier_existant.json` dans le `dossier_B` (variable `count=1`).
-
-  - `A7_special_jsons_concat` :
-
-    - Concaténation spéciale entre le json existant et le nouveau json, détails de l'algo ([ici](readme_files/APPENDIX.md#concaténation-spéciale-entre-le-json-existant-et-le-nouveau-json)) [pandas]
-
-    - Renommage du fichier `all_in_one.json` en `date__extraction_occurence_N+1.json`, si le fichier existant était nommé `date__extraction_occurence_N.json`.
-
-    - Déplacement de l'ancien json existant `date__extraction_occurence_N.json` dans le dossier `archives`.
-
-
-  - `A8_add_date_premiere_ecriture_attr` :
-
-    - Ajout d'un attribut dans `all_in_one.json` : `date_premiere_ecriture` [pandas].
-
-      > Note : l'attribut `date_premiere_ecriture` prendra la date du jour pour toutes les nouvelles offres, et conservera l'ancienne valeur pour les anciennes offres.
-
-
-- `A10_write_to_history` :
-
-  - Ecriture de l'historique du fichier json dans `_json_files_history.csv` (ajout nom json restant dans le dossier et le nombre de lignes).
-
-
-- `A11_write_offers_ids_list_on_file_for_fastapi` :
-
-  - Génération d'un fichier txt contenant la liste des `id` de toutes les offres (ce fichier sera utilisé par `FastAPI`).
-
-
-- `trigger_dag_2` :
-
-  - Déclenchement du `DAG 2` si `DAG` OK
+> - `A1_get_offers` :
+>
+>   - Récupération et écriture des offres d'emploi dans des fichiers json dans le `dossier_A` [requests] + vérification de la validité des fichiers json.
+>   - Le fichier yaml décrivant 61 métiers, Airflow exécute ici 61 `mapped tasks` en parallèle.
+>
+>
+> - `A2_all_json_in_one` :
+>
+>   - Consolidation de tous les fichiers json du `dossier_A` en un seul fichier json `all_in_one.json` dans le `dossier_B` et suppression des doublons [pandas].
+>
+>
+> - `A3_only_metropole` :
+>
+>   - Conservation uniquement dans les offres d'emploi en France Métropolitaine dans `all_in_one.json` [pandas].
+>
+>
+> - `A4_add_location_attrs` :
+>
+>   - Ajout d'attributs dans `all_in_one.json` : `nom_commune`, `nom_ville`, `code_departement`, `nom_departement`, `code_region`, `nom_region`, à partir du code insee, coordonnées GPS et autres infos [pandas/geopy].
+>
+>
+> - `A5_add_dateExtraction_attr` :
+>
+>   - Ajout d'un attribut dans `all_in_one.json` : `date_extraction`, pour connaitre la date d'extraction et la date où on écrit la première fois dans la base [pandas].
+>
+>
+> - `A6_0_or_1_json_on_setup` :
+>
+>   - Vérification du nombre de fichiers json dans le `dossier_B`.
+>
+>
+> `Sub Task Group "0_file_in_folder"` :
+>
+> - Cas où il n'y a pas de fichier json dans le `dossier_B` (variable `count=0`).
+>
+>   - `A8_add_date_premiere_ecriture_attr` :
+>
+>     - Ajout d'un attribut dans `all_in_one.json` : `date_premiere_ecriture` [pandas].
+>
+>
+>   - `A9_rename_json_file` :
+>
+>     - Renommage du fichier `all_in_one.json` en `date__extraction_occurence_1.json` (car il s'agit de la première extraction)
+>
+>
+> `Sub Task Group "1_file_in_folder"` :
+>
+> - Cas où il y a 1 fichier json `fichier_existant.json` dans le `dossier_B` (variable `count=1`).
+>
+>   - `A7_special_jsons_concat` :
+>
+>     - Concaténation spéciale entre le json existant et le nouveau json, détails de l'algo ([ici](readme_files/APPENDIX.md#concaténation-spéciale-entre-le-json-existant-et-le-nouveau-json)) [pandas]
+>
+>     - Renommage du fichier `all_in_one.json` en `date__extraction_occurence_N+1.json`, si le fichier existant était nommé `date__extraction_occurence_N.json`.
+>
+>     - Déplacement de l'ancien json existant `date__extraction_occurence_N.json` dans le dossier `archives`.
+>
+>
+>   - `A8_add_date_premiere_ecriture_attr` :
+>
+>     - Ajout d'un attribut dans `all_in_one.json` : `date_premiere_ecriture` [pandas].
+>
+>       > Note : l'attribut `date_premiere_ecriture` prendra la date du jour pour toutes les nouvelles offres, et conservera l'ancienne valeur pour les anciennes offres.
+>
+>
+> - `A10_write_to_history` :
+>
+>   - Ecriture de l'historique du fichier json dans `_json_files_history.csv` (ajout nom json restant dans le dossier et le nombre de lignes).
+>
+>
+> - `A11_write_offers_ids_list_on_file_for_fastapi` :
+>
+>   - Génération d'un fichier txt contenant la liste des `id` de toutes les offres (ce fichier sera utilisé par `FastAPI`).
+>
+>
+> - `trigger_dag_2` :
+>
+>   - Déclenchement du `DAG 2` si `DAG` OK
 
 
 ### Description du DAG 2
@@ -627,73 +626,72 @@
 
 #### Task Group "SETUP"
 
-- `check_only_one_json_in_folder` :
-
-  - Vérification qu'il n'y ait qu'un json `fichier_existant.json` dans `dossier_B`
-
-
-- `remove_all_split_jsons` :
-
-  - Suppression des fichiers json dans le `dossier_A`.
-
-
-- `ensure_postgres_connexion` :
-
-  - Vérification de l'existence de la connexion postgres nommée `connection_postgres`, et que ses paramètres sont conformes à celles spécifiés dans le script.
-    - Suppression et création de celle-ci en cas de paramètres non conformes.
-
-  - Création de la connexion si connection inexistante.
-
-  > Note : on peut vérifier que la connexion est bien créée via la GUI comme montré sur le screenshot suivant (si la connexion n'est pas bien définie, alors le `DAG 2` posera problème puisqu'il ne pourra pas intéragir avec la base de donnée `francetravail`):
-  >
-  >  <img src="readme_files/screenshots/airflow/gui_edit_connection.png" alt="airflow_edit_connection" style="width:100%"/>
-
-
-- `split_large_json` :
-
-  - Split le gros fichier json final en plusieurs jsons dédiés pour les tâches suivantes du DAG.
-  - L'intérêt est que toutes les tâches ne lisent pas le même gros fichier json, et que chaque tâche lise chacun son fichier json dédié.
-
-
-- `SQLExecuteQueryOperator()` avec le fichier `sql/create_all_tables.sql` :
-
-  - Création de toutes les tables du projet si elles n'existent pas.
+> - `check_only_one_json_in_folder` :
+>
+>   - Vérification qu'il n'y ait qu'un json `fichier_existant.json` dans `dossier_B`
+>
+>
+> - `remove_all_split_jsons` :
+>
+>   - Suppression des fichiers json dans le `dossier_A`.
+>
+>
+> - `ensure_postgres_connexion` :
+>
+>   - Vérification de l'existence de la connexion postgres nommée `connection_postgres`, et que ses paramètres sont conformes à celles spécifiés dans le script.
+>     - Suppression et création de celle-ci en cas de paramètres non conformes.
+>
+>   - Création de la connexion si connection inexistante.
+>
+>   > Note : on peut vérifier que la connexion est bien créée via la GUI comme montré sur le screenshot suivant (si la connexion n'est pas bien définie, alors le `DAG 2` posera problème puisqu'il ne pourra pas intéragir avec la base de donnée `francetravail`):
+>   >
+>   >  <img src="readme_files/screenshots/airflow/gui_edit_connection.png" alt="airflow_edit_connection" style="width:100%"/>
+>
+>
+> - `split_large_json` :
+>
+>   - Split le gros fichier json final en plusieurs jsons dédiés pour les tâches suivantes du DAG.
+>   - L'intérêt est que toutes les tâches ne lisent pas le même gros fichier json, et que chaque tâche lise chacun son fichier json dédié.
+>
+>
+> - `SQLExecuteQueryOperator()` avec le fichier `sql/create_all_tables.sql` :
+>
+>   - Création de toutes les tables du projet si elles n'existent pas.
 
 
 
 #### Task Group "INSERT_INTO_TABLES_WITHOUT_JUNCTION"
 
-- Ce groupe exécute les tâches suivantes, qui consistent à récupérer les informations dans les fichiers json dédiés (générés par la tâche `split_large_json`) et exécutent des `INSERT INTO` dans les tâches dédiées :
-
-  - `OffreEmploi`, puis les tâches suivantes en parallèle : `Contrat`, `Entreprise`, `Localisation` et `DescriptionOffre`.
+> - Ce groupe exécute les tâches suivantes, qui consistent à récupérer les informations dans les fichiers json dédiés (générés par la tâche `split_large_json`) et exécutent des `INSERT INTO` dans les tâches dédiées :
+>
+>   - `OffreEmploi`, puis les tâches suivantes en parallèle : `Contrat`, `Entreprise`, `Localisation` et `DescriptionOffre`.
 
 
 
 #### Task group "INSERT_INTO_TABLES_WITH_JUNCTION"
 
-- Ce groupe exécute les actions suivantes (prenons pour exemple, `Competence` puis `Offre_Competence`) :
-
-  - 1. `INSERT INTO` pour la table de dimension `Competence`
-  - 2. Requête pour connaitre la correspondance entre `offre_id` et `competence_id` avant de faire des `INSERT INTO` pour la table de liaison `Offre_Competence`
-  - 3. Conservation de l'offre la plus récente, si `competence_id` a évolué
-
-
-- Même chose pour :
-
-  - `Experience` puis `Offre_Experience`
-  - `Formation` puis `Offre_Formation`
-  - `QualiteProfessionnelle` puis `Offre_QualiteProfessionnelle`
-  - `Qualification` puis `Offre_Qualification`
-  - `Langue` puis `Offre_Langue`
-  - `PermisConduire` puis `Offre_PermisConduire`
+> - Ce groupe exécute les actions suivantes (prenons pour exemple, `Competence` puis `Offre_Competence`) :
+>
+>   - 1. `INSERT INTO` pour la table de dimension `Competence`
+>   - 2. Requête pour connaitre la correspondance entre `offre_id` et `competence_id` avant de faire des `INSERT INTO` pour la table de liaison `Offre_Competence`
+>   - 3. Conservation de l'offre la plus récente, si `competence_id` a évolué
+>
+>
+> - Même chose pour :
+>
+>   - `Experience` puis `Offre_Experience`
+>   - `Formation` puis `Offre_Formation`
+>   - `QualiteProfessionnelle` puis `Offre_QualiteProfessionnelle`
+>   - `Qualification` puis `Offre_Qualification`
+>   - `Langue` puis `Offre_Langue`
+>   - `PermisConduire` puis `Offre_PermisConduire`
 
 
 #### Task group "TRANSFORMATIONS"
 
-- `SQLExecuteQueryOperator()` qui exécutent les tâches suivantes : `update_descriptionoffre_metier_data_DE`, `update_descriptionoffre_metier_data_DA` et `update_descriptionoffre_metier_data_DS` en parallèle, puis `update_descriptionoffre_column_liste_mots_cles`.
-
-  - Les fichiers SQL associés sont dans le dossier `airflow/dags/sql`.
-
+> - `SQLExecuteQueryOperator()` qui exécutent les tâches suivantes : `update_descriptionoffre_metier_data_DE`, `update_descriptionoffre_metier_data_DA` et `update_descriptionoffre_metier_data_DS` en parallèle, puis `update_descriptionoffre_column_liste_mots_cles`.
+>
+>   - Les fichiers SQL associés sont dans le dossier `airflow/dags/sql`.
 
 
 ## Fréquence et durée
