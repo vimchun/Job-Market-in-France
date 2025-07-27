@@ -295,10 +295,10 @@ def execute_modified_sql_request_with_filters(
 
 
 def set_endpoints_filters_2(
-    offre_id: Optional[str] = Query(default="*joker*", description='"offre_id" sur 7 digits (laisser `*joker*` pour avoir une offre aléatoire)'),
+    offre_id: Optional[str] = Query(default="*JOKER*", description='"offre_id" sur 7 caractères alphanumériques (laisser `*JOKER*` pour avoir une offre aléatoire)'),
 ):
     if len(offre_id) != 7:
-        raise HTTPException(status_code=400, detail=f"'offre_id' doit être sur 7 digits.")
+        raise HTTPException(status_code=400, detail=f"'offre_id' doit être sur 7 caractères alphanumériques.")
 
     return offre_id
 
@@ -312,7 +312,7 @@ def get_attributes_for_a_specific_offer(filters: str = Depends(set_endpoints_fil
     offre_id = filters
 
     # on choisit un offre_id parmi ceux existant (grâce au fichier créé par le "DAG 1", tâche "A11")
-    if offre_id == "*joker*":
+    if offre_id == "*JOKER*":
         offres_ids_list = []
         with open("offers_ids.txt", "r") as file:
             for line in file:
