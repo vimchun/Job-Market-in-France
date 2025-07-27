@@ -4,7 +4,7 @@
 
 - L'objectif principal est d'analyser le marché du travail en France Métropolitaine à travers des offres d'emploi.
 
-- Avant de présenter le [sommaire](#sommaire), voici un résumé et aperçu de ce qui a été effectué à travers quelques `.gif` (⚠️ cette page peut prendre un certain temps à charger à cause de la taille des `.gif`) :
+- Avant de présenter le [sommaire](#sommaire), voici un résumé et aperçu de ce qui a été effectué à travers quelques `.gif` (⚠️ les `gif` peuvent prendre un certain temps à charger) :
 
   - Environnement dockerisé déployé avec `docker compose` :
 
@@ -177,16 +177,18 @@
 
 ### Urls des GUIs
 
+(cliquer sur une image pour la voir en plein écran)
+
   | Application       | Url (credentials)                                      | screenshots                                                                                                          |
   | ----------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
-  | FastAPI           | http://localhost:8000/docs                             | <img src="readme_files/screenshots/gui/fastapi.png" alt="screenshot fastapi" style="width:10%"/>                     |
-  | Airflow           | http://localhost:8080/ (airflow / airflow)             | <img src="readme_files/screenshots/gui/airflow.png" alt="screenshot airflow" style="width:10%"/>                     |
-  | StatsD Exporter   | http://localhost:9102/ + http://localhost:9102/metrics | <img src="readme_files/screenshots/gui/statsd-exporter.png" alt="screenshot statsd exporter" style="width:10%"/>     |
-  | Node Exporter     | http://localhost:9100/ + http://localhost:9100/metrics | <img src="readme_files/screenshots/gui/node-exporter.png" alt="screenshot node exporter" style="width:10%"/>         |
-  | Postgres Exporter | http://localhost:9187/ + http://localhost:9187/metrics | <img src="readme_files/screenshots/gui/postgres-exporter.png" alt="screenshot postgres exporter" style="width:10%"/> |
-  | cAdvisor          | http://localhost:8081/ + http://localhost:8081/metrics | <img src="readme_files/screenshots/gui/cadvisor.png" alt="screenshot cadvisor" style="width:10%"/>                   |
-  | Prometheus        | http://localhost:9092/ + http://localhost:9092/metrics | <img src="readme_files/screenshots/gui/prometheus.png" alt="screenshot prometheus" style="width:10%"/>               |
-  | Grafana           | http://localhost:3000/ (grafana / grafana)             | <img src="readme_files/screenshots/gui/grafana.png" alt="screenshot grafana" style="width:10%"/>                     |
+  | FastAPI           | http://localhost:8000/docs                             | <img src="readme_files/screenshots/gui/fastapi.png" alt="screenshot fastapi" style="width:20%"/>                     |
+  | Airflow           | http://localhost:8080/ (airflow / airflow)             | <img src="readme_files/screenshots/gui/airflow.png" alt="screenshot airflow" style="width:20%"/>                     |
+  | StatsD Exporter   | http://localhost:9102/ + http://localhost:9102/metrics | <img src="readme_files/screenshots/gui/statsd-exporter.png" alt="screenshot statsd exporter" style="width:20%"/>     |
+  | Node Exporter     | http://localhost:9100/ + http://localhost:9100/metrics | <img src="readme_files/screenshots/gui/node-exporter.png" alt="screenshot node exporter" style="width:20%"/>         |
+  | Postgres Exporter | http://localhost:9187/ + http://localhost:9187/metrics | <img src="readme_files/screenshots/gui/postgres-exporter.png" alt="screenshot postgres exporter" style="width:20%"/> |
+  | cAdvisor          | http://localhost:8081/ + http://localhost:8081/metrics | <img src="readme_files/screenshots/gui/cadvisor.png" alt="screenshot cadvisor" style="width:20%"/>                   |
+  | Prometheus        | http://localhost:9092/ + http://localhost:9092/metrics | <img src="readme_files/screenshots/gui/prometheus.png" alt="screenshot prometheus" style="width:20%"/>               |
+  | Grafana           | http://localhost:3000/ (grafana / grafana)             | <img src="readme_files/screenshots/gui/grafana.png" alt="screenshot grafana" style="width:20%"/>                     |
 
 
 ## Arborescence des fichiers du projet
