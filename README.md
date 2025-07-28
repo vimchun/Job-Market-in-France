@@ -2,7 +2,7 @@
 
 - Bienvenue sur mon projet, que j'ai réalisé seul entièrement, dans le cadre de ma formation `Data Engineer` chez Data Scientest en 2025.
 
-- L'objectif principal est d'analyser le marché du travail en France Métropolitaine à travers des offres d'emploi.
+- L'objectif principal est d'analyser les offres d'emploi en France Métropolitaine, en particulier concernant les offres de la tech, notamment pour les métiers `Data Analyst`, `Data Engineer` et `Data Scientist`.
 
 - Avant de présenter le [sommaire](#sommaire), voici un résumé et aperçu de ce qui a été effectué à travers quelques `.gif` (⚠️ les `gif` peuvent prendre un certain temps à charger) :
 
@@ -30,6 +30,8 @@
     <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/with_annotations/slideshow-grafana-5s--compressed.gif" alt="slideshow grafana gif" style="width:100%"/>
 
 
+- Pour voir la présentation du projet sous forme de slides, voir ce [powerpoint](powerpoint/presentation.pptx).
+
 
 # Sommaire
 
@@ -49,7 +51,7 @@
     - [Description du DAG 2](#description-du-dag-2)
 - [3. Création d'une API avec FastAPI](#3-création-dune-api-avec-fastapi)
 - [4. Data Viz avec Power BI](#4-data-viz-avec-power-bi)
-  - [Rapports](#rapports)
+  - [Rapports et analyses](#rapports-et-analyses)
 - [5. Monitoring avec Prometheus et Grafana](#5-monitoring-avec-prometheus-et-grafana)
   - [Prometheus](#prometheus)
   - [Grafana](#grafana)
@@ -76,7 +78,7 @@
 
   - `Windows 11` + `WSL2` avec `Ubuntu 22.04`
 
-    > Note : on n'utilise pas `Docker Desktop` mais `Docker CE dans WSL` car `cAdvisor` (Container Advisor) n'est pas opérationnel dans l'environnement `WSL` avec `Ubuntu 22.04` + `rocker Desktop`, voir [ici](readme_files/APPENDIX.md#Utilisation-de-Docker-CE-dans-WSL-pour-cAdvisor) pour les explications et pour la procédure d'installation de `Docker CE` dans `WSL`.
+    > Note importante : `Docker Desktop` utilisé au lieu de `Docker CE dans WSL` car `cAdvisor` (Container Advisor) n'est pas opérationnel dans l'environnement `WSL` avec `Ubuntu 22.04` + `Docker Desktop`, voir [ici](readme_files/APPENDIX.md#Utilisation-de-Docker-CE-dans-WSL-pour-cAdvisor) pour les explications et pour la procédure d'installation de `Docker CE` dans `WSL`.
 
   - `Python 3.12.9` (février 2025) avec environnement virtuel (formatteur `Ruff`).
 
@@ -182,13 +184,13 @@
   | Application       | Url (credentials)                                      | screenshots                                                                                                          |
   | ----------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
   | FastAPI           | http://localhost:8000/docs                             | <img src="readme_files/screenshots/gui/fastapi.png" alt="screenshot fastapi" style="width:20%"/>                     |
-  | Airflow           | http://localhost:8080/ (airflow / airflow)             | <img src="readme_files/screenshots/gui/airflow.png" alt="screenshot airflow" style="width:20%"/>                     |
+  | Airflow           | http://localhost:8080/ <br>(airflow / airflow)         | <img src="readme_files/screenshots/gui/airflow.png" alt="screenshot airflow" style="width:20%"/>                     |
   | StatsD Exporter   | http://localhost:9102/ + http://localhost:9102/metrics | <img src="readme_files/screenshots/gui/statsd-exporter.png" alt="screenshot statsd exporter" style="width:20%"/>     |
   | Node Exporter     | http://localhost:9100/ + http://localhost:9100/metrics | <img src="readme_files/screenshots/gui/node-exporter.png" alt="screenshot node exporter" style="width:20%"/>         |
   | Postgres Exporter | http://localhost:9187/ + http://localhost:9187/metrics | <img src="readme_files/screenshots/gui/postgres-exporter.png" alt="screenshot postgres exporter" style="width:20%"/> |
   | cAdvisor          | http://localhost:8081/ + http://localhost:8081/metrics | <img src="readme_files/screenshots/gui/cadvisor.png" alt="screenshot cadvisor" style="width:20%"/>                   |
   | Prometheus        | http://localhost:9092/ + http://localhost:9092/metrics | <img src="readme_files/screenshots/gui/prometheus.png" alt="screenshot prometheus" style="width:20%"/>               |
-  | Grafana           | http://localhost:3000/ (grafana / grafana)             | <img src="readme_files/screenshots/gui/grafana.png" alt="screenshot grafana" style="width:20%"/>                     |
+  | Grafana           | http://localhost:3000/ <br>(grafana / grafana)         | <img src="readme_files/screenshots/gui/grafana.png" alt="screenshot grafana" style="width:20%"/>                     |
 
 
 ## Arborescence des fichiers du projet
@@ -232,7 +234,7 @@
   │   ├── prometheus.yaml                        # fichier de conf
   │   └── statsd-mapping-configs.yaml            # fichier de conf
   │  
-  ├── readme_files/                              # contient `README_additional_notes.md` et d'autres fichiers (screenshots...)
+  ├── readme_files/                              # contient `README_additional_notes.md` et d'autres fichiers (screenshots, gif...)
   │  
   ├── scripts/                                   # contient des scripts bash
   │  
@@ -251,14 +253,14 @@
 ```bash
   .
   ├── airflow/
-  │   ├── requirements.txt             # dépendances nécessaires pour le Dockerfile
-  │   └── Dockerfile                   # construction du conteneur Airflow
+  │   ├── requirements.txt  # dépendances nécessaires pour le Dockerfile
+  │   └── Dockerfile        # construction du conteneur Airflow
   │  
   ├── fastapi/
-  │   ├── requirements.txt             # dépendances nécessaires pour le Dockerfile
-  │   └── Dockerfile                   # construction du conteneur FastAPI
+  │   ├── requirements.txt  # dépendances nécessaires pour le Dockerfile
+  │   └── Dockerfile        # construction du conteneur FastAPI
   │  
-  └── docker-compose.yml               # orchestration docker pour postgres + fastapi + les services Airflow
+  └── docker-compose.yml    # orchestration docker pour postgres + fastapi + les services Airflow
   ```
 
 
@@ -299,13 +301,13 @@
 
 - Toutefois, l'API retourne aussi énormément d'offres sans lien avec le métier renseigné en paramètre (par exemple, une requête renseignant l'appellation `Data Engineer` peut renvoyer une offre telle que `Product Owner` car les termes `Data Engineer` peuvent être présents dans la description de l'offre d'emploi).
 
-- On va requêter ainsi un large panel de métiers, dont 29 ayant un lien avec la data, et 32 ayant un lien avec les métiers de la tech (dev, sécurité, devops...), pour maximiser les chances d'obtenir le plus d'offres d'emploi ayant un lien avec les métiers `DE`, `DA` et `DS`, et aussi pour avoir une base de données plus conséquente.
+- Un large panel de métiers sera requêter, dont 29 ayant un lien avec la data, et 32 ayant un lien avec les métiers de la tech (dev, sécurité, devops...), pour maximiser les chances d'obtenir le plus d'offres d'emploi ayant un lien avec les métiers `DE`, `DA` et `DS`, et aussi pour avoir une base de données plus conséquente (elle pourrait être largement plus conséquente en ajoutant des offres d'autres métiers).
 
   - En effet, des offres de `Data Engineer` peuvent être présentes en requêtant l'appellation `Data Manager` par exemple.
 
-- On obtient finalement 61 fichiers json contenant toutes les offres d'emploi liées ou pas à la data, pour la France et DOM-TOM uniquement, l'API de France Travail ne renvoyant quasiment pas d'offre d'emploi pour les autres pays.
+- 61 fichiers json sont obtenus, contenant toutes les offres d'emploi liées ou pas à la data, pour la France et DOM-TOM uniquement, l'API de France Travail ne renvoyant quasiment pas d'offre d'emploi pour les autres pays.
 
-- Plusieurs transformations seront effectuées par la suite : [voir ici](#transformations-des-données-en-amont-côté-python).
+- Plusieurs transformations seront effectuées par la suite : [voir ici](#transformations-des-données)
 
 
 > Notes :
@@ -364,7 +366,7 @@
 
   - Pour créer et écrire l'attribut `metier_data` :
 
-    - Pour chaque offre, on comparera l'attribut `intitule_offre` avec des regex afin de déterminer s'il s'agit d'une offre pour un `Data Engineer`, un `Data Analyst`, ou un `Data Scientist`.
+    - Pour chaque offre, l'attribut `intitule_offre` sera comparé avec des regex afin de déterminer s'il s'agit d'une offre pour un `Data Engineer`, un `Data Analyst`, ou un `Data Scientist`.
 
     - [détails ici](readme_files/APPENDIX.md#attribut-metier_data)
 
@@ -399,7 +401,7 @@
 
   - Table de fait en vert
   - Tables de liaison en gris
-  - Tables de dimension en vert
+  - Tables de dimension en jaune
 
 
 - Le SGBD `PostgreSQL` sera utilisé :
@@ -722,7 +724,7 @@
 
 - L'interface finale se décline sous 3 tags :
 
-> Note : pour certaines réponses des endpoints, on utilisera la librairie `tabulate` avec `media_type="text/plain"` pour afficher un tableau qui facilitera la lecture, et qui diminuera le nombre de lignes des réponses, plutôt que d'afficher un `json`.
+> Note : pour certaines réponses des endpoints, la librairie `tabulate` sera utilisée avec `media_type="text/plain"` pour afficher un tableau qui facilitera la lecture, et qui diminuera le nombre de lignes des réponses, plutôt que d'afficher un `json`.
 
 
 ### Tag 1 : "Pour une seule offre d'emploi"
@@ -741,7 +743,7 @@
 
   - Endpoint `1-1` :
     - Paramètre obligatoire : `offre_id` (sur 7 caractères alphanumériques)
-      - Vaut par défaut `*JOKER*` (si on laisse ce string par défaut, le script va récupérer une offre au hasard, grâce au fichier `fastapi/offers_ids.txt` (généré par le `DAG 1`))
+      - Vaut par défaut `*JOKER*` (auquel cas le script va récupérer une offre au hasard, grâce au fichier `fastapi/offers_ids.txt` (généré par le `DAG 1`))
 
   - Endpoint `1-2` :
     - L'offre factice créée a des attributs prédéfinis.
@@ -852,7 +854,7 @@
 
 ## Manipulations
 
-- Ci-dessous des liens expliquant les différentes manipulations faites pour :
+- Ci-dessous des liens expliquant les différentes manipulations à faire (déjà faites pour le fichier `power_bi/project.pbix`) pour :
 
   - [connecter Power BI avec la db postgres](readme_files/APPENDIX.md#connexion-avec-la-db)
 
@@ -872,81 +874,96 @@
   <img src="readme_files/screenshots/power_bi/refresh.png" alt="refresh" style="width:100%"/>
 
 
-## Rapports
+## Rapports et analyses
 
 - Pour les sections suivantes, des `.gif` sont affichés pour ne pas mettre trop de screenshots dans cette page.
 
-- Si les images défilent trop rapidement, aller dans le dossier : [ici](readme_files/screenshots/power_bi/reports/) ou ouvrir la présentation dans le `Powerpoint` dans ce dossier : [ici](powerpoint/), partie 7.
+- Si les images défilent trop rapidement, aller dans le dossier : [ici](readme_files/screenshots/power_bi/reports/), ou ouvrir la présentation dans le `Powerpoint` dans ce dossier : [ici](powerpoint/), partie 6.
 
 
-- Les filtres disponibles pour tous les slides du projet sont :
-  - le filtre sur les métiers de la data `DA`, `DE` ou `DS` (`Metier_data` vaut `DA`, `DE` ou `DS` suivant les regex qui matchent dans l'intitulé d'une offre),
-  - le filtre sur les offres disponibles ou pas.
+- Plusieurs filtres sont disponibles pour tous les slides du projet `Power BI` :
+  - un filtre sur les offres disponibles uniquement,
+  - un filtre sur les métiers de la data `DA`, `DE` ou `DS` (issue d'une transformation faite avec SQL, l'attribut `Metier_data` vaut `DA`, `DE` ou `DS` suivant des regex qui ont été définies et qui matchent avec l'intitulé d'une offre),
+
+- Les sections suivantes exposeront l'analyse des offres `DA`, `DE` et `DS` uniquement.
 
 
 ### 1. Offres (all)
 
-  <img src="readme_files/screenshots/power_bi/reports/1--all-offers/1-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
+<img src="readme_files/screenshots/power_bi/reports/1--all-offers/1-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
-  - Graph 1 :
-    - [0 filtre] 3% des offres liées aux offres DA/DE/DS.
+<img src="readme_files/screenshots/power_bi/reports/1--all-offers/quadrant-from-pptx.PNG" alt="rapport" style="width:100%"/>
 
-  - [filtres DA/DE/DS] Les offres `DE` dominent, un peu moins d'offres `DA` et beaucoup moins d'offres en `DS`, ce qui confirme les analyses lues sur Linkedin, à savoir qu'il y a de moins en moins d'offres de `DS`, et de plus en plus d'offres de `DE`.
-  - [filtre dispo only] A peu près la même proportion des offres.
+- Graph en haut à droite :
+  - ~3% des offres sont des offres `DA`/`DE`/`DS`.
+  - Les offres `DE` dominent numériquement, suivis de près par les offres `DA` et on observe beaucoup moins d'offres `DS`.
+    - Cela semble confirmer des posts vus sur Linkedin, à savoir qu'il y a de moins en moins d'offres `DS`, au profil des offres `DE`.
+    - A peu près la même proportion des offres pour les offres disponibles uniquement (ici au 24/07/2025).
 
-
-  - Graph 2 :
-    - Les offres sont créés :
-      - le plus souvent en milieu de semaine,
-      - le moins souvent le lundi,
-      - même le week-end.
+- Graph en bas à droite :
+  - Les offres sont publiées :
+    - le plus souvent en milieu de semaine : `jeudi`, puis `mardi` ou `mercredi`,
+    - même le week-end : `samedi` et `dimanche`, ce qui est bon à savoir,
+    - le moins souvent : `lundi` et `dimanche` (normal, mais il y a quand même des offres publiées ce jour-là).
 
 
 ### 2. Compétences/expériences
 
-  <img src="readme_files/screenshots/power_bi/reports/2--competences-experiences/2-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
+<img src="readme_files/screenshots/power_bi/reports/2--competences-experiences/2-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
-  - Graph 1 (compétences) :
-    - Compétences "exigées" ou "souhaitées"
-    - [filtre DE + filtre exigé/souhaité] : C'est la compétence `Analyser, exploiter, structurer des données` qui arrive en tête.
+<img src="readme_files/screenshots/power_bi/reports/2--competences-experiences/quadrant-from-pptx.PNG" alt="rapport" style="width:100%"/>
 
-  - Graph 2 (expériences) :
-    - [filtre DE] Plus de moitié des offres acceptent les débutants.
+- Graph en haut (compétences) :
+  - Pour `DA` et `DS`, la compétence qui ressort nettement est `Adapter les outils de traitement statistique de données`.
+  - Pour `DE`, c'est la compétence `Analyser, exploiter, structurer des données` qui domine (c'est également la deuxième compétence pour `DA`).
+
+- Graph en bas (expériences) :
+  - Pour les 3 métiers, environ la moitié des offres d'emploi accepte les `débutants`.
 
 
 ### 3. Qualités/qualifications
 
-  <img src="readme_files/screenshots/power_bi/reports/3--qualites-qualifications/3-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
+<img src="readme_files/screenshots/power_bi/reports/3--qualites-qualifications/3-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
-  - Graph 1 (qualités pro) :
-    - [filtre DE + sans filtre] C'est les qualités professionnelles `Faire preuve d'autonomie` et `Faire preuve de rigueur et de précision` (aussi vrai pour les offres DE et pour toutes les offres confondues).
+<img src="readme_files/screenshots/power_bi/reports/3--qualites-qualifications/quadrant-from-pptx.PNG" alt="rapport" style="width:100%"/>
 
-  - Graph 2 (qualification) :
-    - [filtre DE + sans filtre] Les offres sont principalement pour les cadres, que ce soit pour les offres DE ou pour toutes les offres (rappel : ce sont des offres de la tech).
+- Graph en haut (qualités professionnelles) :
+  - Pour les 3 métiers, les deux qualités professionnelles qui reviennent le plus souvent et de loin sont `Faire preuve d'autonomie` et `Faire preuve de rigueur et de précision`.
+
+- Graph en bas (qualification) :
+  - Toujours pour les 3 métiers, les offres ciblent principalement les `cadres` et les `employés qualifiés`.
 
 
 ### 4. Localisation
 
-  <img src="readme_files/screenshots/power_bi/reports/4--location/4-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
+<img src="readme_files/screenshots/power_bi/reports/4--location/4-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
-  - Issue de transformations Python (avec la librairie `Geopy`)
+<img src="readme_files/screenshots/power_bi/reports/4--location/quadrant-from-pptx.PNG" alt="rapport" style="width:100%"/>
 
-  - 3 colonnes, de gauche à droite : par région, par département et par ville.
+- Données de localisation (région/département/ville) récupérées grâce à des transformations Python (avec la librairie `Geopy`).
 
-  - La région qui recrutent le plus : `IDF`, et le département/ville qui recrute le plus : `Paris` (vrai pour toutes offres et DE).
+- 3 colonnes, de gauche à droite : par région, par département et par ville.
+
+- Pour les 3 métiers :
+  - Les régions qui recrutent le plus : `IDF` de loin, suivie par `Auvergne-Rhônes-Alpes`.
+  - Les départements qui recrutent le plus : `Paris`, suivi par les `Hauts-de-Seine`.
+  - Les villes qui recrutent le plus : `Paris` de loin, suivi par `Lyon`.
 
 
 ### 5. Keywords
 
-  <img src="readme_files/screenshots/power_bi/reports/5--keywords/5-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
+<img src="readme_files/screenshots/power_bi/reports/5--keywords/5-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
-  - Issue d'une transformation SQL
+<img src="readme_files/screenshots/power_bi/reports/5--keywords/quadrant-from-pptx.PNG" alt="rapport" style="width:100%"/>
+
+
+- Encore une fois ici, ces graphs sont possibles grâce à une transformation, faite avec SQL, qui détecte les mots-clés dans la description des offres :
 
   - Pour chaque offre, si un mot-clé parmi la liste de strings prédéfinie ici[script](airflow/dags/sql/transformation_4_update__table_descriptionoffre__column__liste_mots_cles.sql), ce mot-clé sera ajouté dans l'attribut (qui est une liste).
   - Une transformation côté Power BI permet de splitter une offre sur x lignes si cette offre a x mots-clés dans la liste (voir détails [ici](readme_files/APPENDIX.md#attribut-liste-mots-clés)).
 
 
-  - [filtre DE et sans filtre] : on retrouve le trio tant cité sur Linkedin : `Python`, `SQL` et `Git`, et aussi `cloud`.
+- Pour les 3 métiers, les mots-clés qui reviennent le plus souvent dans les offres sont le trio souvent cité sur beaucoup de posts Linkedin : `SQL`, `Python`, et `Git`, et aussi `Cloud`.
 
 
 
@@ -981,15 +998,15 @@
 
 #### Utilité
 
-- Airflow envoie des métriques au format `StatsD`, et `StatsD` et de les exposer via un `statsd-exporter` configuré pour Prometheus.
+- Airflow envoie des métriques au format `StatsD` à `StatsD-exporter`.
 
-- `StatsD-exporter` reçoit des métriques formatées `StatsD`, et expose à Prometheus des métriques formatées `Prometheus`.
+- `StatsD-exporter` expose des métriques formatées `Prometheus`.
 
-- `Node-exporter` expose à Prometheus des métriques hardware et OS (notamment ce qui concerne cpu, ram, disque, etc...).
+- `Postgres-exporter` expose des métriques sur les bases de données dont celle de `francetravail`.
 
-- `Postgres-exporter` expose à Prometheus des métriques sur les bases de données dont celle de `francetravail`.
+- `Node-exporter` expose des métriques hardware et OS (notamment ce qui concerne cpu, ram, disque, etc...).
 
-- `cAdvisor` expose à Prometheus des métriques sur l'usage des ressources et les caractéristiques de performance des conteneurs docker en cours d'exécution.
+- `cAdvisor` expose des métriques sur l'usage des ressources et les caractéristiques de performance des conteneurs docker en cours d'exécution.
 
 
 #### Dump des métriques
@@ -1097,9 +1114,76 @@
 
 #### Dossier "mine"
 
-- Le dossier "mine" contient le dashboard `my dashboard` (`grafana/provisioning/dashboards/mine/my_dashboard.json`) contient uniquement des visualisations jugées utiles.
+- Le dossier "mine" contient le dashboard `my dashboard` (`grafana/provisioning/dashboards/mine/my_dashboard.json`) contient quelques visualisations de chaque target,car les dashboards téléchargés sont trop complets (avec beaucoup de visuels trop techniques), c’est donc un dashboard synthétique, mais pas exhaustif :
 
   <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/with_annotations/slideshow-grafana-5s--compressed.gif" alt="slideshow grafana gif" style="width:100%"/>
+
+
+
+### Analyses
+
+#### Quand les DAGs ne tournent pas
+
+> Les screenshots suivants sont pris sur une période de 3 heures où aucun DAG ne tournait :
+
+<img src="readme_files/screenshots/grafana/my_dashboard/no_activity/1-cadvisor.png" alt="analyse sans DAG" style="width:100%"/>
+
+  - Les 3 conteneurs qui prennent le plus de CPU sont des conteneurs d'Airflow : `dag-processor`, `triggerer` et le `worker`.
+
+  - Le conteneur qui prend le plus de mémoire est le conteneur `worker`, toujours d'Airflow.
+
+
+<img src="readme_files/screenshots/grafana/my_dashboard/no_activity/2-postgres-exporter.png" alt="analyse sans DAG" style="width:100%"/>
+
+<img src="readme_files/screenshots/grafana/my_dashboard/no_activity/dashboard_full_postgres.png" alt="analyse sans DAG" style="width:100%"/>
+
+  - A priori pas d'activité... je ne comprends pas pourquoi il y a de l'activité sur la base de données `francetravail`...
+
+
+<img src="readme_files/screenshots/grafana/my_dashboard/no_activity/3-statsd-exporter.png" alt="analyse sans DAG" style="width:100%"/>
+
+  - Le compteur des 2 DAGs n'a pas été incrémenté (normal), pas d'import de DAG en erreur.
+
+<img src="readme_files/screenshots/grafana/my_dashboard/no_activity/4-node-exporter.png" alt="analyse sans DAG" style="width:100%"/>
+
+  - RAS
+
+
+#### Quand les DAGs tournent pas
+
+<img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/with_annotations/0-airflow_dags_datetime.png" alt="analyse avec DAGs" style="width:100%"/>
+
+  - `DAG 1` ici a tourné entre 21h30 et 21h43 et `DAG 2` entre 21h43 et 21h51.
+    - Les screenshots suivants ont donc été pris entre 21h20 et 22h00.
+    - Pour rappel, `DAG 1` fait l'extraction des données, les transformations, écrit toutes les données dans un json, et `DAG 2` écrit les offres dans la base Postgres.
+
+
+<img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/with_annotations/1-cadvisor.png" alt="analyse avec DAGs" style="width:100%"/>
+
+  - Pendant le `DAG 1` et le `DAG 2`, le conteneur `worker` d'Airflow a consommé beaucoup de CPU.
+  - Pendant le `DAG 2`, c'est le conteneur `postgres` qui a consommé le plus de CPU.
+
+  - Le conteneur qui prend le plus de mémoire est le conteneur `worker` d'Airflow (pas de changement).
+
+
+<img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/with_annotations/2-postgres-exporter.png" alt="analyse avec DAGs" style="width:100%"/>
+<img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/without_annotation/dashboard_full_postgres.png" alt="analyse avec DAGs" style="width:100%"/>
+
+
+  - Pendant le `DAG 2`, on constate des `insert` et des `updates` dans la base, ce qui est cohérent.
+
+
+<img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/with_annotations/3-statsd-exporter.png" alt="analyse avec DAGs" style="width:100%"/>
+
+
+  - A la fin de `DAG 1`, le compteur de `DAG 1` est incrémenté (idem pour `DAG 2`).
+
+
+<img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/with_annotations/4-node-exporter.png" alt="analyse avec DAGs" style="width:100%"/>
+
+  - On constate un "trou" entre 21h31 et 21h33 dans les graphs `CPU Basic` et `Network Traffic Basic`, ce qui correspond au moment où les mapped tasks ont eu lieu (16 tâches en parallèle qui font des requêtes API pour récupérer les données).
+    - Cela a dû provoquer une surcharge.
+
 
 # 6. Conclusion
 
@@ -1122,14 +1206,12 @@
 
 ## Difficultés rencontrées
 
-- Les points suivants illustrent des difficultés auxquelles je me suis heurté mais que j'ai fini par résoudre.
-
-- La plupart de ces points étaient plus "facultatifs", mais j'ai trouvé qu'ils apportaient un plus au projet :
+- Les points suivants illustrent des difficultés auxquelles je me suis heurté mais que j'ai fini par résoudre :
 
   - environnement :
 
-    - conf docker compose, avec l'ajout de services au fur et à mesure du projet
-      - beaucoup de tests avant d'avoir une version fonctionnelle
+    - configuration du docker compose, avec l'ajout de services au fur et à mesure du projet
+      - beaucoup de déploiements et de tests avant d'aboutir à une version fonctionnelle
 
     - installation et utilisation de Airflow 3.0 (version majeure sortie au cours de ce projet)
       - j'aurais pu rester sur une version 2.11.0, mais j'ai trouvé pertinent de me mettre à jour
@@ -1146,18 +1228,18 @@
 
   - transformations :
 
-    - récupération de la localisation des offres d'emploi (noms et codes des villes, départements, départements et régions)
+    - algorithme pour récupérer le maximum d'informations de localisation des offres d'emploi (noms et codes des villes, départements, départements et régions), avec Python et la librairie `geopy`
       - détails [ici](readme_files/APPENDIX.md#attributs-de-localisation-des-offres-noms-et-codes-des-villes-communes-départements-et-régions)
 
 
 ## Evolutions possibles du projet
 
-- Le projet est fonctionnel, mais certaines features peuvent le rendre plus robustes ou plus intéressantes :
+- Le projet est fonctionnel.
 
-  - `Alert Manager`
+- Cependant, certaines features peuvent le rendre plus robustes ou plus intéressantes :
 
-  - `Github Actions`
+  - `Alert Manager` (pas très utile dans mon cas d'utilisation, car mon pc portable ne tourne pas en permanence)
 
-  - `Pytest`
+  - CI/CD avec `Github Actions` / `Pytest`
 
   - `DBT`
