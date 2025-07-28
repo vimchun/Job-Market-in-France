@@ -2,7 +2,7 @@
 
 - Bienvenue sur mon projet, que j'ai réalisé seul entièrement, dans le cadre de ma formation `Data Engineer` chez Data Scientest en 2025.
 
-- L'objectif principal est d'analyser les offres d'emploi en France Métropolitaine, en particulier concernant les offres de la tech, notamment pour les métiers `Data Analyst`, `Data Engineer` et `Data Scientist`.
+- L'objectif principal est d'analyser le marché à travers les offres d'emploi, en particulier concernant les offres de la tech, notamment pour les métiers de la data `Data Analyst`, `Data Engineer` et `Data Scientist`, en France Métropolitaine,
 
 - Avant de présenter le [sommaire](#sommaire), voici un résumé et aperçu de ce qui a été effectué à travers quelques `.gif` (⚠️ les `gif` peuvent prendre un certain temps à charger) :
 
@@ -55,6 +55,7 @@
 - [5. Monitoring avec Prometheus et Grafana](#5-monitoring-avec-prometheus-et-grafana)
   - [Prometheus](#prometheus)
   - [Grafana](#grafana)
+    - [Analyse quand les DAGs sont en cours d'exécution](#analyse-quand-les-dags-sont-en-cours-dexécution)
 - [6. Conclusion](#6-conclusion)
   - [Compétences techniques](#compétences-techniques)
   - [Difficultés rencontrées](#difficultés-rencontrées)
@@ -272,6 +273,8 @@
 
 - France Travail (https://francetravail.io/data/api) met à disposition plusieurs APIs, dont "Offres d'emploi v2" (`GET https://api.francetravail.io/partenaire/offresdemploi`).
 
+  - L'API est gratuite.
+
 - Le endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/offres/search` permet de récupérer les offres d'emploi actuelles selon plusieurs paramètres dont :
 
   - le code des appellations ROME pour filtrer par métier (codes récupérés à partir du endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/referentiel/appellations`) :
@@ -400,8 +403,8 @@
   <img src="readme_files/screenshots/drawio/UML.png" alt="diagramme UML" style="width:100%"/>
 
   - Table de fait en vert
-  - Tables de liaison en gris
   - Tables de dimension en jaune
+  - Tables de liaison en gris, pour quelques unes des tables de dimensionca
 
 
 - Le SGBD `PostgreSQL` sera utilisé :
@@ -894,13 +897,13 @@
 
 <img src="readme_files/screenshots/power_bi/reports/1--all-offers/quadrant-from-pptx.PNG" alt="rapport" style="width:100%"/>
 
-- Graph en haut à droite :
+- Donut en haut à droite :
   - ~3% des offres sont des offres `DA`/`DE`/`DS`.
   - Les offres `DE` dominent numériquement, suivis de près par les offres `DA` et on observe beaucoup moins d'offres `DS`.
     - Cela semble confirmer des posts vus sur Linkedin, à savoir qu'il y a de moins en moins d'offres `DS`, au profil des offres `DE`.
     - A peu près la même proportion des offres pour les offres disponibles uniquement (ici au 24/07/2025).
 
-- Graph en bas à droite :
+- Bargraph en bas à droite :
   - Les offres sont publiées :
     - le plus souvent en milieu de semaine : `jeudi`, puis `mardi` ou `mercredi`,
     - même le week-end : `samedi` et `dimanche`, ce qui est bon à savoir,
@@ -913,12 +916,12 @@
 
 <img src="readme_files/screenshots/power_bi/reports/2--competences-experiences/quadrant-from-pptx.PNG" alt="rapport" style="width:100%"/>
 
-- Graph en haut (compétences) :
+- Bargraph en haut (compétences) :
   - Pour `DA` et `DS`, la compétence qui ressort nettement est `Adapter les outils de traitement statistique de données`.
   - Pour `DE`, c'est la compétence `Analyser, exploiter, structurer des données` qui domine (c'est également la deuxième compétence pour `DA`).
 
-- Graph en bas (expériences) :
-  - Pour les 3 métiers, environ la moitié des offres d'emploi accepte les `débutants`.
+- Donut en bas (expériences) :
+  - Pour les 3 métiers, plus de la moitié des offres d'emploi acceptent les `débutants`.
 
 
 ### 3. Qualités/qualifications
@@ -927,10 +930,10 @@
 
 <img src="readme_files/screenshots/power_bi/reports/3--qualites-qualifications/quadrant-from-pptx.PNG" alt="rapport" style="width:100%"/>
 
-- Graph en haut (qualités professionnelles) :
+- Bargraph en haut (qualités professionnelles) :
   - Pour les 3 métiers, les deux qualités professionnelles qui reviennent le plus souvent et de loin sont `Faire preuve d'autonomie` et `Faire preuve de rigueur et de précision`.
 
-- Graph en bas (qualification) :
+- Bargraph en bas (qualification) :
   - Toujours pour les 3 métiers, les offres ciblent principalement les `cadres` et les `employés qualifiés`.
 
 
@@ -1114,47 +1117,23 @@
 
 #### Dossier "mine"
 
-- Le dossier "mine" contient le dashboard `my dashboard` (`grafana/provisioning/dashboards/mine/my_dashboard.json`) contient quelques visualisations de chaque target,car les dashboards téléchargés sont trop complets (avec beaucoup de visuels trop techniques), c’est donc un dashboard synthétique, mais pas exhaustif :
+- Le dossier "mine" contient le dashboard `my_dashboard` (`grafana/provisioning/dashboards/mine/my_dashboard.json`) contient quelques visualisations de chaque target,car les dashboards téléchargés sont trop complets (avec beaucoup de visuels trop techniques).
+  - C’est donc un dashboard synthétique, mais évidemment non exhaustif :
 
-  <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/with_annotations/slideshow-grafana-5s--compressed.gif" alt="slideshow grafana gif" style="width:100%"/>
-
-
-
-### Analyses
-
-#### Quand les DAGs ne tournent pas
-
-> Les screenshots suivants sont pris sur une période de 3 heures où aucun DAG ne tournait :
-
-<img src="readme_files/screenshots/grafana/my_dashboard/no_activity/1-cadvisor.png" alt="analyse sans DAG" style="width:100%"/>
-
-  - Les 3 conteneurs qui prennent le plus de CPU sont des conteneurs d'Airflow : `dag-processor`, `triggerer` et le `worker`.
-
-  - Le conteneur qui prend le plus de mémoire est le conteneur `worker`, toujours d'Airflow.
+    <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/with_annotations/slideshow-grafana-5s--compressed.gif" alt="slideshow grafana gif" style="width:100%"/>
 
 
-<img src="readme_files/screenshots/grafana/my_dashboard/no_activity/2-postgres-exporter.png" alt="analyse sans DAG" style="width:100%"/>
 
-<img src="readme_files/screenshots/grafana/my_dashboard/no_activity/dashboard_full_postgres.png" alt="analyse sans DAG" style="width:100%"/>
-
-  - A priori pas d'activité... je ne comprends pas pourquoi il y a de l'activité sur la base de données `francetravail`...
-
-
-<img src="readme_files/screenshots/grafana/my_dashboard/no_activity/3-statsd-exporter.png" alt="analyse sans DAG" style="width:100%"/>
-
-  - Le compteur des 2 DAGs n'a pas été incrémenté (normal), pas d'import de DAG en erreur.
-
-<img src="readme_files/screenshots/grafana/my_dashboard/no_activity/4-node-exporter.png" alt="analyse sans DAG" style="width:100%"/>
-
-  - RAS
-
-
-#### Quand les DAGs tournent pas
+### Analyse quand les DAGs sont en cours d'exécution
 
 <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/with_annotations/0-airflow_dags_datetime.png" alt="analyse avec DAGs" style="width:100%"/>
 
   - `DAG 1` ici a tourné entre 21h30 et 21h43 et `DAG 2` entre 21h43 et 21h51.
     - Les screenshots suivants ont donc été pris entre 21h20 et 22h00.
+
+      <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/time-window-grafana.png" alt="analyse avec DAGs" style="width:100%"/>
+
+
     - Pour rappel, `DAG 1` fait l'extraction des données, les transformations, écrit toutes les données dans un json, et `DAG 2` écrit les offres dans la base Postgres.
 
 
@@ -1243,3 +1222,8 @@
   - CI/CD avec `Github Actions` / `Pytest`
 
   - `DBT`
+
+  - Appli plus "convivial" que swagger (streamlit ?)
+
+  - Même projet mais sur le `cloud` ?
+
