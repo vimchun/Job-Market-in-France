@@ -20,7 +20,7 @@ x-airflow-common:
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://mhh:mhh@postgres/francetravail
     AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://mhh:mhh@postgres/francetravail
     AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
-    AIRFLOW__CORE__FERNET_KEY: ***REMOVED***  # indispensable, car sinon ie on verra dans la page "Connections" l'erreur "500 Internal Server Error"
+    AIRFLOW__CORE__FERNET_KEY: "${AIRFLOW__CORE__FERNET_KEY}"
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: True
     AIRFLOW__CORE__LOAD_EXAMPLES: False
     AIRFLOW__CORE__EXECUTION_API_SERVER_URL: http://airflow-apiserver:8080/execution/
