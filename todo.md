@@ -2,63 +2,42 @@
 
 ### à voir après soutenance (28/07/2025)
 
-  - alert manager
+  - `Alert Manager` (pas très utile dans mon cas d'utilisation, car mon pc portable ne tourne pas en permanence)
 
-  - github actions (dossier .workflow)
+  - CI/CD avec `Github Actions` / `Pytest`
 
-  - pytest
+  - `DBT`
 
-  - mettre en place dbt
+  - Appli plus "conviviale" que swagger (streamlit ?)
+
+  - Configurer `Power BI` pour exploiter les APIs ?
+
+  - Même projet mais sur le `cloud` ?
 
 
 ### P0
 
-  - fastapi idées :
-
-    - tag : pour une offre:
-
-      - création offre
-        - id offre obligatoire, mais doit être unique
-
-      - suppression offre
-
-      - afficher 10 premières offres DE / DA... dispo ou pas... => ajout url
-
-
-
-  - remplir tables : ajout url pour postuler
-
-        "origineOffre": {
-            "origine": "2",
-            "urlOrigine": "https://candidat.francetravail.fr/offres/recherche/detail/9635836",
-        }
-
+  - données sensibles du "docker compose" à part
 
 
 ### P1
 
-  - pb avec `airflow\dags\sql\transformation_4_update__table_contrat__columns__salaire_min__salaire_max.sql`
-  => n'écrit rien dans les colonnes ?
-  => résolu par la suppression des leading/trailing " ???
-
-
-  - grafana : ajouter les locks/conflicts de postgres
+  - fastapi : gérer les cas d'erreur
 
   - airflow : activer les dags au démarrage après un reboot (possible ?)
 
   - mettre description_offre de la table descriptionoffre dans un fichier à part (trop gros)
 
+
 ### P2
 
-  - script pour générer le rapport en pdf à partir des .md (avec modifs des urls)
+  - fastapi : sécurité fastapi
 
   - pb pbi avec certaines villes mal situées (ex: Buc pas en IDF)
 
   - DAG 2 => option pour ne prendre en compte que les dernières offres (pour que le script tourne plus vite)
 
   - attribut `liste_mots_cles` : faisabilité regex sur le mot entier (exemple si on cherche le langage `R`)
-
-  - renommer les fichiers sql en anglais ?
 
   - airflow : utiliser log au lieu de print ?
         log.info("") au lieu de print ?
@@ -70,6 +49,8 @@
 
 
 ### P3
+
+  - renommer les fichiers sql en anglais ?
 
   - pour la partie 1 :
     - Fichier en format tableau avec le nom de la source, la technique utilisée, un échantillon des données
