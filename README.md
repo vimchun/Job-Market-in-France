@@ -2,7 +2,7 @@
 
 - Bienvenue sur mon projet, que j'ai réalisé seul entièrement, dans le cadre de ma formation `Data Engineer` chez Data Scientest en 2025.
 
-- L'objectif principal est d'analyser le marché à travers les offres d'emploi, en particulier concernant les offres de la tech, notamment pour les métiers de la data `Data Analyst`, `Data Engineer` et `Data Scientist`, en France Métropolitaine,
+- L'objectif principal est d'analyser le marché à travers les offres d'emploi, en particulier concernant les offres de la tech, notamment pour les métiers de la data `Data Analyst`, `Data Engineer` et `Data Scientist`, en France Métropolitaine.
 
 - Avant de présenter le [sommaire](#sommaire), voici un résumé et aperçu de ce qui a été effectué à travers quelques `.gif` (⚠️ les `gif` peuvent prendre un certain temps à charger) :
 
@@ -61,6 +61,8 @@
   - [Difficultés rencontrées](#difficultés-rencontrées)
   - [Evolutions possibles du projet](#evolutions-possibles-du-projet)
 
+
+> Notes : Dans ce projet, il n'y a pas de partie Machine Learning, car j'en avais déjà fait lors de mon projet "Data Analyst", donc peu d'intérêt pour moi...
 
 - Pour ne pas surcharger cette page principale, une seconde page avec des informations supplémentaires moins essentielles est disponible [ici](readme_files/APPENDIX.md#readme-secondaire).
 
@@ -396,7 +398,7 @@
   - Seuls les attributs liés aux `contacts` et aux `agences` ne seront pas conservés, n'apportant pas d'utilité.
 
 
-- Pour la suite, une modélisation `snowflake` est utilisée, permettant ainsi de réduire la redondance des données.
+- Pour la suite, une modélisation `snowflake` (modélisation en flocon de neige) est utilisée, avec notamment des tables de liaison  qui permettent de réduire la redondance des données.
 
 - Le diagramme UML est le suivant :
 
@@ -417,6 +419,8 @@
 - La base de données `francetravail` sera hébergée dans le conteneur Docker exécutant le service PostgreSQL.
 
 - Les données issues du json généré avec le `DAG 1` seront récupérées et écrites en base avec la librairie `psycopg2`.
+
+> Notes : Je n'utilise pas `mongodb`, car comme démontré dans ce projet, `SQL` est une compétence beaucoup plus demandée par les recruteurs. C'est donc plus un choix stratégique.
 
 
 ### Mise à jour de la base de données après récupération de nouvelles offres
@@ -479,7 +483,9 @@
 
 ## Description des DAGs
 
-- Ci-dessous le nom d'une `tâche` avec une description.
+<img src="readme_files/screenshots/airflow/graphs_dags_1_2_from_pptx.png" alt="graph du DAG 1" style="width:100%"/>
+
+- Ci-dessous la description des 2 DAGs, avec pour chaque groupe : le nom d'une `tâche` avec une description.
 
 - Pour alléger le texte, on écrira :
 
@@ -1223,7 +1229,8 @@
 
   - `DBT`
 
-  - Appli plus "convivial" que swagger (streamlit ?)
+  - Appli plus "conviviale" que swagger (streamlit ?)
+
+  - Configurer `Power BI` pour exploiter les APIs ?
 
   - Même projet mais sur le `cloud` ?
-
