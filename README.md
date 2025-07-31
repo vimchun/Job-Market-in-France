@@ -2,7 +2,7 @@
 
 - Bienvenue sur mon projet, que j'ai réalisé seul entièrement, dans le cadre de ma formation `Data Engineer` chez Data Scientest en 2025.
 
-- L'objectif principal est d'analyser le marché à travers les offres d'emploi, en particulier concernant les offres de la tech, notamment pour les métiers de la data `Data Analyst`, `Data Engineer` et `Data Scientist`, en France Métropolitaine.
+- L'objectif est d'analyser le marché des offres d'emploi de la tech, notamment pour les métiers de la data `Data Analyst`, `Data Engineer` et `Data Scientist`, en France Métropolitaine.
 
 - Avant de présenter le [sommaire](#sommaire), voici un résumé et aperçu de ce qui a été effectué à travers quelques `.gif` (⚠️ les `gif` peuvent prendre un certain temps à charger) :
 
@@ -62,7 +62,7 @@
   - [Evolutions possibles du projet](#evolutions-possibles-du-projet)
 
 
-> Notes : Dans ce projet, il n'y a pas de partie Machine Learning, car j'en avais déjà fait lors de mon projet "Data Analyst", donc peu d'intérêt pour moi...
+> Notes : Dans ce projet, il n'y a pas de partie Machine Learning, car j'en avais déjà fait lors de mon projet "Data Analyst", donc peu d'intérêt ici...
 
 - Pour ne pas surcharger cette page principale, une seconde page avec des informations supplémentaires moins essentielles est disponible [ici](readme_files/APPENDIX.md#readme-secondaire).
 
@@ -203,9 +203,9 @@
 ```bash
   .
   ├── _archives/                                 # fichiers archivés non importants
-  │   └── notebooks/                             # fichiers notebooks qui ont servi pour créer les scripts
+  │   └── notebooks/                             # fichiers notebooks pour exploration qui ont servi pour créer les scripts
   │
-  ├── .venv/                                     # environnements virtuels
+  ├── .venv/                                     # environnement virtuel
   │
   ├── airflow/                                   # application Airflow
   │   ├── dags/                                  # contient "DAG 1", "DAG 2", et un dossier contenant des scripts sql pour les transformations
@@ -275,7 +275,7 @@
 
 - France Travail (https://francetravail.io/data/api) met à disposition plusieurs APIs, dont "Offres d'emploi v2" (`GET https://api.francetravail.io/partenaire/offresdemploi`).
 
-  - L'API est gratuite.
+  > L'API est gratuite.
 
 - Le endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/offres/search` permet de récupérer les offres d'emploi actuelles selon plusieurs paramètres dont :
 
@@ -310,7 +310,7 @@
 
   - En effet, des offres de `Data Engineer` peuvent être présentes en requêtant l'appellation `Data Manager` par exemple.
 
-- 61 fichiers json sont obtenus, contenant toutes les offres d'emploi liées ou pas à la data, pour la France et DOM-TOM uniquement, l'API de France Travail ne renvoyant quasiment pas d'offre d'emploi pour les autres pays.
+- 62 fichiers json sont obtenus, contenant toutes les offres d'emploi liées ou pas à la data, pour la France et DOM-TOM uniquement, l'API de France Travail ne renvoyant quasiment pas d'offre d'emploi pour les autres pays.
 
 - Plusieurs transformations seront effectuées par la suite : [voir ici](#transformations-des-données)
 
@@ -331,16 +331,16 @@
 
 ### Pas d'autre source de données ?
 
-- Il existe de multiples sources de données sur les offres d'emploi (par exemple : `The Muse` ou `Adzuna`).
+- Il existe de multiples sources de données sur les offres d'emploi (par exemple : API de `The Muse` ou `Adzuna`).
 
 - Les raisons pour lesquelles on ne garde que la source de `France Travail` sont les suivantes :
 
   - ~60 attributs pour chaque offre d'emploi récupérée chez `France Travail` vs ~10 chez `The Muse` ou `Adzuna`
 
-  - Impossible de traiter si une même offre est disponible entre deux sources (identifiant différent, url différent), donc impossible de merger les offres venant de ces différentes sources, sauf si avoir des doublons n'est pas un problème, ce qui n'est pas le cas sur ce projet où on se focalisera sur un jeu de données propre sans doublon.
+  - Impossible de savoir si une même offre est disponible entre deux sources (identifiant différent, url différent), donc impossible de merger les offres venant de ces différentes sources sans être certain d'avoir des données sans doublon inter-sources.
 
   - Identifiants des offres :
-    - "France Travail" : id sur 7 caractères alphanumériques
+    - "France Travail" : sur 7 caractères alphanumériques
     - "Adzuna" : sur 10 digits
     - "The Muse" : 7 ou 8 digits
 
@@ -352,7 +352,7 @@
 
 - Ces transformations sont faites dans le `DAG 1`, faites via Python et en amont du chargement dans la base Postgres :
 
-  - Concaténation des 61 fichiers json dans un seul fichier json, avec suppression des doublons
+  - Concaténation des 62 fichiers json dans un seul fichier json, avec suppression des doublons
 
   - Conservation des offres en France Métropolitaine uniquement, [détails ici](readme_files/APPENDIX.md#conservation-des-offres-en-France-Métropolitaine-uniquement).
 
@@ -378,7 +378,9 @@
 
   - Pour créer et écrire l'attribut `liste_mots_cles` :
 
-    - Pour chaque offre, si un mot-clé parmi la liste de strings prédéfinie ici[script](airflow/dags/sql/transformation_4_update__table_descriptionoffre__column__liste_mots_cles.sql), ce mot-clé sera ajouté dans l'attribut (qui est une liste).
+    - Pour chaque offre, si un mot-clé parmi la liste de strings prédéfinie [ici](airflow/dags/sql/transformation_4_update__table_descriptionoffre__column__liste_mots_cles.sql) est présent dans la description, ce mot-clé sera ajouté dans l'attribut (qui est une liste).
+
+    - Cet attribut sera traité à postériori par Power BI (voir [ici](#5-keywords)).
 
 
 > Note :
@@ -536,7 +538,7 @@
 >
 > - `S2_load_appellations_yaml_file` :
 >
->   - Chargement du fichier yaml avec les 61 métiers de la tech.
+>   - Chargement du fichier yaml avec les 62 métiers de la tech.
 >
 >
 > - `S2_get_creds_from_yaml_file` puis `S2_get_token` :
@@ -551,7 +553,7 @@
 > - `A1_get_offers` :
 >
 >   - Récupération et écriture des offres d'emploi dans des fichiers json dans le `dossier_A` [requests] + vérification de la validité des fichiers json.
->   - Le fichier yaml décrivant 61 métiers, Airflow exécute ici 61 `mapped tasks` en parallèle.
+>   - Le fichier yaml décrivant 62 métiers, Airflow exécute ici 62 `mapped tasks` en parallèle.
 >
 >
 > - `A2_all_json_in_one` :
@@ -709,7 +711,7 @@
 
 - Le `DAG 1` (qui déclenche le `DAG 2`) est exécuté tous les jours à 21h30 :
 
-    <img src="readme_files/screenshots/airflow/frequency.png" alt="fréquence" style="width:100%"/>
+    <img src="readme_files/screenshots/airflow/frequency.png" alt="fréquence" style="width:50%"/>
 
 - `DAG 1` prend 10-15 minutes d'exécution, et `DAG 2` en prend 5-10 :
 
@@ -771,7 +773,7 @@
   <img src="readme_files/screenshots/fastapi/responses/1-1b.png" alt="screenshot fastapi" style="width:100%"/>
   <img src="readme_files/screenshots/fastapi/responses/1-2.png" alt="screenshot fastapi" style="width:100%"/>
   <img src="readme_files/screenshots/fastapi/responses/1-3.png" alt="screenshot fastapi" style="width:100%"/>
-  <img src="readme_files/screenshots/fastapi/responses/1-4.png.png" alt="screenshot fastapi" style="width:100%"/>
+  <img src="readme_files/screenshots/fastapi/responses/1-4.png" alt="screenshot fastapi" style="width:100%"/>
 
 
 
@@ -836,7 +838,7 @@
 
 - Pour certains endpoints des 2 premiers tags, il est possible de filtrer par `metier_data`, sur les offres disponibles et par code région/département/ville/insee (d'où l'utilité du troisième tag) :
 
-  <img src="readme_files/screenshots/fastapi/filters.png" alt="filtres" style="width:100%"/>
+  <img src="readme_files/screenshots/fastapi/filters.png" alt="filtres" style="width:30%"/>
 
 
 ## Configuration Fastapi
@@ -880,7 +882,7 @@
 
 - Après une exécution du pipeline ETL (c'est-à-dire après exécution des 2 DAGs Airflow), il suffit d'ouvrir le projet Power BI (`power_bi/project.pbix`), et de cliquer sur l'item `Refresh` :
 
-  <img src="readme_files/screenshots/power_bi/refresh.png" alt="refresh" style="width:100%"/>
+  <img src="readme_files/screenshots/power_bi/refresh.png" alt="refresh" style="width:50%"/>
 
 
 ## Rapports et analyses
@@ -997,7 +999,7 @@
 
 - Exemple de requête PromQL qui renvoie les conteneurs docker :
 
-  <img src="readme_files/screenshots/prometheus/cAdvisor.png" alt="cAdvisor opérationnel" style="width:30%"/>
+  <img src="readme_files/screenshots/prometheus/cadvisor.png" alt="cAdvisor opérationnel" style="width:30%"/>
 
 
 ### Métriques exposées par les différents services
@@ -1137,13 +1139,15 @@
   - `DAG 1` ici a tourné entre 21h30 et 21h43 et `DAG 2` entre 21h43 et 21h51.
     - Les screenshots suivants ont donc été pris entre 21h20 et 22h00.
 
-      <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/time-window-grafana.png" alt="analyse avec DAGs" style="width:100%"/>
+      <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/time-window-grafana.png" alt="analyse avec DAGs" style="width:30%"/>
 
 
     - Pour rappel, `DAG 1` fait l'extraction des données, les transformations, écrit toutes les données dans un json, et `DAG 2` écrit les offres dans la base Postgres.
 
 
 <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/with_annotations/1-cadvisor.png" alt="analyse avec DAGs" style="width:100%"/>
+
+  - On voit bien qu'il y a 14 conteneurs en cours d'exécution.
 
   - Pendant le `DAG 1` et le `DAG 2`, le conteneur `worker` d'Airflow a consommé beaucoup de CPU.
   - Pendant le `DAG 2`, c'est le conteneur `postgres` qui a consommé le plus de CPU.
@@ -1155,7 +1159,7 @@
 <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/without_annotation/dashboard_full_postgres.png" alt="analyse avec DAGs" style="width:100%"/>
 
 
-  - Pendant le `DAG 2`, on constate des `insert` et des `updates` dans la base, ce qui est cohérent.
+  - Pendant le `DAG 2`, on constate des `insert` et des `updates` dans la base, ce qui est cohérent avec le rôle de `DAG 2`.
 
 
 <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/with_annotations/3-statsd-exporter.png" alt="analyse avec DAGs" style="width:100%"/>
@@ -1167,7 +1171,7 @@
 <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/with_annotations/4-node-exporter.png" alt="analyse avec DAGs" style="width:100%"/>
 
   - On constate un "trou" entre 21h31 et 21h33 dans les graphs `CPU Basic` et `Network Traffic Basic`, ce qui correspond au moment où les mapped tasks ont eu lieu (16 tâches en parallèle qui font des requêtes API pour récupérer les données).
-    - Cela a dû provoquer une surcharge.
+    - Cela a dû provoquer une surcharge au niveau réseau.
 
 
 # 6. Conclusion
@@ -1195,26 +1199,21 @@
 
   - environnement :
 
-    - configuration du docker compose, avec l'ajout de services au fur et à mesure du projet
-      - beaucoup de déploiements et de tests avant d'aboutir à une version fonctionnelle
+    - configuration du docker compose, avec l'ajout de services au fur et à mesure du projet : beaucoup de déploiements et de tests avant d'aboutir à une version fonctionnelle
 
-    - installation et utilisation de Airflow 3.0 (version majeure sortie au cours de ce projet)
-      - j'aurais pu rester sur une version 2.11.0, mais j'ai trouvé pertinent de me mettre à jour
+    - installation et utilisation de Airflow 3.0 (version majeure sortie au cours de ce projet) : j'aurais pu rester sur une version 2.11.0, mais j'ai trouvé pertinent de me mettre à jour
 
-    - utilisation de `cAdvisor`, non fonctionnel avec `Docker Desktop`
-      - détails [ici](readme_files/APPENDIX.md#utilisation-de-docker-ce-dans-wsl-pour-cAdvisor)
+    - utilisation de `cAdvisor`, non fonctionnel avec `Docker Desktop` : détails [ici](readme_files/APPENDIX.md#utilisation-de-docker-ce-dans-wsl-pour-cAdvisor)
 
 
   - récupération des données :
 
-    - algorithme pour mettre à jour le fichier json avec les nouvelles offres
-      - détails [ici](readme_files/APPENDIX.md#concaténation-spéciale-entre-le-json-existant-et-le-nouveau-json)
+    - algorithme pour mettre à jour le fichier json avec les nouvelles offres : détails [ici](readme_files/APPENDIX.md#concaténation-spéciale-entre-le-json-existant-et-le-nouveau-json)
 
 
   - transformations :
 
-    - algorithme pour récupérer le maximum d'informations de localisation des offres d'emploi (noms et codes des villes, départements, départements et régions), avec Python et la librairie `geopy`
-      - détails [ici](readme_files/APPENDIX.md#attributs-de-localisation-des-offres-noms-et-codes-des-villes-communes-départements-et-régions)
+    - algorithme pour récupérer le maximum d'informations de localisation des offres d'emploi (noms et codes des villes, départements, départements et régions), avec Python et la librairie `geopy` : détails [ici](readme_files/APPENDIX.md#attributs-de-localisation-des-offres-noms-et-codes-des-villes-communes-départements-et-régions)
 
 
 ## Evolutions possibles du projet
