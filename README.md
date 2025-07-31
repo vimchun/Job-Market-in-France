@@ -838,7 +838,7 @@
 
 - Pour certains endpoints des 2 premiers tags, il est possible de filtrer par `metier_data`, sur les offres disponibles et par code région/département/ville/insee (d'où l'utilité du troisième tag) :
 
-  <img src="readme_files/screenshots/fastapi/filters.png" alt="filtres" style="width:30%"/>
+  <img src="readme_files/screenshots/fastapi/filters.png" alt="filtres" style="width:50%"/>
 
 
 ## Configuration Fastapi
@@ -882,7 +882,7 @@
 
 - Après une exécution du pipeline ETL (c'est-à-dire après exécution des 2 DAGs Airflow), il suffit d'ouvrir le projet Power BI (`power_bi/project.pbix`), et de cliquer sur l'item `Refresh` :
 
-  <img src="readme_files/screenshots/power_bi/refresh.png" alt="refresh" style="width:50%"/>
+  <img src="readme_files/screenshots/power_bi/refresh.png" alt="refresh" style="width:70%"/>
 
 
 ## Rapports et analyses
@@ -970,7 +970,8 @@
 
 - Encore une fois ici, ces graphs sont possibles grâce à une transformation, faite avec SQL, qui détecte les mots-clés dans la description des offres :
 
-  - Pour chaque offre, si un mot-clé parmi la liste de strings prédéfinie ici[script](airflow/dags/sql/transformation_4_update__table_descriptionoffre__column__liste_mots_cles.sql), ce mot-clé sera ajouté dans l'attribut (qui est une liste).
+  - Pour chaque offre, si un mot-clé parmi la liste de strings prédéfinie [ici](airflow/dags/sql/transformation_4_update__table_descriptionoffre__column__liste_mots_cles.sql) est présent dans la description, ce mot-clé sera ajouté dans l'attribut (qui est une liste).
+
   - Une transformation côté Power BI permet de splitter une offre sur x lignes si cette offre a x mots-clés dans la liste (voir détails [ici](readme_files/APPENDIX.md#attribut-liste-mots-clés)).
 
 
@@ -990,7 +991,7 @@
 
 - Lorsqu'on se connecte sur la [GUI](http://localhost:9092/) de Prometheus, on doit voir que l'état de chaque target est à `UP`, comme le montre dans le screenshot suivant :
 
-  <img src="readme_files/screenshots/prometheus/targets.png" alt="prometheus targets" style="width:60%"/>
+  <img src="readme_files/screenshots/prometheus/targets.png" alt="prometheus targets" style="width:80%"/>
 
 
 ### Configuration Docker pour cAdvisor
@@ -999,12 +1000,12 @@
 
 - Exemple de requête PromQL qui renvoie les conteneurs docker :
 
-  <img src="readme_files/screenshots/prometheus/cadvisor.png" alt="cAdvisor opérationnel" style="width:30%"/>
+  <img src="readme_files/screenshots/prometheus/cadvisor.png" alt="cAdvisor opérationnel" style="width:50%"/>
 
 
 ### Métriques exposées par les différents services
 
-- Les métriques citées ci-dessous traduisent la liste des commandes qu'on peut taper sur la barre `Expression` sur la [GUI de Prometheus](http://localhost:9092/graph).
+- Les métriques citées ci-dessous traduisent la liste des commandes disponibles sur la barre `Expression` sur la [GUI de Prometheus](http://localhost:9092/graph).
 
 
 #### Utilité
@@ -1083,7 +1084,7 @@
 
 - Le datasource `Prometheus` est créée automatiquement grâce au fichier `grafana/provisioning/datasources/datasources.yml` (dossier monté dans le conteneur `grafana` sous `/grafana/provisioning/datasources/datasources.yml`), comme montré ici :
 
-  <img src="readme_files/screenshots/grafana/datasource_prometheus.png" alt="datasource Prometheus dans Grafana" style="width:30%"/>
+  <img src="readme_files/screenshots/grafana/datasource_prometheus.png" alt="datasource Prometheus dans Grafana" style="width:50%"/>
 
 
 #### Import automatique après installation
@@ -1094,7 +1095,7 @@
 
 - Les dashboards placés dans `grafana/provisioning/dashboards/` sont également importés automatiquement.
 
-  <img src="readme_files/screenshots/grafana/dashboards_folder.png" alt="dossier dashboards" style="width:50%"/>
+  <img src="readme_files/screenshots/grafana/dashboards_folder.png" alt="dossier dashboards" style="width:70%"/>
 
 
 > Note : Grafana peut recharger le contenu du dossier après un redémarrage du conteneur : `docker compose restart grafana`.
@@ -1139,7 +1140,7 @@
   - `DAG 1` ici a tourné entre 21h30 et 21h43 et `DAG 2` entre 21h43 et 21h51.
     - Les screenshots suivants ont donc été pris entre 21h20 et 22h00.
 
-      <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/time-window-grafana.png" alt="analyse avec DAGs" style="width:30%"/>
+      <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/time-window-grafana.png" alt="analyse avec DAGs" style="width:50%"/>
 
 
     - Pour rappel, `DAG 1` fait l'extraction des données, les transformations, écrit toutes les données dans un json, et `DAG 2` écrit les offres dans la base Postgres.
