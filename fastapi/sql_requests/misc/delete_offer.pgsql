@@ -1,0 +1,12 @@
+DELETE FROM OffreEmploi WHERE offre_id = %s;
+DELETE FROM Contrat WHERE offre_id = %s;
+DELETE FROM Entreprise WHERE offre_id = %s;
+DELETE FROM Localisation WHERE offre_id = %s;
+DELETE FROM DescriptionOffre WHERE offre_id = %s;
+DELETE FROM Offre_Competence WHERE offre_id = %s;
+DELETE FROM Offre_Experience WHERE offre_id = %s;
+DELETE FROM Offre_Formation WHERE offre_id = %s;
+DELETE FROM Offre_QualiteProfessionnelle WHERE offre_id = %s;
+DELETE FROM Offre_Qualification WHERE offre_id = %s;
+DELETE FROM Offre_Langue WHERE offre_id = %s;
+DELETE FROM Offre_PermisConduire WHERE offre_id = %s;

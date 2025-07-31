@@ -35,6 +35,7 @@ x-airflow-common:
     - ./airflow/dags:/opt/airflow/dags
     - ./airflow/data:/opt/airflow/data
     - ./airflow/logs:/opt/airflow/logs
+    - ./fastapi:/opt/airflow/fastapi  # pour permettre à la tâche "A11" du "DAG 1" de pouvoir écrire dans le dossier local fastapi (liste des "offre_id")
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
@@ -83,8 +84,8 @@ services:
       - DB_PASSWORD=mhh
     volumes:
       # utile en mode dev (montage de volumes pour ne pas avoir à relancer docker-compose après chaque modif)
-      - ./fastapi:/app  # pour avoir le "main.py" et tous les fichiers pgsql (que je modifie régulièrement en mode dev)
-      - ./airflow/data/resources:/app/locations_information
+      - ./fastapi:/app  # pour avoir le "main.py" et tous les fichiers pgsql (modifiés régulièrement en mode dev)
+      - ./airflow/data/resources/code_name__city_department_region.csv:/app/code_name__city_department_region.csv
     depends_on:
       - postgres
 

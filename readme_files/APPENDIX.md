@@ -1,23 +1,27 @@
 # README secondaire
 
-Cette page complète la [page principale](../README.md#introduction).
+- Cette page donne des détails complémentaires à la [page principale](../README.md#présentation-du-projet).
 
-Le sommaire de cette page est aligné à celui de la page principale, à savoir :
+- Le sommaire de cette page est aligné à celui de la page principale ([ici](../README.md#sommaire)), à savoir (avec les sous-sections principales) :
 
   - [1. Environnement](#1-Environnement)
-  - [3. Transformations des données](#3-Transformations-des-données)
-  - [4. Chargement des données dans une base de données relationnelle](#4-Chargement-des-données-dans-une-base-de-données-relationnelle)
-  - [5. Data Viz avec Power BI](#5-Data-Viz-avec-Power-BI)
-  - [7. Workflow du projet avec Airflow](#7-Workflow-du-projet-avec-Airflow)
-  - [8. Prometheus](#8-Prometheus)
-  - [9. Grafana](#9-Grafana)
+    - [Utilisation de Docker CE dans WSL pour cAdvisor](#utilisation-de-docker-ce-dans-wsl-pour-cadvisor)
+    - [Services Docker](#services-docker)
+  - [2. ETL avec Airflow](#2-etl-avec-airflow)
+    - [Transformations des données](Transformations-des-données)
+    - [Chargement des données dans une base de données relationnelle](#chargement-des-données-dans-une-base-de-données-relationnelle)
+    - [Airflow](#airflow)
+  - [4. Data Viz avec Power BI](#4-Data-Viz-avec-Power-BI)
+  - [5. Monitoring avec Prometheus et Grafana](#5-monitoring-avec-prometheus-et-grafana)
+    - [Prometheus](#Prometheus)
+    - [Grafana](#Grafana)
 
 
 # 1. Environnement
 
 ## Utilisation de Docker CE dans WSL pour cAdvisor
 
-- Développant sur Windows 11 et WSL avec Ubuntu 22.04, pour que cAdvisor soit fonctionnel, il faut :
+- Sur `Windows 11` et `WSL2` avec `Ubuntu 22.04`, pour que `cAdvisor` soit fonctionnel, il faut :
 
   - Activer `docker CE` sur WSL :
     - la procédure est décrite [ici](#Installer-et-utiliser-Docker-CE-dans-WSL).
@@ -28,7 +32,7 @@ Le sommaire de cette page est aligné à celui de la page principale, à savoir 
 
 ### Pourquoi utiliser Docker CE
 
-- C'est pour avoir nativement un environnement Docker pur Linux, contrôlé par `systemd`, parfaitement compatible avec `cAdvisor`.
+- C'est pour avoir nativement un environnement Docker pur Linux, contrôlé par `systemd` et donc compatible avec `cAdvisor`.
 
 - En effet, `cAdvisor` a notamment besoin pour fonctionner d'avoir accès à `/var/lib/docker/image/overlay2/layerdb/mounts/<conteneur_id>/mount-id`, sinon on a le problème décrit [ici](#Problème-avec-Docker-Desktop).
   - Ce dossier existe nativement avec `Docker CE`.
@@ -37,7 +41,7 @@ Le sommaire de cette page est aligné à celui de la page principale, à savoir 
 
 ### Problème avec Docker Desktop
 
-- En utilisant `Docker Desktop` uniquement, tous les services Docker de ce projet sont fonctionnels sauf `cAdvisor`, qui affichent notamment les logs d'erreur suivants au démarrage :
+- En utilisant `Docker Desktop` uniquement, tous les services Docker du projet sont fonctionnels sauf `cAdvisor`, qui affichent notamment les logs d'erreur suivants au démarrage :
 
 ```bash
   docker logs cadvisor
@@ -47,16 +51,16 @@ Le sommaire de cette page est aligné à celui de la page principale, à savoir 
   ##==> ...
 ```
 
-  - Le problème `open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/<conteneur_id>/mount-id: no such file or directory` avec `Docker Desktop` est connu et remonté à travers ce ticket : https://github.com/vacp2p/wakurtosis/issues/58.
+  - L'erreur `open /rootfs/var/lib/docker/image/overlayfs/layerdb/mounts/<conteneur_id>/mount-id: no such file or directory` avec `Docker Desktop` est connue et remontée à travers ce ticket : https://github.com/vacp2p/wakurtosis/issues/58.
 
     - Pour le contourner, certaines forums proposent de faire un montage sur `\\wsl$\docker-desktop-data\data\docker` mais ce dossier n'existe pas sur la distribution `Ubuntu 22.04`, et faire un montage avec le dossier existant `\\wsl.localhost\docker-desktop\mnt\docker-desktop-disk\data\docker` ne fonctionne pas non plus car il n'y a pas le fichier `mount-id`.
 
-- La section [suivante](#Installer-et-utiliser-Docker-CE-dans-WSL) présente la procédure complète pour installer `Docker CE` dans WSL2 Ubuntu 22.04 avec systemd.
+- La section [suivante](#Installer-et-utiliser-Docker-CE-dans-WSL) présente la procédure complète pour installer `Docker CE` dans `WSL2 Ubuntu 22.04` avec `systemd`.
 
 
 ### Installer et utiliser Docker CE dans WSL
 
-1. Activer systemd dans WSL2, puis redémarrer WSL avec PowerShell :
+1. Activer `systemd` dans `WSL2`, puis redémarrer WSL avec PowerShell :
 
 ```bash
   vi /etc/wsl.conf
@@ -110,9 +114,9 @@ Le sommaire de cette page est aligné à celui de la page principale, à savoir 
 5. Configuration de l'utilisateur :
 
 ```bash
-# Ajouter l'utilisateur au groupe docker
-sudo usermod -aG docker $USER
-```
+  # Ajouter l'utilisateur au groupe docker
+  sudo usermod -aG docker $USER
+  ```
 
 ```powershell
   wsl --shutdown  # avec powershell
@@ -133,7 +137,6 @@ sudo usermod -aG docker $USER
     ##==>      Active: active (running) since Thu 2025-07-10 10:07:48 CEST; 1min 18s ago             <== c'est bon
     ##==>        ...
 ```
-
 
 7. Désactiver la variable `DOCKER_HOST`, souvent utilisée pour pointer vers `Docker Desktop` :
 
@@ -179,10 +182,10 @@ Cette section montre les commandes pour retrouver les versions des différents s
 
   # Redis
   docker exec -it redis redis-server --version
-    ##==> Redis server v=8.0.2 sha=00000000:1 malloc=jemalloc-5.3.0 bits=64 build=e26b76554fc1ebea
+    ##==> Redis server v=8.0.3 sha=00000000:1 malloc=jemalloc-5.3.0 bits=64 build=680cac7fe8eb957c
 
   # Airflow
-  # 3.0.2 (défini dans "airflow/Dockerfile")
+  # 3.0.3 (défini dans "airflow/Dockerfile")
 
   # Statsd-exporter
   docker run --rm --entrypoint statsd_exporter prom/statsd-exporter --version
@@ -211,9 +214,9 @@ Cette section montre les commandes pour retrouver les versions des différents s
 
   # Prometheus
   docker exec -it prometheus prometheus --version
-    ##==> prometheus, version 2.53.5 (branch: HEAD, revision: d344ea7bf4cc9e9e131a0318d10025982e9c4cc1)
-    ##==>   build user:       root@31e33add4c49
-    ##==>   build date:       20250630-10:18:05
+    ##==> prometheus, version 3.5.0 (branch: HEAD, revision: 8be3a9560fbdd18a94dedec4b747c35178177202)
+    ##==>   build user:       root@4451b64cb451
+    ##==>   build date:       20250714-16:15:23
     ##==>   ...
 
   # Grafana
@@ -221,11 +224,14 @@ Cette section montre les commandes pour retrouver les versions des différents s
     ##==> Version 12.0.2 (commit: 5bda17e7c1cb313eb96266f2fdda73a6b35c3977, branch: HEAD)
 ```
 
-# 3. Transformations des données
 
-## Transformations des données en amont (côté Python)
+# 2. ETL avec Airflow
 
-### Conservation des offres en France Métropolitaine uniquement
+## Transformations des données
+
+### Transformations des données en amont (côté Python)
+
+#### Conservation des offres en France Métropolitaine uniquement
 
 - On va dans ce projet se focaliser sur les offres en France Métropolitaine.
 
@@ -236,7 +242,7 @@ Cette section montre les commandes pour retrouver les versions des différents s
   - L'attribut `libelle` donne l'information lorsque qu'une offre se retrouve dans le `cas_3` (voir partie ci-dessous), c'est-à-dire lorsque `libelle` est de la forme "<département> - <nom_du_département>", par exemple : `971 - Guadeloupe`, `974 - Réunion`, `2A - Corse du Sud`, `2B - BASTIA`.
 
 
-### Attributs de localisation des offres (noms et codes des villes, communes, départements et régions)
+#### Attributs de localisation des offres (noms et codes des villes, communes, départements et régions)
 
 - Le screenshot suivant (issu du fichier `step_1__location_cases.xlsx`) résume la partie décrite ci-dessous :
 
@@ -272,7 +278,7 @@ Cette section montre les commandes pour retrouver les versions des différents s
 - Pour catégoriser les offres, on va écrire pour chacune des offres si elle est dans le `cas_1`, dans le `cas_2`, etc... dans une colonne dédiée (`lieu_cas`).
 
 
-#### Cas_1 : "code_insee" renseigné
+##### Cas_1 : "code_insee" renseigné
 
 - Dans ce cas, on peut récupérer la ville, le département, et la région.
 
@@ -283,13 +289,13 @@ Cette section montre les commandes pour retrouver les versions des différents s
   - si `code_insee = NAN`, alors `code_postal = NAN` aussi (donc la colonne code_postal n'est pas utile pour retrouver la ville)
 
 
-##### Ajout des attributs de localisation
+###### Ajout des attributs de localisation
 
 - On a donc le code commune.
 - A partir du fichier `codes_city_department_region_names.csv`, on ajoute la ville, le département, et la région.
 
 
-#### Cas_2 : "code_insee = NAN" (dans ce cas "code_postal = NAN"), mais coordonnées GPS renseignées
+##### Cas_2 : "code_insee = NAN" (dans ce cas "code_postal = NAN"), mais coordonnées GPS renseignées
 
 - Dans ce cas, on peut récupérer la ville, le département, et la région.
 
@@ -321,7 +327,7 @@ Cette section montre les commandes pour retrouver les versions des différents s
       - si oui, on inversera la valeur de la latitude avec la valeur de la longitude.
 
 
-##### Ajout des attributs de localisation
+###### Ajout des attributs de localisation
 
 - La librairie `geopy` permet de retrouver plusieurs informations (`city`, `city_district`, `postcode`, `suburb`, `municipality`, `state`, `town`...), mais tous ces attributs ne sont pas toujours disponibles...
   - En revanche, l'information qui semble toujours être retourné est le code postal.
@@ -346,20 +352,20 @@ Cette section montre les commandes pour retrouver les versions des différents s
 
 
 
-#### Cas_3 : "code_postal = code_insee = latitude = longitude = NAN", mais "libelle = 'numéro_département - nom_département'"
+##### Cas_3 : "code_postal = code_insee = latitude = longitude = NAN", mais "libelle = 'numéro_département - nom_département'"
 
 - Dans ce cas, on ne peut pas retrouver la ville, mais on peut retrouver le département, et par conséquent la région.
 
   - Sur le json archivé, c'est le cas pour 804 offres sur 13 639, soit 5.89% des offres.
 
 
-##### Ajout des attributs de localisation
+###### Ajout des attributs de localisation
 
 - Dans ce cas, on a par exemple `libelle = 75 - Paris (Dept.)`, donc on va extraire le code du département dans la colonne `code_departement`, et récupérer `nom_departement`, `code_region` et `nom_region` à partir du fichier `code_name__city_department_region.csv`.
 
 
 
-#### Cas_4 : "code_postal = code_insee = latitude = longitude = NAN", mais "libelle = nom_région"
+##### Cas_4 : "code_postal = code_insee = latitude = longitude = NAN", mais "libelle = nom_région"
 
 - Dans ce cas, on a que la région, et on ne peut donc pas avoir la ville ni le département.
 
@@ -369,13 +375,13 @@ Cette section montre les commandes pour retrouver les versions des différents s
 - A noter que le nom de la région n'est pas toujours homogène, par exemple, on peut avoir "Ile-de-France" et "Île-de-France" (i avec ou sans accent circonflexe), ce qui est traité dans le script.
 
 
-##### Ajout des attributs de localisation
+###### Ajout des attributs de localisation
 
 Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code_name__city_department_region.csv`.
 
 
 
-#### Cas_5 : "code_postal = code_insee = latitude = longitude = NAN", et "libelle = ("FRANCE"|"France"|"France entière")"
+##### Cas_5 : "code_postal = code_insee = latitude = longitude = NAN", et "libelle = ("FRANCE"|"France"|"France entière")"
 
 - C'est le cas le plus défavorable qui ne permet pas de retrouver la ville, le département ni la région.
 
@@ -385,9 +391,9 @@ Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code
 - On pourrait aller plus loin, et tenter de retrouver l'information dans l'intitulé ou la description de l'offre d'emploi, mais on ne le fera pas ici.
 
 
-## Transformations des données en aval (côté SQL)
+### Transformations des données en aval (côté SQL)
 
-### Attribut "metier_data"
+#### Attribut "metier_data"
 
 - Pour identifier les offres de "Data Engineer" parmi toutes les offres récupérées, le premier réflexe serait de filtrer sur le rome_code `M1811` qui correspond à `Data engineer`, mais on se rend compte que les offres d'emploi associées ne sont pas toutes liées à ce poste.
 
@@ -397,9 +403,9 @@ Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code
 - L'attribut `intitule_offre` de la table `DescriptionOffre` sera donc utilisé pour filtrer les offres voulues (ici : `Data Engineer`, `Data Analyst` et `Data Scientist`) grâce à des requêtes qui utilisent des regex, écrivant la valeur `DE`, `DA`, `DS` dans l'attribut `metier_data` (voir `airflow/dags/sql`).
 
 
-### Attributs "salaire_min" et "salaire_max"
+#### Attributs "salaire_min" et "salaire_max"
 
-#### Contexte
+##### Contexte
 
 - Pour écrire ces attributs qui donnent les salaires minimum et maximum annuels, on se base sur l'attribut `salaire_libelle`, qui n'est pas toujours renseigné.
 
@@ -427,7 +433,7 @@ Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code
   - `Horaire de 11.88 Euros sur 12 mois`
 
 
-#### Hypothèses
+##### Hypothèses
 
 - Comme on n'est pas certain si les salaires indiqués sont mensuels ou annuels (à cause des erreurs des recruteurs), on va prendre les hypothèses suivantes :
   - salaire mensuel ∈ [1 666, 12 500]
@@ -445,7 +451,7 @@ Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code
       - Data Analyst H/F: `Annuel de 45000,00 Euros à 550000,00 Euros` (45k - 550k)
 
 
-#### Algorithme
+##### Algorithme
 
 - Pour les transformations, on va considérer les cas suivants.
 
@@ -546,7 +552,7 @@ Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code
 
 
 
-#### Exemples d'offres réelles avec les salaires qu'on fixe
+##### Exemples d'offres réelles avec les salaires qu'on fixe
 
 
 | offre_id | intitule_offre                         | salaire_libelle                              | get_salaire_min | get_salaire_max | cas                | sous-cas                                    | salaire_min | salaire_max |
@@ -565,11 +571,11 @@ Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code
 - A noter aussi que les salaires des offres en alternance seront exclues ici car leur salaire est très majoritairement inférieur au seuil minimum qu'on a défini ici.
 
 
-# 4. Chargement des données dans une base de données relationnelle
+## Chargement des données dans une base de données relationnelle
 
-## Mise à jour de la base de données après récupération de nouvelles offres
+### Mise à jour de la base de données après récupération de nouvelles offres
 
-### Evolution de "qualification_code"
+#### Evolution de "qualification_code"
 
 - Certaines offres voient la valeur de l'attribut `qualification_code` évoluer, par exemple :
 
@@ -612,7 +618,7 @@ pour ne garder que le `qualification_code` le plus récent si 1 offre_id est pr�
 - Il faut donc ajouter `date_extraction` dans la table `offre_qualification`.
 
 
-### Evolution de "experienceExige" et "experienceLibelle"
+#### Evolution de "experienceExige" et "experienceLibelle"
 
 Même problématique avec certaines offres qui voient la valeur de l'attribut `experienceExige` et leur `experienceLibelle` évoluer, par exemple :
 
@@ -623,7 +629,7 @@ Même problématique avec certaines offres qui voient la valeur de l'attribut `e
     - lors de `date_extraction = 2025-04-05` : `experienceExige = D` et `experienceLibelle = Débutant accepté` (par exemple `experience_id = 2`)
 
 
-## Concaténation spéciale entre le json existant et le nouveau json
+### Concaténation spéciale entre le json existant et le nouveau json
 
 - A la fin du `DAG 1`, une concaténation spéciale a lieu entre le json exitant (qu'on appelle `json_A` pour simplifier) et le nouveau json (`json_B`).
 
@@ -646,161 +652,9 @@ Même problématique avec certaines offres qui voient la valeur de l'attribut `e
   <img src="screenshots/drawio/db_update.png" alt="db_update" style="width:100%"/>
 
 
-# 5. Data Viz avec Power BI
+## Airflow
 
-## Connexion avec la db
-
-Voici les items sur lesquels il faut cliquer :
-  (cf https://learn.microsoft.com/fr-fr/power-query/connectors/postgresql)
-
-- `Blank report`
-
-- `Get data` > `PostgreSQL database` > `connect`
-
-  - fenêtre `PostgreSQL database` :
-    - `Server : localhost`
-    - `Database : francetravail`
-    - `Data Connectivity mode : Import`
-      - Notes :
-        - Import → Charge toutes les données en mémoire de Power BI.
-        - DirectQuery → Interroge PostgreSQL en temps réel sans stocker les données localement.
-    - `Advanced options` : pas touché
-
-  - fenêtre `localhost;francetravail` :
-    - `User name : mhh`
-    - `Password : mhh`
-    - `Select which level to apply these settings to : localhost`
-
-
-  - fenêtre `Encryption Support` :
-
-    - `We were unable to connect to the data source using an encrypted connection. To access this data source using an unencrypted connection, click OK.` => On valide.
-
-  - fenêtre `Navigator`, où on peut sélectionner les 19 tables.
-
-    - On sélectionne tout, puis `Load`.
-
-      - fenêtre `Processing Queries` (Determining automatic transformations...)
-
-        - On peut `Skip`, ce qu'on va faire après une dizaine de minutes, car ça bloque sur la table `formation` (pourtant, toutes les autres tables sont bien validées, et on arrive bien à voir le contenu de la table `formation` par une requête sql)
-
-        - Note : on n'a pas cette fenêtre la deuxième fois (Power BI avait crashé quand j'ai voulu sauvegardé la première fois)
-
-          - fenêtre `Load` (qui finit par bien aboutir)
-
-
-## Model view
-
-- Onglet `model view` : on voit bien les 19 tables, on doit refaire les liens créés automatiquement.
-
-  - On procède comme le diagramme UML qu'on a défini (voir `load_sql/UML.drawio`)
-
-
-- On masque les colonnes non utilisées.
-
-- Paramétrer `Cross-filter direction = Both` pour certains liens est nécessaire pour la data viz.
-
-
-
-## Table view
-
-- Création de la table de date
-
-- Création de colonnes :
-  - Date Différence = DATEDIFF('Offre Emploi'[Date Création], 'Offre Emploi'[Date Actualisation], DAY)
-
-
-## Transformations
-
-### Renommage de toutes les colonnes
-
-- C'est juste pour Power BI.
-
-- On renomme les colonnes avoir des noms plus facile à lire dans les rapports comme :
-
-  - `Offre ID` (au lieu de `offre_id`)
-  - `Durée Travail Libellé` (au lieu de `duree_travail_libelle`)
-
-
-### Attribut "Liste Mots-Clés"
-
-- Exemple de valeur pour une offre : `{etl,git,"power bi",python,sql,tableau}`
-
-- On supprime les accolades et les guillemets.
-  - ce qui donne pour l'exemple : `etl,git,power bi,python,sql,tableau`
-
-- On éclate la colonne en faisant `Split Column` > `By delimiter` (Split into Rows)
-  - l'offre est donc splittée sur 6 lignes avec un seul mot-clé dans la colonne `Liste Mots Clés`
-
-
-### Ajout de variables avec le nom des villes, départements et région modifiés pour la data viz
-
-#### Ajout de la variable "Nom Ville Modifié"
-
-- Dans le `report view` / carte mondiale, on a des villes françaises qui sont situées dans d'autres pays, par exemple :
-
-  - offre_id = `2083056` dans la ville `Cologne` (code postal 32 430) en région Occitanie, département Gers  => placé en Allemagne (NOK, car on est censé avoir que des offres en France)
-
-    <img src="screenshots/power_bi/city_Cologne_in_Germany.png" alt="Cologne en Allemagne" style="width:40%"/>
-
-
-  - offre_id = `2757953` dans la ville `La Réunion` (code postal 47 700) en région Nouvelle-Aquitaine, département Lot-et-Garonne  => placé en France (OK)
-
-    <img src="screenshots/power_bi/city_Cologne_in_France.png" alt="Cologne en France" style="width:40%"/>
-
-- Comme vu dans le dernier screenshot, pour avoir les villes placées en France, on définit une colonne `Nom Ville Modifié` avec le nom de la ville suffixé avec `, France` (par exemple `Cologne, France`).
-
-
-#### Ajout de la variable "Nom Département Modifié"
-
-- Même chose pour le département de la `Lot` qui est placé en Lituanie, on ajoute une colonne qui suffixera le nom du département avec `, France` :
-
-  - Département `Lot` en Lituanie :
-
-    <img src="screenshots/power_bi/department_Lot_in_Lithuania.png" alt='Département "Lot" en Lituanie' style="width:40%"/>
-
-  - Département `Lot` en France :
-
-    <img src="screenshots/power_bi/department_Lot_in_France.png" alt='Département "Lot" en France' style="width:40%"/>
-
-
-#### Ajout de la variable "Nom Région Modifié"
-
-- Quand on affiche la carte du monde avec les régions de la France, on constate que 2 régions (la Bretagne et l'Occitanie) ne sont pas complètement coloriées comme les autres régions :
-
-  - pour la Bretagne :
-
-    <img src="screenshots/power_bi/region_Bretagne_KO.png" alt="Bretagne non colorié entièrement" style="width:20%"/>
-
-  - pour l'Occitanie :
-
-    <img src="screenshots/power_bi/region_Occitanie_KO.png" alt="Occitanie non colorié entièrement" style="width:20%"/>
-
-- Changer le `Data category` (à `County` ou `State or Province`) résout le problème pour l'Occitanie mais pas la Bretagne.
-
-- Le contournement est d'ajouter une colonne, où on préfixera le nom de la région de `Région d('|de|du|des)` en fonction des régions, par exemple :
-
-  - `Région d'Île-de-France`
-  - `Région de Normandie`
-  - `Région des Hauts-de-France`
-  - `Région du Grand Est`
-
-- A noter qu'il y a une exception pour `Région Bourgogne-Franche-Comté` (pas de `de`).
-
-- Cela résout bien le problème de colorisation :
-
-  - pour la Bretagne :
-
-    <img src="screenshots/power_bi/region_Bretagne_OK.png" alt="Bretagne colorié entièrement" style="width:20%"/>
-
-  - pour l'Occitanie :
-
-    <img src="screenshots/power_bi/region_Occitanie_OK.png" alt="Occitanie colorié entièrement" style="width:20%"/>
-
-
-# 7. Workflow du projet avec Airflow
-
-## Clé fernet
+### Clé fernet
 
 - Une clé doit être générée pour la clé `AIRFLOW__CORE__FERNET_KEY` du fichier de configuration d'Airflow (aussi disponible dans le fichier `docker-compose.yml`).
 
@@ -810,7 +664,7 @@ Voici les items sur lesquels il faut cliquer :
 ```
 
 
-## SQLExecuteQueryOperator vs PostgresOperator avec Airflow 3.0
+### SQLExecuteQueryOperator vs PostgresOperator avec Airflow 3.0
 
 - `PostgresOperator` est deprecated au profil de `SQLExecuteQueryOperator` avec la version `apache-airflow-providers-postgres` utilisée (6.1.3).
 
@@ -853,7 +707,7 @@ Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6
   ```
 
 
-## Problème d'import du fichier DAG trop lent
+### Problème d'import du fichier DAG trop lent
 
 - L'erreur suivante avait été remontée car l'import du DAG avait pris plus de 30 secondes :
 
@@ -934,11 +788,166 @@ Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6
 ```
 
 
-# 8. Prometheus
+# 4. Data Viz avec Power BI
 
-## StatsD Exporter
+## Connexion avec la db
 
-### Métriques disponibles de StatsD Exporter
+- Voici les items sur lesquels il faut cliquer (cf https://learn.microsoft.com/fr-fr/power-query/connectors/postgresql) :
+
+  - `Blank report`
+
+  - `Get data` > `PostgreSQL database` > `connect`
+
+    - fenêtre `PostgreSQL database` :
+      - `Server : localhost`
+      - `Database : francetravail`
+      - `Data Connectivity mode : Import`
+        - Notes :
+          - Import → Charge toutes les données en mémoire de Power BI.
+          - DirectQuery → Interroge PostgreSQL en temps réel sans stocker les données localement.
+      - `Advanced options` : pas touché
+
+    - fenêtre `localhost;francetravail` :
+      - `User name : mhh`
+      - `Password : mhh`
+      - `Select which level to apply these settings to : localhost`
+
+
+    - fenêtre `Encryption Support` :
+
+      - `We were unable to connect to the data source using an encrypted connection. To access this data source using an unencrypted connection, click OK.` => On valide.
+
+    - fenêtre `Navigator`, où on peut sélectionner les 19 tables.
+
+      - On sélectionne tout, puis `Load`.
+
+        - fenêtre `Processing Queries` (Determining automatic transformations...)
+
+          - On peut `Skip`, ce qu'on va faire après une dizaine de minutes, car ça bloque sur la table `formation` (pourtant, toutes les autres tables sont bien validées, et on arrive bien à voir le contenu de la table `formation` par une requête sql)
+
+          - Note : on n'a pas cette fenêtre la deuxième fois (Power BI avait crashé quand j'ai voulu sauvegardé la première fois)
+
+            - fenêtre `Load` (qui finit par bien aboutir)
+
+
+## Model view
+
+- Onglet `model view` : on voit bien les 19 tables, on doit refaire les liens créés automatiquement.
+
+  - On procède comme le diagramme UML qu'on a défini (voir `load_sql/UML.drawio`)
+
+
+- On masque les colonnes non utilisées.
+
+- Paramétrer `Cross-filter direction = Both` pour certains liens est nécessaire pour la data viz.
+
+
+
+## Table view
+
+- Création de la table de date
+
+- Création de colonnes :
+  - Date Différence = DATEDIFF('Offre Emploi'[Date Création], 'Offre Emploi'[Date Actualisation], DAY)
+
+
+## Transformations
+
+### Renommage de toutes les colonnes
+
+- C'est juste pour Power BI.
+
+- On renomme les colonnes avoir des noms plus facile à lire dans les rapports comme :
+
+  - `Offre ID` (au lieu de `offre_id`)
+  - `Durée Travail Libellé` (au lieu de `duree_travail_libelle`)
+
+
+### Attribut "Liste Mots-Clés"
+
+- Exemple de valeur pour une offre : `{cloud,git,linux,python}`
+
+  - On supprime les accolades et les guillemets : `cloud,git,linux,python`
+
+  - On éclate la colonne en faisant `Split Column` > `By delimiter` (Split into Rows)
+
+  - L'offre est donc splittée sur 4 lignes avec un seul mot-clé dans la colonne `Liste Mots Clés`
+
+  <img src="screenshots/power_bi/keywords_PQ.png" alt="db_update" style="width:100%"/>
+
+
+### Ajout de variables avec le nom des villes, départements et région modifiés pour la data viz
+
+#### Ajout de la variable "Nom Ville Modifié"
+
+- Dans le `report view` / carte mondiale, on a des villes françaises qui sont situées dans d'autres pays, par exemple :
+
+  - offre_id = `2083056` dans la ville `Cologne` (code postal 32 430) en région Occitanie, département Gers  => placé en Allemagne (NOK, car on est censé avoir que des offres en France)
+
+    <img src="screenshots/power_bi/city_Cologne_in_Germany.png" alt="Cologne en Allemagne" style="width:40%"/>
+
+
+  - offre_id = `2757953` dans la ville `La Réunion` (code postal 47 700) en région Nouvelle-Aquitaine, département Lot-et-Garonne  => placé en France (OK)
+
+    <img src="screenshots/power_bi/city_Cologne_in_France.png" alt="Cologne en France" style="width:40%"/>
+
+- Comme vu dans le dernier screenshot, pour avoir les villes placées en France, on définit une colonne `Nom Ville Modifié` avec le nom de la ville suffixé avec `, France` (par exemple `Cologne, France`).
+
+
+#### Ajout de la variable "Nom Département Modifié"
+
+- Même chose pour le département de la `Lot` qui est placé en Lituanie, on ajoute une colonne qui suffixera le nom du département avec `, France` :
+
+  - Département `Lot` en Lituanie :
+
+    <img src="screenshots/power_bi/department_Lot_in_Lithuania.png" alt='Département "Lot" en Lituanie' style="width:40%"/>
+
+  - Département `Lot` en France :
+
+    <img src="screenshots/power_bi/department_Lot_in_France.png" alt='Département "Lot" en France' style="width:40%"/>
+
+
+#### Ajout de la variable "Nom Région Modifié"
+
+- Quand on affiche la carte du monde avec les régions de la France, on constate que 2 régions (la Bretagne et l'Occitanie) ne sont pas complètement coloriées comme les autres régions :
+
+  - pour la Bretagne :
+
+    <img src="screenshots/power_bi/region_Bretagne_KO.png" alt="Bretagne non colorié entièrement" style="width:20%"/>
+
+  - pour l'Occitanie :
+
+    <img src="screenshots/power_bi/region_Occitanie_KO.png" alt="Occitanie non colorié entièrement" style="width:20%"/>
+
+- Changer le `Data category` (à `County` ou `State or Province`) résout le problème pour l'Occitanie mais pas la Bretagne.
+
+- Le contournement est d'ajouter une colonne, où on préfixera le nom de la région de `Région d('|de|du|des)` en fonction des régions, par exemple :
+
+  - `Région d'Île-de-France`
+  - `Région de Normandie`
+  - `Région des Hauts-de-France`
+  - `Région du Grand Est`
+
+- A noter qu'il y a une exception pour `Région Bourgogne-Franche-Comté` (pas de `de`).
+
+- Cela résout bien le problème de colorisation :
+
+  - pour la Bretagne :
+
+    <img src="screenshots/power_bi/region_Bretagne_OK.png" alt="Bretagne colorié entièrement" style="width:20%"/>
+
+  - pour l'Occitanie :
+
+    <img src="screenshots/power_bi/region_Occitanie_OK.png" alt="Occitanie colorié entièrement" style="width:20%"/>
+
+
+# 5. Monitoring avec Prometheus et Grafana
+
+## Prometheus
+
+### StatsD Exporter
+
+#### Métriques disponibles de StatsD Exporter
 
 - Voici la liste des métriques disponibles avec préfixe sans les détails ni les valeurs :
 
@@ -1019,7 +1028,7 @@ Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6
     - `statsd_exporter_build_info{branch="HEAD",goarch="amd64",goos="linux",goversion="go1.23.2",revision="c0a390a2c43f77863278615b47d46e886bdca726",tags="unknown",version="0.28.0"}`, `statsd_exporter_event_queue_flushed_total`, `statsd_exporter_events_actions_total{action="map"}`, `statsd_exporter_events_total{type="counter"}`, `statsd_exporter_events_total{type="gauge"}`, `statsd_exporter_events_total{type="observer"}`, `statsd_exporter_events_unmapped_total`, `statsd_exporter_lines_total`, `statsd_exporter_loaded_mappings`, `statsd_exporter_metrics_total{type="counter"}`, `statsd_exporter_metrics_total{type="gauge"}`, `statsd_exporter_metrics_total{type="summary"}`, `statsd_exporter_samples_total`, `statsd_exporter_tag_errors_total`, `statsd_exporter_tags_total`, `statsd_exporter_tcp_connection_errors_total`, `statsd_exporter_tcp_connections_total`, `statsd_exporter_tcp_too_long_lines_total`, `statsd_exporter_udp_packet_drops_total`, `statsd_exporter_udp_packets_total`, `statsd_exporter_unixgram_packets_total`, `statsd_metric_mapper_cache_gets_total`, `statsd_metric_mapper_cache_hits_total`, `statsd_metric_mapper_cache_length`
 
 
-### Vérifier la validité d'un mapping dans `statsd.yaml`
+#### Vérifier la validité d'un mapping dans `statsd.yaml`
 
 - Pour vérifier qu'un mapping est valide ou pas :
 
@@ -1032,7 +1041,7 @@ Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6
 
 
 
-### Exemple avec `custom_counter_job_start` (mapping valide)
+#### Exemple avec `custom_counter_job_start` (mapping valide)
 
 ```yaml
   - match: "(.+)\\.(.+)_start$"
@@ -1064,7 +1073,7 @@ Conclusion : `custom_counter_job_start` est fonctionnel, et exécutera `process_
 
 
 
-### Exemple avec  `custom_counter_job_end` (mapping non valide)
+#### Exemple avec  `custom_counter_job_end` (mapping non valide)
 
 ```yaml
   - match: "(.+)\\.(.+)_end$"
@@ -1088,13 +1097,13 @@ On exécute la commande suivante :
 Conclusion : `custom_counter_job_end` n'est pas fonctionnel.
 
 
-# 9. Grafana
+## Grafana
 
-## Dashboards
+### Dashboards
 
-### Dashboards créés
+#### Dashboards "others"
 
-#### Métriques avec préfixes
+##### Métriques avec préfixes
 
 - Cette [section](../README.md#métriques-de-statsd-exporter) fait état de métriques préfixés.
 

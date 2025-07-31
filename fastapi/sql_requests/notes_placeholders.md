@@ -1,8 +1,10 @@
-- Ces fichiers pgsql sont destinés à être exécutés depuis le sript Python `Job_Market/fastapi/fastapi.py` (avec notamment psycopg2).
+- Les fichiers `pgsql` de ce dossier contiennent des placeholders.
 
-- Les placeholders seront remplacés dynamiquement par les variables dans le script Python.
+- Ces fichiers sont destinés à être exécutés depuis le sript Python `Job_Market/fastapi/main.py` (avec notamment psycopg2).
 
-- Sinon on peut hardcoder les valeurs dans le cas où on veut exécuter ce script SQL directement (sans script Python), par exemple :
+- Les placeholders seront remplacés dynamiquement dans le script Python.
+
+- Sinon, on peut hardcoder les valeurs dans le cas où on veut exécuter ces scripts SQL directement (sans passer par le script Python), avec par exemple :
 
   - metier_data = 'DE', 'DA' ou 'DS'
   - date_creation >= '2025-04-10'

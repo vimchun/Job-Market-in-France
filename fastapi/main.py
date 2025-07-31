@@ -1,5 +1,4 @@
-# cd fastapi/  &&  uvicorn main:app --reload
-# cd fastapi/  &&  uvicorn main:app --reload  --log-level debug
+# pour investiguer : "docker logs -f fastapi"
 
 import os
 
@@ -10,37 +9,37 @@ from typing import List, Optional
 import pandas as pd
 import psycopg2
 
-from colorama import Fore, Style, init
-from pydantic import BaseModel, field_validator
 from tabulate import tabulate  # pour afficher les résultats sous forme de tableau
 
-from fastapi import Depends, FastAPI, HTTPException, Query, Response  # status
+from fastapi import Depends, FastAPI, HTTPException, Query, Response
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 
-init(autoreset=True)  # pour colorama, inutile de reset si on colorie
-
-
-tag_all_offres = "Pour toutes les offres d'emploi"
-tag_location_mapping_name_code = 'Mapping "nom <> code" pour les régions, départements, villes et communes'
-
-message_on_endpoints_about_fields = "<u>Paramètres :</u> chaque champ est facultatif (champ vide = pas de filtre)."
+tag_one_or_many_offers = "Pour une ou plusieurs offres d'emploi"
+tag_all_offers = "Pour toutes les offres d'emploi"
+tag_location_mapping_name_code = "Correspondance entre le nom et le code des régions, départements, villes, communes"
 
 description_metier_data = 'Filtrer sur le métier "Data Engineer" `DE`, "Data Analyst" `DA` ou "Data Scientist `DS` (`--` pour ne pas filtrer sur ces métiers)'
 description_offres_dispo_only = "`True` pour filtrer sur les offres disponibles uniquement (disponibles au jour où l'extraction des données a eu lieu), `False` sinon."
 description_empty_field = "_(champ vide = pas de filtre)_"
 
-enable_secondary_routes = 1
+enable_secondary_routes = 0
 
-"""
-Si `enable_secondary_routes = 0`, les routes "secondaires" suivantes seront désactivées :
+# valeurs définies dans le "docker-compose.yml"
+psycopg2_connect_dict = {
+    "host": os.getenv("DB_HOST", "localhost"),
+    "port": os.getenv("DB_PORT", 5432),
+    "database": os.getenv("DB_NAME", "francetravail"),
+    "user": os.getenv("DB_USER", "mhh"),
+    "password": os.getenv("DB_PASSWORD", "mhh"),
+}
 
-  - "/criteres_recruteurs/qualifications",
-  - "/criteres_recruteurs/formations",
-  - "/criteres_recruteurs/permis_conduire",
-  - "/criteres_recruteurs/langues",
-
-    (elles n'apportent pas d'information importante, et polluent open api)
-"""
-
+# Si `enable_secondary_routes = 0`, les routes "secondaires" suivantes seront désactivées :
+#
+#   - "/criteres_recruteurs/qualifications",
+#   - "/criteres_recruteurs/formations",
+#   - "/criteres_recruteurs/permis_conduire",
+#   - "/criteres_recruteurs/langues",
 
 ###### définitions de mini fonctions()
 
@@ -77,36 +76,52 @@ def strip_accents(text):
 
     return "".join(c for c in unicodedata.normalize("NFD", text) if unicodedata.category(c) != "Mn")
 
-    """
-    Ainsi, on aura :
+    # Ainsi, on aura :
+    #
+    # print(
+    #     strip_accents("Île-de-France"),  ##==> Ile-de-France (la fonction remplace les accents)
+    #     strip_accents("Saint-Cyr-l'École"),  ##==> Saint-Cyr-l'Ecole
+    # )
 
-    print(
-        strip_accents("Île-de-France"),  ##==> Ile-de-France (la fonction remplace les accents)
-        strip_accents("Saint-Cyr-l'École"),  ##==> Saint-Cyr-l'Ecole
-    )
+
+def generate_unique_offer_id(ids_file):
     """
+    Génère un offre_id sur 7 caractères qui ne figure pas dans le fichier "ids_file"
+    """
+
+    import random
+    import string
+
+    with open(ids_file, "r") as f:
+        lignes = f.readlines()
+        existing_ids = set(l.strip() for l in lignes)  # set avec les identifiants existants
+
+    alphabet = string.ascii_uppercase + string.digits  # A-Z + 0-9
+
+    while True:
+        offer_id = "".join(random.choices(alphabet, k=7))
+        if offer_id not in existing_ids:
+            return offer_id
 
 
 app = FastAPI(
-    title="API sur les offres d'emploi chez France Travail",
+    title="API sur les offres d'emploi publiées par France Travail",
     description=dedent(f"""
-    - Notes concernant les paramètres de localisation `code_region`, `code_departement`, `code_postal` et `code_insee` :
-      <br> <br>
+    <u>Notes :</u>
+    - Pour voir l'offre d'emploi sur le site de France Travail : [lien](https://candidat.francetravail.fr/offres/recherche/detail/offre_id) (modifier `offre_id`).
+      <br>
+    - Concernant les filtres de localisation `code_region`, `code_departement`, `code_postal` et `code_insee` :
+      <br>
       - Remplir ces champs est facultatif (pas de valeur = pas de filtre).
       <br>
       - Pour connaître les valeurs possibles, lancer la requête associée sous la partie `{tag_location_mapping_name_code}`.
       <br>
-      - Un code postal peut avoir plusieurs codes insee (exemple : le code postal 78310 est partagé entre la commune de Coignières (code insee 78168), et la commune de Maurepas (code insee 78383)).
-      """),
+      - Un code postal peut avoir plusieurs codes insee (exemple : le <u>code postal 78310</u> est partagé entre la commune de Coignières (<u>code insee 78168</u>), et la commune de Maurepas (<u>code insee 78383</u>)).
+      """),  # noqa
     openapi_tags=[
-        {
-            "name": tag_all_offres,
-            "description": "à compléter plus tard",
-        },
-        {
-            "name": tag_location_mapping_name_code,
-            "description": "Correspondance entre le <b>nom</b> et le <b>code</b><br> d'une région, département, ville, commune",
-        },
+        {"name": tag_one_or_many_offers},  # champ "description" possible
+        {"name": tag_all_offers},
+        {"name": tag_location_mapping_name_code},
     ],
     # pour désactiver la coloration syntaxique sinon dans une réponse de type text/plain, on peut avoir du blanc, du rouge, du vert, du orange suivant les chars...
     swagger_ui_parameters={"syntaxHighlight": False},  # https://fastapi.tiangolo.com/ru/how-to/configure-swagger-ui/#disable-syntax-highlighting
@@ -127,7 +142,6 @@ DEFAULT_CSV_PATH = os.path.join(
 
 # variable "location_csv_file" écrasée par la valeur définie dans le Dockerfile si script exécuté dans le conteneur
 location_csv_file = os.getenv("LOCATION_CSV_PATH", DEFAULT_CSV_PATH)
-
 
 print(f"Chargement du fichier CSV depuis : {location_csv_file}")
 
@@ -206,6 +220,8 @@ def execute_modified_sql_request_with_filters(
     fetch="all",
 ):
     """
+    Fonction utilisée pour les routes dont le tag est "tag_all_offers".
+
     Prend en entrée le fichier sql dont le chemin se termine par la paramètre "sql_files_directory_part_2"
       et applique les filtres en remplaçant les placeholders sur la requête SQL en fonction des paramètres fournis.
 
@@ -264,19 +280,12 @@ def execute_modified_sql_request_with_filters(
 
         modified_sql_file_content = sql_file_content
 
-        # connexion en lien avec les variables définies dans le "docker-compose.yml" :
-        with psycopg2.connect(
-            host=os.getenv("DB_HOST", "localhost"),
-            port=os.getenv("DB_PORT", 5432),
-            database=os.getenv("DB_NAME", "francetravail"),
-            user=os.getenv("DB_USER", "mhh"),
-            password=os.getenv("DB_PASSWORD", "mhh"),
-        ) as conn:
+        with psycopg2.connect(**psycopg2_connect_dict) as conn:
             with conn.cursor() as cursor:
-                print(f'\n{Fore.CYAN}===> Requête SQL depuis le fichier "{sql_files_directory_part_2}" :')
-                print(f"{Style.DIM}{modified_sql_file_content}")
-                print(f"{Fore.CYAN}===> paramètres :")
-                print(f"{Fore.CYAN}{Style.DIM}{params}")
+                print(f'\n===> Requête SQL depuis le fichier "{sql_files_directory_part_2}" :')  # pour investigation
+                # print(modified_sql_file_content)  # pour investigation
+                # print("===> paramètres :")  # pour investigation
+                # print(params)  # pour investigation
 
                 cursor.execute(modified_sql_file_content, tuple(params))
                 if fetch == "all":
@@ -285,9 +294,167 @@ def execute_modified_sql_request_with_filters(
                     return cursor.fetchone()
 
 
+def set_endpoints_filters_2(
+    offre_id: Optional[str] = Query(default="*JOKER*", description='"offre_id" sur 7 caractères alphanumériques (laisser `*JOKER*` pour avoir une offre aléatoire)'),
+):
+    if len(offre_id) != 7:
+        raise HTTPException(status_code=400, detail=f"'offre_id' doit être sur 7 caractères alphanumériques.")
+
+    return offre_id
+
+
+@app.get(
+    "/offre/attributs_from_transformations",
+    tags=[tag_one_or_many_offers],
+    summary="Attributs issues des transformations",
+)
+def get_attributes_for_a_specific_offer(filters: str = Depends(set_endpoints_filters_2)):
+    offre_id = filters
+
+    # on choisit un offre_id parmi ceux existant (grâce au fichier créé par le "DAG 1", tâche "A11")
+    if offre_id == "*JOKER*":
+        offres_ids_list = []
+        with open("offers_ids.txt", "r") as file:
+            for line in file:
+                line = line.strip()  # .strip() sinon on aura les retours à la ligne "\n"
+                if line:  # pour prendre que les lignes avec du texte
+                    offres_ids_list.append(line)
+
+        import random
+
+        offre_id = random.choice(offres_ids_list)
+
+    sql_file_directory_part_2 = os.path.join("misc", "transformations_attrs_for_one_offer.pgsql")
+    with open(os.path.join(sql_file_directory_part_1, sql_file_directory_part_2), "r") as file:
+        sql = file.read()
+        params = (offre_id,)
+
+        with psycopg2.connect(**psycopg2_connect_dict) as conn:
+            with conn.cursor() as cursor:
+                # print(f'\n===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :') # pour investigation
+                # print(sql) # pour investigation
+
+                cursor.execute(sql, params)
+
+                row = cursor.fetchone()
+                # print(row)
+                ##==> exemple : ('6352644', '"Développeur Web FullStack Senior ReactJS/NodeJS H/F"', '"Laval"', '"Mayenne"', '"Pays de la Loire"', None, 60000, 70000, <description_offre>)
+
+                dict_1 = {
+                    "offre_id": row[0],
+                    "intitulé": row[1],
+                    "date création": row[2],
+                    "ville": row[3],
+                    "département": row[4],
+                    "région": row[5],
+                    "metier data": row[6],
+                    # "salaire min": row[7],
+                    # "salaire max": row[8],
+                    "liste mots clés": row[7],
+                    "description": row[8],
+                }
+
+                return JSONResponse(content=jsonable_encoder(dict_1))
+                # todo : gérer erreur 500 si aucun résultat
+
+
+##########################
+
+
+@app.post(
+    "/offre/ajout_offre_factice",
+    tags=[tag_one_or_many_offers],
+    summary="Création d'une offre factice (avec attributs prédéfinis car trop d'attributs à renseigner si on veut une offre \"réelle\")",
+)
+def add_offer():
+    sql_file_directory_part_2 = os.path.join("misc", "create_offer.pgsql")
+
+    offre_id = generate_unique_offer_id("offers_ids.txt")
+
+    with open(os.path.join(sql_file_directory_part_1, sql_file_directory_part_2), "r") as file:
+        sql_file_content = file.read()
+
+    with psycopg2.connect(**psycopg2_connect_dict) as conn:
+        with conn.cursor() as cur:
+            # print(f'\n===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :')  # pour investigation
+            # print(sql_file_content)  # pour investigation
+            cur.execute(sql_file_content, (offre_id, offre_id, offre_id, offre_id))
+
+    return f"Offre {offre_id} ajoutée"
+
+
+##########################
+
+
+@app.delete(
+    "/offre/suppression_offre",
+    tags=[tag_one_or_many_offers],
+    summary="Suppression d'une offre à partir de son identifiant",
+)
+def remove_offer(offre_id):
+    sql_file_directory_part_2 = os.path.join("misc", "delete_offer.pgsql")
+
+    with open(os.path.join(sql_file_directory_part_1, sql_file_directory_part_2), "r") as file:
+        sql_file_content = file.read()
+
+    with psycopg2.connect(**psycopg2_connect_dict) as conn:
+        with conn.cursor() as cur:
+            # print(f'\n===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :')  # pour investigation
+            # print(sql_file_content)  # pour investigation
+            cur.execute(sql_file_content, (offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id))
+
+    return f"Offre {offre_id} supprimée"
+
+
+##########################
+
+
+@app.get(
+    "/offre/plusieurs_offres",
+    tags=[tag_one_or_many_offers],
+    summary="10 offres les plus récentes",
+)
+def get_several_offers(filters: str = Depends(set_endpoints_filters)):
+    sql_file_directory_part_2 = os.path.join("misc", "several_offers.pgsql")
+
+    result = execute_modified_sql_request_with_filters(sql_file_directory_part_2, **filters, fetch="all")
+
+    truncated_result = [
+        (
+            row[0],
+            row[1][:50],
+            f"{row[2]} / {row[3]}",
+            row[4],
+            row[5],
+            row[6],
+            # row[7],  # url bien affiché mais pas de lien cliquable :(
+        )
+        for row in result
+    ]
+
+    table = tabulate(
+        truncated_result,
+        headers=[
+            "offre_id",
+            "intitulé (50 chars max)",
+            "créé le / actualisé le",
+            "expérience",
+            "ville",
+            "région",
+            # "url",
+        ],
+        tablefmt="psql",
+    )
+
+    return Response(content=table, media_type="text/plain")
+
+
+##########################
+
+
 @app.get(
     "/stats/total_offres",
-    tags=[tag_all_offres],
+    tags=[tag_all_offers],
     summary="Nombre total d'offres d'emploi",
 )
 def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
@@ -298,7 +465,74 @@ def get_number_of_offers(filters: dict = Depends(set_endpoints_filters)):
     return Response(content=f"total: {total_offres:,} offres".replace(",", " "), media_type="text/plain")  # espace pour séparer les milliers
 
 
-@app.get("/stats/classement/region", tags=[tag_all_offres], summary="Classement des régions qui recrutent le plus", description="<u> Tri :</u> par nombre d'offres (DESC).")
+@app.get(
+    "/stats/total_offres_factices",
+    tags=[tag_all_offers],
+    summary="Nombre total d'offres factices (créées par FastAPI) et leurs identifiants",
+)
+def get_fake_offers():
+    sql_file_directory_part_2 = os.path.join("misc", "fake_offers.pgsql")
+
+    with open(os.path.join(sql_file_directory_part_1, sql_file_directory_part_2), "r") as file:
+        sql_file_content = file.read()
+
+        sql_requests = sql_file_content.split("SEPARATEUR POUR FASTAPI")  # liste de requête, car 2 requêtes dans le fichier
+        # print(sql_requests[0])  # pour investigation
+        # print("==============")  # pour investigation
+        # print(sql_requests[1])  # pour investigation
+
+    with psycopg2.connect(**psycopg2_connect_dict) as conn:
+        with conn.cursor() as cur:
+            # print(f'\n===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :')  # pour investigation
+            # print(sql_file_content)  # pour investigation
+
+            results = []
+            for sql_request in sql_requests:
+                cur.execute(sql_request, ())
+                results.append(cur.fetchall())
+
+                # exemple de résultats :
+                # [
+                #   [ [ 3 ] ],
+                #   [ [ "S498U3H" ], [ "NVLACT9" ], [ "S2C4561" ] ]
+                # ]
+
+            fake_list = []
+
+            for i in results[1]:
+                print(i[0])
+                fake_list.append(i[0])
+
+            return f"{results[0][0][0]} offre(s) factice(s)", fake_list  # "fake_list" à part car utilisé dans la fonction "remove_fake_offers()"
+
+
+@app.delete(
+    "/suppression_all_offres_factices",
+    tags=[tag_all_offers],
+    summary="Suppression de toutes les offres factices (créées par l'API)",
+)
+def remove_fake_offers():
+    # PARTIE 1 : fonction "get_fake_offers()" déjà existante pour récupérer la liste des offres factices
+    _, fake_list = get_fake_offers()
+    # print(type(fake_list))  ##==> liste
+
+    # PARTIE 2/2 : on supprime les offres de cette liste
+    sql_file_directory_part_2 = os.path.join("misc", "delete_offer.pgsql")
+
+    with open(os.path.join(sql_file_directory_part_1, sql_file_directory_part_2), "r") as file:
+        sql_file_content = file.read()
+
+    with psycopg2.connect(**psycopg2_connect_dict) as conn:
+        with conn.cursor() as cur:
+            # print(f'\n===> Requête SQL depuis le fichier "{sql_file_directory_part_2}" :')  # pour investigation
+            # print(sql_file_content)  # pour investigation
+            for offre_id in fake_list:
+                cur.execute(sql_file_content, (offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id, offre_id))
+
+    return f"{len(fake_list)} offre(s) supprimée(s) : {fake_list}"
+
+
+@app.get("/stats/classement/region", tags=[tag_all_offers], summary="Classement des régions qui recrutent le plus", description="<u> Tri :</u> par nombre d'offres (DESC).")
 def get_regions_ranking(
     metier_data: Optional[MetierDataEnum] = Query(default=None, description=description_metier_data),
     offres_dispo_only: Optional[bool] = Query(default=False, description=description_offres_dispo_only),
@@ -311,7 +545,7 @@ def get_regions_ranking(
     return Response(content=table, media_type="text/plain")
 
 
-@app.get("/stats/classement/departement", tags=[tag_all_offres], summary="Classement des départements qui recrutent le plus (top 30)", description="<u> Tri :</u> par nombre d'offres (DESC).")
+@app.get("/stats/classement/departement", tags=[tag_all_offers], summary="Classement des départements qui recrutent le plus (top 30)", description="<u> Tri :</u> par nombre d'offres (DESC).")
 def get_departements_ranking(
     metier_data: Optional[MetierDataEnum] = Query(default=None, description=description_metier_data),
     offres_dispo_only: Optional[bool] = Query(default=False, description=description_offres_dispo_only),
@@ -324,7 +558,7 @@ def get_departements_ranking(
     return Response(content=table, media_type="text/plain")
 
 
-@app.get("/stats/classement/ville", tags=[tag_all_offres], summary="Classement des villes qui recrutent le plus (top 30)", description="<u> Tri :</u> par nombre d'offres (DESC).")
+@app.get("/stats/classement/ville", tags=[tag_all_offers], summary="Classement des villes qui recrutent le plus (top 30)", description="<u> Tri :</u> par nombre d'offres (DESC).")
 def get_villes_ranking(
     metier_data: Optional[MetierDataEnum] = Query(default=None, description=description_metier_data),
     offres_dispo_only: Optional[bool] = Query(default=False, description=description_offres_dispo_only),
@@ -342,7 +576,7 @@ def get_villes_ranking(
 
 @app.get(
     "/criteres_recruteurs/competences",
-    tags=[tag_all_offres],
+    tags=[tag_all_offers],
     summary="Compétences (techniques, managériales...) demandées par les recruteurs",
     description="<u> Tri :</u> <b>1/</b> par code exigence (<b>E</b>xigé d'abord, puis <b>S</b>ouhaité), puis <b>2/</b> par nombre d'occurences (DESC), puis <b>3/</b> par code (ASC).",
 )
@@ -359,7 +593,7 @@ def get_competences(filters: dict = Depends(set_endpoints_filters)):
 
 @app.get(
     "/criteres_recruteurs/experiences",
-    tags=[tag_all_offres],
+    tags=[tag_all_offers],
     summary="Expériences (études, diplôme, années expérience...) demandées par les recruteurs",
     description=dedent("""\
     <u> Tri :</u> <b>1/</b> par code exigence (<b>D</b>ébutant d'abord, <b>S</b>ouhaité, puis <b>E</b>xigé), puis <b>2/</b> par nombre d'occurences (DESC), puis <b>3/</b> par libellé (ASC).
@@ -377,7 +611,7 @@ def get_experiences(filters: dict = Depends(set_endpoints_filters)):
 
 @app.get(
     "/criteres_recruteurs/qualites_professionnelles",
-    tags=[tag_all_offres],
+    tags=[tag_all_offers],
     summary="Qualités professionnelles demandées par les recruteurs",
     description="<u> Tri :</u> par nombre d'occurences (DESC).",
 )
@@ -410,25 +644,25 @@ def get_sorted_table_from_df(df, name, code):
     return tabulate(df_sorted.values.tolist(), headers=[name, code], tablefmt="psql")
 
 
-@app.get("/mapping_nom_code/region", tags=[tag_location_mapping_name_code], summary="Mapping entre le nom de la région et de son code")
+@app.get("/mapping_localisation/region", tags=[tag_location_mapping_name_code], summary="Mapping entre le nom de la région et son code")
 def get_mapping_region():
     table = get_sorted_table_from_df(df_location, "nom_region", "code_region")
     return Response(content=table, media_type="text/plain")
 
 
-@app.get("/mapping_nom_code/departement", tags=[tag_location_mapping_name_code], summary="Mapping entre le nom du département et de son code")
+@app.get("/mapping_localisation/departement", tags=[tag_location_mapping_name_code], summary="Mapping entre le nom du département et son code")
 def get_mapping_departement():
     table = get_sorted_table_from_df(df_location, "nom_departement", "code_departement")
     return Response(content=table, media_type="text/plain")
 
 
-@app.get("/mapping_nom_code/ville", tags=[tag_location_mapping_name_code], summary="Mapping entre le nom du ville et de son code")
+@app.get("/mapping_localisation/ville", tags=[tag_location_mapping_name_code], summary="Mapping entre le nom de la ville et son code")
 def get_mapping_ville():
     table = get_sorted_table_from_df(df_location, "nom_ville", "code_postal")
     return Response(content=table, media_type="text/plain")
 
 
-@app.get("/mapping_nom_code/commune", tags=[tag_location_mapping_name_code], summary="Mapping entre le nom de la commune et de son code")
+@app.get("/mapping_localisation/commune", tags=[tag_location_mapping_name_code], summary="Mapping entre le nom de la commune et son code")
 def get_mapping_commune():
     table = get_sorted_table_from_df(df_location, "nom_commune", "code_insee")
     return Response(content=table, media_type="text/plain")
@@ -438,7 +672,7 @@ if enable_secondary_routes:
 
     @app.get(
         "/criteres_recruteurs/qualifications",
-        tags=[tag_all_offres],
+        tags=[tag_all_offers],
         summary="Niveaux de qualification professionnelle demandés par les recruteurs",
         description="<u> Tri :</u> par nombre d'occurences (DESC).",
     )
@@ -451,7 +685,7 @@ if enable_secondary_routes:
 
     @app.get(
         "/criteres_recruteurs/formations",
-        tags=[tag_all_offres],
+        tags=[tag_all_offers],
         summary="Formations (domaines, nombre d'années d'études) demandées par les recruteurs",
         description="<u> Tri :</u> <b>1/</b> par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis <b>2/</b> par nombre d'occurences (DESC), puis <b>3/</b> par code (ASC), puis <b>4/</b> par niveau (ASC).",  # noqa
     )
@@ -464,7 +698,7 @@ if enable_secondary_routes:
 
     @app.get(
         "/criteres_recruteurs/permis_conduire",
-        tags=[tag_all_offres],
+        tags=[tag_all_offers],
         summary="Permis de conduire demandés par les recruteurs",
         description="<u> Tri :</u> <b>1/</b> par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis <b>2/</b> par nombre d'occurences (DESC), puis <b>3/</b> par permis de conduire (ASC).",
     )
@@ -477,7 +711,7 @@ if enable_secondary_routes:
 
     @app.get(
         "/criteres_recruteurs/langues",
-        tags=[tag_all_offres],
+        tags=[tag_all_offers],
         summary="Langues demandées par les recruteurs",
         description="<u> Tri :</u> <b>1/</b> par code exigence (<b>E</b>xigé puis <b>S</b>ouhaité), puis <b>2/</b> par nombre d'occurences (DESC), puis <b>3/</b> par langue (ASC).",
     )

@@ -2,35 +2,36 @@
 
 ### à voir après soutenance (28/07/2025)
 
-  - alert manager
+  - `Alert Manager` (pas très utile dans mon cas d'utilisation, car mon pc portable ne tourne pas en permanence)
 
-  - github actions (dossier .workflow)
+  - CI/CD avec `Github Actions` / `Pytest`
 
-  - pytest
+  - `DBT`
 
-  - mettre en place dbt
+  - Appli plus "conviviale" que swagger (streamlit ?)
+
+  - Configurer `Power BI` pour exploiter les APIs ?
+
+  - Même projet mais sur le `cloud` ?
 
 
 ### P0
 
-  - fastapi idées :
-    - création offre (id offre obligatoire, mais doit être unique)
-    - suppression offre
-    - ajouter une route comme /healthcheck ou /status qui permet de vérifier que la base est connectée (test SELECT 1).
+  - données sensibles du "docker compose" à part
 
 
 ### P1
 
-  - pb avec `airflow\dags\sql\transformation_4_update__table_contrat__columns__salaire_min__salaire_max.sql` => n'écrit rien dans les colonnes ?
-
-  - grafana : ajouter les locks/conflicts de postgres
+  - fastapi : gérer les cas d'erreur
 
   - airflow : activer les dags au démarrage après un reboot (possible ?)
+
+  - mettre description_offre de la table descriptionoffre dans un fichier à part (trop gros)
 
 
 ### P2
 
-  - script pour générer le rapport en pdf à partir des .md (avec modifs des urls)
+  - fastapi : sécurité fastapi
 
   - pb pbi avec certaines villes mal situées (ex: Buc pas en IDF)
 
@@ -38,13 +39,18 @@
 
   - attribut `liste_mots_cles` : faisabilité regex sur le mot entier (exemple si on cherche le langage `R`)
 
-  - renommer les fichiers sql en anglais ?
-
   - airflow : utiliser log au lieu de print ?
         log.info("") au lieu de print ?
 
+  - fastapi idées :
+
+    - ajouter une route comme /healthcheck ou /status qui permet de vérifier que la base est connectée (test SELECT 1).
+    - ajouter une route qui fait le "docker ps"
+
 
 ### P3
+
+  - renommer les fichiers sql en anglais ?
 
   - pour la partie 1 :
     - Fichier en format tableau avec le nom de la source, la technique utilisée, un échantillon des données

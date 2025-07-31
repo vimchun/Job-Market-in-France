@@ -1,5 +1,6 @@
 import csv
 import json
+import logging
 import os
 import shutil
 import time
@@ -19,8 +20,8 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 RESOURCES_DIR = os.path.join(CURRENT_DIR, "..", "data", "resources")
 OUTPUTS_DIR = os.path.join(CURRENT_DIR, "..", "data", "outputs")
 
-DOWNLOADED_JSONS_FROM_API_DIR = os.path.join(OUTPUTS_DIR, "offres", "0--original_json_files_from_api")
-AGGREGATED_JSON_DIR = os.path.join(OUTPUTS_DIR, "offres", "1--generated_json_file")
+DOWNLOADED_JSONS_FROM_API_DIR = os.path.join(OUTPUTS_DIR, "offers", "0--original_json_files_from_api")
+AGGREGATED_JSON_DIR = os.path.join(OUTPUTS_DIR, "offers", "1--generated_json_file")
 
 CREDENTIAL_FILENAME = os.path.join(RESOURCES_DIR, "api_credentials.yml")
 CODES_APPELLATION_FILENAME = os.path.join(RESOURCES_DIR, "code_appellation_libelle.yml")
@@ -38,7 +39,7 @@ def delete_all_in_one_json():
     (si ce fichier est existant, on peut se retrouver avec 2 fichiers json
       dans le dossier  "1--generated_json_file", ce qui pose problème).
     """
-    file_to_remove = os.path.join(OUTPUTS_DIR, "offres", "1--generated_json_file", "all_in_one.json")
+    file_to_remove = os.path.join(OUTPUTS_DIR, "offers", "1--generated_json_file", "all_in_one.json")
     try:
         os.remove(file_to_remove)
     except FileNotFoundError:
@@ -256,7 +257,7 @@ def get_offers(token, code_libelle_list):
     code_appellation = code_libelle_list["code"]
     libelle = code_libelle_list["libelle"]
 
-    output_file = os.path.join(OUTPUTS_DIR, "offres", "0--original_json_files_from_api", f"{code_appellation}_{libelle}.json")
+    output_file = os.path.join(OUTPUTS_DIR, "offers", "0--original_json_files_from_api", f"{code_appellation}_{libelle}.json")
 
     if os.path.exists(output_file):
         os.remove(output_file)
@@ -1135,6 +1136,41 @@ def write_to_history_csv_file(aggregated_json_directory):
     return None
 
 
+@task(task_id="A11_write_offers_ids_list_on_file_for_fastapi", trigger_rule=TriggerRule.NONE_FAILED_MIN_ONE_SUCCESS)
+def write_offers_ids_list_on_file_for_fastapi(aggregated_json_directory):
+    """
+    Extrait tous les "id" (tous les "offre_id" du json), et l'écrit dans un fichier, qui servira pour FastAPI.
+    """
+
+    import pandas as pd
+
+    json_file_in_generated_directory = [file for file in os.listdir(aggregated_json_directory) if file.endswith(".json")]
+
+    remaining_json_file = json_file_in_generated_directory[0]
+
+    df = pd.read_json(
+        os.path.join(aggregated_json_directory, remaining_json_file),
+        dtype=False,  # pour ne pas inférer les dtypes
+    )
+
+    ids = df["id"]  # extraire la colonne 'id'
+
+    logging.info(f'Nombre de "ids" à écrire : {len(df)}')
+
+    cwd = os.getcwd()
+    print(f"curdir : {cwd}")
+
+    # enregistrer les identifiants dans un fichier texte
+    ids.to_csv(
+        os.path.join(CURRENT_DIR, "..", "fastapi", "offers_ids.txt"),  # dans le montage
+        index=False,
+        header=False,
+        lineterminator="\n",
+    )
+
+    return None
+
+
 # définition de paramètres liés au mécanisme de retry pour une tâche
 default_args = {
     "retries": 5,  # nombre de tentatives de ré-exécution en cas d’échec d’une tâche
@@ -1206,9 +1242,11 @@ with DAG(
             branch >> file1
 
         write_history = write_to_history_csv_file(AGGREGATED_JSON_DIR)  #### task A10
+        write_offers_ids = write_offers_ids_list_on_file_for_fastapi(AGGREGATED_JSON_DIR)  #### task A11
 
         api_requests >> tl
         [file0, file1] >> write_history
+        [file0, file1] >> write_offers_ids
 
     trigger_dag2 = TriggerDagRunOperator(  #### task finale qui déclenche le DAG 2 si DAG 1 en "success"
         task_id="trigger_dag_2",
