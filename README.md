@@ -128,11 +128,12 @@
     - C'est indispensable, sinon on verra par exemple dans la page "Connections" l'erreur "500 Internal Server Error".
 
     - Il faudra donc exécuter la commande suivante et renseigner le résultat dans le fichier `.env` :
+
 ```bash
+      # Commande pour récupérer la clé fernet :
       python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
-    ```
-```env
-      # Le résultat de la commande python doit être mis dans le fichier .env, comme ceci :
+
+      # Le résultat de la commande précédente doit être mis dans le fichier .env, comme ceci :
       AIRFLOW__CORE__FERNET_KEY=CLE_GENEREE_PAR_LA_COMMANDE
 ```
 
