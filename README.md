@@ -711,7 +711,7 @@
 
 - Le `DAG 1` (qui déclenche le `DAG 2`) est exécuté tous les jours à 21h30 :
 
-    <img src="readme_files/screenshots/airflow/frequency.png" alt="fréquence" style="width:50%"/>
+    <img src="readme_files/screenshots/airflow/frequency.png" alt="fréquence" style="width:80%"/>
 
 - `DAG 1` prend 10-15 minutes d'exécution, et `DAG 2` en prend 5-10 :
 
