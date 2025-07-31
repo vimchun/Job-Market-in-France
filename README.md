@@ -991,7 +991,7 @@
 
 - Lorsqu'on se connecte sur la [GUI](http://localhost:9092/) de Prometheus, on doit voir que l'état de chaque target est à `UP`, comme le montre dans le screenshot suivant :
 
-  <img src="readme_files/screenshots/prometheus/targets.png" alt="prometheus targets" style="width:80%"/>
+  <img src="readme_files/screenshots/prometheus/targets.png" alt="prometheus targets" style="width:100%"/>
 
 
 ### Configuration Docker pour cAdvisor
@@ -1000,7 +1000,7 @@
 
 - Exemple de requête PromQL qui renvoie les conteneurs docker :
 
-  <img src="readme_files/screenshots/prometheus/cadvisor.png" alt="cAdvisor opérationnel" style="width:50%"/>
+  <img src="readme_files/screenshots/prometheus/cadvisor.png" alt="cAdvisor opérationnel" style="width:60%"/>
 
 
 ### Métriques exposées par les différents services
