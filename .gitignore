@@ -17,6 +17,10 @@ power_bi/archives_pbi
 powerpoint/presentation.pdf
 powerpoint/presentation_compressed.pdf
 
+
+# ne pas pousser ".env" car il contient des clés
+.env
+
 node_modules
 package-lock.json
 package.json

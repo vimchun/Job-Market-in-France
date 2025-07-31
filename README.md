@@ -112,6 +112,32 @@
 - Si environnement Windows + WSL, utiliser `Docker CE` dans WSL, plutôt qu'utiliser `Docker Desktop` (voir cette [procédure](readme_files/APPENDIX.md#Installer-et-utiliser-Docker-CE-dans-WSL))
 
 
+- Fichier `.env` :
+
+  > Le fichier `.env` doit être complété avec des clés (voir ce qui suit) et ne pas être poussé sur github.
+  > Celui qui est disponible donne juste un exemple sans clé, qu'il faut compléter.
+
+  > Les variables définies dans ce fichier sont récupérées au niveau du fichier `docker-compose.yml` qui est au même niveau de l'arborescence.
+
+  - Clé fernet :
+
+    - Airflow chiffre les mots de passe de `Connections` (bases, APIs...) et les valeurs sensibles des `Variables` dans la base de métadonnées.
+
+    - Une clé doit être générée pour la clé `AIRFLOW__CORE__FERNET_KEY` du fichier de configuration d'Airflow (aussi disponible dans le fichier `docker-compose.yml`).
+
+    - C'est indispensable, sinon on verra par exemple dans la page "Connections" l'erreur "500 Internal Server Error".
+
+    - Il faudra donc exécuter la commande suivante et renseigner le résultat dans le fichier `.env` :
+
+```bash
+      # Commande pour récupérer la clé fernet :
+      python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+
+      # Le résultat de la commande précédente doit être mis dans le fichier .env, comme ceci :
+      AIRFLOW__CORE__FERNET_KEY=CLE_GENEREE_PAR_LA_COMMANDE
+```
+
+
 - Avoir les services Docker qui tournent :
 
 ```bash
