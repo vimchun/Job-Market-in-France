@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS Formation (
     , formation_code INTEGER
     , formation_domaine_libelle VARCHAR(100)
     , formation_niveau_libelle VARCHAR(100)
-    , formation_commentaire VARCHAR(100)
+    , formation_commentaire VARCHAR(200)
     , formation_code_exigence VARCHAR(100) -- was VARCHAR(1) (placeholder)
     , CONSTRAINT formation_unique UNIQUE (formation_code , formation_domaine_libelle , formation_niveau_libelle , formation_commentaire , formation_code_exigence)
 );
