@@ -1,6 +1,6 @@
-# Présentation du projet
-
 > ⚠️ DISCLAIMER : Ce dépôt est maintenu exclusivement par moi-même car il me sert de portfolio. Par conséquent, les Pull Requests ne seront pas acceptées.
+
+# Présentation du projet
 
 - Bienvenue sur mon projet, que j'ai réalisé seul entièrement, dans le cadre de ma formation `Data Engineer` chez Data Scientest en 2025.
 
