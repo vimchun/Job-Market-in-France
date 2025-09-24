@@ -1,7 +1,6 @@
 -- Suppression avec CASCADE pour prendre en compte les clés étrangères
 -- todo : à supprimer à la fin du dev
--- DROP TABLE IF EXISTS Offre_Competence , Offre_Experience , Offre_Formation , Offre_QualiteProfessionnelle , Offre_Qualification , Offre_Langue , Offre_PermisConduire , PermisConduire , Langue , Qualification , QualiteProfessionnelle , Formation , Experience , Competence , Localisation , DescriptionOffre , Entreprise , Contrat , OffreEmploi CASCADE;
-
+DROP TABLE IF EXISTS Offre_Competence , Offre_Experience , Offre_Formation , Offre_QualiteProfessionnelle , Offre_Qualification , Offre_Langue , Offre_PermisConduire , PermisConduire , Langue , Qualification , QualiteProfessionnelle , Formation , Experience , Competence , Localisation , DescriptionOffre , Entreprise , Contrat , OffreEmploi CASCADE;
 -------------------
 -- table de fait --
 -------------------
@@ -28,7 +27,7 @@ CREATE TABLE IF NOT EXISTS Contrat (
     , salaire_libelle VARCHAR(100)
     , salaire_complement_1 VARCHAR(100)
     , salaire_complement_2 VARCHAR(100)
-    , salaire_commentaire VARCHAR(100)
+    , salaire_commentaire VARCHAR(200)
     , alternance BOOLEAN
     , deplacement_code INTEGER
     , deplacement_libelle VARCHAR(100)
