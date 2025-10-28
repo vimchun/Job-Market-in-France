@@ -1116,22 +1116,34 @@ def write_to_history_csv_file(aggregated_json_directory):
     Ne retourne rien.
     """
 
-    import pandas as pd
+    import subprocess
 
     json_file_in_generated_directory = [file for file in os.listdir(aggregated_json_directory) if file.endswith(".json")]
 
     remaining_json_file = json_file_in_generated_directory[0]
 
-    df = pd.read_json(
-        os.path.join(aggregated_json_directory, remaining_json_file),
-        dtype=False,  # pour ne pas inférer les dtypes
+    # Commande grep pour récupérer le nombre d'offres dans le json (de plus en plus gros),
+    #  au lieu d'utiliser pandas (qui finit par causer un OOM sur Airflow)
+
+    result = subprocess.run(
+        [
+            "grep",
+            "-c",
+            '"id": "',
+            os.path.join(aggregated_json_directory, remaining_json_file),
+        ],
+        capture_output=True,
+        text=True,
     )
 
-    print(len(df))
+    if result.returncode == 0:
+        print(f"Nombre d'occurrences de '\"id\": ' : {result.stdout.strip()}")
+    else:
+        print(f"Erreur lors de l'exécution de grep : {result.stderr}")
 
     with open(os.path.join(aggregated_json_directory, "_json_files_history.csv"), "a", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow([remaining_json_file, len(df)])
+        writer.writerow([remaining_json_file, result.stdout.strip()])
 
     return None
 
@@ -1148,7 +1160,7 @@ def write_offers_ids_list_on_file_for_fastapi(aggregated_json_directory):
 
     remaining_json_file = json_file_in_generated_directory[0]
 
-    df = pd.read_json(
+    df = pd.read_json(  # pb mémoire OOM côté Airflow =>  TODO !!!!
         os.path.join(aggregated_json_directory, remaining_json_file),
         dtype=False,  # pour ne pas inférer les dtypes
     )
