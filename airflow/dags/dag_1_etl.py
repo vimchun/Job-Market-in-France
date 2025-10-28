@@ -210,7 +210,7 @@ def get_bearer_token(dict_, scope):
         return None
 
 
-@task(task_id="A1_get_offers")
+@task(task_id="A1_get_offers", execution_timeout=timedelta(minutes=30))
 def get_offers(token, code_libelle_list):
     """
     Récupére les offres de chaque appellation et les écrit dans un fichier json à partir des appellations ROME décrites dans "code_appellation_libelle.yml"
@@ -1116,22 +1116,35 @@ def write_to_history_csv_file(aggregated_json_directory):
     Ne retourne rien.
     """
 
-    import pandas as pd
+    import subprocess
 
     json_file_in_generated_directory = [file for file in os.listdir(aggregated_json_directory) if file.endswith(".json")]
 
     remaining_json_file = json_file_in_generated_directory[0]
 
-    df = pd.read_json(
-        os.path.join(aggregated_json_directory, remaining_json_file),
-        dtype=False,  # pour ne pas inférer les dtypes
+    # Commande grep pour récupérer le nombre d'offres dans le json (de plus en plus gros),
+    #  au lieu d'utiliser pandas (qui finit par causer un OOM sur Airflow à cause du json dont la taille se rapproche du GB)
+    #  > grep  -c '"id": '  <json_file>
+
+    result = subprocess.run(
+        [
+            "grep",
+            "-c",
+            '"id": "',
+            os.path.join(aggregated_json_directory, remaining_json_file),
+        ],
+        capture_output=True,
+        text=True,
     )
 
-    print(len(df))
+    if result.returncode == 0:
+        print(f"Nombre d'occurrences de '\"id\": ' : {result.stdout.strip()}")
+    else:
+        print(f"Erreur lors de l'exécution de grep : {result.stderr}")
 
     with open(os.path.join(aggregated_json_directory, "_json_files_history.csv"), "a", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow([remaining_json_file, len(df)])
+        writer.writerow([remaining_json_file, result.stdout.strip()])
 
     return None
 
@@ -1142,31 +1155,23 @@ def write_offers_ids_list_on_file_for_fastapi(aggregated_json_directory):
     Extrait tous les "id" (tous les "offre_id" du json), et l'écrit dans un fichier, qui servira pour FastAPI.
     """
 
-    import pandas as pd
+    import subprocess
 
     json_file_in_generated_directory = [file for file in os.listdir(aggregated_json_directory) if file.endswith(".json")]
 
     remaining_json_file = json_file_in_generated_directory[0]
 
-    df = pd.read_json(
-        os.path.join(aggregated_json_directory, remaining_json_file),
-        dtype=False,  # pour ne pas inférer les dtypes
-    )
+    # Commande grep pour récupérer les id et écrire les éléments dans un fichier (sachant que le json est de plus en plus gros),
+    #  au lieu d'utiliser pandas (qui finit par causer un OOM sur Airflow à cause du json dont la taille se rapproche du GB)
+    #  > grep -oE '"id":[[:space:]]*"[^"]+"' <json_file>  | sed -E 's/.*"id":[[:space:]]*"([^"]+)".*/\1/' > <output_file>
 
-    ids = df["id"]  # extraire la colonne 'id'
+    input_file = os.path.join(aggregated_json_directory, remaining_json_file)
 
-    logging.info(f'Nombre de "ids" à écrire : {len(df)}')
+    output_file = os.path.join(CURRENT_DIR, "..", "fastapi", "offers_ids.txt")
 
-    cwd = os.getcwd()
-    print(f"curdir : {cwd}")
+    cmd = r"grep -oE '\"id\":[[:space:]]*\"[^\"]+\"' " + input_file + r" | sed -E 's/.*\"id\":[[:space:]]*\"([^\"]+)\".*/\1/' > " + output_file
 
-    # enregistrer les identifiants dans un fichier texte
-    ids.to_csv(
-        os.path.join(CURRENT_DIR, "..", "fastapi", "offers_ids.txt"),  # dans le montage
-        index=False,
-        header=False,
-        lineterminator="\n",
-    )
+    subprocess.run(cmd, shell=True, check=True)
 
     return None
 
