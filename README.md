@@ -7,38 +7,23 @@
 - L'objectif est d'analyser le marché des offres d'emploi de la tech, notamment pour les métiers de la data `Data Analyst`, `Data Engineer` et `Data Scientist`, en France Métropolitaine.
 
 
-- Slideshow du projet avant le sommaire :
+- Slideshow du projet avant le [sommaire](#sommaire) :
 
   <video controls width="800" muted>
     <source src="readme_files/demo.mp4" type="video/mp4">
   </video>
 
 
-- Avant de présenter le [sommaire](#sommaire), voici un résumé et aperçu de ce qui a été effectué à travers quelques `.gif` (⚠️ les `gif` peuvent prendre un certain temps à charger) :
+  - Environnement dockerisé déployé avec `docker compose`
 
+  - `Airflow` pour la mise en place du pipeline pipeline ETL avec deux DAGs (`DAG 1` récupère les offres d'emploi par API, effectue des transformations avant d'écrire toutes les offres d'emploi dans un fichier json, puis `DAG 2` écrit les offres dans une base de données `Postgres`)
 
-  - Environnement dockerisé déployé avec `docker compose` :
+  - `FastAPI` pour la mise en place d'une API
 
-    <img src="readme_files/screenshots/drawio/gif/architecture_00--ALL--compressed.gif" alt="slideshow architecture gif" style="width:100%"/> <br>
+  - `Power BI` pour la consommation des données avec la création de rapports
 
-  - `Airflow` pour la mise en place du pipeline pipeline ETL avec deux DAGs (`DAG 1` récupère les offres d'emploi par API, effectue des transformations avant d'écrire toutes les offres d'emploi dans un fichier json, puis `DAG 2` écrit les offres dans une base de données `Postgres`) :
+  - `Prometheus et Grafana` pour le monitoring des `conteneurs Docker`, de la base de données `Postgres`, des `DAG`, et du `noeud`
 
-    <img src="readme_files/screenshots/airflow/slideshow-airflow-5s--compressed.gif" alt="slideshow airflow gif" style="width:100%"/> <br>
-
-
-  - `FastAPI` pour la mise en place d'une API :
-
-    <img src="readme_files/screenshots/fastapi/slideshow/slideshow-fastapi-5s--compressed.gif" alt="slideshow fastapi gif" style="width:100%"/> <br>
-
-
-  - `Power BI` pour la consommation des données avec la création de rapports :
-
-    <img src="readme_files/screenshots/power_bi/reports/slideshow/only-ALL-DE/slideshow-pbi-5s--compressed.gif" alt="slideshow power bi gif" style="width:100%"/> <br>
-
-
-  - `Prometheus et Grafana` pour le monitoring des `conteneurs Docker`, de la base de données `Postgres`, des `DAG`, et du `noeud` :
-
-    <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/with_annotations/slideshow-grafana-5s--compressed.gif" alt="slideshow grafana gif" style="width:100%"/>
 
 
 - Pour voir la présentation du projet sous forme de slides, voir ce [powerpoint](powerpoint/presentation.pptx).
