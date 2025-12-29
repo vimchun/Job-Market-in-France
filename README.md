@@ -12,10 +12,10 @@
 https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 
 <video controls width="800">
-  <source src="assets/demo.mp4" type="video/mp4">
+  <source src="readme_files/demo.mp4" type="video/mp4">
 </video>
 
-[Voir la vidéo](assets/demo.mp4)
+[Voir la vidéo](readme_files/demo.mp4)
 
   - Environnement dockerisé déployé avec `docker compose` :
 
