@@ -1,5 +1,3 @@
-> ⚠️ DISCLAIMER : Ce dépôt est maintenu exclusivement par moi-même car il me sert de portfolio. Par conséquent, les Pull Requests ne seront pas acceptées.
-
 # Présentation du projet
 
 - Bienvenue sur mon projet, que j'ai réalisé seul entièrement, dans le cadre de ma formation `Data Engineer` chez Data Scientest en 2025.
@@ -7,6 +5,12 @@
 - L'objectif est d'analyser le marché des offres d'emploi de la tech, notamment pour les métiers de la data `Data Analyst`, `Data Engineer` et `Data Scientist`, en France Métropolitaine.
 
 - Avant de présenter le [sommaire](#sommaire), voici un résumé et aperçu de ce qui a été effectué à travers quelques `.gif` (⚠️ les `gif` peuvent prendre un certain temps à charger) :
+
+
+- test mp4 :
+
+  [▶️ démo](readme_files/demo.mp4)
+
 
   - Environnement dockerisé déployé avec `docker compose` :
 
