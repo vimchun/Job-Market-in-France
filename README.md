@@ -9,7 +9,7 @@
 
 - test mp4 :
 
-  [▶️ démo](readme_files/demo.mp4)
+https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 
 
   - Environnement dockerisé déployé avec `docker compose` :
@@ -1266,3 +1266,4 @@
   - Configurer `Power BI` pour exploiter les APIs ?
 
   - Même projet mais sur le `cloud` ?
+
