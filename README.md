@@ -1,5 +1,3 @@
-> ⚠️ DISCLAIMER : Ce dépôt est maintenu exclusivement par moi-même car il me sert de portfolio. Par conséquent, les Pull Requests ne seront pas acceptées.
-
 # Présentation du projet
 
 - Bienvenue sur mon projet, que j'ai réalisé seul entièrement, dans le cadre de ma formation `Data Engineer` chez Data Scientest en 2025.
@@ -7,6 +5,12 @@
 - L'objectif est d'analyser le marché des offres d'emploi de la tech, notamment pour les métiers de la data `Data Analyst`, `Data Engineer` et `Data Scientist`, en France Métropolitaine.
 
 - Avant de présenter le [sommaire](#sommaire), voici un résumé et aperçu de ce qui a été effectué à travers quelques `.gif` (⚠️ les `gif` peuvent prendre un certain temps à charger) :
+
+
+- test mp4 :
+
+https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
+
 
   - Environnement dockerisé déployé avec `docker compose` :
 
@@ -1262,3 +1266,4 @@
   - Configurer `Power BI` pour exploiter les APIs ?
 
   - Même projet mais sur le `cloud` ?
+
