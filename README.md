@@ -9,11 +9,9 @@
 
 - test mp4 :
 
-<video controls width="800">
-    <source src="https://github.com/vimchun/Job-Market-in-France/raw/refs/heads/readme-big-changes/readme_files/demo.mp4" />
+<video controls width="800" muted>
+  <source src="readme_files/demo.mp4" type="video/mp4">
 </video>
-
-
 
 
   - Environnement dockerisé déployé avec `docker compose` :
