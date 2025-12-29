@@ -21,12 +21,11 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 - test bis :
 
 <video width="320" height="240" controls loop="" muted="" autoplay="">
-  <source src="readme_files/demo.mp4">
+    <source src="https://github.com/vimchun/Job-Market-in-France/raw/refs/heads/readme-big-changes/readme_files/demo.mp4" />
 </video>
 
 
 
-    <!-- <source src="https://github.com/ciaranbench/ciaranbench.github.io/raw/main/assets/dance_ex.mp4" /> -->
 
   - Environnement dockerisé déployé avec `docker compose` :
 
