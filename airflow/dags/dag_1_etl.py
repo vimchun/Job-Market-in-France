@@ -1083,16 +1083,30 @@ def add_date_premiere_ecriture_attribute(aggregated_json_directory, json_filenam
 
     # print(df)  # pour investigation
 
-    # On supprime les backslashs ajoutés par la méthode .to_json() [on le fait ici car c'est la dernière fonction]
-    with open(os.path.join(aggregated_json_directory, new_json_filename), "r", encoding="utf-8") as f:
-        content = f.read()
+    print('Remplacements de "\/" par "/" et ":" par ": "')
 
-        content = content.replace("\\/", "/")  # On remplace les "\/" par "/"
-        content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
+    # Ce qui suit ne fonctionne plus car OOM (avec le json devenant trop gros) :
 
-        # On sauvegarde le fichier final sans les '\'
-        with open(os.path.join(aggregated_json_directory, new_json_filename), "w", encoding="utf-8") as f:
-            f.write(content)
+    #    # On supprime les backslashs ajoutés par la méthode .to_json() [on le fait ici car c'est la dernière fonction]
+    #    with open(os.path.join(aggregated_json_directory, new_json_filename), "r", encoding="utf-8") as f:
+    #        content = f.read()
+    #        content = content.replace("\\/", "/")  # On remplace les "\/" par "/"
+    #        content = content.replace('":', '": ')  # On remplace les "deux-points sans espace" par des "deux-points avec espace"
+    #        # On sauvegarde le fichier final sans les '\'
+    #        with open(os.path.join(aggregated_json_directory, new_json_filename), "w", encoding="utf-8") as f:
+    #            f.write(content)
+
+    # On le donc fait en streaming :
+
+    input_path = os.path.join(aggregated_json_directory, new_json_filename)
+
+    with open(input_path, "r", encoding="utf-8") as fin, open(input_path + ".tmp", "w", encoding="utf-8") as fout:
+        for line in fin:
+            line = line.replace("\\/", "/")
+            line = line.replace('":', '": ')
+            fout.write(line)
+
+    os.replace(input_path + ".tmp", input_path)
 
     return new_json_filename
 
