@@ -1,0 +1,68 @@
+1
+00:00:00,100 --> 00:00:05,000
+1. Collecte des données via API (~200k offres d'emploi récupérées en 10 mois, avec ~50 attributs par offre)
+
+
+2
+00:00:05,100 --> 00:00:09,000
+2. Diagramme UML (schéma en flocon de neige)
+
+
+3
+00:00:09,100 --> 00:00:13,000
+3. Architecture dockerisée
+
+
+4
+00:00:13,100 --> 00:00:17,000
+3. Architecture dockerisée (ETL)
+
+
+5
+00:00:17,100 --> 00:00:21,000
+3. Architecture dockerisée (API)
+
+
+6
+00:00:21,100 --> 00:00:25,000
+3. Architecture dockerisée (DATA VIZ)
+
+
+7
+00:00:25,100 --> 00:00:29,000
+3. Architecture dockerisée (MONITORING)
+
+
+8
+00:00:29,100 --> 00:00:33,000
+3. Architecture dockerisée
+
+
+9
+00:00:33,100 --> 00:00:37,000
+4. Conteneurs docker
+
+
+10
+00:00:37,100 --> 00:00:45,000
+5. ETL grâce à une orchestration de tâches avec Airflow
+
+
+11
+00:00:45,100 --> 00:01:09,000
+6. Définition d'APIs avec FastAPI
+
+
+12
+00:01:09,100 --> 00:01:33,000
+7. Data Viz avec Power BI
+
+
+13
+00:01:33,100 --> 00:01:53,000
+7. Data Viz avec Power BI (métier=DE)
+
+
+14
+00:01:53,100 --> 00:02:13,000
+8. Monitoring lors de l'exécution des DAGs avec Prometheus/Grafana

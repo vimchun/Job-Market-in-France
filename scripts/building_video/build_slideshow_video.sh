@@ -21,13 +21,13 @@ HEIGHT=1080
 
 FILES=(
 
-	# 1. Récupération des données via API (~200k offres d'emploi récupérées en 10 mois, avec ~50 attributs par offre d'emploi)
+	# 1. Collecte des données via API (~200k offres d'emploi récupérées en 10 mois, avec ~50 attributs par offre d'emploi)
 	$MISC/"json_document.png"
 
 	# 2. Diagramme UML (schéma en flocon de neige)
 	$DRAWIO/"UML.png"
 
-	# 3. Architecture du projet dockerisée
+	# 3. Architecture dockerisée
 	$DRAWIO/"architecture_00--ALL.png"
 	$DRAWIO/"architecture_01--ETL.png"
 	$DRAWIO/"architecture_02--API.png"
@@ -38,20 +38,19 @@ FILES=(
 	# 4. Conteneurs docker
 	$MISC/"docker_ps.png"
 
-	# 5. Airflow pour l'orchestration des tâches (ETL)
+	# 5. ETL grâce à une orchestration de tâches avec Airflow
 	$AIRFLOW/"duration_dags.png"
 	$AIRFLOW/"graphs_dags_1_2_from_pptx.png"
 
-	# 6. FastAPI pour la définition d'APIs
+	# 6. Définition d'APIs avec FastAPI
 	$FASTAPI/"00--fullscreen.png"
 	$FASTAPI/"11--1-1b.png"
 	$FASTAPI/"12--1-4.png"
 	$FASTAPI/"21--2-1.png"
 	$FASTAPI/"22--2-5.png"
-	# $FASTAPI/"31--3-1.png" # bizarre
-	$FASTAPI/"31--3-1_with_black_sides.png" # bizarre
+	$FASTAPI/"31--3-1_with_black_sides.png" # barres sur les côtés pour éviter un resizing en plein écran par ffmpeg
 
-	# 7. Power BI pour la data viz
+	# 7. Data viz avec Power BI
 	$POWERBI_ALL_OFFERS/"1-1.png"
 	$POWERBI_ALL_OFFERS/"1-2--DA-DE-DS.png"
 	$POWERBI_COMPETENCES_XP/"2-1.png"
@@ -65,7 +64,7 @@ FILES=(
 	$POWERBI_LOCATION/"4-4--DE.png"
 	$POWERBI_KEYWORDS/"5-4--DE.png"
 
-	# 8. Prometheus/Grafana pour le monitoring
+	# 8. Monitoring avec Prometheus/Grafana
 	$PROM_GRAF/"0-airflow_dags_datetime.png"
 	$PROM_GRAF/"1-cadvisor.png"
 	$PROM_GRAF/"2-postgres-exporter.png"
@@ -157,4 +156,4 @@ ffmpeg -y \
 " \
 	-map "[v]" \
 	-c:v libx264 -pix_fmt yuv420p \
-	$OUTPUT_DIR/output.mp4
+	$OUTPUT_DIR/slideshow.mp4
