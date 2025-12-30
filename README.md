@@ -13,6 +13,12 @@
     <source src="readme_files/demo.mp4" type="video/mp4">
   </video>
 
+  <!--
+  Notes cachées pour une éventuelle mise à jour :
+    - Balise "video" pour le Github Pages
+    - Lien (en faisant un "glisser déposer" de la vidéo sur le readme sur Github pour avoir le lien)
+  -->
+
 
   - Environnement dockerisé déployé avec `docker compose`
 
