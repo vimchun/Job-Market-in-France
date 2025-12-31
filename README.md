@@ -67,9 +67,9 @@
 
 <details open>
 
-<summary><h2>Configuration pré-requise<h2></summary>
+<summary><h1>1. Environnement<h1></summary>
 
-# 1. Environnement
+<!-- # 1. Environnement -->
 
 - Une très grande partie de l'environnement de ce projet est dockerisé.
 
