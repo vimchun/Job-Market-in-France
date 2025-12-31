@@ -15,22 +15,22 @@
 
 4
 00:00:13,100 --> 00:00:17,000
-3. Architecture dockerisée (ETL)
+3. Architecture dockerisée (etl)
 
 
 5
 00:00:17,100 --> 00:00:21,000
-3. Architecture dockerisée (API)
+3. Architecture dockerisée (api)
 
 
 6
 00:00:21,100 --> 00:00:25,000
-3. Architecture dockerisée (DATA VIZ)
+3. Architecture dockerisée (data viz)
 
 
 7
 00:00:25,100 --> 00:00:29,000
-3. Architecture dockerisée (MONITORING)
+3. Architecture dockerisée (monitoring)
 
 
 8
@@ -45,24 +45,24 @@
 
 10
 00:00:37,100 --> 00:00:45,000
-5. ETL grâce à une orchestration de tâches avec Airflow
+5. ETL avec une orchestration de tâches [Airflow]
 
 
 11
 00:00:45,100 --> 00:01:09,000
-6. Définition d'APIs avec FastAPI
+6. Définition d'APIs [FastAPI]
 
 
 12
 00:01:09,100 --> 00:01:33,000
-7. Data Viz avec Power BI
+7. Data Viz [Power BI]
 
 
 13
 00:01:33,100 --> 00:01:53,000
-7. Data Viz avec Power BI (métier=DE)
+7. Data Viz avec filtre "métier=DE" [Power BI]
 
 
 14
 00:01:53,100 --> 00:02:13,000
-8. Monitoring lors de l'exécution des DAGs avec Prometheus/Grafana
+8. Monitoring lors de l'exécution des DAGs [Prometheus/Grafana]
