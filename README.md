@@ -90,10 +90,11 @@
 ## Configuration pré-requise
 
 <!-- <summary>🔽 Cliquer pour développer / réduire</summary> -->
+<!-- <summary>Cliquer pour développer / réduire</summary> -->
 
 <details>
 
-<summary>Cliquer pour développer / réduire</summary>
+<summary><h2>Cliquer pour développer / réduire</h2></summary>
 
 - Avoir le projet en local :
 
