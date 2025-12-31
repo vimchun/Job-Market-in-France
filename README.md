@@ -8,7 +8,7 @@
 
 - Slideshow du projet avant le [sommaire](#sommaire) :
 
- <video controls muted style="width: 50%; height: auto; max-width: 400px;">
+  <video controls muted style="width: 100%; max-width: 400px; height: auto;">
     <source src="scripts/building_video/results/slideshow_burned_subs.mp4" type="video/mp4">
   </video>
 
@@ -19,6 +19,7 @@
   -->
 
 
+ <!-- <video controls muted style="width: 50%; height: auto; max-width: 400px;"> -->
  <!-- <video controls width="800" muted> -->
   - Environnement dockerisé déployé avec `docker compose`
 
