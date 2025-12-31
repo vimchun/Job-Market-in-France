@@ -1,6 +1,6 @@
 # Présentation du projet
 
-- Bienvenue sur mon projet, que j'ai réalisé seul entièrement, dans le cadre de ma formation `Data Engineer` chez DataScientest en 2025.
+- Bienvenue sur mon projet, que j'ai réalisé seul entièrement dans le cadre de ma formation `Data Engineer` chez DataScientest en 2025.
 
 - L'objectif est d'analyser le marché et les offres d'emploi de la tech, notamment pour les métiers de la data `Data Analyst`, `Data Engineer` et `Data Scientist`, en France Métropolitaine.
 
@@ -17,14 +17,30 @@
 
 
   <!--
-  Notes cachées pour une éventuelle mise à jour, ci-dessus on a :
-    - la balise "video" pour le Github Pages
-    - le lien lisible depuis le readme sur Github (en faisant un "glisser déposer" de la vidéo sur le readme sur Github pour avoir le lien)
+  Notes cachées, ci-dessus on a :
+    - une structure html pour le "Github Pages"
+    - un lien, lisible depuis le "readme sur Github" (lien obtenu en faisant un "glisser déposer" de la vidéo sur le readme sur Github)
   -->
 
 
-- Présentation powerpoint du projet sous forme de slides : [lien](powerpoint/presentation.pptx).
+- Présentation powerpoint du projet sous forme de slides : [lien](powerpoint/presentation.pptx)
 
+
+<details>
+
+<summary>Tips for collapsed sections</summary>
+
+### You can add a header
+
+You can add text within a collapsed section.
+
+You can add an image or a code block, too.
+
+```ruby
+   puts "Hello World"
+```
+
+</details>
 
 # Sommaire
 
@@ -35,6 +51,7 @@
   - [Configuration Docker](#Configuration-Docker)
   - [Version des services testés](#version-des-services-testés)
   - [Arborescence des fichiers du projet](#arborescence-des-fichiers-du-projet)
+
 - [2. ETL avec Airflow](#2-etl-avec-airflow)
   - [Extraction des données par API](#extraction-des-données-par-api)
   - [Transformations des données](#transformations-des-données)
@@ -42,20 +59,23 @@
   - [Airflow](#airflow)
     - [Description du DAG 1](#description-du-dag-1)
     - [Description du DAG 2](#description-du-dag-2)
+
 - [3. Création d'une API avec FastAPI](#3-création-dune-api-avec-fastapi)
+
 - [4. Data Viz avec Power BI](#4-data-viz-avec-power-bi)
   - [Rapports et analyses](#rapports-et-analyses)
+
 - [5. Monitoring avec Prometheus et Grafana](#5-monitoring-avec-prometheus-et-grafana)
   - [Prometheus](#prometheus)
   - [Grafana](#grafana)
     - [Analyse quand les DAGs sont en cours d'exécution](#analyse-quand-les-dags-sont-en-cours-dexécution)
+
 - [6. Conclusion](#6-conclusion)
   - [Compétences techniques](#compétences-techniques)
   - [Difficultés rencontrées](#difficultés-rencontrées)
-  - [Evolutions possibles du projet](#evolutions-possibles-du-projet)
 
 
-> Notes : Dans ce projet, il n'y a pas de partie Machine Learning, car j'en avais déjà fait lors de mon projet "Data Analyst", donc peu d'intérêt ici...
+> Note : Pas de partie Machine Learning pour ce projet, car j'en avais déjà fait lors de mon projet "Data Analyst", donc peu d'intérêt ici...
 
 - Pour ne pas surcharger cette page principale, une seconde page avec des informations supplémentaires moins essentielles est disponible [ici](readme_files/APPENDIX.md#readme-secondaire).
 
@@ -74,7 +94,9 @@
 
   - `Windows 11` + `WSL2` avec `Ubuntu 22.04`
 
-    > Note importante : `Docker Desktop` utilisé au lieu de `Docker CE dans WSL` car `cAdvisor` (Container Advisor) n'est pas opérationnel dans l'environnement `WSL` avec `Ubuntu 22.04` + `Docker Desktop`, voir [ici](readme_files/APPENDIX.md#Utilisation-de-Docker-CE-dans-WSL-pour-cAdvisor) pour les explications et pour la procédure d'installation de `Docker CE` dans `WSL`.
+    > Note importante :
+    >   - `Docker CE dans WSL` utilisé au lieu de `Docker Desktop`, car `cAdvisor` (Container Advisor) n'est pas opérationnel dans l'environnement `WSL` avec `Ubuntu 22.04` + `Docker Desktop`
+    >   - Voir [ici](readme_files/APPENDIX.md#Utilisation-de-Docker-CE-dans-WSL-pour-cAdvisor) pour les explications et pour la procédure d'installation de `Docker CE` dans `WSL`.
 
   - `Python 3.12.9` (février 2025) avec environnement virtuel (formatteur `Ruff`).
 
@@ -93,7 +115,7 @@
   - Copier-coller les credentials (`identifiant client` + `clé secrète`) dans un nouveau fichier `airflow/data/resources/api_credentials.yml` (voir screenshot)
 
     ```yaml
-      # contenu du fichier `airflow/data/resources/api_credentials.yml`
+      # Contenu du fichier `airflow/data/resources/api_credentials.yml`
       FRANCE_TRAVAIL_API_CREDENTIALS:
         IDENTIFIANT_CLIENT: <à_remplir>
         CLE_SECRETE: <à_remplir>
@@ -102,7 +124,7 @@
     <img src="readme_files/screenshots/misc/francetravail_io_credentials.png" alt="credentials france travail" style="width:50%"/>
 
 
-- Si environnement Windows + WSL, utiliser `Docker CE` dans WSL, plutôt qu'utiliser `Docker Desktop` (voir cette [procédure](readme_files/APPENDIX.md#Installer-et-utiliser-Docker-CE-dans-WSL))
+- Si environnement `Windows` + `WSL`, utiliser `Docker CE` dans WSL, plutôt qu'utiliser `Docker Desktop` (voir cette [procédure](readme_files/APPENDIX.md#Installer-et-utiliser-Docker-CE-dans-WSL))
 
 
 - Fichier `.env` :
@@ -118,7 +140,7 @@
 
     - Une clé doit être générée pour la clé `AIRFLOW__CORE__FERNET_KEY` du fichier de configuration d'Airflow (aussi disponible dans le fichier `docker-compose.yml`).
 
-    - C'est indispensable, sinon on verra par exemple dans la page "Connections" l'erreur "500 Internal Server Error".
+    - C'est indispensable, sinon on verra par exemple dans la page `Connections` l'erreur "500 Internal Server Error".
 
     - Il faudra donc exécuter la commande suivante et renseigner le résultat dans le fichier `.env` :
 
@@ -140,6 +162,7 @@
   # Si besoin de redémarrer tous les services
   ./scripts/restart_all_docker_services.sh
   ```
+
 
 - Côté Airflow :
 
@@ -169,14 +192,12 @@
   - `grafana`
 
 
-### Schéma
-
 - Le fichier `drawio_files/architecture.drawio` donne une vue des principaux services Docker déployée :
 
   <img src="readme_files/screenshots/drawio/architecture_00--ALL.png" alt="architecture" style="width:100%"/>
 
 
-### Versions des services testés
+## Versions des services testés
 
 - Le ficher `docker-compose.yml` ne spécifiant pas les versions pour les différents services (tag `latest` par défaut), il est important de noter les versions des services de l'écosystème.
 
@@ -184,7 +205,7 @@
 
 - Tableau avec les versions utilisées (pour un éco-système fonctionnel) :
 
-  | service           | version  | date de la release | lien                                                               |
+  | Service           | Version  | Date de la release | Lien                                                               |
   | ----------------- | -------- | ------------------ | ------------------------------------------------------------------ |
   | FastAPI           | 0.115.12 | 03/2025            | https://github.com/fastapi/fastapi/releases                        |
   | Postgres          | 16.9     | 05/2025            | https://github.com/postgres/postgres/tags                          |
@@ -199,7 +220,7 @@
 
 
 
-### Urls des GUIs
+- Urls des GUIs :
 
 (cliquer sur une image pour la voir en plein écran)
 
@@ -217,7 +238,7 @@
 
 ## Arborescence des fichiers du projet
 
-### Sans la partie liée à la conf Docker
+- Sans la partie liée à la conf Docker :
 
 ```bash
   .
@@ -258,7 +279,8 @@
   │  
   ├── readme_files/                              # contient `README_additional_notes.md` et d'autres fichiers (screenshots, gif...)
   │  
-  ├── scripts/                                   # contient des scripts bash
+  ├── scripts/                                   # contient divers scripts bash
+  │   └── generate_mp4_slideshow                 # pour générer le fichier .mp4 (slideshow)
   │  
   ├── .env                                       # fichier utile pour Airflow
   ├── .gitattributes                             # calcul stats sur github
@@ -270,7 +292,7 @@
   ```
 
 
-### Avec seulement la configuration Docker
+- Avec seulement la configuration Docker :
 
 ```bash
   .
@@ -292,9 +314,8 @@
 
 ## Extraction des données par API
 
-- France Travail (https://francetravail.io/data/api) met à disposition plusieurs APIs, dont "Offres d'emploi v2" (`GET https://api.francetravail.io/partenaire/offresdemploi`).
+- France Travail (https://francetravail.io/data/api) met à disposition gratuitement plusieurs APIs, dont "Offres d'emploi v2" (`GET https://api.francetravail.io/partenaire/offresdemploi`).
 
-  > L'API est gratuite.
 
 - Le endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/offres/search` permet de récupérer les offres d'emploi actuelles selon plusieurs paramètres dont :
 
@@ -348,20 +369,18 @@
 
 
 
-### Pas d'autre source de données ?
-
-- Il existe de multiples sources de données sur les offres d'emploi (par exemple : API de `The Muse` ou `Adzuna`).
-
-- Les raisons pour lesquelles on ne garde que la source de `France Travail` sont les suivantes :
-
-  - ~60 attributs pour chaque offre d'emploi récupérée chez `France Travail` vs ~10 chez `The Muse` ou `Adzuna`
-
-  - Impossible de savoir si une même offre est disponible entre deux sources (identifiant différent, url différent), donc impossible de merger les offres venant de ces différentes sources sans être certain d'avoir des données sans doublon inter-sources.
-
-  - Identifiants des offres :
-    - "France Travail" : sur 7 caractères alphanumériques
-    - "Adzuna" : sur 10 digits
-    - "The Muse" : 7 ou 8 digits
+> - Pas d'autre source de données pour avoir plus d'offres d'emploi ?
+>
+>   - Il en existe d'autres, par exemple : API de `The Muse` ou `Adzuna`.
+>
+>   - Les raisons pour lesquelles on ne garde que la source de `France Travail` sont les suivantes :
+>     - ~50 attributs pour chaque offre d'emploi récupérée chez `France Travail` vs ~10 chez `The Muse` ou `Adzuna`
+>     - Impossible de savoir si une même offre est disponible entre deux sources (identifiant différent, url différent), donc impossible de merger les offres venant de ces différentes sources sans être certain d'avoir des données sans doublon inter-sources.
+>
+>   - Identifiants des offres :
+>     - "France Travail" : sur 7 caractères alphanumériques
+>     - "Adzuna" : sur 10 digits
+>     - "The Muse" : 7 ou 8 digits
 
 
 
@@ -402,13 +421,12 @@
     - Cet attribut sera traité à postériori par Power BI (voir [ici](#5-keywords)).
 
 
-> Note :
+> - Notes :
 >
-> - Une transformation a été créée pour récupérer les valeurs pour les attributs `salaire_min` et `salaire_max` à partir de l'attribut `salaire_libelle`, en fonction d'un algorithme expliqué [ici](readme_files/APPENDIX.md#attributs-salaire_min-et-salaire_max).
+>   - Une transformation a été créée pour récupérer les valeurs pour les attributs `salaire_min` et `salaire_max` à partir de l'attribut `salaire_libelle`, en fonction d'un algorithme expliqué [ici](readme_files/APPENDIX.md#attributs-salaire_min-et-salaire_max).
 >
-> - Dans la plupart des cas, les salaires récupérés sont corrects, mais il reste parfois certaines incohérences, liés aux erreurs de saisie de la part des recruteurs dans l'attribut `salaire_libelle`, qui amènent à trop de cas d'erreurs à traiter.
->
->   - Par conséquent, cette transformation ne sera pas retenue.
+>   - Dans la plupart des cas, les salaires récupérés sont corrects, mais il reste parfois certaines incohérences, liés aux erreurs de saisie de la part des recruteurs dans l'attribut `salaire_libelle`, qui amènent à trop de cas d'erreurs à traiter.
+>     - Par conséquent, cette transformation ne sera pas retenue.
 
 
 
@@ -419,9 +437,7 @@
   - Seuls les attributs liés aux `contacts` et aux `agences` ne seront pas conservés, n'apportant pas d'utilité.
 
 
-- Pour la suite, une modélisation `snowflake` (modélisation en flocon de neige) est utilisée, avec notamment des tables de liaison  qui permettent de réduire la redondance des données.
-
-- Le diagramme UML est le suivant :
+- Pour la suite, une modélisation `snowflake` (modélisation en flocon de neige) est utilisée, avec notamment des tables de liaison  qui permettent de réduire la redondance des données :
 
   <img src="readme_files/screenshots/drawio/UML.png" alt="diagramme UML" style="width:100%"/>
 
@@ -430,18 +446,18 @@
   - Tables de liaison en gris, pour quelques unes des tables de dimensionca
 
 
-- Le SGBD `PostgreSQL` sera utilisé :
+- `PostgreSQL` est utilisé car :
 
-  - Performant, sa fiable et sa flexibilité.
+  - Performant, fiable et flexible.
   - Prise en charge des types de données complexes, respecte les principes ACID.
   - Grande transparence en tant que solution open source.
-  - Communauté active assurant une évolution continue.
+  - Evolution continue avec une communauté active.
 
-- La base de données `francetravail` sera hébergée dans le conteneur Docker exécutant le service PostgreSQL.
+- La base de données `francetravail` est hébergée dans le conteneur Docker exécutant le service PostgreSQL.
 
 - Les données issues du json généré avec le `DAG 1` seront récupérées et écrites en base avec la librairie `psycopg2`.
 
-> Notes : Je n'utilise pas `mongodb`, car comme démontré dans ce projet, `SQL` est une compétence beaucoup plus demandée par les recruteurs. C'est donc plus un choix stratégique.
+> Notes : J'aurais préféré utiliser `SQL` à `mongodb`, car comme démontré dans ce projet, `SQL` est une compétence beaucoup plus demandée par les recruteurs pour les postes DA et DE. C'est donc plus un choix stratégique.
 
 
 ### Mise à jour de la base de données après récupération de nouvelles offres
@@ -475,11 +491,11 @@
 
 
 - Reprendre ces scripts pour intégrer Airflow dans le projet a été très bénéfique :
-  - amélioration des fonctions définis
-  - code plus compréhensible : factorisation de code, changement des noms de variables, revue des commentaires
-  - meilleure façon d'écrire les offres d'emploi dans le json
-  - meilleure gestion des cas d'erreur, et gestion d'erreur auquel on n'était pas confronté auparavant (exemple avec la parallélisation des requêtes et les erreurs 429 `Too much requests`)
-  - simplification des requêtes sql
+  - Amélioration des fonctions définis
+  - Code plus compréhensible : factorisation de code, changement des noms de variables, revue des commentaires
+  - Meilleure façon d'écrire les offres d'emploi dans le json
+  - Meilleure gestion des cas d'erreur, et gestion d'erreur auquel on n'était pas confronté auparavant (exemple avec la parallélisation des requêtes et les erreurs 429 `Too much requests`)
+  - Simplification des requêtes sql
 
 
 ### Avec Airflow
@@ -494,12 +510,6 @@
     - requêtes SQL pour remplir x tables en parallèle,
     - requêtes SQL pour effectuer x transformations en parallèle.
 
-
-### Version utilisée
-
-- Au moment d'écrire ces lignes, deux branches majeures : la `2.x` et la `3.x`.
-
-- Finalement, le choix se portera sur la branche `3.x` (avec la récente `3.0.3`) qui contient des évolutions majeures (détails [ici](https://airflow.apache.org/blog/airflow-three-point-oh-is-here/)).
 
 
 ## Description des DAGs
@@ -1234,25 +1244,4 @@
   - transformations :
 
     - algorithme pour récupérer le maximum d'informations de localisation des offres d'emploi (noms et codes des villes, départements, départements et régions), avec Python et la librairie `geopy` : détails [ici](readme_files/APPENDIX.md#attributs-de-localisation-des-offres-noms-et-codes-des-villes-communes-départements-et-régions)
-
-
-## Evolutions possibles du projet
-
-- Le projet est fonctionnel.
-
-- Cependant, certaines features peuvent le rendre plus robustes ou plus intéressantes :
-
-  - `Alert Manager` (pas très utile dans mon cas d'utilisation, car mon pc portable ne tourne pas en permanence)
-
-  - CI/CD avec `Github Actions` / `Pytest`
-
-  - `DBT`
-
-  - Appli plus "conviviale" que swagger (streamlit ?)
-
-  - Configurer `Power BI` pour exploiter les APIs ?
-
-  - Même projet mais sur le `cloud` ?
-
-
 
