@@ -89,9 +89,11 @@
 
 ## Configuration pré-requise
 
+<!-- <summary>🔽 Cliquer pour développer / réduire</summary> -->
+
 <details>
 
-<summary>Collapse/Expand</summary>
+<summary>Test expand</summary>
 
 - Avoir le projet en local :
 
@@ -275,6 +277,7 @@
   ├── scripts/                                   # contient divers scripts bash
   │   └── generate_mp4_slideshow                 # pour générer le fichier .mp4 (slideshow)
   │  
+  ├── _config.yml                                # customisation du Github Pages
   ├── .env                                       # fichier utile pour Airflow
   ├── .gitattributes                             # calcul stats sur github
   ├── .gitignore                                 # ne pas pousser les fichiers spécifiés sur git
