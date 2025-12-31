@@ -93,7 +93,7 @@
 
 <details>
 
-<summary>## Test expand</summary>
+<summary>Cliquer pour développer / réduire</summary>
 
 - Avoir le projet en local :
 
