@@ -1,3 +1,6 @@
+# Ce script sert à générer une vidéo mp4 avec les sous-titres incrustées dans la vidéo
+#  (sert pour la vidéo dans le Github Pages)
+#
 INPUT_FILE="results/slideshow.mp4"
 SUBTITLE_FILE="results/slideshow.srt"
 OUTPUT_FILE="results/slideshow_burned_subs.mp4"

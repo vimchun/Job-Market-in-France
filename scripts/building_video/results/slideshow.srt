@@ -55,7 +55,7 @@
 
 12
 00:01:29,100 --> 00:01:49,000
-7. Data Viz pour le métier Data Engineer [Power BI]
+7. Data Viz pour le métier "Data Engineer" [Power BI]
 
 
 13
