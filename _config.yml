@@ -1,5 +1,5 @@
 title: "Projet Data Engineer"
 description: "Projet Data Engineer"
-# theme: jekyll-theme-cayman
-# markdown: GFM
-markdown: CommonMarkGhPages
+theme: jekyll-theme-cayman
+markdown: GFM
+# markdown: CommonMarkGhPages
