@@ -15,6 +15,9 @@
   </div>
 
 
+  https://github.com/user-attachments/assets/ffc8d594-0eda-4a27-8e1e-e515469c6e67
+
+
   <!--
   Notes cachées pour une éventuelle mise à jour :
     - Balise "video" pour le Github Pages
@@ -1271,4 +1274,5 @@
   - Configurer `Power BI` pour exploiter les APIs ?
 
   - Même projet mais sur le `cloud` ?
+
 
