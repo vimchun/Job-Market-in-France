@@ -33,7 +33,7 @@ FILES=(
 	$DRAWIO/"architecture_02--API.png"
 	$DRAWIO/"architecture_03--VIZ.png"
 	$DRAWIO/"architecture_04--MON.png"
-	$DRAWIO/"architecture_00--ALL.png"
+	# $DRAWIO/"architecture_00--ALL.png"
 
 	# 4. Conteneurs docker
 	$MISC/"docker_ps.png"
@@ -74,6 +74,9 @@ FILES=(
 
 # rm $OUTPUT_DIR/* # pour être sûr de repartir de zéro
 
+#
+# Redimensionnement des images avec WIDTH et HEIGHT
+#
 i=1
 for img in "${FILES[@]}"; do
 	printf -v num "%03d" "$i"
@@ -85,6 +88,7 @@ for img in "${FILES[@]}"; do
 	((i++))
 done
 #
+# Construction du mp4
 #
 ffmpeg -y \
 	-loop 1 -t 5 -i $OUTPUT_DIR/001.png \
@@ -119,7 +123,6 @@ ffmpeg -y \
 	-loop 1 -t 5 -i $OUTPUT_DIR/030.png \
 	-loop 1 -t 5 -i $OUTPUT_DIR/031.png \
 	-loop 1 -t 5 -i $OUTPUT_DIR/032.png \
-	-loop 1 -t 5 -i $OUTPUT_DIR/033.png \
 	-filter_complex "
 [0:v][1:v]xfade=transition=fade:duration=1:offset=4[v1];
 [v1][2:v]xfade=transition=fade:duration=1:offset=8[v2];
@@ -151,9 +154,8 @@ ffmpeg -y \
 [v27][28:v]xfade=transition=fade:duration=1:offset=112[v28];
 [v28][29:v]xfade=transition=fade:duration=1:offset=116[v29];
 [v29][30:v]xfade=transition=fade:duration=1:offset=120[v30];
-[v30][31:v]xfade=transition=fade:duration=1:offset=124[v31];
-[v31][32:v]xfade=transition=fade:duration=1:offset=128,format=yuv420p[v]
+[v30][31:v]xfade=transition=fade:duration=1:offset=124,format=yuv420p[v]
 " \
 	-map "[v]" \
 	-c:v libx264 -pix_fmt yuv420p \
-	$OUTPUT_DIR/slideshow.mp4
+	$OUTPUT_DIR/slideshow.mp4 # -loop 1 -t 5 -i $OUTPUT_DIR/033.png \
