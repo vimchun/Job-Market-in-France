@@ -65,6 +65,9 @@
 - Pour ne pas surcharger cette page principale, une seconde page avec des informations supplémentaires moins essentielles est disponible [ici](readme_files/APPENDIX.md#readme-secondaire).
 
 
+<details open>
+
+<summary><h2>Configuration pré-requise<h2></summary>
 
 # 1. Environnement
 
@@ -86,6 +89,7 @@
   - `Python 3.12.9` (février 2025) avec environnement virtuel (formatteur `Ruff`).
 
 
+</details>
 
 <!-- ## Configuration pré-requise -->
 
