@@ -1,12 +1,11 @@
 # Présentation du projet
 
+- Bienvenue sur mon projet, que j'ai réalisé seul entièrement, dans le cadre de ma formation `Data Engineer` chez DataScientest en 2025.
 
-- Bienvenue sur mon projet, que j'ai réalisé seul entièrement, dans le cadre de ma formation `Data Engineer` chez Data Scientest en 2025.
-
-- L'objectif est d'analyser le marché des offres d'emploi de la tech, notamment pour les métiers de la data `Data Analyst`, `Data Engineer` et `Data Scientist`, en France Métropolitaine.
+- L'objectif est d'analyser le marché et les offres d'emploi de la tech, notamment pour les métiers de la data `Data Analyst`, `Data Engineer` et `Data Scientist`, en France Métropolitaine.
 
 
-- Slideshow du projet avant le [sommaire](#sommaire) :
+- Slideshow du projet :
 
   <div style="max-width: 400px; margin: 0 auto;">
     <video controls muted style="width: 100%; height: auto;">
@@ -18,32 +17,13 @@
 
 
   <!--
-  Notes cachées pour une éventuelle mise à jour :
-    - Balise "video" pour le Github Pages
-    - Lien (en faisant un "glisser déposer" de la vidéo sur le readme sur Github pour avoir le lien)
+  Notes cachées pour une éventuelle mise à jour, ci-dessus on a :
+    - la balise "video" pour le Github Pages
+    - le lien lisible depuis le readme sur Github (en faisant un "glisser déposer" de la vidéo sur le readme sur Github pour avoir le lien)
   -->
 
 
- <!-- <video controls muted style="width: 50%; height: auto; max-width: 400px;"> -->
- <!-- <video controls width="800" muted> -->
-
-  <!-- <video controls muted style="width: 100%; max-width: 800px; height: auto;">
-    <source src="scripts/building_video/results/slideshow_burned_subs.mp4" type="video/mp4">
-  </video> -->
-
-  - Environnement dockerisé déployé avec `docker compose`
-
-  - `Airflow` pour la mise en place du pipeline pipeline ETL avec deux DAGs (`DAG 1` récupère les offres d'emploi par API, effectue des transformations avant d'écrire toutes les offres d'emploi dans un fichier json, puis `DAG 2` écrit les offres dans une base de données `Postgres`)
-
-  - `FastAPI` pour la mise en place d'une API
-
-  - `Power BI` pour la consommation des données avec la création de rapports
-
-  - `Prometheus et Grafana` pour le monitoring des `conteneurs Docker`, de la base de données `Postgres`, des `DAG`, et du `noeud`
-
-
-
-- Pour voir la présentation du projet sous forme de slides, voir ce [powerpoint](powerpoint/presentation.pptx).
+- Présentation powerpoint du projet sous forme de slides : [lien](powerpoint/presentation.pptx).
 
 
 # Sommaire
