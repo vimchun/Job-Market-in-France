@@ -8,9 +8,12 @@
 
 - Slideshow du projet avant le [sommaire](#sommaire) :
 
-  <video controls muted style="width: 100%; max-width: 800px; height: auto;">
-    <source src="scripts/building_video/results/slideshow_burned_subs.mp4" type="video/mp4">
-  </video>
+  <div style="max-width: 400px; margin: 0 auto;">
+    <video controls muted style="width: 100%; height: auto;">
+      <source src="scripts/building_video/results/slideshow_burned_subs.mp4" type="video/mp4">
+    </video>
+  </div>
+
 
   <!--
   Notes cachées pour une éventuelle mise à jour :
@@ -21,6 +24,11 @@
 
  <!-- <video controls muted style="width: 50%; height: auto; max-width: 400px;"> -->
  <!-- <video controls width="800" muted> -->
+
+  <!-- <video controls muted style="width: 100%; max-width: 800px; height: auto;">
+    <source src="scripts/building_video/results/slideshow_burned_subs.mp4" type="video/mp4">
+  </video> -->
+
   - Environnement dockerisé déployé avec `docker compose`
 
   - `Airflow` pour la mise en place du pipeline pipeline ETL avec deux DAGs (`DAG 1` récupère les offres d'emploi par API, effectue des transformations avant d'écrire toutes les offres d'emploi dans un fichier json, puis `DAG 2` écrit les offres dans une base de données `Postgres`)
