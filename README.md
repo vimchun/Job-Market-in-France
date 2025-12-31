@@ -8,7 +8,7 @@
 
 - Slideshow du projet avant le [sommaire](#sommaire) :
 
- <video controls muted style="width: 100%; height: auto; max-width: 800px;">
+ <video controls muted style="width: 100%; height: auto; max-width: 400px;">
     <source src="scripts/building_video/results/slideshow_burned_subs.mp4" type="video/mp4">
   </video>
 
