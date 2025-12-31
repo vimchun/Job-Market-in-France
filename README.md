@@ -14,8 +14,7 @@
     </video>
   </div>
 
-
-  https://github.com/user-attachments/assets/ffc8d594-0eda-4a27-8e1e-e515469c6e67
+  https://github.com/user-attachments/assets/0b176015-4a1a-4abe-9191-231c9b791a2c
 
 
   <!--
@@ -1274,5 +1273,6 @@
   - Configurer `Power BI` pour exploiter les APIs ?
 
   - Même projet mais sur le `cloud` ?
+
 
 
