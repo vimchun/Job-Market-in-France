@@ -1,4 +1,5 @@
 title: "test"
-description: "Un site statique généré avec Jekyll sur GitHub Pages"
+description: "Projet Data Engineer"
 # theme: jekyll-theme-cayman
-markdown: GFM
+# markdown: GFM
+markdown: CommonMarkGhPages
