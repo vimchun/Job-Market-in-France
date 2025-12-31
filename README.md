@@ -87,14 +87,16 @@
 
 
 
-## Configuration pré-requise
+<!-- ## Configuration pré-requise -->
 
 <!-- <summary>🔽 Cliquer pour développer / réduire</summary> -->
 <!-- <summary>Cliquer pour développer / réduire</summary> -->
+<!-- <summary><h2>Cliquer pour développer / réduire</h2></summary> -->
 
 <details>
 
-<summary><h2>Cliquer pour développer / réduire</h2></summary>
+<summary><h2>Configuration pré-requise<h2></summary>
+
 
 - Avoir le projet en local :
 
