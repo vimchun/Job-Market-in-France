@@ -26,21 +26,6 @@
 - Présentation powerpoint du projet sous forme de slides : [lien](powerpoint/presentation.pptx)
 
 
-<details>
-
-<summary>Tips for collapsed sections</summary>
-
-### You can add a header
-
-You can add text within a collapsed section.
-
-You can add an image or a code block, too.
-
-```ruby
-   puts "Hello World"
-```
-
-</details>
 
 # Sommaire
 
@@ -101,7 +86,12 @@ You can add an image or a code block, too.
   - `Python 3.12.9` (février 2025) avec environnement virtuel (formatteur `Ruff`).
 
 
+
 ## Configuration pré-requise
+
+<details>
+
+<summary>Collapse/Expand</summary>
 
 - Avoir le projet en local :
 
@@ -178,6 +168,9 @@ You can add an image or a code block, too.
 - Côté Prometheus :
 
   - L'état des targets doit être à `UP`, voir le screenshot de cette [section](#Configuration-de-Prometheus).
+
+
+</details>
 
 
 ## Configuration Docker
