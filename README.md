@@ -93,7 +93,7 @@
 
 <details>
 
-<summary>Test expand</summary>
+<summary>## Test expand</summary>
 
 - Avoir le projet en local :
 
