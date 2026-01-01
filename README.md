@@ -31,8 +31,8 @@
 
 (avec les sous-sections importantes uniquement)
 
-- [Environnement](#1-environnement)
-  - [Configuration pré-requise](#configuration-requise)
+- [Environnement](#environnement)
+  - [Mon environnement](#mon-environnement)
   - [Configuration Docker](#configuration-docker)
   - [Versions des services testés](#versions-des-services-testes)
   - [Arborescence des fichiers du projet](#arborescence-des-fichiers-du-projet)
@@ -66,6 +66,8 @@
 
 
 
+<a id="environnnement"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+
 # 1. Environnement
 
 <details open>
@@ -73,7 +75,7 @@
 <summary> Cliquer pour développer / réduire</summary>
 
 
-## Configuration requise
+<!-- ## Configuration requise -->
 
 <!-- <summary>🔽 Cliquer pour développer / réduire</summary> -->
 <!-- <summary>Cliquer pour développer / réduire</summary> -->
@@ -84,7 +86,9 @@
 
 <details>
 
-<summary><h2>Configuration requise<h2></summary>
+<a id="mon-environnement"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+
+## 1.a. Mon environnement
 
 - Le développement et les tests ont eu lieu sous :
 
@@ -174,7 +178,9 @@
 </details>
 
 
-## Configuration Docker
+<a id="configuration-docker"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+
+## 1.b. Configuration Docker
 
 - Une grande partie de l'environnement de ce projet est dockerisé.
 
@@ -197,9 +203,9 @@
   >   - Voir [ici](readme_files/APPENDIX.md#Utilisation-de-Docker-CE-dans-WSL-pour-cAdvisor) pour les explications et pour la procédure d'installation de `Docker CE` dans `WSL`.
 
 
-<a id="versions-des-services-testes"></a>   <!-- Pour contourner le problème d'ancre markdown avec accent -->
+<a id="versions-des-services-testes"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
 
-## Versions des services testés
+## 1.c. Versions des services testés
 
 
 - Le ficher `docker-compose.yml` ne spécifiant pas les versions pour les différents services (tag `latest` par défaut), il est important de noter les versions des services de l'écosystème.
@@ -239,7 +245,9 @@
   | Grafana           | http://localhost:3000/ <br>(grafana / grafana)         | <img src="readme_files/screenshots/gui/grafana.png" alt="screenshot grafana" style="width:20%"/>                     |
 
 
-## Arborescence des fichiers du projet
+<a id="arborescence-des-fichiers-du-projet"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+
+## 1.d. Arborescence des fichiers du projet
 
 - Sans la partie liée à la conf Docker :
 
