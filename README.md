@@ -65,11 +65,12 @@
 - Pour ne pas surcharger cette page principale, une seconde page avec des informations supplémentaires moins essentielles est disponible [ici](readme_files/APPENDIX.md#readme-secondaire).
 
 
+
+# 1. Environnement
+
 <details open>
 
-<summary><h1>1. Environnement<h1></summary>
-
-<!-- # 1. Environnement -->
+<summary>🔽 Cliquer pour développer / réduire</summary>
 
 - Une très grande partie de l'environnement de ce projet est dockerisé.
 
@@ -89,17 +90,17 @@
   - `Python 3.12.9` (février 2025) avec environnement virtuel (formatteur `Ruff`).
 
 
-</details>
 
-<!-- ## Configuration pré-requise -->
+## Configuration pré-requise
 
 <!-- <summary>🔽 Cliquer pour développer / réduire</summary> -->
 <!-- <summary>Cliquer pour développer / réduire</summary> -->
 <!-- <summary><h2>Cliquer pour développer / réduire</h2></summary> -->
+<!-- <summary><h2>Configuration pré-requise<h2></summary> -->
 
 <details>
 
-<summary><h2>Configuration pré-requise<h2></summary>
+<summary>🔽 Cliquer pour développer / réduire</summary>
 
 
 - Avoir le projet en local :
@@ -309,6 +310,8 @@
   │  
   └── docker-compose.yml    # orchestration docker pour postgres + fastapi + les services Airflow
   ```
+
+</details>
 
 
 # 2. ETL avec Airflow
