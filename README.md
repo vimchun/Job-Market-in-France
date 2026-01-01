@@ -70,7 +70,7 @@
 
 <details open>
 
-<summary>🔽 Cliquer pour développer / réduire</summary>
+<summary> Cliquer pour développer / réduire</summary>
 
 
 ## Configuration requise
@@ -82,7 +82,7 @@
 
 <details>
 
-<summary><i> 🔽 Cliquer pour développer / réduire</i></summary>
+<summary><i> Cliquer pour développer / réduire</i></summary>
 
 
 - Le développement et les tests ont eu lieu sous :
