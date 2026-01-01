@@ -31,10 +31,10 @@
 
 (avec les sous-sections importantes uniquement)
 
-- [1. Environnement](#1-environnement)
-  - [Configuration pré-requise](#configuration-pré-requise)
-  - [Configuration Docker](#Configuration-Docker)
-  - [Version des services testés](#version-des-services-testés)
+- [Environnement](#environnement)
+  - [Configuration pré-requise](#configuration-requise)
+  - [Configuration Docker](#configuration-docker)
+  - [Version des services testés](#versions-des-services-testes)
   - [Arborescence des fichiers du projet](#arborescence-des-fichiers-du-projet)
 
 - [2. ETL avec Airflow](#2-etl-avec-airflow)
@@ -66,7 +66,7 @@
 
 
 
-# 1. Environnement {#1-environnement}
+# Environnement
 
 <details open>
 
@@ -91,7 +91,7 @@
 
 
 
-## Configuration pré-requise
+## Configuration requise
 
 <!-- <summary>🔽 Cliquer pour développer / réduire</summary> -->
 <!-- <summary>Cliquer pour développer / réduire</summary> -->
