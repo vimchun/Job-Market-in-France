@@ -31,10 +31,10 @@
 
 (avec les sous-sections importantes uniquement)
 
-- [Environnement](#environnement)
+- [Environnement](#1-environnement)
   - [Configuration pré-requise](#configuration-requise)
   - [Configuration Docker](#configuration-docker)
-  - [Version des services testés](#versions-des-services-testes)
+  - [Versions des services testés](#versions-des-services-testes)
   - [Arborescence des fichiers du projet](#arborescence-des-fichiers-du-projet)
 
 - [2. ETL avec Airflow](#2-etl-avec-airflow)
@@ -66,7 +66,7 @@
 
 
 
-# Environnement
+# 1. Environnement
 
 <details open>
 
@@ -201,6 +201,8 @@
 
 
 ## Versions des services testés
+
+<a id="versions-des-services-testes"></a>   <!-- Pour contourner le problème d'ancre avec l'accent -->
 
 - Le ficher `docker-compose.yml` ne spécifiant pas les versions pour les différents services (tag `latest` par défaut), il est important de noter les versions des services de l'écosystème.
 
