@@ -80,10 +80,11 @@
 <!-- <summary><h2>Cliquer pour développer / réduire</h2></summary> -->
 <!-- <summary><h2>Configuration pré-requise<h2></summary> -->
 
+<!-- <summary><i> Cliquer pour développer / réduire</i></summary> -->
+
 <details>
 
-<summary><i> Cliquer pour développer / réduire</i></summary>
-
+<summary><h2>Configuration requise<h2></summary>
 
 - Le développement et les tests ont eu lieu sous :
 
