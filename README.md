@@ -31,11 +31,11 @@
 
 (avec les sous-sections importantes uniquement)
 
-- [Environnement](#environnement)
-  - [Mon environnement](#mon-environnement)
-  - [Configuration Docker](#configuration-docker)
-  - [Versions des services testés](#versions-des-services-testes)
-  - [Arborescence des fichiers du projet](#arborescence-des-fichiers-du-projet)
+- [1. Environnement](#environnement)
+  - [1.a. Pré-requis](#pre-requis)
+  - [1.b. Configuration Docker](#configuration-docker)
+  - [1.c. Versions des services testés](#versions-des-services-testes)
+  - [1.d. Arborescence des fichiers du projet](#arborescence-des-fichiers-du-projet)
 
 - [2. ETL avec Airflow](#2-etl-avec-airflow)
   - [Extraction des données par API](#extraction-des-données-par-api)
@@ -70,9 +70,18 @@
 
 # 1. Environnement
 
+> - Notes :
+>   - Le développement et les tests ont eu lieu sous :
+>     - `Windows 11` + `WSL2` avec `Ubuntu 22.04`
+>     - `Python 3.12.9` (février 2025) avec environnement virtuel (formatteur `Ruff`).
+
 <details open>
 
-<summary> Cliquer pour développer / réduire</summary>
+<!-- <summary> Cliquer pour développer / réduire</summary> -->
+
+<summary style="color: blue; font-style: italic;">
+  Cliquer pour développer / réduire
+</summary>
 
 
 <!-- ## Configuration requise -->
@@ -86,15 +95,10 @@
 
 <details>
 
-<a id="mon-environnement"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<a id="prerequis"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
 
-## 1.a. Mon environnement
 
-- Le développement et les tests ont eu lieu sous :
-
-  - `Windows 11` + `WSL2` avec `Ubuntu 22.04`
-
-  - `Python 3.12.9` (février 2025) avec environnement virtuel (formatteur `Ruff`).
+## 1.a. Pré-requis
 
 
 
