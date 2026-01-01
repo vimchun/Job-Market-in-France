@@ -66,7 +66,7 @@
 
 
 
-<a id="environnnement"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<a id="environnement"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
 
 # 1. Environnement
 
@@ -98,7 +98,8 @@
 <a id="prerequis"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
 
 
-## 1.a. Pré-requis
+<summary><h2>1.a. Pré-requis</h2></summary>
+<!-- ## 1.a. Pré-requis -->
 
 
 
