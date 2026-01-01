@@ -72,24 +72,6 @@
 
 <summary>🔽 Cliquer pour développer / réduire</summary>
 
-- Une très grande partie de l'environnement de ce projet est dockerisé.
-
-- Le fichier `drawio_files/architecture.drawio` donne une vue sur l'architecture du projet :
-
-  <img src="readme_files/screenshots/drawio/architecture_00--ALL.png" alt="architecture du projet" style="width:100%"/>
-
-
-- Le développement et les tests ont eu lieu sous :
-
-  - `Windows 11` + `WSL2` avec `Ubuntu 22.04`
-
-    > Note importante :
-    >   - `Docker CE dans WSL` utilisé au lieu de `Docker Desktop`, car `cAdvisor` (Container Advisor) n'est pas opérationnel dans l'environnement `WSL` avec `Ubuntu 22.04` + `Docker Desktop`
-    >   - Voir [ici](readme_files/APPENDIX.md#Utilisation-de-Docker-CE-dans-WSL-pour-cAdvisor) pour les explications et pour la procédure d'installation de `Docker CE` dans `WSL`.
-
-  - `Python 3.12.9` (février 2025) avec environnement virtuel (formatteur `Ruff`).
-
-
 
 ## Configuration requise
 
@@ -100,7 +82,15 @@
 
 <details>
 
-<summary>🔽 Cliquer pour développer / réduire</summary>
+<summary><i> 🔽 Cliquer pour développer / réduire</i></summary>
+
+
+- Le développement et les tests ont eu lieu sous :
+
+  - `Windows 11` + `WSL2` avec `Ubuntu 22.04`
+
+  - `Python 3.12.9` (février 2025) avec environnement virtuel (formatteur `Ruff`).
+
 
 
 - Avoir le projet en local :
@@ -185,6 +175,8 @@
 
 ## Configuration Docker
 
+- Une grande partie de l'environnement de ce projet est dockerisé.
+
 - Les différents services sont déployés grâce à `docker compose`, avec le `docker-compose.yml` qui décrit les services suivants :
 
   - `postgres`,
@@ -195,14 +187,19 @@
   - `grafana`
 
 
-- Le fichier `drawio_files/architecture.drawio` donne une vue des principaux services Docker déployée :
+- Le fichier `drawio_files/architecture.drawio` donne une vue sur l'architecture du projet, avec les principaux services Docker déployés :
 
-  <img src="readme_files/screenshots/drawio/architecture_00--ALL.png" alt="architecture" style="width:100%"/>
+  <img src="readme_files/screenshots/drawio/architecture_00--ALL.png" alt="architecture du projet" style="width:100%"/>
 
+  > Notes :
+  >   - `Docker CE dans WSL` utilisé au lieu de `Docker Desktop`, car `cAdvisor` (Container Advisor) n'est pas opérationnel dans l'environnement `WSL` avec `Ubuntu 22.04` + `Docker Desktop`
+  >   - Voir [ici](readme_files/APPENDIX.md#Utilisation-de-Docker-CE-dans-WSL-pour-cAdvisor) pour les explications et pour la procédure d'installation de `Docker CE` dans `WSL`.
+
+
+<a id="versions-des-services-testes"></a>   <!-- Pour contourner le problème d'ancre markdown avec accent -->
 
 ## Versions des services testés
 
-<a id="versions-des-services-testes"></a>   <!-- Pour contourner le problème d'ancre avec l'accent -->
 
 - Le ficher `docker-compose.yml` ne spécifiant pas les versions pour les différents services (tag `latest` par défaut), il est important de noter les versions des services de l'écosystème.
 
