@@ -310,7 +310,7 @@
 <details open>
 <summary><h1>2. ETL avec Airflow</h1></summary>
 
-  <img src="readme_files/screenshots/drawio/gif/architecture_01--ETL--compressed.gif" alt="architecture focus ETL" style="width:100%"/>
+  <!-- <img src="readme_files/screenshots/drawio/gif/architecture_01--ETL--compressed.gif" alt="architecture focus ETL" style="width:100%"/> -->
 
 
 <a id="extraction-des-donnees-par-api"></a>
@@ -787,7 +787,7 @@
 <details open>
 <summary><h1>3. Création d'une API avec FastAPI</h1></summary>
 
-<img src="readme_files/screenshots/drawio/gif/architecture_02--API--compressed.gif" alt="architecture focus API" style="width:100%"/>
+<!-- <img src="readme_files/screenshots/drawio/gif/architecture_02--API--compressed.gif" alt="architecture focus API" style="width:100%"/> -->
 
 
 <details> <summary><h2>Tags</h2></summary>
@@ -940,7 +940,7 @@
 <a id="data-viz-avec-power-bi"></a>
 <details open> <summary><h1>4. Data Viz avec Power BI</h1></summary>
 
-  <img src="readme_files/screenshots/drawio/gif/architecture_03--VIZ--compressed.gif" alt="architecture focus VIZ" style="width:100%"/>
+  <!-- <img src="readme_files/screenshots/drawio/gif/architecture_03--VIZ--compressed.gif" alt="architecture focus VIZ" style="width:100%"/> -->
 
 
 <details> <summary><h2>Manipulations</h2></summary>
@@ -1079,7 +1079,7 @@
 <details open>
 <summary><h1>5. Monitoring avec Prometheus et Grafana</h1></summary>
 
-  <img src="readme_files/screenshots/drawio/gif/architecture_04--MON--compressed.gif" alt="architecture focus MON" style="width:100%"/>
+  <!-- <img src="readme_files/screenshots/drawio/gif/architecture_04--MON--compressed.gif" alt="architecture focus MON" style="width:100%"/> -->
 
 <a id="prometheus"></a>
 <details> <summary><h2>5.a. Prometheus</h2></summary>
