@@ -49,8 +49,8 @@
   - [Rapports et analyses](#rapports-et-analyses)
 
 - [5. Monitoring avec Prometheus et Grafana](#monitoring-avec-prometheus-et-grafana)
-  - [Prometheus](#prometheus)
-  - [Grafana](#grafana)
+  - [5.a. Prometheus](#prometheus)
+  - [5.b. Grafana](#grafana)
     - [Analyse quand les DAGs sont en cours d'exécution](#analyse-quand-les-dags-sont-en-cours-dexécution)
 
 - [6. Conclusion](#conclusion)
@@ -1083,7 +1083,8 @@
 
   <img src="readme_files/screenshots/drawio/gif/architecture_04--MON--compressed.gif" alt="architecture focus MON" style="width:100%"/>
 
-<details> <summary><h2>Prometheus</h2></summary>
+<a id="prometheus"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<details> <summary><h2>5.a. Prometheus</h2></summary>
 
 <details> <summary><h3>Configuration de Prometheus</h3></summary>
 
@@ -1184,7 +1185,8 @@
 
 </details>
 
-<details> <summary><h2>Grafana</h2></summary>
+<a id="grafana"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<details> <summary><h2>5.b. Grafana</h2></summary>
 
 
 <details> <summary><h3>Configuration automatique après installation</h3></summary>
