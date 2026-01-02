@@ -41,22 +41,30 @@
   <br>
 
 - [2. ETL avec Airflow](#etl-avec-airflow)
-  - [Extraction des données par API](#extraction-des-données-par-api)
-  - [Transformations des données](#transformations-des-données)
-  - [Chargement des données dans une base de données relationnelle](#chargement-des-données-dans-une-base-de-données-relationnelle)
-  - [Airflow](#airflow)
+  - [2.a. Extraction des données par API](#extraction-des-donnees-par-api)
+  - [2.b. Transformations des données](#transformations-des-donnees)
+  - [2.c. Chargement des données dans une base de données relationnelle](#chargement-des-donnees-dans-une-base-de-donnees-relationnelle)
+  - [2.d. Airflow](#airflow)
     - [Description du DAG 1](#description-du-dag-1)
     - [Description du DAG 2](#description-du-dag-2)
 
+  <br>
+
 - [3. Création d'une API avec FastAPI](#3-création-dune-api-avec-fastapi)
+
+  <br>
 
 - [4. Data Viz avec Power BI](#4-data-viz-avec-power-bi)
   - [Rapports et analyses](#rapports-et-analyses)
+
+  <br>
 
 - [5. Monitoring avec Prometheus et Grafana](#5-monitoring-avec-prometheus-et-grafana)
   - [Prometheus](#prometheus)
   - [Grafana](#grafana)
     - [Analyse quand les DAGs sont en cours d'exécution](#analyse-quand-les-dags-sont-en-cours-dexécution)
+
+  <br>
 
 - [6. Conclusion](#6-conclusion)
   - [Compétences techniques](#compétences-techniques)
@@ -66,7 +74,6 @@
 > Note : Pas de partie Machine Learning pour ce projet, car j'en avais déjà fait lors de mon projet "Data Analyst", donc peu d'intérêt ici...
 
 - Pour ne pas surcharger cette page principale, une seconde page avec des informations supplémentaires moins essentielles est disponible [ici](readme_files/APPENDIX.md#readme-secondaire).
-
 
 
 <a id="environnement"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
@@ -320,7 +327,11 @@
 
   <img src="readme_files/screenshots/drawio/gif/architecture_01--ETL--compressed.gif" alt="architecture focus ETL" style="width:100%"/>
 
-## Extraction des données par API
+
+<a id="extraction-des-donnees-par-api"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<details>
+<summary><h2>2.a. Extraction des données par API</h2></summary>
+
 
 - France Travail (https://francetravail.io/data/api) met à disposition gratuitement plusieurs APIs, dont "Offres d'emploi v2" (`GET https://api.francetravail.io/partenaire/offresdemploi`).
 
@@ -390,9 +401,13 @@
 >     - "Adzuna" : sur 10 digits
 >     - "The Muse" : 7 ou 8 digits
 
+</details>
 
 
-## Transformations des données
+<a id="transformations-des-donnees"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<details>
+<summary><h2>2.b. Transformations des données</h2></summary>
+
 
 ### Transformations des données en amont (côté Python)
 
@@ -437,8 +452,13 @@
 >     - Par conséquent, cette transformation ne sera pas retenue.
 
 
+</details>
 
-## Chargement des données dans une base de données relationnelle
+<a id="#chargement-des-donnees-dans-une-base-de-donnees-relationnelle"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<details>
+<summary><h2>2.c. Chargement des données dans une base de données relationnelle</h2></summary>
+
+
 
 - L'API de France Travail contient beaucoup d'attibuts pour une offre d'emploi, qui seront quasiment tous exploités par la suite.
 
@@ -484,9 +504,13 @@
 
 - Plus de détails [ici](readme_files/APPENDIX.md#mise-à-jour-de-la-base-de-données-après-récupération-de-nouvelles-offres).
 
+</details>
 
 
-## Airflow
+<a id="airflow"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<details>
+<summary><h2>2.d. Airflow</h2></summary>
+
 
 ### Avant Airflow
 
@@ -755,6 +779,9 @@
     <img src="readme_files/screenshots/airflow/duration_dags.png" alt="durée des DAGs" style="width:100%"/>
 
 </details>
+
+</details>
+
 
 # 3. Création d'une API avec FastAPI
 
