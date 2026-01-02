@@ -43,7 +43,7 @@
 
 - [3. Création d'une API avec FastAPI](#creation-dune-api-avec-fastapi)
 
-- [4. Data Viz avec Power BI](#4-data-viz-avec-power-bi)
+- [4. Data Viz avec Power BI](#data-viz-avec-power-bi)
   - [Rapports et analyses](#rapports-et-analyses)
 
 - [5. Monitoring avec Prometheus et Grafana](#5-monitoring-avec-prometheus-et-grafana)
@@ -929,14 +929,15 @@
 </details>
 
 
-# 4. Data Viz avec Power BI
+<a id="data-viz-avec-power-bi"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<details open> <summary><h1>4. Data Viz avec Power BI</h1></summary>
 
   <img src="readme_files/screenshots/drawio/gif/architecture_03--VIZ--compressed.gif" alt="architecture focus VIZ" style="width:100%"/>
 
 - `Power BI` servira ici pour la data visualisation.
 
 
-## Manipulations
+<details> <summary><h2>Manipulations</h2></summary>
 
 - Ci-dessous des liens expliquant les différentes manipulations à faire (déjà faites pour le fichier `power_bi/project.pbix`) pour :
 
@@ -951,14 +952,20 @@
   - [faire les transformations](readme_files/APPENDIX.md#transformations)
 
 
-## Mise à jour des données
+</details>
+
+
+<details> <summary><h2>Mise à jour des données</h2></summary>
 
 - Après une exécution du pipeline ETL (c'est-à-dire après exécution des 2 DAGs Airflow), il suffit d'ouvrir le projet Power BI (`power_bi/project.pbix`), et de cliquer sur l'item `Refresh` :
 
   <img src="readme_files/screenshots/power_bi/refresh.png" alt="refresh" style="width:70%"/>
 
+</details>
 
-## Rapports et analyses
+
+<a id="rapports-et-analyses"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<details> <summary><h2>Rapports et analyses</h2></summary>
 
 - Pour les sections suivantes, des `.gif` sont affichés pour ne pas mettre trop de screenshots dans cette page.
 
@@ -972,7 +979,7 @@
 - Les sections suivantes exposeront l'analyse des offres `DA`, `DE` et `DS` uniquement.
 
 
-### 1. Offres (all)
+<details> <summary><h3>1. Offres (all)</h3></summary>
 
 <img src="readme_files/screenshots/power_bi/reports/1--all-offers/1-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
@@ -990,8 +997,10 @@
     - même le week-end : `samedi` et `dimanche`, ce qui est bon à savoir,
     - le moins souvent : `lundi` et `dimanche` (normal, mais il y a quand même des offres publiées ce jour-là).
 
+</details>
 
-### 2. Compétences/expériences
+
+<details> <summary><h3>2. Compétences/expériences</h3></summary>
 
 <img src="readme_files/screenshots/power_bi/reports/2--competences-experiences/2-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
@@ -1004,8 +1013,10 @@
 - Donut en bas (expériences) :
   - Pour les 3 métiers, plus de la moitié des offres d'emploi acceptent les `débutants`.
 
+</details>
 
-### 3. Qualités/qualifications
+
+<details> <summary><h3>3. Qualités/qualifications</h3></summary>
 
 <img src="readme_files/screenshots/power_bi/reports/3--qualites-qualifications/3-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
@@ -1017,8 +1028,9 @@
 - Bargraph en bas (qualification) :
   - Toujours pour les 3 métiers, les offres ciblent principalement les `cadres` et les `employés qualifiés`.
 
+</details>
 
-### 4. Localisation
+<details> <summary><h3>4. Localisation</h3></summary>
 
 <img src="readme_files/screenshots/power_bi/reports/4--location/4-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
@@ -1033,8 +1045,9 @@
   - Les départements qui recrutent le plus : `Paris`, suivi par les `Hauts-de-Seine`.
   - Les villes qui recrutent le plus : `Paris` de loin, suivi par `Lyon`.
 
+</details>
 
-### 5. Keywords
+<details> <summary><h3>5. Keywords</h3></summary>
 
 <img src="readme_files/screenshots/power_bi/reports/5--keywords/5-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
@@ -1050,6 +1063,9 @@
 
 - Pour les 3 métiers, les mots-clés qui reviennent le plus souvent dans les offres sont le trio souvent cité sur beaucoup de posts Linkedin : `SQL`, `Python`, et `Git`, et aussi `Cloud`.
 
+</details>
+</details>
+</details>
 
 
 # 5. Monitoring avec Prometheus et Grafana
