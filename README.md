@@ -1298,12 +1298,12 @@
 ---
 
 <a id="conclusion"></a>
-<summary><h1>6. Conclusion</h1></summary>
+<details> <summary><h1>6. Conclusion</h1></summary>
 
 <a id="competences-techniques-developpees"></a>
 <details> <summary><h2>6.a. Compétences techniques développées</h2></summary>
 
-- J'ai beaucoup appris à travers ce projet, que j'ai trouvé très intéressant, à tout point de vue.
+- J'ai beaucoup appris à travers ce projet, que j'ai trouvé très intéressant à tout point de vue.
 
 - Les compétences travaillées sont les suivantes :
 
