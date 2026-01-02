@@ -97,11 +97,7 @@
 <a id="prerequis"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
 
 <details>
-
 <summary><h2>1.a. Pré-requis</h2></summary>
-<!-- ## 1.a. Pré-requis -->
-
-
 
 - Avoir le projet en local :
 
@@ -111,7 +107,7 @@
 
 - Sur `https://francetravail.io/` :
   - Créer un compte
-  - Ajouter les accès aux APIS `Marché du travail v1` et `Offres d'emploi v2` (voir screenshot)
+  - Ajouter les accès aux APIs `Marché du travail v1` et `Offres d'emploi v2` (voir screenshot)
   - Copier-coller les credentials (`identifiant client` + `clé secrète`) dans un nouveau fichier `airflow/data/resources/api_credentials.yml` (voir screenshot)
 
     ```yaml
@@ -184,8 +180,8 @@
 
 
 <a id="configuration-docker"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
-
-## 1.b. Configuration Docker
+<details>
+<summary><h2>1.b. Configuration Docker</h2></summary>
 
 - Une grande partie de l'environnement de ce projet est dockerisé.
 
@@ -210,8 +206,10 @@
 
 <a id="versions-des-services-testes"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
 
-## 1.c. Versions des services testés
+</details>
 
+<details>
+<summary><h2>1.c. Versions des services testés</h2></summary>
 
 - Le ficher `docker-compose.yml` ne spécifiant pas les versions pour les différents services (tag `latest` par défaut), il est important de noter les versions des services de l'écosystème.
 
@@ -249,10 +247,12 @@
   | Prometheus        | http://localhost:9092/ + http://localhost:9092/metrics | <img src="readme_files/screenshots/gui/prometheus.png" alt="screenshot prometheus" style="width:20%"/>               |
   | Grafana           | http://localhost:3000/ <br>(grafana / grafana)         | <img src="readme_files/screenshots/gui/grafana.png" alt="screenshot grafana" style="width:20%"/>                     |
 
+</details>
 
 <a id="arborescence-des-fichiers-du-projet"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
 
-## 1.d. Arborescence des fichiers du projet
+<details>
+<summary><h2>1.d. Arborescence des fichiers du projet</h2></summary>
 
 - Sans la partie liée à la conf Docker :
 
