@@ -119,13 +119,13 @@
 
     - Il faudra donc exécuter la commande suivante et renseigner le résultat dans le fichier `.env` :
 
-```bash
+    ```bash
       # Commande pour récupérer la clé fernet :
       python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
 
       # Le résultat de la commande précédente doit être mis dans le fichier .env, comme ceci :
       AIRFLOW__CORE__FERNET_KEY=CLE_GENEREE_PAR_LA_COMMANDE
-```
+      ```
 
 
 - Avoir les services Docker qui tournent :

@@ -1,8 +1,8 @@
 title: "Projet Data Engineer"
 description: "Analyse des offres d'emploi de la data (et de la tech)"
 markdown: GFM
-theme: jekyll-theme-hacker # title/description prises en compte, on voit le niveau des sections avec des slashs (`///` si section de niveau 3), black theme, on voit si une section est dépliée ou pas
-# theme: jekyll-theme-modernist # title/description prises en compte, lien url doc externe fonctionne, on voit si une section est dépliée ou pas
+# theme: jekyll-theme-hacker # title/description (OK), niveau des sections (KO), black theme (OK), icône section dépliée (OK)
+theme: jekyll-theme-modernist # title/description prises en compte, lien url doc externe fonctionne, on voit si une section est dépliée ou pas
 # theme: jekyll-theme-slate  # page secondaire OK, icône expand OK, niveau section KO
 # theme: jekyll-theme-architect  # title/description prises en compte, on voit le niveau des sections avec des slashs (`///` si section de niveau 3)
 # theme: jekyll-theme-merlot  # title/description prises en compte, on voit si une section est dépliée ou pas, theme qui fait un peu "diplome", les commentaires sont en gras
