@@ -26,7 +26,6 @@
 - Présentation powerpoint du projet sous forme de slides : [lien](powerpoint/presentation.pptx)
 
 
-
 # Sommaire
 
 (avec les sous-sections importantes uniquement)
@@ -39,6 +38,7 @@
   - [1.c. Versions des services testés](#versions-des-services-testes)
   - [1.d. Arborescence des fichiers du projet](#arborescence-des-fichiers-du-projet)
 
+  <br>
 
 - [2. ETL avec Airflow](#etl-avec-airflow)
   - [Extraction des données par API](#extraction-des-données-par-api)
@@ -73,32 +73,16 @@
 <details open>
 <summary><h1>1. Environnement</h1></summary>
 
+
+<a id="prerequis"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<details>
+<summary><h2>1.a. Pré-requis</h2></summary>
+
 > - Notes :
 >   - Le développement et les tests ont eu lieu sous :
 >     - `Windows 11` + `WSL2` avec `Ubuntu 22.04`
 >     - `Python 3.12.9` (février 2025) avec environnement virtuel (formatteur `Ruff`).
 
-
-<!-- <summary> Cliquer pour développer / réduire</summary> -->
-
-<!-- <summary style="color: blue; font-style: italic;">
-  Cliquer pour développer / réduire
-</summary> -->
-
-
-<!-- ## Configuration requise -->
-
-<!-- <summary>🔽 Cliquer pour développer / réduire</summary> -->
-<!-- <summary>Cliquer pour développer / réduire</summary> -->
-<!-- <summary><h2>Cliquer pour développer / réduire</h2></summary> -->
-<!-- <summary><h2>Configuration pré-requise<h2></summary> -->
-
-<!-- <summary><i> Cliquer pour développer / réduire</i></summary> -->
-
-
-<a id="prerequis"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
-<details>
-<summary><h2>1.a. Pré-requis</h2></summary>
 
 - Avoir le projet en local :
 
