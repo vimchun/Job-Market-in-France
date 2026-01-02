@@ -59,8 +59,6 @@
   - [Difficultés rencontrées](#difficultés-rencontrées)
 
 
-===
-
 - Pour ne pas surcharger cette page principale, une seconde page avec des informations supplémentaires moins essentielles est disponible [ici](readme_files/APPENDIX.md#readme-secondaire).
 
 ---
@@ -310,7 +308,6 @@
 <details open>
 <summary><h1>2. ETL avec Airflow</h1></summary>
 
-
   <img src="readme_files/screenshots/drawio/gif/architecture_01--ETL--compressed.gif" alt="architecture focus ETL" style="width:100%"/>
 
 
@@ -391,7 +388,6 @@
 <a id="transformations-des-donnees"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
 <details> <summary><h2>2.b. Transformations des données</h2></summary>
 
-
 <details> <summary><h3>Transformations des données en amont (côté Python)</h3></summary>
 
 - Ces transformations sont faites dans le `DAG 1`, faites via Python et en amont du chargement dans la base Postgres :
@@ -436,7 +432,6 @@
 >     - Par conséquent, cette transformation ne sera pas retenue.
 
 </details>
-
 </details>
 
 <a id="chargement-des-donnees-dans-une-base-de-donnees-relationnelle"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
@@ -492,14 +487,14 @@
 <a id="airflow"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
 <details> <summary><h2>2.d. Airflow</h2></summary>
 
-<details> <summary><h3>Avant Airflow</h3></summary>
+<details> <summary><h3>Sans Airflow</h3></summary>
 
 - Avant d'appliquer Airflow au projet, deux scripts python étaient exécutées.
 - Pour résumer et simplifier ce qu'ils faisaient ("simplifier" ici car ces scripts ont été remplacés par des DAGs qu'on détaillera après) :
   - Le premier récupérait les données de France Travail, faisait des transformations, et chargeait les offres d'emploi dans un json.
   - Le second lisait le json puis écrivait les offres d'emploi dans la base de données, et effectuait un deuxième lot de transformations à partir de fichier sql.
 
-  <img src="readme_files/screenshots/drawio/_archives/workflow_before_airflow.png" alt="screenshot du workflow" style="width:100%"/>
+  <img src="readme_files/screenshots/drawio/_archives/workflow_before_airflow.png" alt="screenshot du workflow" style="width:50%"/>
 
 
 - Reprendre ces scripts pour intégrer Airflow dans le projet a été très bénéfique :
@@ -517,19 +512,18 @@
 
 - Les autres bénéfices d'Airflow sur ce projet sont multiples et évidents :
 
-  - avoir une vision claire du workflow complet à travers la vue Graph du DAG
-  - voir quelle fonction pose problème d'un coup d'oeil en cas d'échec et voir les logs associés à la tâche en échec
-  - lancer le workflow complet à la fréquence désirée (par exemple, tous les jours à 20h)
-  - et surtout obtenir une optimisation et un gain de temps considérable, avec la parallélisation de certaines tâches :
-    - requêtes API pour récupérér les offres d'emploi pour x métiers en parallèle,
-    - requêtes SQL pour remplir x tables en parallèle,
-    - requêtes SQL pour effectuer x transformations en parallèle.
+  - Avoir une vision claire du workflow complet à travers la vue Graph du DAG
+  - Voir quelle fonction pose problème d'un coup d'oeil en cas d'échec et voir les logs associés à la tâche en échec
+  - Lancer le workflow complet à la fréquence désirée (par exemple, tous les jours à 20h)
+  - Et surtout obtenir une optimisation et un gain de temps considérable, avec la parallélisation de certaines tâches :
+    - Requêtes API pour récupérér les offres d'emploi pour x métiers en parallèle,
+    - Requêtes SQL pour remplir x tables en parallèle,
+    - Requêtes SQL pour effectuer x transformations en parallèle.
 
 </details>
 
 
 <details> <summary><h3>Description des DAGs</h3></summary>
-
 
 <img src="readme_files/screenshots/airflow/graphs_dags_1_2_from_pptx.png" alt="graph du DAG 1" style="width:100%"/>
 
@@ -766,11 +760,7 @@
 
 
 </details>
-
 </details>
-
-
-
 </details>
 
 
@@ -789,27 +779,27 @@
 </details>
 
 
+
 # 3. Création d'une API avec FastAPI
 
 <img src="readme_files/screenshots/drawio/gif/architecture_02--API--compressed.gif" alt="architecture focus API" style="width:100%"/>
 
 
+<details> <summary><h2>Tags"</h2></summary>
+
 - Pour créer nos endpoints, la librairie `FastAPI` sera utilisée.
 
 
-- A travers l'[interface OpenAPI](http://localhost:8000/docs#/) (`ex-swagger`), l'utilisateur peut requêter la base de données `francetravail`.
+- A travers l'[interface OpenAPI](http://localhost:8000/docs#/) (ex-`swagger`), l'utilisateur peut requêter la base de données `francetravail`.
 
   <img src="readme_files/screenshots/fastapi/fullscreen.png" alt="gui fastapi" style="width:100%"/>
 
-
-## Tags
 
 - L'interface finale se décline sous 3 tags :
 
 > Note : pour certaines réponses des endpoints, la librairie `tabulate` sera utilisée avec `media_type="text/plain"` pour afficher un tableau qui facilitera la lecture, et qui diminuera le nombre de lignes des réponses, plutôt que d'afficher un `json`.
 
-
-### Tag 1 : "Pour une seule offre d'emploi"
+<details> <summary><h3>Tag 1 : "Pour une seule offre d'emploi"</h3></summary>
 
 <img src="readme_files/screenshots/fastapi/tag_1.png" alt="tag 1 fastapi" style="width:100%"/>
 
@@ -838,7 +828,8 @@
     - Paramètres (tous optionnels) : `metier_data`, `offres_dispo_only`, `code_region`, `code_departement`, `code_postal`, `code_insee`
 
 
-#### Quelques screenshots
+
+<details> <summary><h4>Quelques screenshots</h4></summary>
 
   <img src="readme_files/screenshots/fastapi/responses/1-1a.png" alt="screenshot fastapi (zoom chrome 75%)" style="width:100%"/>
   <img src="readme_files/screenshots/fastapi/responses/1-1b.png" alt="screenshot fastapi" style="width:100%"/>
@@ -846,9 +837,11 @@
   <img src="readme_files/screenshots/fastapi/responses/1-3.png" alt="screenshot fastapi" style="width:100%"/>
   <img src="readme_files/screenshots/fastapi/responses/1-4.png" alt="screenshot fastapi" style="width:100%"/>
 
+</details>
+</details>
 
 
-### Tag 2 : "Pour toutes les offres d'emploi"
+<details> <summary><h3>Tag 2 : "Pour toutes les offres d'emploi"</h3></summary>
 
 <img src="readme_files/screenshots/fastapi/tag_2.png" alt="tag 2 fastapi" style="width:100%"/>
 
@@ -874,7 +867,7 @@
     - Paramètres (tous optionnels) : `metier_data`, `offres_dispo_only`, `code_region`, `code_departement`, `code_postal`, `code_insee`
 
 
-#### Quelques screenshots
+<details> <summary><h4>Quelques screenshots</h4></summary>
 
   <img src="readme_files/screenshots/fastapi/responses/2-1.png" alt="screenshot fastapi" style="width:100%"/>
   <img src="readme_files/screenshots/fastapi/responses/2-2.png" alt="screenshot fastapi" style="width:100%"/>
@@ -882,9 +875,12 @@
   <img src="readme_files/screenshots/fastapi/responses/2-5.png" alt="screenshot fastapi" style="width:100%"/>
   <img src="readme_files/screenshots/fastapi/responses/2-8.png" alt="screenshot fastapi" style="width:100%"/>
 
+</details>
+</details>
 
 
-### Tag 3 : "Correspondance entre le nom et le code des régions, départements, villes, communes"
+
+<details> <summary><h3>Tag 3 : "Correspondance entre le nom et le code des régions, départements, villes, communes"</h3></summary>
 
 <img src="readme_files/screenshots/fastapi/tag_3.png" alt="tag 3 fastapi" style="width:100%"/>
 
@@ -900,19 +896,24 @@
   | `3-4` | `GET /mapping_localisation/commune`     | Mapping entre le nom de la commune et son code  |
 
 
-#### Screenshot
+<details> <summary><h4>Screenshot</h4></summary>
 
   <img src="readme_files/screenshots/fastapi/responses/3-1.png" alt="screenshot fastapi" style="width:100%"/>
 
+</details>
+</details>
+</details>
 
-## Filtres
+<details> <summary><h2>"Filtres"</h2></summary>
 
 - Pour certains endpoints des 2 premiers tags, il est possible de filtrer par `metier_data`, sur les offres disponibles et par code région/département/ville/insee (d'où l'utilité du troisième tag) :
 
   <img src="readme_files/screenshots/fastapi/filters.png" alt="filtres" style="width:50%"/>
 
+</details>
 
-## Configuration Fastapi
+
+<details> <summary><h2>"Configuration Fastapi"</h2></summary>
 
 - Le `docker-compose.yml` décrit des montages de volumes pour ne pas avoir à redémarrer le `docker compose` après chaque modification de fichiers sql, par exemple.
 
@@ -925,6 +926,7 @@
 >   - sans l'option `--reload` : `CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]`
 >   - `COPY` du script python, et des fichiers nécessaires dans le conteneur (fichier csv, fichiers sql), au lieu de passer par des montages de volumes
 
+</details>
 
 
 # 4. Data Viz avec Power BI

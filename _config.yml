@@ -1,5 +1,15 @@
-title: "Projet Data Engineer"
-description: "Projet Data Engineer"
-theme: jekyll-theme-cayman
+title: "Projet Data Engineer 1"
+description: "Projet Data Engineer 2"
 markdown: GFM
-# markdown: CommonMarkGhPages
+# theme: jekyll-theme-cayman
+theme: jekyll-theme-architect
+# theme: jekyll-theme-dinky
+# theme: jekyll-theme-hacker
+# theme: jekyll-theme-leap-day
+# theme: jekyll-theme-merlot
+# theme: jekyll-theme-midnight
+# theme: jekyll-theme-minimal
+# theme: jekyll-theme-modernist
+# theme: jekyll-theme-slate
+# theme: jekyll-theme-tactile
+# theme: jekyll-theme-time-machine
