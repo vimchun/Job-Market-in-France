@@ -26,9 +26,9 @@
 <details open>
 <summary><h1>Sommaire</h1></summary>
 
-(avec les sous-sections importantes uniquement)
+(avec les sous-sections les plus importantes uniquement)
 
-- Toutes les sections et sous-sections numérotés sont cliquables pour développer/réduire le contenu.
+> ⚠️ Toutes les sections et sous-sections numérotés sont cliquables pour développer/réduire le contenu. ️⚠️
 
 - [1. Environnement](#environnement)
   - [1.a. Pré-requis](#prerequis)
