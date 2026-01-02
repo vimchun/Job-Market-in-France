@@ -39,7 +39,8 @@
   - [1.c. Versions des services testés](#versions-des-services-testes)
   - [1.d. Arborescence des fichiers du projet](#arborescence-des-fichiers-du-projet)
 
-- [2. ETL avec Airflow](#2-etl-avec-airflow)
+
+- [2. ETL avec Airflow](#etl-avec-airflow)
   - [Extraction des données par API](#extraction-des-données-par-api)
   - [Transformations des données](#transformations-des-données)
   - [Chargement des données dans une base de données relationnelle](#chargement-des-données-dans-une-base-de-données-relationnelle)
@@ -69,15 +70,14 @@
 
 
 <a id="environnement"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
-<details>
-<summary><h1>1.a. Environnement</h1></summary>
+<details open>
+<summary><h1>1. Environnement</h1></summary>
 
 > - Notes :
 >   - Le développement et les tests ont eu lieu sous :
 >     - `Windows 11` + `WSL2` avec `Ubuntu 22.04`
 >     - `Python 3.12.9` (février 2025) avec environnement virtuel (formatteur `Ruff`).
 
-<details open>
 
 <!-- <summary> Cliquer pour développer / réduire</summary> -->
 
@@ -175,7 +175,6 @@
 - Côté Prometheus :
 
   - L'état des targets doit être à `UP`, voir le screenshot de cette [section](#Configuration-de-Prometheus).
-
 
 </details>
 
@@ -328,8 +327,12 @@
 
 </details>
 
+</details>
 
-# 2. ETL avec Airflow
+<a id="etl-avec-airflow"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<details open>
+<summary><h1>2. ETL avec Airflow</h1></summary>
+
 
   <img src="readme_files/screenshots/drawio/gif/architecture_01--ETL--compressed.gif" alt="architecture focus ETL" style="width:100%"/>
 
@@ -767,6 +770,7 @@
 
     <img src="readme_files/screenshots/airflow/duration_dags.png" alt="durée des DAGs" style="width:100%"/>
 
+</details>
 
 # 3. Création d'une API avec FastAPI
 
