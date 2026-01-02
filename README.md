@@ -32,7 +32,7 @@
 (avec les sous-sections importantes uniquement)
 
 - [1. Environnement](#environnement)
-  - [1.a. Pré-requis](#pre-requis)
+  - [1.a. Pré-requis](#prerequis)
   - [1.b. Configuration Docker](#configuration-docker)
   - [1.c. Versions des services testés](#versions-des-services-testes)
   - [1.d. Arborescence des fichiers du projet](#arborescence-des-fichiers-du-projet)
@@ -79,9 +79,9 @@
 
 <!-- <summary> Cliquer pour développer / réduire</summary> -->
 
-<summary style="color: blue; font-style: italic;">
+<!-- <summary style="color: blue; font-style: italic;">
   Cliquer pour développer / réduire
-</summary>
+</summary> -->
 
 
 <!-- ## Configuration requise -->
@@ -93,10 +93,10 @@
 
 <!-- <summary><i> Cliquer pour développer / réduire</i></summary> -->
 
-<details>
 
 <a id="prerequis"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
 
+<details>
 
 <summary><h2>1.a. Pré-requis</h2></summary>
 <!-- ## 1.a. Pré-requis -->
