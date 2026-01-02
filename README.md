@@ -347,7 +347,7 @@
 
 - 62 fichiers json sont obtenus, contenant toutes les offres d'emploi liées ou pas à la data, pour la France et DOM-TOM uniquement, l'API de France Travail ne renvoyant quasiment pas d'offre d'emploi pour les autres pays.
 
-- Plusieurs transformations seront effectuées par la suite : [voir ici](#transformations-des-données)
+- Plusieurs transformations seront effectuées par la suite : [voir ici](#transformations-des-donnees)
 
 
 > Notes :
@@ -389,9 +389,9 @@
 
   - Concaténation des 62 fichiers json dans un seul fichier json, avec suppression des doublons
 
-  - Conservation des offres en France Métropolitaine uniquement, [détails ici](readme_files/APPENDIX.md#conservation-des-offres-en-France-Métropolitaine-uniquement).
+  - Conservation des offres en France Métropolitaine uniquement : [détails ici](readme_files/APPENDIX.md#conservation-des-offres-en-france-metropolitaine-uniquement).
 
-  - Ajout des attributs de localisation des offres (noms et codes des villes, départements, départements et régions), [détails ici](readme_files/APPENDIX.md#attributs-de-localisation-des-offres-noms-et-codes-des-villes-communes-départements-et-régions).
+  - Ajout des attributs de localisation des offres (noms et codes des villes, départements, départements et régions) : [détails ici](readme_files/APPENDIX.md#attributs-localisation).
 
   - Ajout des attributs `date_premiere_ecriture` et `date_extraction` :
 
@@ -416,7 +416,7 @@
 
     - Pour chaque offre, si un mot-clé parmi la liste de strings prédéfinie [ici](airflow/dags/sql/transformation_4_update__table_descriptionoffre__column__liste_mots_cles.sql) est présent dans la description, ce mot-clé sera ajouté dans l'attribut (qui est une liste).
 
-    - Cet attribut sera traité à postériori par Power BI (voir [ici](#5-keywords)).
+    - Cet attribut sera traité à postériori par Power BI (voir [ici](#keywords)).
 
 
 > - Notes :
@@ -473,7 +473,7 @@
 
 - Ainsi, pour une offre, si un attribut d'une table de dimension associé à la table de liaison a évolué, alors on ne conservera que l'offre avec `date_extraction` le plus récent.
 
-- Plus de détails [ici](readme_files/APPENDIX.md#mise-à-jour-de-la-base-de-données-après-récupération-de-nouvelles-offres).
+- Plus de détails [ici](readme_files/APPENDIX.md#mise-a-jour)
 
 </details>
 </details>
@@ -640,7 +640,7 @@
 >
 >   - `A7_special_jsons_concat` :
 >
->     - Concaténation spéciale entre le json existant et le nouveau json, détails de l'algo ([ici](readme_files/APPENDIX.md#concaténation-spéciale-entre-le-json-existant-et-le-nouveau-json)) [pandas]
+>     - Concaténation spéciale entre le json existant et le nouveau json, détails de l'algo ([ici](readme_files/APPENDIX.md#concatenation-speciale)) [pandas]
 >
 >     - Renommage du fichier `all_in_one.json` en `date__extraction_occurence_N+1.json`, si le fichier existant était nommé `date__extraction_occurence_N.json`.
 >
@@ -1042,6 +1042,8 @@
   - Les villes qui recrutent le plus : `Paris` de loin, suivi par `Lyon`.
 
 </details>
+
+<a id="keywords"></a>
 
 <details> <summary><h3>5. Keywords</h3></summary>
 

@@ -239,6 +239,9 @@ Cette section montre les commandes pour retrouver les versions des différents s
 
 ### Transformations des données en amont (côté Python)
 
+
+<a id="conservation-des-offres-en-france-metropolitaine-uniquement"></a>
+
 #### Conservation des offres en France Métropolitaine uniquement
 
 - On va dans ce projet se focaliser sur les offres en France Métropolitaine.
@@ -249,6 +252,8 @@ Cette section montre les commandes pour retrouver les versions des différents s
 
   - L'attribut `libelle` donne l'information lorsque qu'une offre se retrouve dans le `cas_3` (voir partie ci-dessous), c'est-à-dire lorsque `libelle` est de la forme "<département> - <nom_du_département>", par exemple : `971 - Guadeloupe`, `974 - Réunion`, `2A - Corse du Sud`, `2B - BASTIA`.
 
+
+<a id="attributs-localisation"></a>
 
 #### Attributs de localisation des offres (noms et codes des villes, communes, départements et régions)
 
@@ -400,6 +405,8 @@ Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code
 
 
 ### Transformations des données en aval (côté SQL)
+
+<a id="attribut-metier_data"></a>
 
 #### Attribut "metier_data"
 
@@ -583,6 +590,8 @@ Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code
 
 ## Chargement des données dans une base de données relationnelle
 
+<a id="mise-a-jour"></a>
+
 ### Mise à jour de la base de données après récupération de nouvelles offres
 
 #### Evolution de "qualification_code"
@@ -638,6 +647,8 @@ Même problématique avec certaines offres qui voient la valeur de l'attribut `e
 
     - lors de `date_extraction = 2025-04-05` : `experienceExige = D` et `experienceLibelle = Débutant accepté` (par exemple `experience_id = 2`)
 
+
+<a id="concatenation-speciale"></a>
 
 ### Concaténation spéciale entre le json existant et le nouveau json
 
