@@ -96,7 +96,7 @@
     <img src="readme_files/screenshots/misc/francetravail_io_credentials.png" alt="credentials france travail" style="width:50%"/>
 
 
-- Si environnement `Windows` + `WSL`, utiliser `Docker CE` dans WSL, plutôt qu'utiliser `Docker Desktop` (voir cette [procédure](readme_files/APPENDIX.md#Installer-et-utiliser-Docker-CE-dans-WSL))
+- Si environnement `Windows` + `WSL`, utiliser `Docker CE` dans WSL, plutôt qu'utiliser `Docker Desktop` (voir cette [procédure](readme_files/APPENDIX.md#installer-et-utiliser-docker-ce-dans-wsl))
 
 
 - Fichier `.env` :
@@ -149,7 +149,7 @@
 
 - Sur Prometheus :
 
-  - L'état des targets doit être à `UP`, voir le screenshot de cette [section](#configuration-de-prometheus).
+  - L'état des targets doit être à `UP`, voir le screenshot de la section [Configuration de Prometheus](#configuration-de-prometheus)
 
 </details>
 
@@ -176,7 +176,7 @@
 
   > Notes :
   >   - `Docker CE dans WSL` utilisé au lieu de `Docker Desktop`, car `cAdvisor` (Container Advisor) n'est pas opérationnel dans l'environnement `WSL` avec `Ubuntu 22.04` + `Docker Desktop`
-  >   - Voir [ici](readme_files/APPENDIX.md#Utilisation-de-Docker-CE-dans-WSL-pour-cAdvisor) pour les explications et pour la procédure d'installation de `Docker CE` dans `WSL`.
+  >   - Voir [ici](readme_files/APPENDIX.md#utilisation-de-docker-ce-dans-wsl-pour-cadvisor) pour les explications et pour la procédure d'installation de `Docker CE` dans `WSL`.
 
 </details>
 
@@ -186,7 +186,7 @@
 
 - Le ficher `docker-compose.yml` ne spécifiant pas les versions pour les différents services (tag `latest` par défaut), il est important de noter les versions des services de l'écosystème.
 
-- Ce [lien](readme_files/APPENDIX.md#récupération-des-versions) donne les commandes permettant de récupérer les versions.
+- Ce [lien](readme_files/APPENDIX.md#recuperation-des-versions) donne les commandes permettant de récupérer les versions.
 
 - Tableau avec les versions utilisées (pour un éco-système fonctionnel) :
 
@@ -208,18 +208,16 @@
 
 - Urls des GUIs :
 
-(cliquer sur une image pour la voir en plein écran)
-
-  | Application       | Url (credentials)                                      | screenshots                                                                                                          |
-  | ----------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
-  | FastAPI           | http://localhost:8000/docs                             | <img src="readme_files/screenshots/gui/fastapi.png" alt="screenshot fastapi" style="width:20%"/>                     |
-  | Airflow           | http://localhost:8080/ <br>(airflow / airflow)         | <img src="readme_files/screenshots/gui/airflow.png" alt="screenshot airflow" style="width:20%"/>                     |
-  | StatsD Exporter   | http://localhost:9102/ + http://localhost:9102/metrics | <img src="readme_files/screenshots/gui/statsd-exporter.png" alt="screenshot statsd exporter" style="width:20%"/>     |
-  | Node Exporter     | http://localhost:9100/ + http://localhost:9100/metrics | <img src="readme_files/screenshots/gui/node-exporter.png" alt="screenshot node exporter" style="width:20%"/>         |
-  | Postgres Exporter | http://localhost:9187/ + http://localhost:9187/metrics | <img src="readme_files/screenshots/gui/postgres-exporter.png" alt="screenshot postgres exporter" style="width:20%"/> |
-  | cAdvisor          | http://localhost:8081/ + http://localhost:8081/metrics | <img src="readme_files/screenshots/gui/cadvisor.png" alt="screenshot cadvisor" style="width:20%"/>                   |
-  | Prometheus        | http://localhost:9092/ + http://localhost:9092/metrics | <img src="readme_files/screenshots/gui/prometheus.png" alt="screenshot prometheus" style="width:20%"/>               |
-  | Grafana           | http://localhost:3000/ <br>(grafana / grafana)         | <img src="readme_files/screenshots/gui/grafana.png" alt="screenshot grafana" style="width:20%"/>                     |
+  | Application       | Url (credentials)                                      |
+  | ----------------- | ------------------------------------------------------ |
+  | FastAPI           | http://localhost:8000/docs                             |
+  | Airflow           | http://localhost:8080/ <br>(airflow / airflow)         |
+  | StatsD Exporter   | http://localhost:9102/ + http://localhost:9102/metrics |
+  | Node Exporter     | http://localhost:9100/ + http://localhost:9100/metrics |
+  | Postgres Exporter | http://localhost:9187/ + http://localhost:9187/metrics |
+  | cAdvisor          | http://localhost:8081/ + http://localhost:8081/metrics |
+  | Prometheus        | http://localhost:9092/ + http://localhost:9092/metrics |
+  | Grafana           | http://localhost:3000/ <br>(grafana / grafana)         |
 
 </details>
 
@@ -776,7 +774,7 @@
 
 ---
 
-<a id="#creation-dune-api-avec-fastapi"></a>
+<a id="creation-dune-api-avec-fastapi"></a>
 <details> <summary><h1>3. Création d'une API avec FastAPI</h1></summary>
 
 <!-- <img src="readme_files/screenshots/drawio/gif/architecture_02--API--compressed.gif" alt="architecture focus API" style="width:100%"/> -->

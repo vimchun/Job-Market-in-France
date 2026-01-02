@@ -4,7 +4,7 @@
 
 - Le sommaire de cette page est aligné à celui de la page principale ([ici](../README.md#sommaire)), à savoir (avec les sous-sections principales) :
 
-  - [1. Environnement](environnement)
+  - [1. Environnement](#environnement)
     - [Utilisation de Docker CE dans WSL pour cAdvisor](#utilisation-de-docker-ce-dans-wsl-pour-cadvisor)
     - [Services Docker](#services-docker)
   - [2. ETL avec Airflow](#etl-avec-airflow)
@@ -13,8 +13,8 @@
     - [Airflow](#airflow)
   - [4. Data Viz avec Power BI](#data-viz-avec-power-bi)
   - [5. Monitoring avec Prometheus et Grafana](#monitoring-avec-prometheus-et-grafana)
-    - [Prometheus](#Prometheus)
-    - [Grafana](#Grafana)
+    - [Prometheus](#prometheus)
+    - [Grafana](#grafana)
 
 
 <a id="environnement"></a>
@@ -151,6 +151,8 @@ Si une ligne comme `DOCKER_HOST=tcp://localhost:2375` s'affiche, alors il faut f
 
 
 ## Services Docker
+
+<a id="recuperation-des-versions"></a>
 
 ### Récupération des versions
 
