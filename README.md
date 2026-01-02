@@ -186,7 +186,7 @@
 
 - Le ficher `docker-compose.yml` ne spécifiant pas les versions pour les différents services (tag `latest` par défaut), il est important de noter les versions des services de l'écosystème.
 
-- Ce [lien](readme_files/APPENDIX.md#recuperation-des-versions) donne les commandes permettant de récupérer les versions.
+- Ce [lien](readme_files/APPENDIX.md#versions) donne les commandes permettant de récupérer les versions.
 
 - Tableau avec les versions utilisées (pour un éco-système fonctionnel) :
 

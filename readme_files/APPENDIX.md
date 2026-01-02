@@ -152,7 +152,8 @@ Si une ligne comme `DOCKER_HOST=tcp://localhost:2375` s'affiche, alors il faut f
 
 ## Services Docker
 
-<a id="recuperation-des-versions"></a>
+
+<a id="versions"></a>
 
 ### Récupération des versions
 
