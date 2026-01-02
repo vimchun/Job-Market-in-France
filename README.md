@@ -44,7 +44,7 @@
 - [3. Création d'une API avec FastAPI](#creation-dune-api-avec-fastapi)
 
 - [4. Data Viz avec Power BI](#data-viz-avec-power-bi)
-  - [Rapports et analyses](#rapports-et-analyses)
+  - [4.a. Rapports et analyses](#rapports-et-analyses)
 
 - [5. Monitoring avec Prometheus et Grafana](#monitoring-avec-prometheus-et-grafana)
   - [5.a. Prometheus](#prometheus)
@@ -934,35 +934,8 @@
   <!-- <img src="readme_files/screenshots/drawio/gif/architecture_03--VIZ--compressed.gif" alt="architecture focus VIZ" style="width:100%"/> -->
 
 
-<details> <summary><h2>Manipulations</h2></summary>
-
-- Ci-dessous des liens expliquant les différentes manipulations à faire (déjà faites pour le fichier `power_bi/project.pbix`) pour :
-
-  - [connecter Power BI avec la db postgres](readme_files/APPENDIX.md#connexion-avec-la-db)
-
-  - [modifier le Model view](readme_files/APPENDIX.md#model-view)
-
-    <img src="readme_files/screenshots/power_bi/model_view.png" alt="model view power bi" style="width:100%"/>
-
-  - [modifier le Table view](readme_files/APPENDIX.md#table-view)
-
-  - [faire les transformations](readme_files/APPENDIX.md#transformations)
-
-
-</details>
-
-
-<details> <summary><h2>Mise à jour des données</h2></summary>
-
-- Après une exécution du pipeline ETL (c'est-à-dire après exécution des 2 DAGs Airflow), il suffit d'ouvrir le projet Power BI (`power_bi/project.pbix`), et de cliquer sur l'item `Refresh` :
-
-  <img src="readme_files/screenshots/power_bi/refresh.png" alt="refresh" style="width:70%"/>
-
-</details>
-
-
 <a id="rapports-et-analyses"></a>
-<details> <summary><h2>Rapports et analyses</h2></summary>
+<details> <summary><h2>4.a. Rapports et analyses</h2></summary>
 
 - Pour les sections suivantes, des `.gif` sont affichés pour ne pas mettre trop de screenshots dans cette page.
 
@@ -1064,6 +1037,33 @@
 
 </details>
 </details>
+
+<details> <summary><h2>4.b. Mise à jour des données</h2></summary>
+
+- Après une exécution du pipeline ETL (c'est-à-dire après exécution des 2 DAGs Airflow), il suffit d'ouvrir le projet Power BI (`power_bi/project.pbix`), et de cliquer sur l'item `Refresh` :
+
+  <img src="readme_files/screenshots/power_bi/refresh.png" alt="refresh" style="width:70%"/>
+
+</details>
+
+
+<details> <summary><h2>4.c. Manipulations</h2></summary>
+
+- Ci-dessous des liens expliquant les différentes manipulations à faire (déjà faites pour le fichier `power_bi/project.pbix`) pour :
+
+  - [connecter Power BI avec la db postgres](readme_files/APPENDIX.md#connexion-avec-la-db)
+
+  - [modifier le Model view](readme_files/APPENDIX.md#model-view)
+
+    <img src="readme_files/screenshots/power_bi/model_view.png" alt="model view power bi" style="width:100%"/>
+
+  - [modifier le Table view](readme_files/APPENDIX.md#table-view)
+
+  - [faire les transformations](readme_files/APPENDIX.md#transformations)
+
+
+</details>
+
 </details>
 
 ---
