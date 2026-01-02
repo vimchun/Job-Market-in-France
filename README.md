@@ -205,6 +205,7 @@
 
 <br>
 
+<a id="urls-des-guis"></a>
 
 - Urls des GUIs :
 
@@ -1056,7 +1057,7 @@
 
   - Pour chaque offre, si un mot-clé parmi la liste de strings prédéfinie [ici](airflow/dags/sql/transformation_4_update__table_descriptionoffre__column__liste_mots_cles.sql) est présent dans la description, ce mot-clé sera ajouté dans l'attribut (qui est une liste).
 
-  - Une transformation côté Power BI permet de splitter une offre sur x lignes si cette offre a x mots-clés dans la liste (voir détails [ici](readme_files/APPENDIX.md#attribut-liste-mots-clés)).
+  - Une transformation côté Power BI permet de splitter une offre sur x lignes si cette offre a x mots-clés dans la liste (voir détails [ici](readme_files/APPENDIX.md#attributs-liste-mots-cles)).
 
 
 - Pour les 3 métiers, les mots-clés qui reviennent le plus souvent dans les offres sont le trio souvent cité sur beaucoup de posts Linkedin : `SQL`, `Python`, et `Git`, et aussi `Cloud`.
@@ -1088,7 +1089,7 @@
 
 <details> <summary><h3>Configuration Docker pour cAdvisor</h3></summary>
 
-- Comme décrit dans cette [section](#1-environnement), il faut utiliser `Docker CE dans WSL`, et non pas `Docker Desktop`.
+- Comme décrit dans cette [section](#environnement), il faut utiliser `Docker CE dans WSL`, et non pas `Docker Desktop`.
 
 - Exemple de requête PromQL qui renvoie les conteneurs docker :
 
@@ -1121,7 +1122,7 @@
 
 <details> <summary><h4>Dump des métriques</h4></summary>
 
-- La liste des métriques est récupérable via la GUI des applis, avec les urls qui se terminent par `metrics` (voir cette [section](#Urls-des-GUIs)).
+- La liste des métriques est récupérable via la GUI des applis, avec les urls qui se terminent par `metrics` (voir cette [section](#urls-des-guis)).
 
 - On peut aussi les récupération par cli (ainsi, les dumps des métriques sont présents dans le dossier `prometheus/available_metrics`) :
 
@@ -1151,7 +1152,7 @@
   - 24 métriques préfixés par `statsd_*`
 
 
-- Le lien suivant renvoie vers la liste des métriques avec un préfixe : [lien](readme_files/APPENDIX.md#métriques-disponibles-de-statsd-exporter).
+- Le lien suivant renvoie vers la liste des métriques avec un préfixe : [lien](readme_files/APPENDIX.md#metriques-disponibles-de-statsd-exporter).
 
 </details>
 
@@ -1169,10 +1170,9 @@
     ##==>  SUCCESS: /etc/prometheus/prometheus.yaml is valid prometheus config file syntax
 ```
 
-  - Pour vérifier la validité d'un mapping du fichier `airflow/config/statsd.yaml` : [lien](readme_files/APPENDIX.md#vérifier-la-validité-dun-mapping-dans-statsdyaml).
+  - Pour vérifier la validité d'un mapping du fichier `airflow/config/statsd.yaml` : [lien](readme_files/APPENDIX.md#verifier-la-validite-dun-mapping-dans-statsdyaml).
 
 </details>
-
 </details>
 
 <a id="grafana"></a>
@@ -1227,7 +1227,7 @@
 
   - dashboards créés :
 
-    - Deux dashboards avec les 56 métriques préfixés par `airflow_*` et les 31 métriques préfixés par `go_*` ont été créés à but informatif, plus de détails [ici](readme_files/APPENDIX.md#métriques-avec-préfixes).
+    - Deux dashboards avec les 56 métriques préfixés par `airflow_*` et les 31 métriques préfixés par `go_*` ont été créés à but informatif, plus de détails [ici](readme_files/APPENDIX.md#metriques-avec-prefixes).
 
 </details>
 
@@ -1323,17 +1323,17 @@
 
     - installation et utilisation de Airflow 3.0 (version majeure sortie au cours de ce projet) : j'aurais pu rester sur une version 2.11.0, mais j'ai trouvé pertinent de me mettre à jour
 
-    - utilisation de `cAdvisor`, non fonctionnel avec `Docker Desktop` : détails [ici](readme_files/APPENDIX.md#utilisation-de-docker-ce-dans-wsl-pour-cAdvisor)
+    - utilisation de `cAdvisor`, non fonctionnel avec `Docker Desktop` : détails [ici](readme_files/APPENDIX.md#utilisation-de-docker-ce-dans-wsl-pour-cadvisor)
 
 
   - récupération des données :
 
-    - algorithme pour mettre à jour le fichier json avec les nouvelles offres : détails [ici](readme_files/APPENDIX.md#concaténation-spéciale-entre-le-json-existant-et-le-nouveau-json)
+    - algorithme pour mettre à jour le fichier json avec les nouvelles offres : détails [ici](readme_files/APPENDIX.md#concatenation-speciale)
 
 
   - transformations :
 
-    - algorithme pour récupérer le maximum d'informations de localisation des offres d'emploi (noms et codes des villes, départements, départements et régions), avec Python et la librairie `geopy` : détails [ici](readme_files/APPENDIX.md#attributs-de-localisation-des-offres-noms-et-codes-des-villes-communes-départements-et-régions)
+    - algorithme pour récupérer le maximum d'informations de localisation des offres d'emploi (noms et codes des villes, départements, départements et régions), avec Python et la librairie `geopy` : détails [ici](readme_files/APPENDIX.md#attributs-localisation)
 
 
 </details>

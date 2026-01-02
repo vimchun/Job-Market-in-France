@@ -876,6 +876,7 @@ Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6
   - `Offre ID` (au lieu de `offre_id`)
   - `Durée Travail Libellé` (au lieu de `duree_travail_libelle`)
 
+<a id="attributs-liste-mots-cles"></a>
 
 ### Attribut "Liste Mots-Clés"
 
@@ -961,6 +962,8 @@ Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6
 
 ### StatsD Exporter
 
+<a id="metriques-disponibles-de-statsd-exporter"></a>
+
 #### Métriques disponibles de StatsD Exporter
 
 - Voici la liste des métriques disponibles avec préfixe sans les détails ni les valeurs :
@@ -1041,6 +1044,8 @@ Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6
   - 24 métriques préfixés par `statsd_*` :
     - `statsd_exporter_build_info{branch="HEAD",goarch="amd64",goos="linux",goversion="go1.23.2",revision="c0a390a2c43f77863278615b47d46e886bdca726",tags="unknown",version="0.28.0"}`, `statsd_exporter_event_queue_flushed_total`, `statsd_exporter_events_actions_total{action="map"}`, `statsd_exporter_events_total{type="counter"}`, `statsd_exporter_events_total{type="gauge"}`, `statsd_exporter_events_total{type="observer"}`, `statsd_exporter_events_unmapped_total`, `statsd_exporter_lines_total`, `statsd_exporter_loaded_mappings`, `statsd_exporter_metrics_total{type="counter"}`, `statsd_exporter_metrics_total{type="gauge"}`, `statsd_exporter_metrics_total{type="summary"}`, `statsd_exporter_samples_total`, `statsd_exporter_tag_errors_total`, `statsd_exporter_tags_total`, `statsd_exporter_tcp_connection_errors_total`, `statsd_exporter_tcp_connections_total`, `statsd_exporter_tcp_too_long_lines_total`, `statsd_exporter_udp_packet_drops_total`, `statsd_exporter_udp_packets_total`, `statsd_exporter_unixgram_packets_total`, `statsd_metric_mapper_cache_gets_total`, `statsd_metric_mapper_cache_hits_total`, `statsd_metric_mapper_cache_length`
 
+<a id="verifier-la-validite-dun-mapping-dans-statsdyaml"></a>
+
 
 #### Vérifier la validité d'un mapping dans `statsd.yaml`
 
@@ -1116,6 +1121,8 @@ Conclusion : `custom_counter_job_end` n'est pas fonctionnel.
 ### Dashboards
 
 #### Dashboards "others"
+
+<a id="metriques-avec-prefixes"></a>
 
 ##### Métriques avec préfixes
 
