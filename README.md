@@ -46,7 +46,7 @@
 - [4. Data Viz avec Power BI](#data-viz-avec-power-bi)
   - [Rapports et analyses](#rapports-et-analyses)
 
-- [5. Monitoring avec Prometheus et Grafana](#5-monitoring-avec-prometheus-et-grafana)
+- [5. Monitoring avec Prometheus et Grafana](#monitoring-avec-prometheus-et-grafana)
   - [Prometheus](#prometheus)
   - [Grafana](#grafana)
     - [Analyse quand les DAGs sont en cours d'exécution](#analyse-quand-les-dags-sont-en-cours-dexécution)
@@ -1068,13 +1068,15 @@
 </details>
 
 
-# 5. Monitoring avec Prometheus et Grafana
+<a id="monitoring-avec-prometheus-et-grafana"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<details open>
+<summary><h1>5. Monitoring avec Prometheus et Grafana</h1></summary>
 
   <img src="readme_files/screenshots/drawio/gif/architecture_04--MON--compressed.gif" alt="architecture focus MON" style="width:100%"/>
 
-## Prometheus
+<details> <summary><h2>Prometheus</h2></summary>
 
-### Configuration de Prometheus
+<details> <summary><h3>Configuration de Prometheus</h3></summary>
 
 - La section `scrape_configs` du fichier de configuration `prometheus/prometheus.yaml` définit les `targets` des différents services à surveiller : `statsd-exporter`, `node-exporter`, `postgres-exporter` et `cAdvisor`.
 
@@ -1082,8 +1084,9 @@
 
   <img src="readme_files/screenshots/prometheus/targets.png" alt="prometheus targets" style="width:100%"/>
 
+</details>
 
-### Configuration Docker pour cAdvisor
+<details> <summary><h3>Configuration Docker pour cAdvisor</h3></summary>
 
 - Comme décrit dans cette [section](#1-environnement), il faut utiliser `Docker CE dans WSL`, et non pas `Docker Desktop`.
 
@@ -1091,13 +1094,17 @@
 
   <img src="readme_files/screenshots/prometheus/cadvisor.png" alt="cAdvisor opérationnel" style="width:60%"/>
 
+</details>
 
-### Métriques exposées par les différents services
+<details> <summary><h3>Métriques exposées par les différents services</h3></summary>
+
+
 
 - Les métriques citées ci-dessous traduisent la liste des commandes disponibles sur la barre `Expression` sur la [GUI de Prometheus](http://localhost:9092/graph).
 
+</details>
 
-#### Utilité
+<details> <summary><h4>Utilité</h4></summary>
 
 - Airflow envoie des métriques au format `StatsD` à `StatsD-exporter`.
 
@@ -1109,8 +1116,10 @@
 
 - `cAdvisor` expose des métriques sur l'usage des ressources et les caractéristiques de performance des conteneurs docker en cours d'exécution.
 
+</details>
 
-#### Dump des métriques
+
+<details> <summary><h4>Dump des métriques</h4></summary>
 
 - La liste des métriques est récupérable via la GUI des applis, avec les urls qui se terminent par `metrics` (voir cette [section](#Urls-des-GUIs)).
 
@@ -1127,8 +1136,9 @@
 > - Il faut exécuter les DAGs pour voir apparaitre les commandes liés aux tâches des DAGs.
 > - Des NaN peuvent apparaissent s'il n’y a pas assez de données récentes dans la fenêtre de calcul du quantile summary.
 
+</details>
 
-#### Métriques de StatsD-Exporter
+<details> <summary><h4>Métriques de StatsD-Exporter</h4></summary>
 
 - `StatsD-exporter` donne les métriques suivantes :
 
@@ -1143,8 +1153,9 @@
 
 - Le lien suivant renvoie vers la liste des métriques avec un préfixe : [lien](readme_files/APPENDIX.md#métriques-disponibles-de-statsd-exporter).
 
+</details>
 
-#### Personnalisation des mappings statsd
+<details> <summary><h4>Personnalisation des mappings statsd</h4></summary>
 
 - Le fichier de configuration `prometheus/statsd-mapping-configs.yaml` permet de définir des mappings à partir des métriques issues d'Airflow, avec la possibilité de modifier le nom de la requête promQL.
 
@@ -1160,23 +1171,26 @@
 
   - Pour vérifier la validité d'un mapping du fichier `airflow/config/statsd.yaml` : [lien](readme_files/APPENDIX.md#vérifier-la-validité-dun-mapping-dans-statsdyaml).
 
+</details>
+
+</details>
+
+<details> <summary><h2>Grafana</h2></summary>
 
 
-## Grafana
-
-### Configuration automatique après installation
+<details> <summary><h3>Configuration automatique après installation</h3></summary>
 
 - Les points suivants sont effectués automatiquement après une installation :
 
-
-#### Création automatique du datasource
+<details> <summary><h4>Création automatique du datasource</h4></summary>
 
 - Le datasource `Prometheus` est créée automatiquement grâce au fichier `grafana/provisioning/datasources/datasources.yml` (dossier monté dans le conteneur `grafana` sous `/grafana/provisioning/datasources/datasources.yml`), comme montré ici :
 
   <img src="readme_files/screenshots/grafana/datasource_prometheus.png" alt="datasource Prometheus dans Grafana" style="width:50%"/>
 
+</details>
 
-#### Import automatique après installation
+<details> <summary><h4>Import automatique après installation</h4></summary>
 
 - Les dashboards (.json) peuvent être déposés dans `grafana/provisioning/dashboards`, dossier monté dans le conteneur `grafana` sous `/grafana/provisioning/dashboards`.
 
@@ -1189,10 +1203,12 @@
 
 > Note : Grafana peut recharger le contenu du dossier après un redémarrage du conteneur : `docker compose restart grafana`.
 
+</details>
+</details>
 
-### Dashboards
+<details> <summary><h3>Dashboards</h3></summary>
 
-#### Dossier "others"
+<details> <summary><h4>Dossier "others"</h4></summary>
 
 - Le dossier "others" contient des :
 
@@ -1212,17 +1228,20 @@
 
     - Deux dashboards avec les 56 métriques préfixés par `airflow_*` et les 31 métriques préfixés par `go_*` ont été créés à but informatif, plus de détails [ici](readme_files/APPENDIX.md#métriques-avec-préfixes).
 
+</details>
 
-#### Dossier "mine"
+<details> <summary><h4>Dossier "mine"</h4></summary>
 
 - Le dossier "mine" contient le dashboard `my_dashboard` (`grafana/provisioning/dashboards/mine/my_dashboard.json`) contient quelques visualisations de chaque target,car les dashboards téléchargés sont trop complets (avec beaucoup de visuels trop techniques).
   - C’est donc un dashboard synthétique, mais évidemment non exhaustif :
 
     <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/with_annotations/slideshow-grafana-5s--compressed.gif" alt="slideshow grafana gif" style="width:100%"/>
 
+</details>
+</details>
 
-
-### Analyse quand les DAGs sont en cours d'exécution
+<a id="analyse-quand-les-dags-sont-en-cours-dexécution"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<details> <summary><h3>Analyse quand les DAGs sont en cours d'exécution</h3></summary>
 
 <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/with_annotations/0-airflow_dags_datetime.png" alt="analyse avec DAGs" style="width:100%"/>
 
@@ -1262,6 +1281,10 @@
 
   - On constate un "trou" entre 21h31 et 21h33 dans les graphs `CPU Basic` et `Network Traffic Basic`, ce qui correspond au moment où les mapped tasks ont eu lieu (16 tâches en parallèle qui font des requêtes API pour récupérer les données).
     - Cela a dû provoquer une surcharge au niveau réseau.
+
+</details>
+</details>
+</details>
 
 
 # 6. Conclusion
