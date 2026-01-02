@@ -158,8 +158,7 @@
 
 
 <a id="configuration-docker"></a>
-<details>
-  <summary><h2>1.b. Configuration Docker</h2></summary>
+<details> <summary><h2>1.b. Configuration Docker</h2></summary>
 
 - Une grande partie de l'environnement de ce projet est dockerisé.
 
