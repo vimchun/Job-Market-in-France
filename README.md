@@ -490,7 +490,7 @@
   - Le premier récupérait les données de France Travail, faisait des transformations, et chargeait les offres d'emploi dans un json.
   - Le second lisait le json puis écrivait les offres d'emploi dans la base de données, et effectuait un deuxième lot de transformations à partir de fichier sql.
 
-  <img src="readme_files/screenshots/drawio/_archives/workflow_before_airflow.png" alt="screenshot du workflow" style="width:50%"/>
+  <img src="readme_files/screenshots/drawio/misc/workflow_before_airflow.png" alt="screenshot du workflow" style="width:50%"/>
 
 
 - Reprendre ces scripts pour intégrer Airflow dans le projet a été très bénéfique :
