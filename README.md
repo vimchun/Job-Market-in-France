@@ -1090,7 +1090,7 @@
 
 <details> <summary><h3>Configuration Docker pour cAdvisor</h3></summary>
 
-- Comme décrit dans cette [section](#environnement), il faut utiliser `Docker CE dans WSL`, et non pas `Docker Desktop`.
+- Comme décrit dans la note de cette [section](#configuration-docker), il faut utiliser `Docker CE dans WSL`, et non pas `Docker Desktop`.
 
 - Exemple de requête PromQL qui renvoie les conteneurs docker :
 
