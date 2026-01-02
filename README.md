@@ -23,7 +23,9 @@
 - Présentation powerpoint du projet sous forme de slides : [lien](powerpoint/presentation.pptx)
 
 
-# Sommaire
+<details open>
+<summary><h1>Sommaire</h1></summary>
+
 
 (avec les sous-sections importantes uniquement)
 
@@ -51,12 +53,15 @@
   - [Grafana](#grafana)
     - [Analyse quand les DAGs sont en cours d'exécution](#analyse-quand-les-dags-sont-en-cours-dexécution)
 
-- [6. Conclusion](#6-conclusion)
-  - [Compétences techniques](#compétences-techniques)
-  - [Difficultés rencontrées](#difficultés-rencontrées)
+- [6. Conclusion](#conclusion)
+  - [Compétences techniques développées](#competences-techniques-developpees)
+  - [Difficultés rencontrées](#difficultes-rencontrees)
 
 
 - Pour ne pas surcharger cette page principale, une seconde page avec des informations supplémentaires moins essentielles est disponible [ici](readme_files/APPENDIX.md#readme-secondaire).
+
+
+</details>
 
 ---
 
@@ -776,6 +781,7 @@
 </details>
 
 
+---
 
 <a id="#creation-dune-api-avec-fastapi"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
 <details open>
@@ -929,6 +935,8 @@
 </details>
 
 
+---
+
 <a id="data-viz-avec-power-bi"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
 <details open> <summary><h1>4. Data Viz avec Power BI</h1></summary>
 
@@ -1067,6 +1075,7 @@
 </details>
 </details>
 
+---
 
 <a id="monitoring-avec-prometheus-et-grafana"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
 <details open>
@@ -1287,11 +1296,17 @@
 </details>
 
 
-# 6. Conclusion
+---
+
+<a id="conclusion"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<summary><h1>6. Conclusion</h1></summary>
 
 - J'ai beaucoup appris à travers ce projet, que j'ai trouvé très intéressant, à tout point de vue.
 
-## Compétences techniques
+
+<a id="competences-techniques-developpees"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<details> <summary><h2>Compétences techniques développées</h2></summary>
+
 
 - Les compétences travaillées sont les suivantes :
 
@@ -1305,8 +1320,10 @@
   | Monitoring                       | `Prometheus`, `Grafana`         |
   | Modélisation & architecture      | `UML`                           |
 
+</details>
 
-## Difficultés rencontrées
+<a id="difficultes-rencontrees"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<details> <summary><h2>Difficultés rencontrées</h2></summary>
 
 - Les points suivants illustrent des difficultés auxquelles je me suis heurté mais que j'ai fini par résoudre :
 
@@ -1328,3 +1345,6 @@
 
     - algorithme pour récupérer le maximum d'informations de localisation des offres d'emploi (noms et codes des villes, départements, départements et régions), avec Python et la librairie `geopy` : détails [ici](readme_files/APPENDIX.md#attributs-de-localisation-des-offres-noms-et-codes-des-villes-communes-départements-et-régions)
 
+
+</details>
+</details>

@@ -1,12 +1,12 @@
 title: "Projet Data Engineer"
 description: "Analyse des offres d'emploi de la data (et de la tech)"
 markdown: GFM
-theme: jekyll-theme-hacker
+theme: jekyll-theme-leap-day
+# theme: jekyll-theme-hacker  # title/description prises en compte, on voit le niveau des sections avec des slashs (`///` si section de niveau 3), black theme, on voit si une section est dépliée ou pas
 # theme: jekyll-theme-architect  # title/description prises en compte, on voit le niveau des sections avec des slashs (`///` si section de niveau 3)
 # theme: jekyll-theme-cayman  # title/description non prises en compte, grosse banière verte
 # theme: jekyll-theme-dinky # title/description prises en compte, style qui ne me convient pas, mais on voit si une section est dépliée ou pas
 
-# theme: jekyll-theme-leap-day
 # theme: jekyll-theme-merlot
 # theme: jekyll-theme-midnight
 # theme: jekyll-theme-minimal
