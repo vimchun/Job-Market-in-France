@@ -348,7 +348,7 @@
 
 - 62 fichiers json sont obtenus, contenant toutes les offres d'emploi liées ou pas à la data, pour la France et DOM-TOM uniquement, l'API de France Travail ne renvoyant quasiment pas d'offre d'emploi pour les autres pays.
 
-- Plusieurs transformations seront effectuées par la suite, voir section ["Transormations des données"](#transformations-des-donnees).
+- Plusieurs transformations seront effectuées par la suite, voir section ["2.b. Transformations des données"](#transformations-des-donnees).
 
 
 > Notes :
@@ -939,7 +939,8 @@
 
 - Pour les sections suivantes, des `.gif` sont affichés pour ne pas mettre trop de screenshots dans cette page.
 
-- Si les images défilent trop rapidement, aller dans le dossier : [ici](readme_files/screenshots/power_bi/reports/), ou ouvrir la présentation dans le `Powerpoint` dans ce dossier : [ici](powerpoint/), partie 6.
+- Si les images défilent trop rapidement, aller dans le dossier : [ici](https://github.com/vimchun/Job-Market-in-France/tree/master/readme_files/screenshots/power_bi/reports/), ou ouvrir la présentation dans le `Powerpoint` dans ce dossier : [ici](powerpoint/presentation.pptx), partie 6.
+
 
 
 - Plusieurs filtres sont disponibles pour tous les slides du projet `Power BI` :
