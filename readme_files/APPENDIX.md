@@ -1,6 +1,6 @@
 # README secondaire
 
-- Cette page donne des détails complémentaires à la [page principale](../README.md#présentation-du-projet).
+- Cette page donne des détails complémentaires à la [page principale](../README.md).
 
 - Le sommaire suivant est aligné avec celui de la page principale :
 
@@ -8,13 +8,13 @@
     - [Utilisation de Docker CE dans WSL pour cAdvisor](#utilisation-de-docker-ce-dans-wsl-pour-cadvisor)
     - [Services Docker](#services-docker)
   - [2. ETL avec Airflow](#etl-avec-airflow)
-    - [Transformations des données](#transformations-des-donnees)
-    - [Chargement des données dans une base de données relationnelle](#chargement-des-donnees-dans-une-base-de-donnees-relationnelle)
-    - [Airflow](#airflow)
+    - [2.b. Transformations des données](#transformations-des-donnees)
+    - [2.c. Chargement des données dans une base de données relationnelle](#chargement-des-donnees-dans-une-base-de-donnees-relationnelle)
+    - [2.d. Airflow](#airflow)
   - [4. Data Viz avec Power BI](#data-viz-avec-power-bi)
   - [5. Monitoring avec Prometheus et Grafana](#monitoring-avec-prometheus-et-grafana)
-    - [Prometheus](#prometheus)
-    - [Grafana](#grafana)
+    - [5.a. Prometheus](#prometheus)
+    - [5.b. Grafana](#grafana)
 
 
 <a id="environnement"></a>
@@ -238,7 +238,7 @@ Cette section montre les commandes pour retrouver les versions des différents s
 
 <a id="transformations-des-donnees"></a>
 
-## Transformations des données
+## 2.b Transformations des données
 
 ### Transformations des données en amont (côté Python)
 
@@ -593,7 +593,7 @@ Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code
 
 <a id="chargement-des-donnees-dans-une-base-de-donnees-relationnelle"></a>
 
-## Chargement des données dans une base de données relationnelle
+## 2.c. Chargement des données dans une base de données relationnelle
 
 <a id="mise-a-jour"></a>
 
@@ -678,7 +678,7 @@ Même problématique avec certaines offres qui voient la valeur de l'attribut `e
   <img src="screenshots/drawio/db_update.png" alt="db_update" style="width:100%"/>
 
 
-## Airflow
+## 2.d. Airflow
 
 ### SQLExecuteQueryOperator vs PostgresOperator avec Airflow 3.0
 
@@ -961,7 +961,9 @@ Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6
 
 # 5. Monitoring avec Prometheus et Grafana
 
-## Prometheus
+<a id="prometheus"></a>
+
+## 5.a. Prometheus
 
 ### StatsD Exporter
 
@@ -1119,7 +1121,9 @@ On exécute la commande suivante :
 Conclusion : `custom_counter_job_end` n'est pas fonctionnel.
 
 
-## Grafana
+<a id="grafana"></a>
+
+## 5.b. Grafana
 
 ### Dashboards
 
