@@ -1,9 +1,11 @@
-title: "Projet Data Engineer 1"
-description: "Projet Data Engineer 2"
+title: "Projet Data Engineer"
+description: "Analyse des offres d'emploi de la data (et de la tech)"
 markdown: GFM
-# theme: jekyll-theme-cayman
-theme: jekyll-theme-architect
-# theme: jekyll-theme-dinky
+theme: jekyll-theme-dinky
+
+# theme: jekyll-theme-architect  # title/description prises en compte, on voit le niveau des sections avec des slashs (`///` si section de niveau 3)
+# theme: jekyll-theme-cayman  # grosse banière verte, title/description non prises en compte
+
 # theme: jekyll-theme-hacker
 # theme: jekyll-theme-leap-day
 # theme: jekyll-theme-merlot

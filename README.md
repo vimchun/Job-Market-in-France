@@ -1,9 +1,6 @@
-# Présentation du projet
-
 - Bienvenue sur mon projet, que j'ai réalisé seul entièrement dans le cadre de ma formation `Data Engineer` chez DataScientest en 2025.
 
 - L'objectif est d'analyser le marché et les offres d'emploi de la tech, notamment pour les métiers de la data `Data Analyst`, `Data Engineer` et `Data Scientist`, en France Métropolitaine.
-
 
 - Slideshow du projet :
 
@@ -44,7 +41,7 @@
   - [2.c. Chargement des données dans une base de données relationnelle](#chargement-des-donnees-dans-une-base-de-donnees-relationnelle)
   - [2.d. Airflow](#airflow)
 
-- [3. Création d'une API avec FastAPI](#3-création-dune-api-avec-fastapi)
+- [3. Création d'une API avec FastAPI](#creation-dune-api-avec-fastapi)
 
 - [4. Data Viz avec Power BI](#4-data-viz-avec-power-bi)
   - [Rapports et analyses](#rapports-et-analyses)
@@ -780,12 +777,14 @@
 
 
 
-# 3. Création d'une API avec FastAPI
+<a id="#creation-dune-api-avec-fastapi"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<details open>
+<summary><h1>3. Création d'une API avec FastAPI</h1></summary>
 
 <img src="readme_files/screenshots/drawio/gif/architecture_02--API--compressed.gif" alt="architecture focus API" style="width:100%"/>
 
 
-<details> <summary><h2>Tags"</h2></summary>
+<details> <summary><h2>Tags</h2></summary>
 
 - Pour créer nos endpoints, la librairie `FastAPI` sera utilisée.
 
@@ -904,7 +903,7 @@
 </details>
 </details>
 
-<details> <summary><h2>"Filtres"</h2></summary>
+<details> <summary><h2>Filtres</h2></summary>
 
 - Pour certains endpoints des 2 premiers tags, il est possible de filtrer par `metier_data`, sur les offres disponibles et par code région/département/ville/insee (d'où l'utilité du troisième tag) :
 
@@ -926,6 +925,7 @@
 >   - sans l'option `--reload` : `CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]`
 >   - `COPY` du script python, et des fichiers nécessaires dans le conteneur (fichier csv, fichiers sql), au lieu de passer par des montages de volumes
 
+</details>
 </details>
 
 
