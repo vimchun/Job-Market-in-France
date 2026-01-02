@@ -577,7 +577,9 @@
   <img src="readme_files/screenshots/airflow/graph_dag_1.png" alt="graph du DAG 1" style="width:100%"/>
 
 
-##### DAG 1 : Task Group "SETUP"
+
+<details>
+<summary><h5>DAG 1 : Task Group "SETUP"</h5></summary>
 
 > `Sub Task Group "check_files_in_folders"` :
 >
@@ -620,8 +622,11 @@
 >   - La seconde tâche récupère le token API pour la suite.
 
 
+</details>
 
-##### DAG 1 : Task Group "ETL"
+
+<details>
+<summary><h5>DAG 1 : Task Group "ETL"</h5></summary>
 
 > - `A1_get_offers` :
 >
@@ -703,8 +708,9 @@
 >   - Déclenchement du `DAG 2` si `DAG` OK
 
 
+</details>
 
-<\details>
+</details>
 
 <details>
 <summary><h4>Description du DAG 2</h4></summary>
@@ -713,8 +719,8 @@
 
   <img src="readme_files/screenshots/airflow/graph_dag_2.png" alt="graph du DAG 2" style="width:100%"/>
 
-
-##### DAG 2 : Task Group "SETUP"
+<details>
+<summary><h5>DAG 2 : Task Group "SETUP"</h5></summary>
 
 > - `check_only_one_json_in_folder` :
 >
@@ -748,16 +754,22 @@
 >
 >   - Création de toutes les tables du projet si elles n'existent pas.
 
+</details>
 
 
-##### DAG 2 : Task Group "INSERT_INTO_TABLES_WITHOUT_JUNCTION"
+<details>
+<summary><h5>DAG 2 : Task Group "INSERT_INTO_TABLES_WITHOUT_JUNCTION"</h5></summary>
 
 > - Ce groupe exécute les tâches suivantes, qui consistent à récupérer les informations dans les fichiers json dédiés (générés par la tâche `split_large_json`) et exécutent des `INSERT INTO` dans les tâches dédiées :
 >
 >   - `OffreEmploi`, puis les tâches suivantes en parallèle : `Contrat`, `Entreprise`, `Localisation` et `DescriptionOffre`.
 
+</details>
 
-##### DAG 2 : Task Group "INSERT_INTO_TABLES_WITH_JUNCTION"
+
+<details>
+<summary><h5>DAG 2 : Task Group "INSERT_INTO_TABLES_WITH_JUNCTION"</h5></summary>
+
 
 > - Ce groupe exécute les actions suivantes (prenons pour exemple, `Competence` puis `Offre_Competence`) :
 >
@@ -775,14 +787,18 @@
 >   - `Langue` puis `Offre_Langue`
 >   - `PermisConduire` puis `Offre_PermisConduire`
 
+</details>
 
-##### DAG 2 : Task Group "TRANSFORMATIONS"
+
+<details>
+<summary><h5>DAG 2 : Task Group "TRANSFORMATIONS"</h5></summary>
 
 > - `SQLExecuteQueryOperator()` qui exécutent les tâches suivantes : `update_descriptionoffre_metier_data_DE`, `update_descriptionoffre_metier_data_DA` et `update_descriptionoffre_metier_data_DS` en parallèle, puis `update_descriptionoffre_column_liste_mots_cles`.
 >
 >   - Les fichiers SQL associés sont dans le dossier `airflow/dags/sql`.
 
 
+</details>
 
 </details>
 
