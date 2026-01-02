@@ -211,13 +211,13 @@
   | Application       | Url (credentials)                                      |
   | ----------------- | ------------------------------------------------------ |
   | FastAPI           | http://localhost:8000/docs                             |
-  | Airflow           | http://localhost:8080/ <br>(airflow / airflow)         |
+  | Airflow           | http://localhost:8080/  (airflow / airflow)         |
   | StatsD Exporter   | http://localhost:9102/ + http://localhost:9102/metrics |
   | Node Exporter     | http://localhost:9100/ + http://localhost:9100/metrics |
   | Postgres Exporter | http://localhost:9187/ + http://localhost:9187/metrics |
   | cAdvisor          | http://localhost:8081/ + http://localhost:8081/metrics |
   | Prometheus        | http://localhost:9092/ + http://localhost:9092/metrics |
-  | Grafana           | http://localhost:3000/ <br>(grafana / grafana)         |
+  | Grafana           | http://localhost:3000/  (grafana / grafana)         |
 
 </details>
 
@@ -416,12 +416,12 @@
 
     - Pour chaque offre, si un mot-clé parmi la liste de strings prédéfinie [ici](airflow/dags/sql/transformation_4_update__table_descriptionoffre__column__liste_mots_cles.sql) est présent dans la description, ce mot-clé sera ajouté dans l'attribut (qui est une liste).
 
-    - Cet attribut sera traité à postériori par Power BI (voir [ici](#keywords)).
+    - Cet attribut sera traité à posteriori par Power BI (voir la section [Keywords](#keywords)).
 
 
 > - Notes :
 >
->   - Une transformation a été créée pour récupérer les valeurs pour les attributs `salaire_min` et `salaire_max` à partir de l'attribut `salaire_libelle`, en fonction d'un algorithme expliqué [ici](readme_files/APPENDIX.md#attributs-salaire_min-et-salaire_max).
+>   - Une transformation a été créée pour récupérer les valeurs pour les attributs `salaire_min` et `salaire_max` à partir de l'attribut `salaire_libelle`, en fonction d'un algorithme expliqué [ici](readme_files/APPENDIX.md#attributs-salaire).
 >
 >   - Dans la plupart des cas, les salaires récupérés sont corrects, mais il reste parfois certaines incohérences, liés aux erreurs de saisie de la part des recruteurs dans l'attribut `salaire_libelle`, qui amènent à trop de cas d'erreurs à traiter.
 >     - Par conséquent, cette transformation ne sera pas retenue.
@@ -457,7 +457,7 @@
 
 - Les données issues du json généré avec le `DAG 1` seront récupérées et écrites en base avec la librairie `psycopg2`.
 
-> Notes : J'aurais préféré utiliser `SQL` à `mongodb`, car comme démontré dans ce projet, `SQL` est une compétence beaucoup plus demandée par les recruteurs pour les postes DA et DE. C'est donc plus un choix stratégique.
+> Notes : J'ai préféré utiliser `SQL` à `mongodb`, car comme démontré dans ce projet, `SQL` est une compétence beaucoup plus demandée par les recruteurs pour les postes DA et DE. C'est donc plus un choix stratégique.
 
 <details> <summary><h3>Mise à jour de la base de données après récupération de nouvelles offres</h3></summary>
 
