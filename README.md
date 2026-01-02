@@ -26,7 +26,6 @@
 <details open>
 <summary><h1>Sommaire</h1></summary>
 
-
 (avec les sous-sections importantes uniquement)
 
 - Toutes les sections et sous-sections numérotés sont cliquables pour développer/réduire le contenu.
@@ -54,11 +53,11 @@
     - [Analyse quand les DAGs sont en cours d'exécution](#analyse-quand-les-dags-sont-en-cours-dexécution)
 
 - [6. Conclusion](#conclusion)
-  - [Compétences techniques développées](#competences-techniques-developpees)
-  - [Difficultés rencontrées](#difficultes-rencontrees)
+  - [6.a. Compétences techniques développées](#competences-techniques-developpees)
+  - [6.b. Difficultés rencontrées](#difficultes-rencontrees)
 
 
-- Pour ne pas surcharger cette page principale, une seconde page avec des informations supplémentaires moins essentielles est disponible [ici](readme_files/APPENDIX.md#readme-secondaire).
+- Pour ne pas surcharger davantage cette page principale, une seconde page avec des informations supplémentaires moins essentielles est disponible [ici](readme_files/APPENDIX.md#readme-secondaire).
 
 
 </details>
@@ -70,7 +69,7 @@
 <summary><h1>1. Environnement</h1></summary>
 
 
-<a id="prerequis"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<a id="prerequis"></a>
 <details> <summary><h2>1.a. Pré-requis</h2></summary>
 
 > - Notes :
@@ -158,7 +157,7 @@
 </details>
 
 
-<a id="configuration-docker"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<a id="configuration-docker"></a>
 <details> <summary><h2>1.b. Configuration Docker</h2></summary>
 
 - Une grande partie de l'environnement de ce projet est dockerisé.
@@ -185,7 +184,7 @@
 </details>
 
 
-<a id="versions-des-services-testes"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<a id="versions-des-services-testes"></a>
 <details> <summary><h2>1.c. Versions des services testés</h2></summary>
 
 - Le ficher `docker-compose.yml` ne spécifiant pas les versions pour les différents services (tag `latest` par défaut), il est important de noter les versions des services de l'écosystème.
@@ -228,7 +227,7 @@
 </details>
 
 
-<a id="arborescence-des-fichiers"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<a id="arborescence-des-fichiers"></a>
 <details> <summary><h2>1.d. Arborescence des fichiers</h2></summary>
 
 - Avec seulement les fichiers liés à la configuration Docker :
@@ -306,14 +305,14 @@
 
 ---
 
-<a id="etl-avec-airflow"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<a id="etl-avec-airflow"></a>
 <details open>
 <summary><h1>2. ETL avec Airflow</h1></summary>
 
   <img src="readme_files/screenshots/drawio/gif/architecture_01--ETL--compressed.gif" alt="architecture focus ETL" style="width:100%"/>
 
 
-<a id="extraction-des-donnees-par-api"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<a id="extraction-des-donnees-par-api"></a>
 <details> <summary><h2>2.a. Extraction des données par API</h2></summary>
 
 - France Travail (https://francetravail.io/data/api) met à disposition gratuitement plusieurs APIs, dont "Offres d'emploi v2" (`GET https://api.francetravail.io/partenaire/offresdemploi`).
@@ -387,7 +386,7 @@
 </details>
 
 
-<a id="transformations-des-donnees"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<a id="transformations-des-donnees"></a>
 <details> <summary><h2>2.b. Transformations des données</h2></summary>
 
 <details> <summary><h3>Transformations des données en amont (côté Python)</h3></summary>
@@ -436,7 +435,7 @@
 </details>
 </details>
 
-<a id="chargement-des-donnees-dans-une-base-de-donnees-relationnelle"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<a id="chargement-des-donnees-dans-une-base-de-donnees-relationnelle"></a>
 <details> <summary><h2>2.c. Chargement des données dans une base de données relationnelle</h2></summary>
 
 - L'API de France Travail contient beaucoup d'attibuts pour une offre d'emploi, qui seront quasiment tous exploités par la suite.
@@ -486,7 +485,7 @@
 </details>
 
 
-<a id="airflow"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<a id="airflow"></a>
 <details> <summary><h2>2.d. Airflow</h2></summary>
 
 <details> <summary><h3>Sans Airflow</h3></summary>
@@ -783,7 +782,7 @@
 
 ---
 
-<a id="#creation-dune-api-avec-fastapi"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<a id="#creation-dune-api-avec-fastapi"></a>
 <details open>
 <summary><h1>3. Création d'une API avec FastAPI</h1></summary>
 
@@ -918,7 +917,7 @@
 </details>
 
 
-<details> <summary><h2>"Configuration Fastapi"</h2></summary>
+<details> <summary><h2>Configuration Fastapi</h2></summary>
 
 - Le `docker-compose.yml` décrit des montages de volumes pour ne pas avoir à redémarrer le `docker compose` après chaque modification de fichiers sql, par exemple.
 
@@ -937,12 +936,10 @@
 
 ---
 
-<a id="data-viz-avec-power-bi"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<a id="data-viz-avec-power-bi"></a>
 <details open> <summary><h1>4. Data Viz avec Power BI</h1></summary>
 
   <img src="readme_files/screenshots/drawio/gif/architecture_03--VIZ--compressed.gif" alt="architecture focus VIZ" style="width:100%"/>
-
-- `Power BI` servira ici pour la data visualisation.
 
 
 <details> <summary><h2>Manipulations</h2></summary>
@@ -972,7 +969,7 @@
 </details>
 
 
-<a id="rapports-et-analyses"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<a id="rapports-et-analyses"></a>
 <details> <summary><h2>Rapports et analyses</h2></summary>
 
 - Pour les sections suivantes, des `.gif` sont affichés pour ne pas mettre trop de screenshots dans cette page.
@@ -1077,13 +1074,13 @@
 
 ---
 
-<a id="monitoring-avec-prometheus-et-grafana"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<a id="monitoring-avec-prometheus-et-grafana"></a>
 <details open>
 <summary><h1>5. Monitoring avec Prometheus et Grafana</h1></summary>
 
   <img src="readme_files/screenshots/drawio/gif/architecture_04--MON--compressed.gif" alt="architecture focus MON" style="width:100%"/>
 
-<a id="prometheus"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<a id="prometheus"></a>
 <details> <summary><h2>5.a. Prometheus</h2></summary>
 
 <details> <summary><h3>Configuration de Prometheus</h3></summary>
@@ -1185,7 +1182,7 @@
 
 </details>
 
-<a id="grafana"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<a id="grafana"></a>
 <details> <summary><h2>5.b. Grafana</h2></summary>
 
 
@@ -1251,7 +1248,7 @@
 </details>
 </details>
 
-<a id="analyse-quand-les-dags-sont-en-cours-dexécution"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<a id="analyse-quand-les-dags-sont-en-cours-dexécution"></a>
 <details> <summary><h3>Analyse quand les DAGs sont en cours d'exécution</h3></summary>
 
 <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/with_annotations/0-airflow_dags_datetime.png" alt="analyse avec DAGs" style="width:100%"/>
@@ -1300,15 +1297,13 @@
 
 ---
 
-<a id="conclusion"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<a id="conclusion"></a>
 <summary><h1>6. Conclusion</h1></summary>
 
+<a id="competences-techniques-developpees"></a>
+<details> <summary><h2>6.a. Compétences techniques développées</h2></summary>
+
 - J'ai beaucoup appris à travers ce projet, que j'ai trouvé très intéressant, à tout point de vue.
-
-
-<a id="competences-techniques-developpees"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
-<details> <summary><h2>Compétences techniques développées</h2></summary>
-
 
 - Les compétences travaillées sont les suivantes :
 
@@ -1324,8 +1319,8 @@
 
 </details>
 
-<a id="difficultes-rencontrees"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
-<details> <summary><h2>Difficultés rencontrées</h2></summary>
+<a id="difficultes-rencontrees"></a>
+<details> <summary><h2>6.b. Difficultés rencontrées</h2></summary>
 
 - Les points suivants illustrent des difficultés auxquelles je me suis heurté mais que j'ai fini par résoudre :
 
