@@ -30,13 +30,13 @@
 
 (avec les sous-sections importantes uniquement)
 
-- Toutes les sections et sous-sections sont cliquables pour développer/réduire le contenu.
+- Toutes les sections et sous-sections numérotés sont cliquables pour développer/réduire le contenu.
 
 - [1. Environnement](#environnement)
   - [1.a. Pré-requis](#prerequis)
   - [1.b. Configuration Docker](#configuration-docker)
   - [1.c. Versions des services testés](#versions-des-services-testes)
-  - [1.d. Arborescence des fichiers du projet](#arborescence-des-fichiers-du-projet)
+  - [1.d. Arborescence des fichiers](#arborescence-des-fichiers)
 
   <br>
 
@@ -45,8 +45,6 @@
   - [2.b. Transformations des données](#transformations-des-donnees)
   - [2.c. Chargement des données dans une base de données relationnelle](#chargement-des-donnees-dans-une-base-de-donnees-relationnelle)
   - [2.d. Airflow](#airflow)
-    - [Description du DAG 1](#description-du-dag-1)
-    - [Description du DAG 2](#description-du-dag-2)
 
   <br>
 
@@ -71,10 +69,11 @@
   - [Difficultés rencontrées](#difficultés-rencontrées)
 
 
-> Note : Pas de partie Machine Learning pour ce projet, car j'en avais déjà fait lors de mon projet "Data Analyst", donc peu d'intérêt ici...
+> Note : Pas de Machine Learning pour ce projet, car j'en avais déjà fait lors de mon projet "Data Analyst", donc peu d'intérêt ici...
 
 - Pour ne pas surcharger cette page principale, une seconde page avec des informations supplémentaires moins essentielles est disponible [ici](readme_files/APPENDIX.md#readme-secondaire).
 
+---
 
 <a id="environnement"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
 <details open>
@@ -242,9 +241,9 @@
 </details>
 
 
-<a id="arborescence-des-fichiers-du-projet"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<a id="arborescence-des-fichiers"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
 <details>
-<summary><h2>1.d. Arborescence des fichiers du projet</h2></summary>
+<summary><h2>1.d. Arborescence des fichiers</h2></summary>
 
 - Sans la partie liée à la conf Docker :
 
@@ -317,8 +316,9 @@
   ```
 
 </details>
-
 </details>
+
+---
 
 <a id="etl-avec-airflow"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
 <details open>
@@ -409,7 +409,8 @@
 <summary><h2>2.b. Transformations des données</h2></summary>
 
 
-### Transformations des données en amont (côté Python)
+<details>
+<summary><h3>Transformations des données en amont (côté Python)</h3></summary>
 
 - Ces transformations sont faites dans le `DAG 1`, faites via Python et en amont du chargement dans la base Postgres :
 
@@ -424,9 +425,11 @@
     - `date_extraction` aura la date du jour à laquelle le `DAG 1` a été lancé,
     - `date_premiere_ecriture` aura la date du jour pour toutes les nouvelles offres, mais prendra les anciennes valeurs pour les anciennes offres.
 
+</details>
 
 
-### Transformations des données en aval (côté SQL)
+<details>
+<summary><h3>Transformations des données en aval (côté SQL)</h3></summary>
 
 - Ces transformations sont effectuées dans le `DAG 2`, faites via des requêtes `SQL` et effectuées en aval de l'écriture dans la base Postgres :
 
@@ -451,14 +454,13 @@
 >   - Dans la plupart des cas, les salaires récupérés sont corrects, mais il reste parfois certaines incohérences, liés aux erreurs de saisie de la part des recruteurs dans l'attribut `salaire_libelle`, qui amènent à trop de cas d'erreurs à traiter.
 >     - Par conséquent, cette transformation ne sera pas retenue.
 
+</details>
 
 </details>
 
-<a id="#chargement-des-donnees-dans-une-base-de-donnees-relationnelle"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<a id="chargement-des-donnees-dans-une-base-de-donnees-relationnelle"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
 <details>
 <summary><h2>2.c. Chargement des données dans une base de données relationnelle</h2></summary>
-
-
 
 - L'API de France Travail contient beaucoup d'attibuts pour une offre d'emploi, qui seront quasiment tous exploités par la suite.
 
@@ -487,8 +489,8 @@
 
 > Notes : J'aurais préféré utiliser `SQL` à `mongodb`, car comme démontré dans ce projet, `SQL` est une compétence beaucoup plus demandée par les recruteurs pour les postes DA et DE. C'est donc plus un choix stratégique.
 
-
-### Mise à jour de la base de données après récupération de nouvelles offres
+<details>
+<summary><h3>Mise à jour de la base de données après récupération de nouvelles offres</h3></summary>
 
 - Une offre d'emploi peut être mise à jour, et voir par exemple la valeur d'un de ses attributs modifiée.
 
@@ -505,14 +507,15 @@
 - Plus de détails [ici](readme_files/APPENDIX.md#mise-à-jour-de-la-base-de-données-après-récupération-de-nouvelles-offres).
 
 </details>
+</details>
 
 
 <a id="airflow"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
 <details>
 <summary><h2>2.d. Airflow</h2></summary>
 
-
-### Avant Airflow
+<details>
+<summary><h3>Avant Airflow</h3></summary>
 
 - Avant d'appliquer Airflow au projet, deux scripts python étaient exécutées.
 - Pour résumer et simplifier ce qu'ils faisaient ("simplifier" ici car ces scripts ont été remplacés par des DAGs qu'on détaillera après) :
@@ -530,7 +533,11 @@
   - Simplification des requêtes sql
 
 
-### Avec Airflow
+</details>
+
+<details>
+<summary><h3>Avec Airflow</h3></summary>
+
 
 - Les autres bénéfices d'Airflow sur ce projet sont multiples et évidents :
 
@@ -542,9 +549,12 @@
     - requêtes SQL pour remplir x tables en parallèle,
     - requêtes SQL pour effectuer x transformations en parallèle.
 
+</details>
 
 
-## Description des DAGs
+<details>
+<summary><h3>Description des DAGs</h3></summary>
+
 
 <img src="readme_files/screenshots/airflow/graphs_dags_1_2_from_pptx.png" alt="graph du DAG 1" style="width:100%"/>
 
@@ -558,14 +568,16 @@
   - `all_in_one.json` : fichier json aggrégeant les fichiers jsons téléchargés en cours de construction, avant renommage.
 
 
-### Description du DAG 1
+
+<details>
+<summary><h4>Description du DAG 1</h4></summary>
 
 - Vue "graph" du `DAG 1` :
 
   <img src="readme_files/screenshots/airflow/graph_dag_1.png" alt="graph du DAG 1" style="width:100%"/>
 
 
-#### Task Group "SETUP"
+##### DAG 1 : Task Group "SETUP"
 
 > `Sub Task Group "check_files_in_folders"` :
 >
@@ -609,7 +621,7 @@
 
 
 
-#### Task Group "ETL"
+##### DAG 1 : Task Group "ETL"
 
 > - `A1_get_offers` :
 >
@@ -691,14 +703,18 @@
 >   - Déclenchement du `DAG 2` si `DAG` OK
 
 
-### Description du DAG 2
+
+<\details>
+
+<details>
+<summary><h4>Description du DAG 2</h4></summary>
 
 - Vue "graph" du `DAG 2` :
 
   <img src="readme_files/screenshots/airflow/graph_dag_2.png" alt="graph du DAG 2" style="width:100%"/>
 
 
-#### Task Group "SETUP"
+##### DAG 2 : Task Group "SETUP"
 
 > - `check_only_one_json_in_folder` :
 >
@@ -734,15 +750,14 @@
 
 
 
-#### Task Group "INSERT_INTO_TABLES_WITHOUT_JUNCTION"
+##### DAG 2 : Task Group "INSERT_INTO_TABLES_WITHOUT_JUNCTION"
 
 > - Ce groupe exécute les tâches suivantes, qui consistent à récupérer les informations dans les fichiers json dédiés (générés par la tâche `split_large_json`) et exécutent des `INSERT INTO` dans les tâches dédiées :
 >
 >   - `OffreEmploi`, puis les tâches suivantes en parallèle : `Contrat`, `Entreprise`, `Localisation` et `DescriptionOffre`.
 
 
-
-#### Task Group "INSERT_INTO_TABLES_WITH_JUNCTION"
+##### DAG 2 : Task Group "INSERT_INTO_TABLES_WITH_JUNCTION"
 
 > - Ce groupe exécute les actions suivantes (prenons pour exemple, `Competence` puis `Offre_Competence`) :
 >
@@ -761,14 +776,23 @@
 >   - `PermisConduire` puis `Offre_PermisConduire`
 
 
-#### Task Group "TRANSFORMATIONS"
+##### DAG 2 : Task Group "TRANSFORMATIONS"
 
 > - `SQLExecuteQueryOperator()` qui exécutent les tâches suivantes : `update_descriptionoffre_metier_data_DE`, `update_descriptionoffre_metier_data_DA` et `update_descriptionoffre_metier_data_DS` en parallèle, puis `update_descriptionoffre_column_liste_mots_cles`.
 >
 >   - Les fichiers SQL associés sont dans le dossier `airflow/dags/sql`.
 
 
-## Fréquence et durée
+
+</details>
+
+
+
+</details>
+
+
+<details>
+<summary><h3>Fréquence et durée</h3></summary>
 
 - Le `DAG 1` (qui déclenche le `DAG 2`) est exécuté tous les jours à 21h30 :
 
@@ -778,6 +802,7 @@
 
     <img src="readme_files/screenshots/airflow/duration_dags.png" alt="durée des DAGs" style="width:100%"/>
 
+</details>
 </details>
 
 </details>
