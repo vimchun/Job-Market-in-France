@@ -149,7 +149,7 @@
 
 - Sur Prometheus :
 
-  - L'état des targets doit être à `UP`, voir le screenshot de cette [section](#Configuration-de-Prometheus).
+  - L'état des targets doit être à `UP`, voir le screenshot de cette [section](#configuration-de-prometheus).
 
 </details>
 
@@ -1075,6 +1075,7 @@
 <a id="prometheus"></a>
 <details> <summary><h2>5.a. Prometheus</h2></summary>
 
+<a id="configuration-de-prometheus"></a>
 <details> <summary><h3>Configuration de Prometheus</h3></summary>
 
 - La section `scrape_configs` du fichier de configuration `prometheus/prometheus.yaml` définit les `targets` des différents services à surveiller : `statsd-exporter`, `node-exporter`, `postgres-exporter` et `cAdvisor`.

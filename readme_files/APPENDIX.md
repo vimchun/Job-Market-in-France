@@ -4,18 +4,20 @@
 
 - Le sommaire de cette page est aligné à celui de la page principale ([ici](../README.md#sommaire)), à savoir (avec les sous-sections principales) :
 
-  - [1. Environnement](#1-Environnement)
+  - [1. Environnement](environnement)
     - [Utilisation de Docker CE dans WSL pour cAdvisor](#utilisation-de-docker-ce-dans-wsl-pour-cadvisor)
     - [Services Docker](#services-docker)
-  - [2. ETL avec Airflow](#2-etl-avec-airflow)
-    - [Transformations des données](Transformations-des-données)
-    - [Chargement des données dans une base de données relationnelle](#chargement-des-données-dans-une-base-de-données-relationnelle)
+  - [2. ETL avec Airflow](#etl-avec-airflow)
+    - [Transformations des données](#transformations-des-donnees)
+    - [Chargement des données dans une base de données relationnelle](#chargement-des-donnees-dans-une-base-de-donnees-relationnelle)
     - [Airflow](#airflow)
-  - [4. Data Viz avec Power BI](#4-Data-Viz-avec-Power-BI)
-  - [5. Monitoring avec Prometheus et Grafana](#5-monitoring-avec-prometheus-et-grafana)
+  - [4. Data Viz avec Power BI](#data-viz-avec-power-bi)
+  - [5. Monitoring avec Prometheus et Grafana](#monitoring-avec-prometheus-et-grafana)
     - [Prometheus](#Prometheus)
     - [Grafana](#Grafana)
 
+
+<a id="environnement"></a>
 
 # 1. Environnement
 
@@ -224,8 +226,11 @@ Cette section montre les commandes pour retrouver les versions des différents s
     ##==> Version 12.0.2 (commit: 5bda17e7c1cb313eb96266f2fdda73a6b35c3977, branch: HEAD)
 ```
 
+<a id="etl-avec-airflow"></a>
 
 # 2. ETL avec Airflow
+
+<a id="transformations-des-donnees"></a>
 
 ## Transformations des données
 
@@ -571,6 +576,8 @@ Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code
 - A noter aussi que les salaires des offres en alternance seront exclues ici car leur salaire est très majoritairement inférieur au seuil minimum qu'on a défini ici.
 
 
+<a id="chargement-des-donnees-dans-une-base-de-donnees-relationnelle"></a>
+
 ## Chargement des données dans une base de données relationnelle
 
 ### Mise à jour de la base de données après récupération de nouvelles offres
@@ -777,6 +784,7 @@ Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6
     dag_file_processor_timeout = 300  # default = 50
 ```
 
+<a id="data-viz-avec-power-bi"></a>
 
 # 4. Data Viz avec Power BI
 
