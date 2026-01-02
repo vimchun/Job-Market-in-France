@@ -50,7 +50,7 @@
 - [5. Monitoring avec Prometheus et Grafana](#monitoring-avec-prometheus-et-grafana)
   - [5.a. Prometheus](#prometheus)
   - [5.b. Grafana](#grafana)
-    - [Analyse quand les DAGs sont en cours d'exécution](#analyse-quand-les-dags-sont-en-cours-dexécution)
+    - [Analyse quand les DAGs sont en cours d'exécution](#analyse-quand-les-dags-sont-en-cours-dexecution)
 
 - [6. Conclusion](#conclusion)
   - [6.a. Compétences techniques développées](#competences-techniques-developpees)
@@ -158,7 +158,8 @@
 
 
 <a id="configuration-docker"></a>
-<details> <summary><h2>1.b. Configuration Docker</h2></summary>
+<details>
+  <summary><h2>1.b. Configuration Docker</h2></summary>
 
 - Une grande partie de l'environnement de ce projet est dockerisé.
 
@@ -1248,7 +1249,7 @@
 </details>
 </details>
 
-<a id="analyse-quand-les-dags-sont-en-cours-dexécution"></a>
+<a id="analyse-quand-les-dags-sont-en-cours-dexecution"></a>
 <details> <summary><h3>Analyse quand les DAGs sont en cours d'exécution</h3></summary>
 
 <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/with_annotations/0-airflow_dags_datetime.png" alt="analyse avec DAGs" style="width:100%"/>
@@ -1298,7 +1299,7 @@
 ---
 
 <a id="conclusion"></a>
-<details> <summary><h1>6. Conclusion</h1></summary>
+<details open> <summary><h1>6. Conclusion</h1></summary>
 
 <a id="competences-techniques-developpees"></a>
 <details> <summary><h2>6.a. Compétences techniques développées</h2></summary>
@@ -1322,7 +1323,7 @@
 <a id="difficultes-rencontrees"></a>
 <details> <summary><h2>6.b. Difficultés rencontrées</h2></summary>
 
-- Les points suivants illustrent des difficultés auxquelles je me suis heurté mais que j'ai fini par résoudre :
+- Les points suivants illustrent des difficultés que j'ai rencontrées, mais que j'ai fini par résoudre :
 
   - environnement :
 

@@ -1,7 +1,7 @@
 title: "Projet Data Engineer"
 description: "Analyse des offres d'emploi de la data (et de la tech)"
 markdown: GFM
-theme: jekyll-theme-slate
+theme: jekyll-theme-slate  # page secondaire OK, icône expand OK, niveau section KO
 # theme: jekyll-theme-tactile
 # theme: jekyll-theme-time-machine
 # theme: jekyll-theme-hacker  # title/description prises en compte, on voit le niveau des sections avec des slashs (`///` si section de niveau 3), black theme, on voit si une section est dépliée ou pas
