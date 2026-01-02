@@ -26,7 +26,7 @@
 - Sur `Windows 11` et `WSL2` avec `Ubuntu 22.04`, pour que `cAdvisor` soit fonctionnel, il faut :
 
   - Activer `docker CE` sur WSL :
-    - la procédure est décrite [ici](#Installer-et-utiliser-Docker-CE-dans-WSL).
+    - la procédure est décrite [ici](#installer-et-utiliser-docker-ce-dans-wsl).
 
   - Désactiver `Docker Desktop` :
     - dans la GUI : aller dans `Settings` > `Resources` > `WSL Integration`, et décocher `Enable integration with my default WSL distro` et tout autre case cochée concernant `Ubuntu-22.04`.
@@ -36,10 +36,12 @@
 
 - C'est pour avoir nativement un environnement Docker pur Linux, contrôlé par `systemd` et donc compatible avec `cAdvisor`.
 
-- En effet, `cAdvisor` a notamment besoin pour fonctionner d'avoir accès à `/var/lib/docker/image/overlay2/layerdb/mounts/<conteneur_id>/mount-id`, sinon on a le problème décrit [ici](#Problème-avec-Docker-Desktop).
+- En effet, `cAdvisor` a notamment besoin pour fonctionner d'avoir accès à `/var/lib/docker/image/overlay2/layerdb/mounts/<conteneur_id>/mount-id`, sinon on a le problème décrit [ici](#probleme-avec-docker-desktop).
   - Ce dossier existe nativement avec `Docker CE`.
   - Ce dossier n'existe pas avec `Docker Destop` (si un dossier équivalent existait, on aurait pu faire un montage, mais ce n'est pas le cas sur `Ubuntu 22.04`).
 
+
+<a id="probleme-avec-docker-desktop"></a>
 
 ### Problème avec Docker Desktop
 
