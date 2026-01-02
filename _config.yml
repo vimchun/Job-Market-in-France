@@ -1,8 +1,7 @@
 title: "Projet Data Engineer"
 description: "Analyse des offres d'emploi de la data (et de la tech)"
 markdown: GFM
-theme: jekyll-theme-time-machine
-# theme: jekyll-theme-hacker  # title/description prises en compte, on voit le niveau des sections avec des slashs (`///` si section de niveau 3), black theme, on voit si une section est dépliée ou pas
+theme: jekyll-theme-hacker # title/description prises en compte, on voit le niveau des sections avec des slashs (`///` si section de niveau 3), black theme, on voit si une section est dépliée ou pas
 # theme: jekyll-theme-modernist # title/description prises en compte, lien url doc externe fonctionne, on voit si une section est dépliée ou pas
 # theme: jekyll-theme-slate  # page secondaire OK, icône expand OK, niveau section KO
 # theme: jekyll-theme-architect  # title/description prises en compte, on voit le niveau des sections avec des slashs (`///` si section de niveau 3)
@@ -12,5 +11,6 @@ theme: jekyll-theme-time-machine
 # theme: jekyll-theme-cayman  # title/description non prises en compte, grosse banière verte
 # theme: jekyll-theme-dinky # title/description prises en compte, style qui ne me convient pas, mais on voit si une section est dépliée ou pas
 # theme: jekyll-theme-minimal  # prend une grosse partie à gauche pour rien, on voit si une section est dépliée ou pas
+# theme: jekyll-theme-time-machine  # je n'aime pas
 # theme: jekyll-theme-tactile  # lien en rouge (KO)
 
