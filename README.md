@@ -31,6 +31,8 @@
 
 (avec les sous-sections importantes uniquement)
 
+- Toutes les sections et sous-sections sont cliquables pour développer/réduire le contenu.
+
 - [1. Environnement](#environnement)
   - [1.a. Pré-requis](#prerequis)
   - [1.b. Configuration Docker](#configuration-docker)
@@ -67,8 +69,8 @@
 
 
 <a id="environnement"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
-
-# 1. Environnement
+<details>
+<summary><h1>1.a. Environnement</h1></summary>
 
 > - Notes :
 >   - Le développement et les tests ont eu lieu sous :
@@ -95,7 +97,6 @@
 
 
 <a id="prerequis"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
-
 <details>
 <summary><h2>1.a. Pré-requis</h2></summary>
 
@@ -204,10 +205,11 @@
   >   - Voir [ici](readme_files/APPENDIX.md#Utilisation-de-Docker-CE-dans-WSL-pour-cAdvisor) pour les explications et pour la procédure d'installation de `Docker CE` dans `WSL`.
 
 
-<a id="versions-des-services-testes"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
 
 </details>
 
+
+<a id="versions-des-services-testes"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
 <details>
 <summary><h2>1.c. Versions des services testés</h2></summary>
 
@@ -249,8 +251,8 @@
 
 </details>
 
-<a id="arborescence-des-fichiers-du-projet"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
 
+<a id="arborescence-des-fichiers-du-projet"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
 <details>
 <summary><h2>1.d. Arborescence des fichiers du projet</h2></summary>
 
