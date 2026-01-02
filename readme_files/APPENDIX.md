@@ -2,7 +2,7 @@
 
 - Cette page donne des détails complémentaires à la [page principale](../README.md#présentation-du-projet).
 
-- Le sommaire de cette page est aligné à celui de la page principale ([ici](../README.md#sommaire)), à savoir (avec les sous-sections principales) :
+- Le sommaire suivant est aligné avec celui de la page principale :
 
   - [1. Environnement](#environnement)
     - [Utilisation de Docker CE dans WSL pour cAdvisor](#utilisation-de-docker-ce-dans-wsl-pour-cadvisor)
@@ -57,10 +57,11 @@
 
     - Pour le contourner, certaines forums proposent de faire un montage sur `\\wsl$\docker-desktop-data\data\docker` mais ce dossier n'existe pas sur la distribution `Ubuntu 22.04`, et faire un montage avec le dossier existant `\\wsl.localhost\docker-desktop\mnt\docker-desktop-disk\data\docker` ne fonctionne pas non plus car il n'y a pas le fichier `mount-id`.
 
-- La section [suivante](#Installer-et-utiliser-Docker-CE-dans-WSL) présente la procédure complète pour installer `Docker CE` dans `WSL2 Ubuntu 22.04` avec `systemd`.
 
 
 ### Installer et utiliser Docker CE dans WSL
+
+- Cette section présente la procédure complète pour installer `Docker CE` dans `WSL2 Ubuntu 22.04` avec `systemd`.
 
 1. Activer `systemd` dans `WSL2`, puis redémarrer WSL avec PowerShell :
 
@@ -1126,7 +1127,7 @@ Conclusion : `custom_counter_job_end` n'est pas fonctionnel.
 
 ##### Métriques avec préfixes
 
-- Cette [section](../README.md#métriques-de-statsd-exporter) fait état de métriques préfixés.
+- Cette [section](../README.md#metriques-de-statsd-exporter) fait état de métriques préfixés.
 
 - Un dashboard a été créé :
 

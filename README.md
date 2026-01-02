@@ -27,7 +27,7 @@
 
 (avec les sous-sections les plus importantes uniquement)
 
-> ⚠️ Toutes les sections et sous-sections numérotés sont cliquables pour développer/réduire le contenu. ️⚠️
+> ⚠️ Toutes les sections et sous-sections numérotées sont cliquables pour développer/réduire le contenu. ️⚠️
 
 - [1. Environnement](#environnement)
   - [1.a. Pré-requis](#prerequis)
@@ -1139,6 +1139,8 @@
 > - Des NaN peuvent apparaissent s'il n’y a pas assez de données récentes dans la fenêtre de calcul du quantile summary.
 
 </details>
+
+<a id="metriques-de-statsd-exporter"></a>
 
 <details> <summary><h4>Métriques de StatsD-Exporter</h4></summary>
 
