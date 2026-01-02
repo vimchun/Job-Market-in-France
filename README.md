@@ -190,18 +190,18 @@
 
 - Tableau avec les versions utilisées (pour un éco-système fonctionnel) :
 
-  | Service           | Version  | Date de la release | Lien                                                               |
-  | ----------------- | -------- | ------------------ | ------------------------------------------------------------------ |
-  | FastAPI           | 0.115.12 | 03/2025            | https://github.com/fastapi/fastapi/releases                        |
-  | Postgres          | 16.9     | 05/2025            | https://github.com/postgres/postgres/tags                          |
-  | Redis             | 8.0.3    | 07/2025            | https://github.com/redis/redis/releases                            |
-  | Airflow           | 3.0.3    | 07/2025            | https://github.com/apache/airflow/releases                         |
-  | StatsD-exporter   | 0.28.0   | 10/2024            | https://github.com/prometheus/statsd_exporter/releases             |
-  | Node-exporter     | 1.9.1    | 04/2025            | https://github.com/prometheus/node_exporter/releases               |
-  | Postgres-exporter | 0.17.1   | 02/2025            | https://github.com/prometheus-community/postgres_exporter/releases |
-  | cAdvisor          | v0.49.1  | 03/2024            | https://github.com/google/cadvisor/releases                        |
-  | Prometheus        | 3.5.0    | 07/2025            | https://github.com/prometheus/prometheus/releases                  |
-  | Grafana           | 12.0.2   | 06/2025            | https://github.com/grafana/grafana/releases                        |
+  | Service           | Version  | Release Date | Lien                                                               |
+  | ----------------- | -------- | ------------ | ------------------------------------------------------------------ |
+  | FastAPI           | 0.115.12 | 03/2025      | https://github.com/fastapi/fastapi/releases                        |
+  | Postgres          | 16.9     | 05/2025      | https://github.com/postgres/postgres/tags                          |
+  | Redis             | 8.0.3    | 07/2025      | https://github.com/redis/redis/releases                            |
+  | Airflow           | 3.0.3    | 07/2025      | https://github.com/apache/airflow/releases                         |
+  | StatsD-exporter   | 0.28.0   | 10/2024      | https://github.com/prometheus/statsd_exporter/releases             |
+  | Node-exporter     | 1.9.1    | 04/2025      | https://github.com/prometheus/node_exporter/releases               |
+  | Postgres-exporter | 0.17.1   | 02/2025      | https://github.com/prometheus-community/postgres_exporter/releases |
+  | cAdvisor          | v0.49.1  | 03/2024      | https://github.com/google/cadvisor/releases                        |
+  | Prometheus        | 3.5.0    | 07/2025      | https://github.com/prometheus/prometheus/releases                  |
+  | Grafana           | 12.0.2   | 06/2025      | https://github.com/grafana/grafana/releases                        |
 
 <br>
 
@@ -348,7 +348,7 @@
 
 - 62 fichiers json sont obtenus, contenant toutes les offres d'emploi liées ou pas à la data, pour la France et DOM-TOM uniquement, l'API de France Travail ne renvoyant quasiment pas d'offre d'emploi pour les autres pays.
 
-- Plusieurs transformations seront effectuées par la suite : [voir ici](#transformations-des-donnees)
+- Plusieurs transformations seront effectuées par la suite, voir section ["Transormations des données"](#transformations-des-donnees).
 
 
 > Notes :
@@ -415,9 +415,9 @@
 
   - Pour créer et écrire l'attribut `liste_mots_cles` :
 
-    - Pour chaque offre, si un mot-clé parmi la liste de strings prédéfinie [ici](airflow/dags/sql/transformation_4_update__table_descriptionoffre__column__liste_mots_cles.sql) est présent dans la description, ce mot-clé sera ajouté dans l'attribut (qui est une liste).
+    - Pour chaque offre, si un mot-clé parmi la liste de strings prédéfinie [ici](https://github.com/vimchun/Job-Market-in-France/blob/master/airflow/dags/sql/transformations/4_update__descriptionoffre__liste_mots_cles.sql) est présent dans la description, ce mot-clé sera ajouté dans l'attribut (qui est une liste).
 
-    - Cet attribut sera traité à posteriori par Power BI (voir la section [Keywords](#keywords)).
+    - Cet attribut sera traité à posteriori par Power BI (voir la section [e. Keywords](#keywords)).
 
 
 > - Notes :
@@ -949,7 +949,7 @@
 - Les sections suivantes exposeront l'analyse des offres `DA`, `DE` et `DS` uniquement.
 
 
-<details> <summary><h3>1. Offres (all)</h3></summary>
+<details> <summary><h3>a. Offres (all)</h3></summary>
 
 <img src="readme_files/screenshots/power_bi/reports/1--all-offers/1-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
@@ -970,7 +970,7 @@
 </details>
 
 
-<details> <summary><h3>2. Compétences/expériences</h3></summary>
+<details> <summary><h3>b. Compétences/expériences</h3></summary>
 
 <img src="readme_files/screenshots/power_bi/reports/2--competences-experiences/2-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
@@ -986,7 +986,7 @@
 </details>
 
 
-<details> <summary><h3>3. Qualités/qualifications</h3></summary>
+<details> <summary><h3>c. Qualités/qualifications</h3></summary>
 
 <img src="readme_files/screenshots/power_bi/reports/3--qualites-qualifications/3-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
@@ -1000,7 +1000,7 @@
 
 </details>
 
-<details> <summary><h3>4. Localisation</h3></summary>
+<details> <summary><h3>d. Localisation</h3></summary>
 
 <img src="readme_files/screenshots/power_bi/reports/4--location/4-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
@@ -1019,7 +1019,7 @@
 
 <a id="keywords"></a>
 
-<details> <summary><h3>5. Keywords</h3></summary>
+<details> <summary><h3>e. Keywords</h3></summary>
 
 <img src="readme_files/screenshots/power_bi/reports/5--keywords/5-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
