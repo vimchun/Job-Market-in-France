@@ -38,38 +38,28 @@
   - [1.c. Versions des services testés](#versions-des-services-testes)
   - [1.d. Arborescence des fichiers](#arborescence-des-fichiers)
 
-  <br>
-
 - [2. ETL avec Airflow](#etl-avec-airflow)
   - [2.a. Extraction des données par API](#extraction-des-donnees-par-api)
   - [2.b. Transformations des données](#transformations-des-donnees)
   - [2.c. Chargement des données dans une base de données relationnelle](#chargement-des-donnees-dans-une-base-de-donnees-relationnelle)
   - [2.d. Airflow](#airflow)
 
-  <br>
-
 - [3. Création d'une API avec FastAPI](#3-création-dune-api-avec-fastapi)
-
-  <br>
 
 - [4. Data Viz avec Power BI](#4-data-viz-avec-power-bi)
   - [Rapports et analyses](#rapports-et-analyses)
-
-  <br>
 
 - [5. Monitoring avec Prometheus et Grafana](#5-monitoring-avec-prometheus-et-grafana)
   - [Prometheus](#prometheus)
   - [Grafana](#grafana)
     - [Analyse quand les DAGs sont en cours d'exécution](#analyse-quand-les-dags-sont-en-cours-dexécution)
 
-  <br>
-
 - [6. Conclusion](#6-conclusion)
   - [Compétences techniques](#compétences-techniques)
   - [Difficultés rencontrées](#difficultés-rencontrées)
 
 
-> Note : Pas de Machine Learning pour ce projet, car j'en avais déjà fait lors de mon projet "Data Analyst", donc peu d'intérêt ici...
+===
 
 - Pour ne pas surcharger cette page principale, une seconde page avec des informations supplémentaires moins essentielles est disponible [ici](readme_files/APPENDIX.md#readme-secondaire).
 
@@ -81,8 +71,7 @@
 
 
 <a id="prerequis"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
-<details>
-<summary><h2>1.a. Pré-requis</h2></summary>
+<details> <summary><h2>1.a. Pré-requis</h2></summary>
 
 > - Notes :
 >   - Le développement et les tests ont eu lieu sous :
@@ -151,7 +140,7 @@
   ```
 
 
-- Côté Airflow :
+- Sur Airflow :
 
   - Activer `DAG 1` et `DAG 2` dans la [GUI](http://localhost:8080/dags) (par défaut, ils sont désactivés après une réinitialisation d'environnement) :
 
@@ -162,7 +151,7 @@
     - `DAG 2` doit être activé sinon le `DAG 1` ne déclenchera pas le `DAG 2`, et il sera en `Queued`.
 
 
-- Côté Prometheus :
+- Sur Prometheus :
 
   - L'état des targets doit être à `UP`, voir le screenshot de cette [section](#Configuration-de-Prometheus).
 
@@ -170,8 +159,7 @@
 
 
 <a id="configuration-docker"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
-<details>
-<summary><h2>1.b. Configuration Docker</h2></summary>
+<details> <summary><h2>1.b. Configuration Docker</h2></summary>
 
 - Une grande partie de l'environnement de ce projet est dockerisé.
 
@@ -184,6 +172,7 @@
   - `prometheus`,
   - `grafana`
 
+<br>
 
 - Le fichier `drawio_files/architecture.drawio` donne une vue sur l'architecture du projet, avec les principaux services Docker déployés :
 
@@ -193,14 +182,11 @@
   >   - `Docker CE dans WSL` utilisé au lieu de `Docker Desktop`, car `cAdvisor` (Container Advisor) n'est pas opérationnel dans l'environnement `WSL` avec `Ubuntu 22.04` + `Docker Desktop`
   >   - Voir [ici](readme_files/APPENDIX.md#Utilisation-de-Docker-CE-dans-WSL-pour-cAdvisor) pour les explications et pour la procédure d'installation de `Docker CE` dans `WSL`.
 
-
-
 </details>
 
 
 <a id="versions-des-services-testes"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
-<details>
-<summary><h2>1.c. Versions des services testés</h2></summary>
+<details> <summary><h2>1.c. Versions des services testés</h2></summary>
 
 - Le ficher `docker-compose.yml` ne spécifiant pas les versions pour les différents services (tag `latest` par défaut), il est important de noter les versions des services de l'écosystème.
 
@@ -221,6 +207,7 @@
   | Prometheus        | 3.5.0    | 07/2025            | https://github.com/prometheus/prometheus/releases                  |
   | Grafana           | 12.0.2   | 06/2025            | https://github.com/grafana/grafana/releases                        |
 
+<br>
 
 
 - Urls des GUIs :
@@ -242,10 +229,25 @@
 
 
 <a id="arborescence-des-fichiers"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
-<details>
-<summary><h2>1.d. Arborescence des fichiers</h2></summary>
+<details> <summary><h2>1.d. Arborescence des fichiers</h2></summary>
 
-- Sans la partie liée à la conf Docker :
+- Avec seulement les fichiers liés à la configuration Docker :
+
+```bash
+  .
+  ├── airflow/
+  │   ├── requirements.txt  # dépendances nécessaires pour le Dockerfile
+  │   └── Dockerfile        # construction du conteneur Airflow
+  │  
+  ├── fastapi/
+  │   ├── requirements.txt  # dépendances nécessaires pour le Dockerfile
+  │   └── Dockerfile        # construction du conteneur FastAPI
+  │  
+  └── docker-compose.yml    # orchestration docker pour postgres + fastapi + les services Airflow
+  ```
+
+
+- Avec tous les fichiers :
 
 ```bash
   .
@@ -299,22 +301,6 @@
   └── todo.md                                    # fichiers listant les idées/actions prévues
   ```
 
-
-- Avec seulement la configuration Docker :
-
-```bash
-  .
-  ├── airflow/
-  │   ├── requirements.txt  # dépendances nécessaires pour le Dockerfile
-  │   └── Dockerfile        # construction du conteneur Airflow
-  │  
-  ├── fastapi/
-  │   ├── requirements.txt  # dépendances nécessaires pour le Dockerfile
-  │   └── Dockerfile        # construction du conteneur FastAPI
-  │  
-  └── docker-compose.yml    # orchestration docker pour postgres + fastapi + les services Airflow
-  ```
-
 </details>
 </details>
 
@@ -329,9 +315,7 @@
 
 
 <a id="extraction-des-donnees-par-api"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
-<details>
-<summary><h2>2.a. Extraction des données par API</h2></summary>
-
+<details> <summary><h2>2.a. Extraction des données par API</h2></summary>
 
 - France Travail (https://francetravail.io/data/api) met à disposition gratuitement plusieurs APIs, dont "Offres d'emploi v2" (`GET https://api.francetravail.io/partenaire/offresdemploi`).
 
@@ -405,12 +389,10 @@
 
 
 <a id="transformations-des-donnees"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
-<details>
-<summary><h2>2.b. Transformations des données</h2></summary>
+<details> <summary><h2>2.b. Transformations des données</h2></summary>
 
 
-<details>
-<summary><h3>Transformations des données en amont (côté Python)</h3></summary>
+<details> <summary><h3>Transformations des données en amont (côté Python)</h3></summary>
 
 - Ces transformations sont faites dans le `DAG 1`, faites via Python et en amont du chargement dans la base Postgres :
 
@@ -428,8 +410,7 @@
 </details>
 
 
-<details>
-<summary><h3>Transformations des données en aval (côté SQL)</h3></summary>
+<details> <summary><h3>Transformations des données en aval (côté SQL)</h3></summary>
 
 - Ces transformations sont effectuées dans le `DAG 2`, faites via des requêtes `SQL` et effectuées en aval de l'écriture dans la base Postgres :
 
@@ -459,8 +440,7 @@
 </details>
 
 <a id="chargement-des-donnees-dans-une-base-de-donnees-relationnelle"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
-<details>
-<summary><h2>2.c. Chargement des données dans une base de données relationnelle</h2></summary>
+<details> <summary><h2>2.c. Chargement des données dans une base de données relationnelle</h2></summary>
 
 - L'API de France Travail contient beaucoup d'attibuts pour une offre d'emploi, qui seront quasiment tous exploités par la suite.
 
@@ -489,8 +469,7 @@
 
 > Notes : J'aurais préféré utiliser `SQL` à `mongodb`, car comme démontré dans ce projet, `SQL` est une compétence beaucoup plus demandée par les recruteurs pour les postes DA et DE. C'est donc plus un choix stratégique.
 
-<details>
-<summary><h3>Mise à jour de la base de données après récupération de nouvelles offres</h3></summary>
+<details> <summary><h3>Mise à jour de la base de données après récupération de nouvelles offres</h3></summary>
 
 - Une offre d'emploi peut être mise à jour, et voir par exemple la valeur d'un de ses attributs modifiée.
 
@@ -511,11 +490,9 @@
 
 
 <a id="airflow"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
-<details>
-<summary><h2>2.d. Airflow</h2></summary>
+<details> <summary><h2>2.d. Airflow</h2></summary>
 
-<details>
-<summary><h3>Avant Airflow</h3></summary>
+<details> <summary><h3>Avant Airflow</h3></summary>
 
 - Avant d'appliquer Airflow au projet, deux scripts python étaient exécutées.
 - Pour résumer et simplifier ce qu'ils faisaient ("simplifier" ici car ces scripts ont été remplacés par des DAGs qu'on détaillera après) :
@@ -535,8 +512,7 @@
 
 </details>
 
-<details>
-<summary><h3>Avec Airflow</h3></summary>
+<details> <summary><h3>Avec Airflow</h3></summary>
 
 
 - Les autres bénéfices d'Airflow sur ce projet sont multiples et évidents :
@@ -552,8 +528,7 @@
 </details>
 
 
-<details>
-<summary><h3>Description des DAGs</h3></summary>
+<details> <summary><h3>Description des DAGs</h3></summary>
 
 
 <img src="readme_files/screenshots/airflow/graphs_dags_1_2_from_pptx.png" alt="graph du DAG 1" style="width:100%"/>
@@ -569,8 +544,7 @@
 
 
 
-<details>
-<summary><h4>Description du DAG 1</h4></summary>
+<details> <summary><h4>Description du DAG 1</h4></summary>
 
 - Vue "graph" du `DAG 1` :
 
@@ -578,8 +552,7 @@
 
 
 
-<details>
-<summary><h5>DAG 1 : Task Group "SETUP"</h5></summary>
+<details> <summary><h5>DAG 1 : Task Group "SETUP"</h5></summary>
 
 > `Sub Task Group "check_files_in_folders"` :
 >
@@ -625,8 +598,7 @@
 </details>
 
 
-<details>
-<summary><h5>DAG 1 : Task Group "ETL"</h5></summary>
+<details> <summary><h5>DAG 1 : Task Group "ETL"</h5></summary>
 
 > - `A1_get_offers` :
 >
@@ -712,15 +684,13 @@
 
 </details>
 
-<details>
-<summary><h4>Description du DAG 2</h4></summary>
+<details> <summary><h4>Description du DAG 2</h4></summary>
 
 - Vue "graph" du `DAG 2` :
 
   <img src="readme_files/screenshots/airflow/graph_dag_2.png" alt="graph du DAG 2" style="width:100%"/>
 
-<details>
-<summary><h5>DAG 2 : Task Group "SETUP"</h5></summary>
+<details> <summary><h5>DAG 2 : Task Group "SETUP"</h5></summary>
 
 > - `check_only_one_json_in_folder` :
 >
@@ -757,8 +727,7 @@
 </details>
 
 
-<details>
-<summary><h5>DAG 2 : Task Group "INSERT_INTO_TABLES_WITHOUT_JUNCTION"</h5></summary>
+<details> <summary><h5>DAG 2 : Task Group "INSERT_INTO_TABLES_WITHOUT_JUNCTION"</h5></summary>
 
 > - Ce groupe exécute les tâches suivantes, qui consistent à récupérer les informations dans les fichiers json dédiés (générés par la tâche `split_large_json`) et exécutent des `INSERT INTO` dans les tâches dédiées :
 >
@@ -767,8 +736,7 @@
 </details>
 
 
-<details>
-<summary><h5>DAG 2 : Task Group "INSERT_INTO_TABLES_WITH_JUNCTION"</h5></summary>
+<details> <summary><h5>DAG 2 : Task Group "INSERT_INTO_TABLES_WITH_JUNCTION"</h5></summary>
 
 
 > - Ce groupe exécute les actions suivantes (prenons pour exemple, `Competence` puis `Offre_Competence`) :
@@ -790,8 +758,7 @@
 </details>
 
 
-<details>
-<summary><h5>DAG 2 : Task Group "TRANSFORMATIONS"</h5></summary>
+<details> <summary><h5>DAG 2 : Task Group "TRANSFORMATIONS"</h5></summary>
 
 > - `SQLExecuteQueryOperator()` qui exécutent les tâches suivantes : `update_descriptionoffre_metier_data_DE`, `update_descriptionoffre_metier_data_DA` et `update_descriptionoffre_metier_data_DS` en parallèle, puis `update_descriptionoffre_column_liste_mots_cles`.
 >
@@ -807,8 +774,7 @@
 </details>
 
 
-<details>
-<summary><h3>Fréquence et durée</h3></summary>
+<details> <summary><h3>Fréquence et durée</h3></summary>
 
 - Le `DAG 1` (qui déclenche le `DAG 2`) est exécuté tous les jours à 21h30 :
 
@@ -820,7 +786,6 @@
 
 </details>
 </details>
-
 </details>
 
 
