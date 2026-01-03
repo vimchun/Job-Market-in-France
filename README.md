@@ -64,7 +64,7 @@
 ---
 
 <a id="environnement"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
-<details> <summary><h1>1. Environnement</h1></summary>
+<details open> <summary><h1>1. Environnement</h1></summary>
 
 <a id="prerequis"></a>
 <details> <summary><h2>1.a. Pré-requis</h2></summary>
@@ -302,7 +302,7 @@
 ---
 
 <a id="etl-avec-airflow"></a>
-<details> <summary><h1>2. ETL avec Airflow</h1></summary>
+<details open> <summary><h1>2. ETL avec Airflow</h1></summary>
 
   <!-- <img src="readme_files/screenshots/drawio/gif/architecture_01--ETL--compressed.gif" alt="architecture focus ETL" style="width:100%"/> -->
 
@@ -776,7 +776,7 @@
 ---
 
 <a id="creation-dune-api-avec-fastapi"></a>
-<details> <summary><h1>3. Création d'une API avec FastAPI</h1></summary>
+<details open> <summary><h1>3. Création d'une API avec FastAPI</h1></summary>
 
 <!-- <img src="readme_files/screenshots/drawio/gif/architecture_02--API--compressed.gif" alt="architecture focus API" style="width:100%"/> -->
 
@@ -929,7 +929,7 @@
 ---
 
 <a id="data-viz-avec-power-bi"></a>
-<details> <summary><h1>4. Data Viz avec Power BI</h1></summary>
+<details open> <summary><h1>4. Data Viz avec Power BI</h1></summary>
 
   <!-- <img src="readme_files/screenshots/drawio/gif/architecture_03--VIZ--compressed.gif" alt="architecture focus VIZ" style="width:100%"/> -->
 
@@ -1071,7 +1071,7 @@
 ---
 
 <a id="monitoring-avec-prometheus-et-grafana"></a>
-<details> <summary><h1>5. Monitoring avec Prometheus et Grafana</h1></summary>
+<details open> <summary><h1>5. Monitoring avec Prometheus et Grafana</h1></summary>
 
   <!-- <img src="readme_files/screenshots/drawio/gif/architecture_04--MON--compressed.gif" alt="architecture focus MON" style="width:100%"/> -->
 
@@ -1295,7 +1295,7 @@
 ---
 
 <a id="conclusion"></a>
-<details> <summary><h1>6. Conclusion</h1></summary>
+<details open> <summary><h1>6. Conclusion</h1></summary>
 
 <a id="competences-techniques-developpees"></a>
 <details> <summary><h2>6.a. Compétences techniques développées</h2></summary>
