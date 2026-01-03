@@ -781,7 +781,7 @@
 <!-- <img src="readme_files/screenshots/drawio/gif/architecture_02--API--compressed.gif" alt="architecture focus API" style="width:100%"/> -->
 
 
-<details> <summary><h2>Tags</h2></summary>
+<details> <summary><h2>3.a. Tags</h2></summary>
 
 - Pour créer nos endpoints, la librairie `FastAPI` sera utilisée.
 
@@ -900,7 +900,7 @@
 </details>
 </details>
 
-<details> <summary><h2>Filtres</h2></summary>
+<details> <summary><h2>3.b. Filtres</h2></summary>
 
 - Pour certains endpoints des 2 premiers tags, il est possible de filtrer par `metier_data`, sur les offres disponibles et par code région/département/ville/insee (d'où l'utilité du troisième tag) :
 
@@ -909,7 +909,7 @@
 </details>
 
 
-<details> <summary><h2>Configuration Fastapi</h2></summary>
+<details> <summary><h2>3.c. Configuration Fastapi</h2></summary>
 
 - Le `docker-compose.yml` décrit des montages de volumes pour ne pas avoir à redémarrer le `docker compose` après chaque modification de fichiers sql, par exemple.
 
