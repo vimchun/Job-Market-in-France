@@ -43,7 +43,7 @@
 
 - [3. Création d'une API avec FastAPI](#creation-dune-api-avec-fastapi)
   - [3.a. Tags](#tags)
-  - [3.b. Filtres et configuration de FastAPI](#filtres-et-configuration-de-fastapi)
+  - [3.b. Filtres et configuration](#filtres-et-configuration)
 
 
 - [4. Data Viz avec Power BI](#data-viz-avec-power-bi)
@@ -904,9 +904,9 @@
 </details>
 
 
-<a id="filtres-et-configuration-de-fastapi"></a>
+<a id="filtres-et-configuration"></a>
 
-<details> <summary><h2>3.b. Filtres et configuration de FastAPI</h2></summary>
+<details> <summary><h2>3.b. Filtres et configuration</h2></summary>
 
 <details> <summary><h3>Filtres</h3></summary>
 
@@ -917,7 +917,7 @@
 </details>
 
 
-<details> <summary><h3>Configuration de FastAPI</h3></summary>
+<details> <summary><h3>Configuration</h3></summary>
 
 - Le `docker-compose.yml` décrit des montages de volumes pour ne pas avoir à redémarrer le `docker compose` après chaque modification de fichiers sql, par exemple.
 
