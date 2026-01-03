@@ -25,7 +25,7 @@
 
 <details open> <summary><h1>Sommaire</h1></summary>
 
-(avec les sous-sections les plus importantes uniquement)
+(avec les sous-sections essentielles uniquement)
 
 > ⚠️ Toutes les sections et sous-sections numérotées sont cliquables pour développer/réduire le contenu. ️⚠️
 
