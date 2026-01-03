@@ -6,7 +6,7 @@
 
   <div style="max-width: 400px; margin: 0 auto;">
     <video controls muted style="width: 100%; height: auto;">
-      <source src="scripts/building_video/results/slideshow_burned_subs.mp4" type="video/mp4">
+      <source src="scripts/generate_mp4_slideshow/results/slideshow_burned_subs.mp4" type="video/mp4">
     </video>
   </div>
 
