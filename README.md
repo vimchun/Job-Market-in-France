@@ -766,7 +766,7 @@
 
 - `DAG 1` prend 10-15 minutes d'exécution, et `DAG 2` en prend 5-10 :
 
-    <img src="readme_files/screenshots/airflow/duration_dags.png" alt="durée des DAGs" style="width:100%"/>
+    <img src="readme_files/screenshots/airflow/duration_dags.png" alt="durée des DAGs" style="width:70%"/>
 
 </details>
 </details>
@@ -904,7 +904,7 @@
 
 - Pour certains endpoints des 2 premiers tags, il est possible de filtrer par `metier_data`, sur les offres disponibles et par code région/département/ville/insee (d'où l'utilité du troisième tag) :
 
-  <img src="readme_files/screenshots/fastapi/filters.png" alt="filtres" style="width:50%"/>
+  <img src="readme_files/screenshots/fastapi/filters.png" alt="filtres" style="width:40%"/>
 
 </details>
 
@@ -1029,7 +1029,8 @@
 
 - Encore une fois ici, ces graphs sont possibles grâce à une transformation, faite avec SQL, qui détecte les mots-clés dans la description des offres :
 
-  - Pour chaque offre, si un mot-clé parmi la liste de strings prédéfinie [ici](airflow/dags/sql/transformation_4_update__table_descriptionoffre__column__liste_mots_cles.sql) est présent dans la description, ce mot-clé sera ajouté dans l'attribut (qui est une liste).
+  - Pour chaque offre, si un mot-clé parmi la liste de strings prédéfinie [ici](https://github.com/vimchun/Job-Market-in-France/blob/master/airflow/dags/sql/transformations/4_update__descriptionoffre__liste_mots_cles.sql) est présent dans la description, ce mot-clé sera ajouté dans l'attribut (qui est une liste).
+
 
   - Une transformation côté Power BI permet de splitter une offre sur x lignes si cette offre a x mots-clés dans la liste (voir détails [ici](readme_files/APPENDIX.md#attributs-liste-mots-cles)).
 
@@ -1090,7 +1091,7 @@
 
 <details> <summary><h3>Configuration Docker pour cAdvisor</h3></summary>
 
-- Comme décrit dans la note de cette [section](#configuration-docker), il faut utiliser `Docker CE dans WSL`, et non pas `Docker Desktop`.
+- Comme décrit dans la note de la section ["1.b. Configuration Docker"](#configuration-docker), il faut utiliser `Docker CE dans WSL`, et non pas `Docker Desktop`.
 
 - Exemple de requête PromQL qui renvoie les conteneurs docker :
 
@@ -1123,7 +1124,7 @@
 
 <details> <summary><h4>Dump des métriques</h4></summary>
 
-- La liste des métriques est récupérable via la GUI des applis, avec les urls qui se terminent par `metrics` (voir cette [section](#urls-des-guis)).
+- La liste des métriques est récupérable via la GUI des applis, avec les urls qui se terminent par `metrics` (voir la partie ["Urls des GUIs"](#urls-des-guis)).
 
 - On peut aussi les récupération par cli (ainsi, les dumps des métriques sont présents dans le dossier `prometheus/available_metrics`) :
 
