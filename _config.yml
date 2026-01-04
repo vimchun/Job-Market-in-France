@@ -1,0 +1,13 @@
+title: "Projet Data Engineer"
+description: 'Analyse des offres d''emploi de la data en France Métropolitaine : "Data Analyst", "Data Engineer" et "Data Scientist".'
+markdown: GFM
+theme: jekyll-theme-hacker # title/description (OK), lien url (OK), niveau des sections (KO), icône section dépliée (OK), black theme (OK)
+# theme: jekyll-theme-modernist # title/description (OK), lien url (OK), niveau des sections (KO), icône section dépliée (OK)
+# theme: jekyll-theme-slate # title/description (OK), lien url (OK), niveau des sections (KO), icône section dépliée (OK)
+# theme: jekyll-theme-architect # title/description (OK), lien url (OK), niveau des sections (OK), icône section dépliée (KO)
+# theme: jekyll-theme-merlot  # title/description (OK), icône section dépliée (OK), theme qui fait un peu "diplome", commentaires en gras
+# theme: jekyll-theme-midnight  # black theme (OK), icône section dépliée (OK), niveau des sections (KO)
+# theme: jekyll-theme-leap-day  # title/description (OK), ressemble à la doc python, sections cliquables sur volet gauche (mais trop de sections)
+# theme: jekyll-theme-cayman  # title/description (OK), banière verte qui prend trop de place
+# theme: jekyll-theme-minimal  # prend une grosse partie à gauche pour rien, icône section dépliée (OK)
+

@@ -1,98 +1,82 @@
-# Présentation du projet
+- Bienvenue sur mon projet, que j'ai réalisé seul entièrement dans le cadre de ma formation `Data Engineer` chez DataScientest en 2025.
 
-- Bienvenue sur mon projet, que j'ai réalisé seul entièrement, dans le cadre de ma formation `Data Engineer` chez Data Scientest en 2025.
+- L'objectif est d'analyser le marché et les offres d'emploi de la tech, notamment pour les métiers de la data `Data Analyst`, `Data Engineer` et `Data Scientist`, en France Métropolitaine.
 
-- L'objectif est d'analyser le marché des offres d'emploi de la tech, notamment pour les métiers de la data `Data Analyst`, `Data Engineer` et `Data Scientist`, en France Métropolitaine.
+- Slideshow du projet :
 
-- Avant de présenter le [sommaire](#sommaire), voici un résumé et aperçu de ce qui a été effectué à travers quelques `.gif` (⚠️ les `gif` peuvent prendre un certain temps à charger) :
+  <div style="max-width: 400px; margin: 0 auto;">
+    <video controls muted style="width: 100%; height: auto;">
+      <source src="scripts/generate_mp4_slideshow/results/slideshow_burned_subs.mp4" type="video/mp4">
+    </video>
+  </div>
 
-
-- test mp4 :
-
-https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
-
-
-  - Environnement dockerisé déployé avec `docker compose` :
-
-    <img src="readme_files/screenshots/drawio/gif/architecture_00--ALL--compressed.gif" alt="slideshow architecture gif" style="width:100%"/> <br>
-
-  - `Airflow` pour la mise en place du pipeline pipeline ETL avec deux DAGs (`DAG 1` récupère les offres d'emploi par API, effectue des transformations avant d'écrire toutes les offres d'emploi dans un fichier json, puis `DAG 2` écrit les offres dans une base de données `Postgres`) :
-
-    <img src="readme_files/screenshots/airflow/slideshow-airflow-5s--compressed.gif" alt="slideshow airflow gif" style="width:100%"/> <br>
+  https://github.com/user-attachments/assets/0b176015-4a1a-4abe-9191-231c9b791a2c
 
 
-  - `FastAPI` pour la mise en place d'une API :
-
-    <img src="readme_files/screenshots/fastapi/slideshow/slideshow-fastapi-5s--compressed.gif" alt="slideshow fastapi gif" style="width:100%"/> <br>
-
-
-  - `Power BI` pour la consommation des données avec la création de rapports :
-
-    <img src="readme_files/screenshots/power_bi/reports/slideshow/only-ALL-DE/slideshow-pbi-5s--compressed.gif" alt="slideshow power bi gif" style="width:100%"/> <br>
+  <!--
+  Notes cachées, ci-dessus on a :
+    - une structure html pour le "Github Pages"
+    - un lien, lisible depuis le "readme sur Github" (lien obtenu en faisant un "glisser déposer" de la vidéo sur le readme sur Github)
+  -->
 
 
-  - `Prometheus et Grafana` pour le monitoring des `conteneurs Docker`, de la base de données `Postgres`, des `DAG`, et du `noeud` :
-
-    <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/with_annotations/slideshow-grafana-5s--compressed.gif" alt="slideshow grafana gif" style="width:100%"/>
+- Présentation powerpoint du projet sous forme de slides : [lien](powerpoint/presentation.pptx)
 
 
-- Pour voir la présentation du projet sous forme de slides, voir ce [powerpoint](powerpoint/presentation.pptx).
+<details open> <summary><h1>Sommaire</h1></summary>
+
+(avec les sous-sections essentielles uniquement)
+
+> ⚠️ Toutes les sections et sous-sections numérotées sont cliquables pour développer/réduire le contenu. ️⚠️
+
+- [1. Environnement](#environnement)
+  - [1.a. Pré-requis](#prerequis)
+  - [1.b. Configuration Docker](#configuration-docker)
+  - [1.c. Versions des services testés](#versions-des-services-testes)
+  - [1.d. Arborescence des fichiers](#arborescence-des-fichiers)
+
+- [2. ETL avec Airflow](#etl-avec-airflow)
+  - [2.a. Extraction des données par API](#extraction-des-donnees-par-api)
+  - [2.b. Transformations des données](#transformations-des-donnees)
+  - [2.c. Chargement des données dans une base de données relationnelle](#chargement-des-donnees-dans-une-base-de-donnees-relationnelle)
+  - [2.d. Airflow](#airflow)
+
+- [3. Création d'une API avec FastAPI](#creation-dune-api-avec-fastapi)
+  - [3.a. Tags](#tags)
+  - [3.b. Filtres et configuration](#filtres-et-configuration)
 
 
-# Sommaire
+- [4. Data Viz avec Power BI](#data-viz-avec-power-bi)
+  - [4.a. Rapports et analyses](#rapports-et-analyses)
 
-(avec les sous-sections importantes uniquement)
+- [5. Monitoring avec Prometheus et Grafana](#monitoring-avec-prometheus-et-grafana)
+  - [5.a. Prometheus](#prometheus)
+  - [5.b. Grafana](#grafana)
+    - [Analyse quand les DAGs sont en cours d'exécution](#analyse-quand-les-dags-sont-en-cours-dexecution)
 
-- [1. Environnement](#1-environnement)
-  - [Configuration pré-requise](#configuration-pré-requise)
-  - [Configuration Docker](#Configuration-Docker)
-  - [Version des services testés](#version-des-services-testés)
-  - [Arborescence des fichiers du projet](#arborescence-des-fichiers-du-projet)
-- [2. ETL avec Airflow](#2-etl-avec-airflow)
-  - [Extraction des données par API](#extraction-des-données-par-api)
-  - [Transformations des données](#transformations-des-données)
-  - [Chargement des données dans une base de données relationnelle](#chargement-des-données-dans-une-base-de-données-relationnelle)
-  - [Airflow](#airflow)
-    - [Description du DAG 1](#description-du-dag-1)
-    - [Description du DAG 2](#description-du-dag-2)
-- [3. Création d'une API avec FastAPI](#3-création-dune-api-avec-fastapi)
-- [4. Data Viz avec Power BI](#4-data-viz-avec-power-bi)
-  - [Rapports et analyses](#rapports-et-analyses)
-- [5. Monitoring avec Prometheus et Grafana](#5-monitoring-avec-prometheus-et-grafana)
-  - [Prometheus](#prometheus)
-  - [Grafana](#grafana)
-    - [Analyse quand les DAGs sont en cours d'exécution](#analyse-quand-les-dags-sont-en-cours-dexécution)
-- [6. Conclusion](#6-conclusion)
-  - [Compétences techniques](#compétences-techniques)
-  - [Difficultés rencontrées](#difficultés-rencontrées)
-  - [Evolutions possibles du projet](#evolutions-possibles-du-projet)
+- [6. Conclusion](#conclusion)
+  - [6.a. Compétences techniques développées](#competences-techniques-developpees)
+  - [6.b. Difficultés rencontrées](#difficultes-rencontrees)
 
 
-> Notes : Dans ce projet, il n'y a pas de partie Machine Learning, car j'en avais déjà fait lors de mon projet "Data Analyst", donc peu d'intérêt ici...
-
-- Pour ne pas surcharger cette page principale, une seconde page avec des informations supplémentaires moins essentielles est disponible [ici](readme_files/APPENDIX.md#readme-secondaire).
+- Pour ne pas surcharger davantage cette page principale, une seconde page avec des informations supplémentaires moins essentielles est disponible [ici](readme_files/APPENDIX.md#readme-secondaire).
 
 
+</details>
 
-# 1. Environnement
+---
 
-- Une très grande partie de l'environnement de ce projet est dockerisé.
+<a id="environnement"></a>   <!-- Pour contourner le problème d'ancre markdown avec chiffres et accents -->
+<details open> <summary><h1>1. Environnement</h1></summary>
 
-- Le fichier `drawio_files/architecture.drawio` donne une vue sur l'architecture du projet :
+<a id="prerequis"></a>
+<details> <summary><h2>1.a. Pré-requis</h2></summary>
 
-  <img src="readme_files/screenshots/drawio/architecture_00--ALL.png" alt="architecture du projet" style="width:100%"/>
+> - Notes :
+>   - Le développement et les tests ont eu lieu sous :
+>     - `Windows 11` + `WSL2` avec `Ubuntu 22.04`
+>     - `Python 3.12.9` (février 2025) avec environnement virtuel (formatteur `Ruff`).
 
-
-- Le développement et les tests ont eu lieu sous :
-
-  - `Windows 11` + `WSL2` avec `Ubuntu 22.04`
-
-    > Note importante : `Docker Desktop` utilisé au lieu de `Docker CE dans WSL` car `cAdvisor` (Container Advisor) n'est pas opérationnel dans l'environnement `WSL` avec `Ubuntu 22.04` + `Docker Desktop`, voir [ici](readme_files/APPENDIX.md#Utilisation-de-Docker-CE-dans-WSL-pour-cAdvisor) pour les explications et pour la procédure d'installation de `Docker CE` dans `WSL`.
-
-  - `Python 3.12.9` (février 2025) avec environnement virtuel (formatteur `Ruff`).
-
-
-## Configuration pré-requise
 
 - Avoir le projet en local :
 
@@ -102,11 +86,11 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 
 - Sur `https://francetravail.io/` :
   - Créer un compte
-  - Ajouter les accès aux APIS `Marché du travail v1` et `Offres d'emploi v2` (voir screenshot)
+  - Ajouter les accès aux APIs `Marché du travail v1` et `Offres d'emploi v2` (voir screenshot)
   - Copier-coller les credentials (`identifiant client` + `clé secrète`) dans un nouveau fichier `airflow/data/resources/api_credentials.yml` (voir screenshot)
 
     ```yaml
-      # contenu du fichier `airflow/data/resources/api_credentials.yml`
+      # Contenu du fichier `airflow/data/resources/api_credentials.yml`
       FRANCE_TRAVAIL_API_CREDENTIALS:
         IDENTIFIANT_CLIENT: <à_remplir>
         CLE_SECRETE: <à_remplir>
@@ -115,7 +99,7 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
     <img src="readme_files/screenshots/misc/francetravail_io_credentials.png" alt="credentials france travail" style="width:50%"/>
 
 
-- Si environnement Windows + WSL, utiliser `Docker CE` dans WSL, plutôt qu'utiliser `Docker Desktop` (voir cette [procédure](readme_files/APPENDIX.md#Installer-et-utiliser-Docker-CE-dans-WSL))
+- Si environnement `Windows` + `WSL`, utiliser `Docker CE` dans WSL, plutôt qu'utiliser `Docker Desktop` (voir cette [procédure](readme_files/APPENDIX.md#installer-et-utiliser-docker-ce-dans-wsl))
 
 
 - Fichier `.env` :
@@ -131,17 +115,17 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 
     - Une clé doit être générée pour la clé `AIRFLOW__CORE__FERNET_KEY` du fichier de configuration d'Airflow (aussi disponible dans le fichier `docker-compose.yml`).
 
-    - C'est indispensable, sinon on verra par exemple dans la page "Connections" l'erreur "500 Internal Server Error".
+    - C'est indispensable, sinon on verra par exemple dans la page `Connections` l'erreur "500 Internal Server Error".
 
     - Il faudra donc exécuter la commande suivante et renseigner le résultat dans le fichier `.env` :
 
-```bash
+    ```bash
       # Commande pour récupérer la clé fernet :
       python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
 
       # Le résultat de la commande précédente doit être mis dans le fichier .env, comme ceci :
       AIRFLOW__CORE__FERNET_KEY=CLE_GENEREE_PAR_LA_COMMANDE
-```
+      ```
 
 
 - Avoir les services Docker qui tournent :
@@ -154,7 +138,8 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
   ./scripts/restart_all_docker_services.sh
   ```
 
-- Côté Airflow :
+
+- Sur Airflow :
 
   - Activer `DAG 1` et `DAG 2` dans la [GUI](http://localhost:8080/dags) (par défaut, ils sont désactivés après une réinitialisation d'environnement) :
 
@@ -165,12 +150,17 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
     - `DAG 2` doit être activé sinon le `DAG 1` ne déclenchera pas le `DAG 2`, et il sera en `Queued`.
 
 
-- Côté Prometheus :
+- Sur Prometheus :
 
-  - L'état des targets doit être à `UP`, voir le screenshot de cette [section](#Configuration-de-Prometheus).
+  - L'état des targets doit être à `UP`, voir le screenshot de la section [Configuration de Prometheus](#configuration-de-prometheus)
+
+</details>
 
 
-## Configuration Docker
+<a id="configuration-docker"></a>
+<details> <summary><h2>1.b. Configuration Docker</h2></summary>
+
+- Une grande partie de l'environnement de ce projet est dockerisé.
 
 - Les différents services sont déployés grâce à `docker compose`, avec le `docker-compose.yml` qui décrit les services suivants :
 
@@ -181,56 +171,81 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
   - `prometheus`,
   - `grafana`
 
+<br>
 
-### Schéma
+- Le fichier `drawio_files/architecture.drawio` donne une vue sur l'architecture du projet, avec les principaux services Docker déployés :
 
-- Le fichier `drawio_files/architecture.drawio` donne une vue des principaux services Docker déployée :
+  <img src="readme_files/screenshots/drawio/architecture_00--ALL.png" alt="architecture du projet" style="width:100%"/>
 
-  <img src="readme_files/screenshots/drawio/architecture_00--ALL.png" alt="architecture" style="width:100%"/>
+  > Notes :
+  >   - `Docker CE dans WSL` utilisé au lieu de `Docker Desktop`, car `cAdvisor` (Container Advisor) n'est pas opérationnel dans l'environnement `WSL` avec `Ubuntu 22.04` + `Docker Desktop`
+  >   - Voir [ici](readme_files/APPENDIX.md#utilisation-de-docker-ce-dans-wsl-pour-cadvisor) pour les explications et pour la procédure d'installation de `Docker CE` dans `WSL`.
+
+</details>
 
 
-### Versions des services testés
+<a id="versions-des-services-testes"></a>
+<details> <summary><h2>1.c. Versions des services testés</h2></summary>
 
 - Le ficher `docker-compose.yml` ne spécifiant pas les versions pour les différents services (tag `latest` par défaut), il est important de noter les versions des services de l'écosystème.
 
-- Ce [lien](readme_files/APPENDIX.md#récupération-des-versions) donne les commandes permettant de récupérer les versions.
+- Ce [lien](readme_files/APPENDIX.md#versions) donne les commandes permettant de récupérer les versions.
 
 - Tableau avec les versions utilisées (pour un éco-système fonctionnel) :
 
-  | service           | version  | date de la release | lien                                                               |
-  | ----------------- | -------- | ------------------ | ------------------------------------------------------------------ |
-  | FastAPI           | 0.115.12 | 03/2025            | https://github.com/fastapi/fastapi/releases                        |
-  | Postgres          | 16.9     | 05/2025            | https://github.com/postgres/postgres/tags                          |
-  | Redis             | 8.0.3    | 07/2025            | https://github.com/redis/redis/releases                            |
-  | Airflow           | 3.0.3    | 07/2025            | https://github.com/apache/airflow/releases                         |
-  | StatsD-exporter   | 0.28.0   | 10/2024            | https://github.com/prometheus/statsd_exporter/releases             |
-  | Node-exporter     | 1.9.1    | 04/2025            | https://github.com/prometheus/node_exporter/releases               |
-  | Postgres-exporter | 0.17.1   | 02/2025            | https://github.com/prometheus-community/postgres_exporter/releases |
-  | cAdvisor          | v0.49.1  | 03/2024            | https://github.com/google/cadvisor/releases                        |
-  | Prometheus        | 3.5.0    | 07/2025            | https://github.com/prometheus/prometheus/releases                  |
-  | Grafana           | 12.0.2   | 06/2025            | https://github.com/grafana/grafana/releases                        |
+  | Service           | Version  | Release Date | Lien                                                               |
+  | ----------------- | -------- | ------------ | ------------------------------------------------------------------ |
+  | FastAPI           | 0.115.12 | 03/2025      | https://github.com/fastapi/fastapi/releases                        |
+  | Postgres          | 16.9     | 05/2025      | https://github.com/postgres/postgres/tags                          |
+  | Redis             | 8.0.3    | 07/2025      | https://github.com/redis/redis/releases                            |
+  | Airflow           | 3.0.3    | 07/2025      | https://github.com/apache/airflow/releases                         |
+  | StatsD-exporter   | 0.28.0   | 10/2024      | https://github.com/prometheus/statsd_exporter/releases             |
+  | Node-exporter     | 1.9.1    | 04/2025      | https://github.com/prometheus/node_exporter/releases               |
+  | Postgres-exporter | 0.17.1   | 02/2025      | https://github.com/prometheus-community/postgres_exporter/releases |
+  | cAdvisor          | v0.49.1  | 03/2024      | https://github.com/google/cadvisor/releases                        |
+  | Prometheus        | 3.5.0    | 07/2025      | https://github.com/prometheus/prometheus/releases                  |
+  | Grafana           | 12.0.2   | 06/2025      | https://github.com/grafana/grafana/releases                        |
+
+<br>
+
+<a id="urls-des-guis"></a>
+
+- Urls des GUIs :
+
+  | Application       | Url (credentials)                                      |
+  | ----------------- | ------------------------------------------------------ |
+  | FastAPI           | http://localhost:8000/docs                             |
+  | Airflow           | http://localhost:8080/  (airflow / airflow)         |
+  | StatsD Exporter   | http://localhost:9102/ + http://localhost:9102/metrics |
+  | Node Exporter     | http://localhost:9100/ + http://localhost:9100/metrics |
+  | Postgres Exporter | http://localhost:9187/ + http://localhost:9187/metrics |
+  | cAdvisor          | http://localhost:8081/ + http://localhost:8081/metrics |
+  | Prometheus        | http://localhost:9092/ + http://localhost:9092/metrics |
+  | Grafana           | http://localhost:3000/  (grafana / grafana)         |
+
+</details>
 
 
+<a id="arborescence-des-fichiers"></a>
+<details> <summary><h2>1.d. Arborescence des fichiers</h2></summary>
 
-### Urls des GUIs
+- Avec seulement les fichiers liés à la configuration Docker :
 
-(cliquer sur une image pour la voir en plein écran)
+```bash
+  .
+  ├── airflow/
+  │   ├── requirements.txt  # dépendances nécessaires pour le Dockerfile
+  │   └── Dockerfile        # construction du conteneur Airflow
+  │  
+  ├── fastapi/
+  │   ├── requirements.txt  # dépendances nécessaires pour le Dockerfile
+  │   └── Dockerfile        # construction du conteneur FastAPI
+  │  
+  └── docker-compose.yml    # orchestration docker pour postgres + fastapi + les services Airflow
+  ```
 
-  | Application       | Url (credentials)                                      | screenshots                                                                                                          |
-  | ----------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
-  | FastAPI           | http://localhost:8000/docs                             | <img src="readme_files/screenshots/gui/fastapi.png" alt="screenshot fastapi" style="width:20%"/>                     |
-  | Airflow           | http://localhost:8080/ <br>(airflow / airflow)         | <img src="readme_files/screenshots/gui/airflow.png" alt="screenshot airflow" style="width:20%"/>                     |
-  | StatsD Exporter   | http://localhost:9102/ + http://localhost:9102/metrics | <img src="readme_files/screenshots/gui/statsd-exporter.png" alt="screenshot statsd exporter" style="width:20%"/>     |
-  | Node Exporter     | http://localhost:9100/ + http://localhost:9100/metrics | <img src="readme_files/screenshots/gui/node-exporter.png" alt="screenshot node exporter" style="width:20%"/>         |
-  | Postgres Exporter | http://localhost:9187/ + http://localhost:9187/metrics | <img src="readme_files/screenshots/gui/postgres-exporter.png" alt="screenshot postgres exporter" style="width:20%"/> |
-  | cAdvisor          | http://localhost:8081/ + http://localhost:8081/metrics | <img src="readme_files/screenshots/gui/cadvisor.png" alt="screenshot cadvisor" style="width:20%"/>                   |
-  | Prometheus        | http://localhost:9092/ + http://localhost:9092/metrics | <img src="readme_files/screenshots/gui/prometheus.png" alt="screenshot prometheus" style="width:20%"/>               |
-  | Grafana           | http://localhost:3000/ <br>(grafana / grafana)         | <img src="readme_files/screenshots/gui/grafana.png" alt="screenshot grafana" style="width:20%"/>                     |
 
-
-## Arborescence des fichiers du projet
-
-### Sans la partie liée à la conf Docker
+- Avec tous les fichiers :
 
 ```bash
   .
@@ -271,8 +286,10 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
   │  
   ├── readme_files/                              # contient `README_additional_notes.md` et d'autres fichiers (screenshots, gif...)
   │  
-  ├── scripts/                                   # contient des scripts bash
+  ├── scripts/                                   # contient divers scripts bash
+  │   └── generate_mp4_slideshow                 # pour générer le fichier .mp4 (slideshow)
   │  
+  ├── _config.yml                                # customisation du Github Pages
   ├── .env                                       # fichier utile pour Airflow
   ├── .gitattributes                             # calcul stats sur github
   ├── .gitignore                                 # ne pas pousser les fichiers spécifiés sur git
@@ -282,32 +299,22 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
   └── todo.md                                    # fichiers listant les idées/actions prévues
   ```
 
+</details>
+</details>
 
-### Avec seulement la configuration Docker
+---
 
-```bash
-  .
-  ├── airflow/
-  │   ├── requirements.txt  # dépendances nécessaires pour le Dockerfile
-  │   └── Dockerfile        # construction du conteneur Airflow
-  │  
-  ├── fastapi/
-  │   ├── requirements.txt  # dépendances nécessaires pour le Dockerfile
-  │   └── Dockerfile        # construction du conteneur FastAPI
-  │  
-  └── docker-compose.yml    # orchestration docker pour postgres + fastapi + les services Airflow
-  ```
+<a id="etl-avec-airflow"></a>
+<details open> <summary><h1>2. ETL avec Airflow</h1></summary>
+
+  <!-- <img src="readme_files/screenshots/drawio/gif/architecture_01--ETL--compressed.gif" alt="architecture focus ETL" style="width:100%"/> -->
 
 
-# 2. ETL avec Airflow
+<a id="extraction-des-donnees-par-api"></a>
+<details> <summary><h2>2.a. Extraction des données par API</h2></summary>
 
-  <img src="readme_files/screenshots/drawio/gif/architecture_01--ETL--compressed.gif" alt="architecture focus ETL" style="width:100%"/>
+- France Travail (https://francetravail.io/data/api) met à disposition gratuitement plusieurs APIs, dont "Offres d'emploi v2" (`GET https://api.francetravail.io/partenaire/offresdemploi`).
 
-## Extraction des données par API
-
-- France Travail (https://francetravail.io/data/api) met à disposition plusieurs APIs, dont "Offres d'emploi v2" (`GET https://api.francetravail.io/partenaire/offresdemploi`).
-
-  > L'API est gratuite.
 
 - Le endpoint `GET https://api.francetravail.io/partenaire/offresdemploi/v2/offres/search` permet de récupérer les offres d'emploi actuelles selon plusieurs paramètres dont :
 
@@ -344,7 +351,7 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 
 - 62 fichiers json sont obtenus, contenant toutes les offres d'emploi liées ou pas à la data, pour la France et DOM-TOM uniquement, l'API de France Travail ne renvoyant quasiment pas d'offre d'emploi pour les autres pays.
 
-- Plusieurs transformations seront effectuées par la suite : [voir ici](#transformations-des-données)
+- Plusieurs transformations seront effectuées par la suite, voir section ["2.b. Transformations des données"](#transformations-des-donnees).
 
 
 > Notes :
@@ -361,43 +368,44 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 
 
 
-### Pas d'autre source de données ?
+> - Pas d'autre source de données pour avoir plus d'offres d'emploi ?
+>
+>   - Il en existe d'autres, par exemple : API de `The Muse` ou `Adzuna`.
+>
+>   - Les raisons pour lesquelles on ne garde que la source de `France Travail` sont les suivantes :
+>     - ~50 attributs pour chaque offre d'emploi récupérée chez `France Travail` vs ~10 chez `The Muse` ou `Adzuna`
+>     - Impossible de savoir si une même offre est disponible entre deux sources (identifiant différent, url différent), donc impossible de merger les offres venant de ces différentes sources sans être certain d'avoir des données sans doublon inter-sources.
+>
+>   - Identifiants des offres :
+>     - "France Travail" : sur 7 caractères alphanumériques
+>     - "Adzuna" : sur 10 digits
+>     - "The Muse" : 7 ou 8 digits
 
-- Il existe de multiples sources de données sur les offres d'emploi (par exemple : API de `The Muse` ou `Adzuna`).
-
-- Les raisons pour lesquelles on ne garde que la source de `France Travail` sont les suivantes :
-
-  - ~60 attributs pour chaque offre d'emploi récupérée chez `France Travail` vs ~10 chez `The Muse` ou `Adzuna`
-
-  - Impossible de savoir si une même offre est disponible entre deux sources (identifiant différent, url différent), donc impossible de merger les offres venant de ces différentes sources sans être certain d'avoir des données sans doublon inter-sources.
-
-  - Identifiants des offres :
-    - "France Travail" : sur 7 caractères alphanumériques
-    - "Adzuna" : sur 10 digits
-    - "The Muse" : 7 ou 8 digits
+</details>
 
 
+<a id="transformations-des-donnees"></a>
+<details> <summary><h2>2.b. Transformations des données</h2></summary>
 
-## Transformations des données
-
-### Transformations des données en amont (côté Python)
+<details> <summary><h3>Transformations des données en amont (côté Python)</h3></summary>
 
 - Ces transformations sont faites dans le `DAG 1`, faites via Python et en amont du chargement dans la base Postgres :
 
   - Concaténation des 62 fichiers json dans un seul fichier json, avec suppression des doublons
 
-  - Conservation des offres en France Métropolitaine uniquement, [détails ici](readme_files/APPENDIX.md#conservation-des-offres-en-France-Métropolitaine-uniquement).
+  - Conservation des offres en France Métropolitaine uniquement : [détails ici](readme_files/APPENDIX.md#conservation-des-offres-en-france-metropolitaine-uniquement).
 
-  - Ajout des attributs de localisation des offres (noms et codes des villes, départements, départements et régions), [détails ici](readme_files/APPENDIX.md#attributs-de-localisation-des-offres-noms-et-codes-des-villes-communes-départements-et-régions).
+  - Ajout des attributs de localisation des offres (noms et codes des villes, départements, départements et régions) : [détails ici](readme_files/APPENDIX.md#attributs-localisation).
 
   - Ajout des attributs `date_premiere_ecriture` et `date_extraction` :
 
     - `date_extraction` aura la date du jour à laquelle le `DAG 1` a été lancé,
     - `date_premiere_ecriture` aura la date du jour pour toutes les nouvelles offres, mais prendra les anciennes valeurs pour les anciennes offres.
 
+</details>
 
 
-### Transformations des données en aval (côté SQL)
+<details> <summary><h3>Transformations des données en aval (côté SQL)</h3></summary>
 
 - Ces transformations sont effectuées dans le `DAG 2`, faites via des requêtes `SQL` et effectuées en aval de l'écriture dans la base Postgres :
 
@@ -410,31 +418,30 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 
   - Pour créer et écrire l'attribut `liste_mots_cles` :
 
-    - Pour chaque offre, si un mot-clé parmi la liste de strings prédéfinie [ici](airflow/dags/sql/transformation_4_update__table_descriptionoffre__column__liste_mots_cles.sql) est présent dans la description, ce mot-clé sera ajouté dans l'attribut (qui est une liste).
+    - Pour chaque offre, si un mot-clé parmi la liste de strings prédéfinie [ici](https://github.com/vimchun/Job-Market-in-France/blob/master/airflow/dags/sql/transformations/4_update__descriptionoffre__liste_mots_cles.sql) est présent dans la description, ce mot-clé sera ajouté dans l'attribut (qui est une liste).
 
-    - Cet attribut sera traité à postériori par Power BI (voir [ici](#5-keywords)).
+    - Cet attribut sera traité à posteriori par Power BI (voir la section [e. Keywords](#keywords)).
 
 
-> Note :
+> - Notes :
 >
-> - Une transformation a été créée pour récupérer les valeurs pour les attributs `salaire_min` et `salaire_max` à partir de l'attribut `salaire_libelle`, en fonction d'un algorithme expliqué [ici](readme_files/APPENDIX.md#attributs-salaire_min-et-salaire_max).
+>   - Une transformation a été créée pour récupérer les valeurs pour les attributs `salaire_min` et `salaire_max` à partir de l'attribut `salaire_libelle`, en fonction d'un algorithme expliqué [ici](readme_files/APPENDIX.md#attributs-salaire).
 >
-> - Dans la plupart des cas, les salaires récupérés sont corrects, mais il reste parfois certaines incohérences, liés aux erreurs de saisie de la part des recruteurs dans l'attribut `salaire_libelle`, qui amènent à trop de cas d'erreurs à traiter.
->
->   - Par conséquent, cette transformation ne sera pas retenue.
+>   - Dans la plupart des cas, les salaires récupérés sont corrects, mais il reste parfois certaines incohérences, liés aux erreurs de saisie de la part des recruteurs dans l'attribut `salaire_libelle`, qui amènent à trop de cas d'erreurs à traiter.
+>     - Par conséquent, cette transformation ne sera pas retenue.
 
+</details>
+</details>
 
-
-## Chargement des données dans une base de données relationnelle
+<a id="chargement-des-donnees-dans-une-base-de-donnees-relationnelle"></a>
+<details> <summary><h2>2.c. Chargement des données dans une base de données relationnelle</h2></summary>
 
 - L'API de France Travail contient beaucoup d'attibuts pour une offre d'emploi, qui seront quasiment tous exploités par la suite.
 
   - Seuls les attributs liés aux `contacts` et aux `agences` ne seront pas conservés, n'apportant pas d'utilité.
 
 
-- Pour la suite, une modélisation `snowflake` (modélisation en flocon de neige) est utilisée, avec notamment des tables de liaison  qui permettent de réduire la redondance des données.
-
-- Le diagramme UML est le suivant :
+- Pour la suite, une modélisation `snowflake` (modélisation en flocon de neige) est utilisée, avec notamment des tables de liaison  qui permettent de réduire la redondance des données :
 
   <img src="readme_files/screenshots/drawio/UML.png" alt="diagramme UML" style="width:100%"/>
 
@@ -443,21 +450,20 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
   - Tables de liaison en gris, pour quelques unes des tables de dimensionca
 
 
-- Le SGBD `PostgreSQL` sera utilisé :
+- `PostgreSQL` est utilisé car :
 
-  - Performant, sa fiable et sa flexibilité.
+  - Performant, fiable et flexible.
   - Prise en charge des types de données complexes, respecte les principes ACID.
   - Grande transparence en tant que solution open source.
-  - Communauté active assurant une évolution continue.
+  - Evolution continue avec une communauté active.
 
-- La base de données `francetravail` sera hébergée dans le conteneur Docker exécutant le service PostgreSQL.
+- La base de données `francetravail` est hébergée dans le conteneur Docker exécutant le service PostgreSQL.
 
 - Les données issues du json généré avec le `DAG 1` seront récupérées et écrites en base avec la librairie `psycopg2`.
 
-> Notes : Je n'utilise pas `mongodb`, car comme démontré dans ce projet, `SQL` est une compétence beaucoup plus demandée par les recruteurs. C'est donc plus un choix stratégique.
+> Notes : J'ai préféré utiliser `SQL` à `mongodb`, car comme démontré dans ce projet, `SQL` est une compétence beaucoup plus demandée par les recruteurs pour les postes DA et DE. C'est donc plus un choix stratégique.
 
-
-### Mise à jour de la base de données après récupération de nouvelles offres
+<details> <summary><h3>Mise à jour de la base de données après récupération de nouvelles offres</h3></summary>
 
 - Une offre d'emploi peut être mise à jour, et voir par exemple la valeur d'un de ses attributs modifiée.
 
@@ -471,51 +477,52 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 
 - Ainsi, pour une offre, si un attribut d'une table de dimension associé à la table de liaison a évolué, alors on ne conservera que l'offre avec `date_extraction` le plus récent.
 
-- Plus de détails [ici](readme_files/APPENDIX.md#mise-à-jour-de-la-base-de-données-après-récupération-de-nouvelles-offres).
+- Plus de détails [ici](readme_files/APPENDIX.md#mise-a-jour)
+
+</details>
+</details>
 
 
+<a id="airflow"></a>
+<details> <summary><h2>2.d. Airflow</h2></summary>
 
-## Airflow
-
-### Avant Airflow
+<details> <summary><h3>Sans Airflow</h3></summary>
 
 - Avant d'appliquer Airflow au projet, deux scripts python étaient exécutées.
 - Pour résumer et simplifier ce qu'ils faisaient ("simplifier" ici car ces scripts ont été remplacés par des DAGs qu'on détaillera après) :
   - Le premier récupérait les données de France Travail, faisait des transformations, et chargeait les offres d'emploi dans un json.
   - Le second lisait le json puis écrivait les offres d'emploi dans la base de données, et effectuait un deuxième lot de transformations à partir de fichier sql.
 
-  <img src="readme_files/screenshots/drawio/_archives/workflow_before_airflow.png" alt="screenshot du workflow" style="width:100%"/>
+  <img src="readme_files/screenshots/misc/workflow_before_airflow.png" alt="screenshot du workflow" style="width:50%"/>
 
 
 - Reprendre ces scripts pour intégrer Airflow dans le projet a été très bénéfique :
-  - amélioration des fonctions définis
-  - code plus compréhensible : factorisation de code, changement des noms de variables, revue des commentaires
-  - meilleure façon d'écrire les offres d'emploi dans le json
-  - meilleure gestion des cas d'erreur, et gestion d'erreur auquel on n'était pas confronté auparavant (exemple avec la parallélisation des requêtes et les erreurs 429 `Too much requests`)
-  - simplification des requêtes sql
+  - Amélioration des fonctions définis
+  - Code plus compréhensible : factorisation de code, changement des noms de variables, revue des commentaires
+  - Meilleure façon d'écrire les offres d'emploi dans le json
+  - Meilleure gestion des cas d'erreur, et gestion d'erreur auquel on n'était pas confronté auparavant (exemple avec la parallélisation des requêtes et les erreurs 429 `Too much requests`)
+  - Simplification des requêtes sql
 
 
-### Avec Airflow
+</details>
+
+<details> <summary><h3>Avec Airflow</h3></summary>
+
 
 - Les autres bénéfices d'Airflow sur ce projet sont multiples et évidents :
 
-  - avoir une vision claire du workflow complet à travers la vue Graph du DAG
-  - voir quelle fonction pose problème d'un coup d'oeil en cas d'échec et voir les logs associés à la tâche en échec
-  - lancer le workflow complet à la fréquence désirée (par exemple, tous les jours à 20h)
-  - et surtout obtenir une optimisation et un gain de temps considérable, avec la parallélisation de certaines tâches :
-    - requêtes API pour récupérér les offres d'emploi pour x métiers en parallèle,
-    - requêtes SQL pour remplir x tables en parallèle,
-    - requêtes SQL pour effectuer x transformations en parallèle.
+  - Avoir une vision claire du workflow complet à travers la vue Graph du DAG
+  - Voir quelle fonction pose problème d'un coup d'oeil en cas d'échec et voir les logs associés à la tâche en échec
+  - Lancer le workflow complet à la fréquence désirée (par exemple, tous les jours à 20h)
+  - Et surtout obtenir une optimisation et un gain de temps considérable, avec la parallélisation de certaines tâches :
+    - Requêtes API pour récupérér les offres d'emploi pour x métiers en parallèle,
+    - Requêtes SQL pour remplir x tables en parallèle,
+    - Requêtes SQL pour effectuer x transformations en parallèle.
+
+</details>
 
 
-### Version utilisée
-
-- Au moment d'écrire ces lignes, deux branches majeures : la `2.x` et la `3.x`.
-
-- Finalement, le choix se portera sur la branche `3.x` (avec la récente `3.0.3`) qui contient des évolutions majeures (détails [ici](https://airflow.apache.org/blog/airflow-three-point-oh-is-here/)).
-
-
-## Description des DAGs
+<details> <summary><h3>Description des DAGs</h3></summary>
 
 <img src="readme_files/screenshots/airflow/graphs_dags_1_2_from_pptx.png" alt="graph du DAG 1" style="width:100%"/>
 
@@ -529,14 +536,16 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
   - `all_in_one.json` : fichier json aggrégeant les fichiers jsons téléchargés en cours de construction, avant renommage.
 
 
-### Description du DAG 1
+
+<details> <summary><h4>Description du DAG 1</h4></summary>
 
 - Vue "graph" du `DAG 1` :
 
   <img src="readme_files/screenshots/airflow/graph_dag_1.png" alt="graph du DAG 1" style="width:100%"/>
 
 
-#### Task Group "SETUP"
+
+<details> <summary><h5>DAG 1 : Task Group "SETUP"</h5></summary>
 
 > `Sub Task Group "check_files_in_folders"` :
 >
@@ -579,8 +588,10 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 >   - La seconde tâche récupère le token API pour la suite.
 
 
+</details>
 
-#### Task Group "ETL"
+
+<details> <summary><h5>DAG 1 : Task Group "ETL"</h5></summary>
 
 > - `A1_get_offers` :
 >
@@ -633,7 +644,7 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 >
 >   - `A7_special_jsons_concat` :
 >
->     - Concaténation spéciale entre le json existant et le nouveau json, détails de l'algo ([ici](readme_files/APPENDIX.md#concaténation-spéciale-entre-le-json-existant-et-le-nouveau-json)) [pandas]
+>     - Concaténation spéciale entre le json existant et le nouveau json, détails de l'algo ([ici](readme_files/APPENDIX.md#concatenation-speciale)) [pandas]
 >
 >     - Renommage du fichier `all_in_one.json` en `date__extraction_occurence_N+1.json`, si le fichier existant était nommé `date__extraction_occurence_N.json`.
 >
@@ -661,15 +672,16 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 >
 >   - Déclenchement du `DAG 2` si `DAG` OK
 
+</details>
+</details>
 
-### Description du DAG 2
+<details> <summary><h4>Description du DAG 2</h4></summary>
 
 - Vue "graph" du `DAG 2` :
 
   <img src="readme_files/screenshots/airflow/graph_dag_2.png" alt="graph du DAG 2" style="width:100%"/>
 
-
-#### Task Group "SETUP"
+<details> <summary><h5>DAG 2 : Task Group "SETUP"</h5></summary>
 
 > - `check_only_one_json_in_folder` :
 >
@@ -703,17 +715,20 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 >
 >   - Création de toutes les tables du projet si elles n'existent pas.
 
+</details>
 
 
-#### Task Group "INSERT_INTO_TABLES_WITHOUT_JUNCTION"
+<details> <summary><h5>DAG 2 : Task Group "INSERT_INTO_TABLES_WITHOUT_JUNCTION"</h5></summary>
 
 > - Ce groupe exécute les tâches suivantes, qui consistent à récupérer les informations dans les fichiers json dédiés (générés par la tâche `split_large_json`) et exécutent des `INSERT INTO` dans les tâches dédiées :
 >
 >   - `OffreEmploi`, puis les tâches suivantes en parallèle : `Contrat`, `Entreprise`, `Localisation` et `DescriptionOffre`.
 
+</details>
 
 
-#### Task Group "INSERT_INTO_TABLES_WITH_JUNCTION"
+<details> <summary><h5>DAG 2 : Task Group "INSERT_INTO_TABLES_WITH_JUNCTION"</h5></summary>
+
 
 > - Ce groupe exécute les actions suivantes (prenons pour exemple, `Competence` puis `Offre_Competence`) :
 >
@@ -731,15 +746,22 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 >   - `Langue` puis `Offre_Langue`
 >   - `PermisConduire` puis `Offre_PermisConduire`
 
+</details>
 
-#### Task Group "TRANSFORMATIONS"
+
+<details> <summary><h5>DAG 2 : Task Group "TRANSFORMATIONS"</h5></summary>
 
 > - `SQLExecuteQueryOperator()` qui exécutent les tâches suivantes : `update_descriptionoffre_metier_data_DE`, `update_descriptionoffre_metier_data_DA` et `update_descriptionoffre_metier_data_DS` en parallèle, puis `update_descriptionoffre_column_liste_mots_cles`.
 >
 >   - Les fichiers SQL associés sont dans le dossier `airflow/dags/sql`.
 
 
-## Fréquence et durée
+</details>
+</details>
+</details>
+
+
+<details> <summary><h3>Fréquence et durée</h3></summary>
 
 - Le `DAG 1` (qui déclenche le `DAG 2`) est exécuté tous les jours à 21h30 :
 
@@ -747,30 +769,36 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 
 - `DAG 1` prend 10-15 minutes d'exécution, et `DAG 2` en prend 5-10 :
 
-    <img src="readme_files/screenshots/airflow/duration_dags.png" alt="durée des DAGs" style="width:100%"/>
+    <img src="readme_files/screenshots/airflow/duration_dags.png" alt="durée des DAGs" style="width:70%"/>
+
+</details>
+</details>
+</details>
 
 
-# 3. Création d'une API avec FastAPI
+---
 
-<img src="readme_files/screenshots/drawio/gif/architecture_02--API--compressed.gif" alt="architecture focus API" style="width:100%"/>
+<a id="creation-dune-api-avec-fastapi"></a>
+<details open> <summary><h1>3. Création d'une API avec FastAPI</h1></summary>
 
+<!-- <img src="readme_files/screenshots/drawio/gif/architecture_02--API--compressed.gif" alt="architecture focus API" style="width:100%"/> -->
+
+<a id="tags"></a>
+<details> <summary><h2>3.a. Tags</h2></summary>
 
 - Pour créer nos endpoints, la librairie `FastAPI` sera utilisée.
 
 
-- A travers l'[interface OpenAPI](http://localhost:8000/docs#/) (`ex-swagger`), l'utilisateur peut requêter la base de données `francetravail`.
+- A travers l'[interface OpenAPI](http://localhost:8000/docs#/) (ex-`swagger`), l'utilisateur peut requêter la base de données `francetravail`.
 
   <img src="readme_files/screenshots/fastapi/fullscreen.png" alt="gui fastapi" style="width:100%"/>
 
-
-## Tags
 
 - L'interface finale se décline sous 3 tags :
 
 > Note : pour certaines réponses des endpoints, la librairie `tabulate` sera utilisée avec `media_type="text/plain"` pour afficher un tableau qui facilitera la lecture, et qui diminuera le nombre de lignes des réponses, plutôt que d'afficher un `json`.
 
-
-### Tag 1 : "Pour une seule offre d'emploi"
+<details> <summary><h3>Tag 1 : "Pour une seule offre d'emploi"</h3></summary>
 
 <img src="readme_files/screenshots/fastapi/tag_1.png" alt="tag 1 fastapi" style="width:100%"/>
 
@@ -799,7 +827,8 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
     - Paramètres (tous optionnels) : `metier_data`, `offres_dispo_only`, `code_region`, `code_departement`, `code_postal`, `code_insee`
 
 
-#### Quelques screenshots
+
+<details> <summary><h4>Quelques screenshots</h4></summary>
 
   <img src="readme_files/screenshots/fastapi/responses/1-1a.png" alt="screenshot fastapi (zoom chrome 75%)" style="width:100%"/>
   <img src="readme_files/screenshots/fastapi/responses/1-1b.png" alt="screenshot fastapi" style="width:100%"/>
@@ -807,9 +836,11 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
   <img src="readme_files/screenshots/fastapi/responses/1-3.png" alt="screenshot fastapi" style="width:100%"/>
   <img src="readme_files/screenshots/fastapi/responses/1-4.png" alt="screenshot fastapi" style="width:100%"/>
 
+</details>
+</details>
 
 
-### Tag 2 : "Pour toutes les offres d'emploi"
+<details> <summary><h3>Tag 2 : "Pour toutes les offres d'emploi"</h3></summary>
 
 <img src="readme_files/screenshots/fastapi/tag_2.png" alt="tag 2 fastapi" style="width:100%"/>
 
@@ -835,7 +866,7 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
     - Paramètres (tous optionnels) : `metier_data`, `offres_dispo_only`, `code_region`, `code_departement`, `code_postal`, `code_insee`
 
 
-#### Quelques screenshots
+<details> <summary><h4>Quelques screenshots</h4></summary>
 
   <img src="readme_files/screenshots/fastapi/responses/2-1.png" alt="screenshot fastapi" style="width:100%"/>
   <img src="readme_files/screenshots/fastapi/responses/2-2.png" alt="screenshot fastapi" style="width:100%"/>
@@ -843,9 +874,12 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
   <img src="readme_files/screenshots/fastapi/responses/2-5.png" alt="screenshot fastapi" style="width:100%"/>
   <img src="readme_files/screenshots/fastapi/responses/2-8.png" alt="screenshot fastapi" style="width:100%"/>
 
+</details>
+</details>
 
 
-### Tag 3 : "Correspondance entre le nom et le code des régions, départements, villes, communes"
+
+<details> <summary><h3>Tag 3 : "Correspondance entre le nom et le code des régions, départements, villes, communes"</h3></summary>
 
 <img src="readme_files/screenshots/fastapi/tag_3.png" alt="tag 3 fastapi" style="width:100%"/>
 
@@ -861,19 +895,29 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
   | `3-4` | `GET /mapping_localisation/commune`     | Mapping entre le nom de la commune et son code  |
 
 
-#### Screenshot
+<details> <summary><h4>Screenshot</h4></summary>
 
   <img src="readme_files/screenshots/fastapi/responses/3-1.png" alt="screenshot fastapi" style="width:100%"/>
 
+</details>
+</details>
+</details>
 
-## Filtres
+
+<a id="filtres-et-configuration"></a>
+
+<details> <summary><h2>3.b. Filtres et configuration</h2></summary>
+
+<details> <summary><h3>Filtres</h3></summary>
 
 - Pour certains endpoints des 2 premiers tags, il est possible de filtrer par `metier_data`, sur les offres disponibles et par code région/département/ville/insee (d'où l'utilité du troisième tag) :
 
-  <img src="readme_files/screenshots/fastapi/filters.png" alt="filtres" style="width:50%"/>
+  <img src="readme_files/screenshots/fastapi/filters.png" alt="filtres" style="width:40%"/>
+
+</details>
 
 
-## Configuration Fastapi
+<details> <summary><h3>Configuration</h3></summary>
 
 - Le `docker-compose.yml` décrit des montages de volumes pour ne pas avoir à redémarrer le `docker compose` après chaque modification de fichiers sql, par exemple.
 
@@ -886,42 +930,26 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 >   - sans l'option `--reload` : `CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]`
 >   - `COPY` du script python, et des fichiers nécessaires dans le conteneur (fichier csv, fichiers sql), au lieu de passer par des montages de volumes
 
+</details>
+</details>
+</details>
 
 
-# 4. Data Viz avec Power BI
+---
 
-  <img src="readme_files/screenshots/drawio/gif/architecture_03--VIZ--compressed.gif" alt="architecture focus VIZ" style="width:100%"/>
+<a id="data-viz-avec-power-bi"></a>
+<details open> <summary><h1>4. Data Viz avec Power BI</h1></summary>
 
-- `Power BI` servira ici pour la data visualisation.
-
-
-## Manipulations
-
-- Ci-dessous des liens expliquant les différentes manipulations à faire (déjà faites pour le fichier `power_bi/project.pbix`) pour :
-
-  - [connecter Power BI avec la db postgres](readme_files/APPENDIX.md#connexion-avec-la-db)
-
-  - [modifier le Model view](readme_files/APPENDIX.md#model-view)
-
-    <img src="readme_files/screenshots/power_bi/model_view.png" alt="model view power bi" style="width:100%"/>
-
-  - [modifier le Table view](readme_files/APPENDIX.md#table-view)
-
-  - [faire les transformations](readme_files/APPENDIX.md#transformations)
+  <!-- <img src="readme_files/screenshots/drawio/gif/architecture_03--VIZ--compressed.gif" alt="architecture focus VIZ" style="width:100%"/> -->
 
 
-## Mise à jour des données
-
-- Après une exécution du pipeline ETL (c'est-à-dire après exécution des 2 DAGs Airflow), il suffit d'ouvrir le projet Power BI (`power_bi/project.pbix`), et de cliquer sur l'item `Refresh` :
-
-  <img src="readme_files/screenshots/power_bi/refresh.png" alt="refresh" style="width:70%"/>
-
-
-## Rapports et analyses
+<a id="rapports-et-analyses"></a>
+<details> <summary><h2>4.a. Rapports et analyses</h2></summary>
 
 - Pour les sections suivantes, des `.gif` sont affichés pour ne pas mettre trop de screenshots dans cette page.
 
-- Si les images défilent trop rapidement, aller dans le dossier : [ici](readme_files/screenshots/power_bi/reports/), ou ouvrir la présentation dans le `Powerpoint` dans ce dossier : [ici](powerpoint/), partie 6.
+- Si les images défilent trop rapidement, aller dans le dossier : [ici](https://github.com/vimchun/Job-Market-in-France/tree/master/readme_files/screenshots/power_bi/reports/), ou ouvrir la présentation dans le `Powerpoint` dans ce dossier : [ici](powerpoint/presentation.pptx), partie 6.
+
 
 
 - Plusieurs filtres sont disponibles pour tous les slides du projet `Power BI` :
@@ -931,7 +959,7 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 - Les sections suivantes exposeront l'analyse des offres `DA`, `DE` et `DS` uniquement.
 
 
-### 1. Offres (all)
+<details> <summary><h3>a. Offres (all)</h3></summary>
 
 <img src="readme_files/screenshots/power_bi/reports/1--all-offers/1-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
@@ -949,8 +977,10 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
     - même le week-end : `samedi` et `dimanche`, ce qui est bon à savoir,
     - le moins souvent : `lundi` et `dimanche` (normal, mais il y a quand même des offres publiées ce jour-là).
 
+</details>
 
-### 2. Compétences/expériences
+
+<details> <summary><h3>b. Compétences/expériences</h3></summary>
 
 <img src="readme_files/screenshots/power_bi/reports/2--competences-experiences/2-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
@@ -963,8 +993,10 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 - Donut en bas (expériences) :
   - Pour les 3 métiers, plus de la moitié des offres d'emploi acceptent les `débutants`.
 
+</details>
 
-### 3. Qualités/qualifications
+
+<details> <summary><h3>c. Qualités/qualifications</h3></summary>
 
 <img src="readme_files/screenshots/power_bi/reports/3--qualites-qualifications/3-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
@@ -976,8 +1008,9 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 - Bargraph en bas (qualification) :
   - Toujours pour les 3 métiers, les offres ciblent principalement les `cadres` et les `employés qualifiés`.
 
+</details>
 
-### 4. Localisation
+<details> <summary><h3>d. Localisation</h3></summary>
 
 <img src="readme_files/screenshots/power_bi/reports/4--location/4-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
@@ -992,8 +1025,11 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
   - Les départements qui recrutent le plus : `Paris`, suivi par les `Hauts-de-Seine`.
   - Les villes qui recrutent le plus : `Paris` de loin, suivi par `Lyon`.
 
+</details>
 
-### 5. Keywords
+<a id="keywords"></a>
+
+<details> <summary><h3>e. Keywords</h3></summary>
 
 <img src="readme_files/screenshots/power_bi/reports/5--keywords/5-animated-5s--compressed.gif" alt="gif rapport" style="width:100%"/>
 
@@ -1002,22 +1038,57 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 
 - Encore une fois ici, ces graphs sont possibles grâce à une transformation, faite avec SQL, qui détecte les mots-clés dans la description des offres :
 
-  - Pour chaque offre, si un mot-clé parmi la liste de strings prédéfinie [ici](airflow/dags/sql/transformation_4_update__table_descriptionoffre__column__liste_mots_cles.sql) est présent dans la description, ce mot-clé sera ajouté dans l'attribut (qui est une liste).
+  - Pour chaque offre, si un mot-clé parmi la liste de strings prédéfinie [ici](https://github.com/vimchun/Job-Market-in-France/blob/master/airflow/dags/sql/transformations/4_update__descriptionoffre__liste_mots_cles.sql) est présent dans la description, ce mot-clé sera ajouté dans l'attribut (qui est une liste).
 
-  - Une transformation côté Power BI permet de splitter une offre sur x lignes si cette offre a x mots-clés dans la liste (voir détails [ici](readme_files/APPENDIX.md#attribut-liste-mots-clés)).
+
+  - Une transformation côté Power BI permet de splitter une offre sur x lignes si cette offre a x mots-clés dans la liste (voir détails [ici](readme_files/APPENDIX.md#attributs-liste-mots-cles)).
 
 
 - Pour les 3 métiers, les mots-clés qui reviennent le plus souvent dans les offres sont le trio souvent cité sur beaucoup de posts Linkedin : `SQL`, `Python`, et `Git`, et aussi `Cloud`.
 
+</details>
+</details>
+
+<details> <summary><h2>4.b. Mise à jour des données</h2></summary>
+
+- Après une exécution du pipeline ETL (c'est-à-dire après exécution des 2 DAGs Airflow), il suffit d'ouvrir le projet Power BI (`power_bi/project.pbix`), et de cliquer sur l'item `Refresh` :
+
+  <img src="readme_files/screenshots/power_bi/refresh.png" alt="refresh" style="width:70%"/>
+
+</details>
 
 
-# 5. Monitoring avec Prometheus et Grafana
+<details> <summary><h2>4.c. Manipulations</h2></summary>
 
-  <img src="readme_files/screenshots/drawio/gif/architecture_04--MON--compressed.gif" alt="architecture focus MON" style="width:100%"/>
+- Ci-dessous des liens expliquant les différentes manipulations à faire (déjà faites pour le fichier `power_bi/project.pbix`) pour :
 
-## Prometheus
+  - [connecter Power BI avec la db postgres](readme_files/APPENDIX.md#connexion-avec-la-db)
 
-### Configuration de Prometheus
+  - [modifier le Model view](readme_files/APPENDIX.md#model-view)
+
+    <img src="readme_files/screenshots/power_bi/model_view.png" alt="model view power bi" style="width:100%"/>
+
+  - [modifier le Table view](readme_files/APPENDIX.md#table-view)
+
+  - [faire les transformations](readme_files/APPENDIX.md#transformations)
+
+
+</details>
+
+</details>
+
+---
+
+<a id="monitoring-avec-prometheus-et-grafana"></a>
+<details open> <summary><h1>5. Monitoring avec Prometheus et Grafana</h1></summary>
+
+  <!-- <img src="readme_files/screenshots/drawio/gif/architecture_04--MON--compressed.gif" alt="architecture focus MON" style="width:100%"/> -->
+
+<a id="prometheus"></a>
+<details> <summary><h2>5.a. Prometheus</h2></summary>
+
+<a id="configuration-de-prometheus"></a>
+<details> <summary><h3>Configuration de Prometheus</h3></summary>
 
 - La section `scrape_configs` du fichier de configuration `prometheus/prometheus.yaml` définit les `targets` des différents services à surveiller : `statsd-exporter`, `node-exporter`, `postgres-exporter` et `cAdvisor`.
 
@@ -1025,22 +1096,27 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 
   <img src="readme_files/screenshots/prometheus/targets.png" alt="prometheus targets" style="width:100%"/>
 
+</details>
 
-### Configuration Docker pour cAdvisor
+<details> <summary><h3>Configuration Docker pour cAdvisor</h3></summary>
 
-- Comme décrit dans cette [section](#1-environnement), il faut utiliser `Docker CE dans WSL`, et non pas `Docker Desktop`.
+- Comme décrit dans la note de la section ["1.b. Configuration Docker"](#configuration-docker), il faut utiliser `Docker CE dans WSL`, et non pas `Docker Desktop`.
 
 - Exemple de requête PromQL qui renvoie les conteneurs docker :
 
   <img src="readme_files/screenshots/prometheus/cadvisor.png" alt="cAdvisor opérationnel" style="width:60%"/>
 
+</details>
 
-### Métriques exposées par les différents services
+<details> <summary><h3>Métriques exposées par les différents services</h3></summary>
+
+
 
 - Les métriques citées ci-dessous traduisent la liste des commandes disponibles sur la barre `Expression` sur la [GUI de Prometheus](http://localhost:9092/graph).
 
+</details>
 
-#### Utilité
+<details> <summary><h4>Utilité</h4></summary>
 
 - Airflow envoie des métriques au format `StatsD` à `StatsD-exporter`.
 
@@ -1052,10 +1128,12 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 
 - `cAdvisor` expose des métriques sur l'usage des ressources et les caractéristiques de performance des conteneurs docker en cours d'exécution.
 
+</details>
 
-#### Dump des métriques
 
-- La liste des métriques est récupérable via la GUI des applis, avec les urls qui se terminent par `metrics` (voir cette [section](#Urls-des-GUIs)).
+<details> <summary><h4>Dump des métriques</h4></summary>
+
+- La liste des métriques est récupérable via la GUI des applis, avec les urls qui se terminent par `metrics` (voir la partie ["Urls des GUIs"](#urls-des-guis)).
 
 - On peut aussi les récupération par cli (ainsi, les dumps des métriques sont présents dans le dossier `prometheus/available_metrics`) :
 
@@ -1070,8 +1148,11 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 > - Il faut exécuter les DAGs pour voir apparaitre les commandes liés aux tâches des DAGs.
 > - Des NaN peuvent apparaissent s'il n’y a pas assez de données récentes dans la fenêtre de calcul du quantile summary.
 
+</details>
 
-#### Métriques de StatsD-Exporter
+<a id="metriques-de-statsd-exporter"></a>
+
+<details> <summary><h4>Métriques de StatsD-Exporter</h4></summary>
 
 - `StatsD-exporter` donne les métriques suivantes :
 
@@ -1084,10 +1165,11 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
   - 24 métriques préfixés par `statsd_*`
 
 
-- Le lien suivant renvoie vers la liste des métriques avec un préfixe : [lien](readme_files/APPENDIX.md#métriques-disponibles-de-statsd-exporter).
+- Le lien suivant renvoie vers la liste des métriques avec un préfixe : [lien](readme_files/APPENDIX.md#metriques-disponibles-de-statsd-exporter).
 
+</details>
 
-#### Personnalisation des mappings statsd
+<details> <summary><h4>Personnalisation des mappings statsd</h4></summary>
 
 - Le fichier de configuration `prometheus/statsd-mapping-configs.yaml` permet de définir des mappings à partir des métriques issues d'Airflow, avec la possibilité de modifier le nom de la requête promQL.
 
@@ -1101,25 +1183,28 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
     ##==>  SUCCESS: /etc/prometheus/prometheus.yaml is valid prometheus config file syntax
 ```
 
-  - Pour vérifier la validité d'un mapping du fichier `airflow/config/statsd.yaml` : [lien](readme_files/APPENDIX.md#vérifier-la-validité-dun-mapping-dans-statsdyaml).
+  - Pour vérifier la validité d'un mapping du fichier `airflow/config/statsd.yaml` : [lien](readme_files/APPENDIX.md#verifier-la-validite-dun-mapping-dans-statsdyaml).
+
+</details>
+</details>
+
+<a id="grafana"></a>
+<details> <summary><h2>5.b. Grafana</h2></summary>
 
 
-
-## Grafana
-
-### Configuration automatique après installation
+<details> <summary><h3>Configuration automatique après installation</h3></summary>
 
 - Les points suivants sont effectués automatiquement après une installation :
 
-
-#### Création automatique du datasource
+<details> <summary><h4>Création automatique du datasource</h4></summary>
 
 - Le datasource `Prometheus` est créée automatiquement grâce au fichier `grafana/provisioning/datasources/datasources.yml` (dossier monté dans le conteneur `grafana` sous `/grafana/provisioning/datasources/datasources.yml`), comme montré ici :
 
   <img src="readme_files/screenshots/grafana/datasource_prometheus.png" alt="datasource Prometheus dans Grafana" style="width:50%"/>
 
+</details>
 
-#### Import automatique après installation
+<details> <summary><h4>Import automatique après installation</h4></summary>
 
 - Les dashboards (.json) peuvent être déposés dans `grafana/provisioning/dashboards`, dossier monté dans le conteneur `grafana` sous `/grafana/provisioning/dashboards`.
 
@@ -1132,10 +1217,12 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 
 > Note : Grafana peut recharger le contenu du dossier après un redémarrage du conteneur : `docker compose restart grafana`.
 
+</details>
+</details>
 
-### Dashboards
+<details> <summary><h3>Dashboards</h3></summary>
 
-#### Dossier "others"
+<details> <summary><h4>Dossier "others"</h4></summary>
 
 - Le dossier "others" contient des :
 
@@ -1153,19 +1240,22 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 
   - dashboards créés :
 
-    - Deux dashboards avec les 56 métriques préfixés par `airflow_*` et les 31 métriques préfixés par `go_*` ont été créés à but informatif, plus de détails [ici](readme_files/APPENDIX.md#métriques-avec-préfixes).
+    - Deux dashboards avec les 56 métriques préfixés par `airflow_*` et les 31 métriques préfixés par `go_*` ont été créés à but informatif, plus de détails [ici](readme_files/APPENDIX.md#metriques-avec-prefixes).
 
+</details>
 
-#### Dossier "mine"
+<details> <summary><h4>Dossier "mine"</h4></summary>
 
 - Le dossier "mine" contient le dashboard `my_dashboard` (`grafana/provisioning/dashboards/mine/my_dashboard.json`) contient quelques visualisations de chaque target,car les dashboards téléchargés sont trop complets (avec beaucoup de visuels trop techniques).
   - C’est donc un dashboard synthétique, mais évidemment non exhaustif :
 
     <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/with_annotations/slideshow-grafana-5s--compressed.gif" alt="slideshow grafana gif" style="width:100%"/>
 
+</details>
+</details>
 
-
-### Analyse quand les DAGs sont en cours d'exécution
+<a id="analyse-quand-les-dags-sont-en-cours-dexecution"></a>
+<details> <summary><h3>Analyse quand les DAGs sont en cours d'exécution</h3></summary>
 
 <img src="readme_files/screenshots/grafana/my_dashboard/dags_activity/with_annotations/0-airflow_dags_datetime.png" alt="analyse avec DAGs" style="width:100%"/>
 
@@ -1206,12 +1296,20 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
   - On constate un "trou" entre 21h31 et 21h33 dans les graphs `CPU Basic` et `Network Traffic Basic`, ce qui correspond au moment où les mapped tasks ont eu lieu (16 tâches en parallèle qui font des requêtes API pour récupérer les données).
     - Cela a dû provoquer une surcharge au niveau réseau.
 
+</details>
+</details>
+</details>
 
-# 6. Conclusion
 
-- J'ai beaucoup appris à travers ce projet, que j'ai trouvé très intéressant, à tout point de vue.
+---
 
-## Compétences techniques
+<a id="conclusion"></a>
+<details open> <summary><h1>6. Conclusion</h1></summary>
+
+<a id="competences-techniques-developpees"></a>
+<details> <summary><h2>6.a. Compétences techniques développées</h2></summary>
+
+- J'ai beaucoup appris à travers ce projet, que j'ai trouvé très intéressant à tout point de vue.
 
 - Les compétences travaillées sont les suivantes :
 
@@ -1225,10 +1323,12 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
   | Monitoring                       | `Prometheus`, `Grafana`         |
   | Modélisation & architecture      | `UML`                           |
 
+</details>
 
-## Difficultés rencontrées
+<a id="difficultes-rencontrees"></a>
+<details> <summary><h2>6.b. Difficultés rencontrées</h2></summary>
 
-- Les points suivants illustrent des difficultés auxquelles je me suis heurté mais que j'ai fini par résoudre :
+- Les points suivants illustrent des difficultés que j'ai rencontrées, mais que j'ai fini par résoudre :
 
   - environnement :
 
@@ -1236,34 +1336,18 @@ https://github.com/user-attachments/assets/b52d19a7-191b-49a8-a00d-a9929d5273ee
 
     - installation et utilisation de Airflow 3.0 (version majeure sortie au cours de ce projet) : j'aurais pu rester sur une version 2.11.0, mais j'ai trouvé pertinent de me mettre à jour
 
-    - utilisation de `cAdvisor`, non fonctionnel avec `Docker Desktop` : détails [ici](readme_files/APPENDIX.md#utilisation-de-docker-ce-dans-wsl-pour-cAdvisor)
+    - utilisation de `cAdvisor`, non fonctionnel avec `Docker Desktop` : détails [ici](readme_files/APPENDIX.md#utilisation-de-docker-ce-dans-wsl-pour-cadvisor)
 
 
   - récupération des données :
 
-    - algorithme pour mettre à jour le fichier json avec les nouvelles offres : détails [ici](readme_files/APPENDIX.md#concaténation-spéciale-entre-le-json-existant-et-le-nouveau-json)
+    - algorithme pour mettre à jour le fichier json avec les nouvelles offres : détails [ici](readme_files/APPENDIX.md#concatenation-speciale)
 
 
   - transformations :
 
-    - algorithme pour récupérer le maximum d'informations de localisation des offres d'emploi (noms et codes des villes, départements, départements et régions), avec Python et la librairie `geopy` : détails [ici](readme_files/APPENDIX.md#attributs-de-localisation-des-offres-noms-et-codes-des-villes-communes-départements-et-régions)
+    - algorithme pour récupérer le maximum d'informations de localisation des offres d'emploi (noms et codes des villes, départements, départements et régions), avec Python et la librairie `geopy` : détails [ici](readme_files/APPENDIX.md#attributs-localisation)
 
 
-## Evolutions possibles du projet
-
-- Le projet est fonctionnel.
-
-- Cependant, certaines features peuvent le rendre plus robustes ou plus intéressantes :
-
-  - `Alert Manager` (pas très utile dans mon cas d'utilisation, car mon pc portable ne tourne pas en permanence)
-
-  - CI/CD avec `Github Actions` / `Pytest`
-
-  - `DBT`
-
-  - Appli plus "conviviale" que swagger (streamlit ?)
-
-  - Configurer `Power BI` pour exploiter les APIs ?
-
-  - Même projet mais sur le `cloud` ?
-
+</details>
+</details>

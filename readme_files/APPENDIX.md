@@ -1,21 +1,23 @@
 # README secondaire
 
-- Cette page donne des détails complémentaires à la [page principale](../README.md#présentation-du-projet).
+- Cette page donne des détails complémentaires à la [page principale](../README.md).
 
-- Le sommaire de cette page est aligné à celui de la page principale ([ici](../README.md#sommaire)), à savoir (avec les sous-sections principales) :
+- Le sommaire suivant est aligné avec celui de la page principale :
 
-  - [1. Environnement](#1-Environnement)
+  - [1. Environnement](#environnement)
     - [Utilisation de Docker CE dans WSL pour cAdvisor](#utilisation-de-docker-ce-dans-wsl-pour-cadvisor)
     - [Services Docker](#services-docker)
-  - [2. ETL avec Airflow](#2-etl-avec-airflow)
-    - [Transformations des données](Transformations-des-données)
-    - [Chargement des données dans une base de données relationnelle](#chargement-des-données-dans-une-base-de-données-relationnelle)
-    - [Airflow](#airflow)
-  - [4. Data Viz avec Power BI](#4-Data-Viz-avec-Power-BI)
-  - [5. Monitoring avec Prometheus et Grafana](#5-monitoring-avec-prometheus-et-grafana)
-    - [Prometheus](#Prometheus)
-    - [Grafana](#Grafana)
+  - [2. ETL avec Airflow](#etl-avec-airflow)
+    - [2.b. Transformations des données](#transformations-des-donnees)
+    - [2.c. Chargement des données dans une base de données relationnelle](#chargement-des-donnees-dans-une-base-de-donnees-relationnelle)
+    - [2.d. Airflow](#airflow)
+  - [4. Data Viz avec Power BI](#data-viz-avec-power-bi)
+  - [5. Monitoring avec Prometheus et Grafana](#monitoring-avec-prometheus-et-grafana)
+    - [5.a. Prometheus](#prometheus)
+    - [5.b. Grafana](#grafana)
 
+
+<a id="environnement"></a>
 
 # 1. Environnement
 
@@ -24,7 +26,7 @@
 - Sur `Windows 11` et `WSL2` avec `Ubuntu 22.04`, pour que `cAdvisor` soit fonctionnel, il faut :
 
   - Activer `docker CE` sur WSL :
-    - la procédure est décrite [ici](#Installer-et-utiliser-Docker-CE-dans-WSL).
+    - la procédure est décrite [ici](#installer-et-utiliser-docker-ce-dans-wsl).
 
   - Désactiver `Docker Desktop` :
     - dans la GUI : aller dans `Settings` > `Resources` > `WSL Integration`, et décocher `Enable integration with my default WSL distro` et tout autre case cochée concernant `Ubuntu-22.04`.
@@ -34,10 +36,12 @@
 
 - C'est pour avoir nativement un environnement Docker pur Linux, contrôlé par `systemd` et donc compatible avec `cAdvisor`.
 
-- En effet, `cAdvisor` a notamment besoin pour fonctionner d'avoir accès à `/var/lib/docker/image/overlay2/layerdb/mounts/<conteneur_id>/mount-id`, sinon on a le problème décrit [ici](#Problème-avec-Docker-Desktop).
+- En effet, `cAdvisor` a notamment besoin pour fonctionner d'avoir accès à `/var/lib/docker/image/overlay2/layerdb/mounts/<conteneur_id>/mount-id`, sinon on a le problème décrit [ici](#probleme-avec-docker-desktop).
   - Ce dossier existe nativement avec `Docker CE`.
   - Ce dossier n'existe pas avec `Docker Destop` (si un dossier équivalent existait, on aurait pu faire un montage, mais ce n'est pas le cas sur `Ubuntu 22.04`).
 
+
+<a id="probleme-avec-docker-desktop"></a>
 
 ### Problème avec Docker Desktop
 
@@ -55,10 +59,11 @@
 
     - Pour le contourner, certaines forums proposent de faire un montage sur `\\wsl$\docker-desktop-data\data\docker` mais ce dossier n'existe pas sur la distribution `Ubuntu 22.04`, et faire un montage avec le dossier existant `\\wsl.localhost\docker-desktop\mnt\docker-desktop-disk\data\docker` ne fonctionne pas non plus car il n'y a pas le fichier `mount-id`.
 
-- La section [suivante](#Installer-et-utiliser-Docker-CE-dans-WSL) présente la procédure complète pour installer `Docker CE` dans `WSL2 Ubuntu 22.04` avec `systemd`.
 
 
 ### Installer et utiliser Docker CE dans WSL
+
+- Cette section présente la procédure complète pour installer `Docker CE` dans `WSL2 Ubuntu 22.04` avec `systemd`.
 
 1. Activer `systemd` dans `WSL2`, puis redémarrer WSL avec PowerShell :
 
@@ -150,6 +155,9 @@ Si une ligne comme `DOCKER_HOST=tcp://localhost:2375` s'affiche, alors il faut f
 
 ## Services Docker
 
+
+<a id="versions"></a>
+
 ### Récupération des versions
 
 Cette section montre les commandes pour retrouver les versions des différents services.
@@ -224,12 +232,18 @@ Cette section montre les commandes pour retrouver les versions des différents s
     ##==> Version 12.0.2 (commit: 5bda17e7c1cb313eb96266f2fdda73a6b35c3977, branch: HEAD)
 ```
 
+<a id="etl-avec-airflow"></a>
 
 # 2. ETL avec Airflow
 
-## Transformations des données
+<a id="transformations-des-donnees"></a>
+
+## 2.b Transformations des données
 
 ### Transformations des données en amont (côté Python)
+
+
+<a id="conservation-des-offres-en-france-metropolitaine-uniquement"></a>
 
 #### Conservation des offres en France Métropolitaine uniquement
 
@@ -241,6 +255,8 @@ Cette section montre les commandes pour retrouver les versions des différents s
 
   - L'attribut `libelle` donne l'information lorsque qu'une offre se retrouve dans le `cas_3` (voir partie ci-dessous), c'est-à-dire lorsque `libelle` est de la forme "<département> - <nom_du_département>", par exemple : `971 - Guadeloupe`, `974 - Réunion`, `2A - Corse du Sud`, `2B - BASTIA`.
 
+
+<a id="attributs-localisation"></a>
 
 #### Attributs de localisation des offres (noms et codes des villes, communes, départements et régions)
 
@@ -393,6 +409,8 @@ Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code
 
 ### Transformations des données en aval (côté SQL)
 
+<a id="attribut-metier_data"></a>
+
 #### Attribut "metier_data"
 
 - Pour identifier les offres de "Data Engineer" parmi toutes les offres récupérées, le premier réflexe serait de filtrer sur le rome_code `M1811` qui correspond à `Data engineer`, mais on se rend compte que les offres d'emploi associées ne sont pas toutes liées à ce poste.
@@ -402,6 +420,8 @@ Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code
 
 - L'attribut `intitule_offre` de la table `DescriptionOffre` sera donc utilisé pour filtrer les offres voulues (ici : `Data Engineer`, `Data Analyst` et `Data Scientist`) grâce à des requêtes qui utilisent des regex, écrivant la valeur `DE`, `DA`, `DS` dans l'attribut `metier_data` (voir `airflow/dags/sql`).
 
+
+<a id="attributs-salaire"></a>
 
 #### Attributs "salaire_min" et "salaire_max"
 
@@ -571,7 +591,11 @@ Dans ce cas, on écrira `code_region` et `nom_region` à partir du fichier `code
 - A noter aussi que les salaires des offres en alternance seront exclues ici car leur salaire est très majoritairement inférieur au seuil minimum qu'on a défini ici.
 
 
-## Chargement des données dans une base de données relationnelle
+<a id="chargement-des-donnees-dans-une-base-de-donnees-relationnelle"></a>
+
+## 2.c. Chargement des données dans une base de données relationnelle
+
+<a id="mise-a-jour"></a>
 
 ### Mise à jour de la base de données après récupération de nouvelles offres
 
@@ -629,6 +653,8 @@ Même problématique avec certaines offres qui voient la valeur de l'attribut `e
     - lors de `date_extraction = 2025-04-05` : `experienceExige = D` et `experienceLibelle = Débutant accepté` (par exemple `experience_id = 2`)
 
 
+<a id="concatenation-speciale"></a>
+
 ### Concaténation spéciale entre le json existant et le nouveau json
 
 - A la fin du `DAG 1`, une concaténation spéciale a lieu entre le json exitant (qu'on appelle `json_A` pour simplifier) et le nouveau json (`json_B`).
@@ -652,7 +678,7 @@ Même problématique avec certaines offres qui voient la valeur de l'attribut `e
   <img src="screenshots/drawio/db_update.png" alt="db_update" style="width:100%"/>
 
 
-## Airflow
+## 2.d. Airflow
 
 ### SQLExecuteQueryOperator vs PostgresOperator avec Airflow 3.0
 
@@ -777,6 +803,7 @@ Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6
     dag_file_processor_timeout = 300  # default = 50
 ```
 
+<a id="data-viz-avec-power-bi"></a>
 
 # 4. Data Viz avec Power BI
 
@@ -852,6 +879,7 @@ Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6
   - `Offre ID` (au lieu de `offre_id`)
   - `Durée Travail Libellé` (au lieu de `duree_travail_libelle`)
 
+<a id="attributs-liste-mots-cles"></a>
 
 ### Attribut "Liste Mots-Clés"
 
@@ -933,9 +961,13 @@ Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6
 
 # 5. Monitoring avec Prometheus et Grafana
 
-## Prometheus
+<a id="prometheus"></a>
+
+## 5.a. Prometheus
 
 ### StatsD Exporter
+
+<a id="metriques-disponibles-de-statsd-exporter"></a>
 
 #### Métriques disponibles de StatsD Exporter
 
@@ -1017,6 +1049,8 @@ Change log : https://airflow.apache.org/docs/apache-airflow-providers-postgres/6
   - 24 métriques préfixés par `statsd_*` :
     - `statsd_exporter_build_info{branch="HEAD",goarch="amd64",goos="linux",goversion="go1.23.2",revision="c0a390a2c43f77863278615b47d46e886bdca726",tags="unknown",version="0.28.0"}`, `statsd_exporter_event_queue_flushed_total`, `statsd_exporter_events_actions_total{action="map"}`, `statsd_exporter_events_total{type="counter"}`, `statsd_exporter_events_total{type="gauge"}`, `statsd_exporter_events_total{type="observer"}`, `statsd_exporter_events_unmapped_total`, `statsd_exporter_lines_total`, `statsd_exporter_loaded_mappings`, `statsd_exporter_metrics_total{type="counter"}`, `statsd_exporter_metrics_total{type="gauge"}`, `statsd_exporter_metrics_total{type="summary"}`, `statsd_exporter_samples_total`, `statsd_exporter_tag_errors_total`, `statsd_exporter_tags_total`, `statsd_exporter_tcp_connection_errors_total`, `statsd_exporter_tcp_connections_total`, `statsd_exporter_tcp_too_long_lines_total`, `statsd_exporter_udp_packet_drops_total`, `statsd_exporter_udp_packets_total`, `statsd_exporter_unixgram_packets_total`, `statsd_metric_mapper_cache_gets_total`, `statsd_metric_mapper_cache_hits_total`, `statsd_metric_mapper_cache_length`
 
+<a id="verifier-la-validite-dun-mapping-dans-statsdyaml"></a>
+
 
 #### Vérifier la validité d'un mapping dans `statsd.yaml`
 
@@ -1087,15 +1121,19 @@ On exécute la commande suivante :
 Conclusion : `custom_counter_job_end` n'est pas fonctionnel.
 
 
-## Grafana
+<a id="grafana"></a>
+
+## 5.b. Grafana
 
 ### Dashboards
 
 #### Dashboards "others"
 
+<a id="metriques-avec-prefixes"></a>
+
 ##### Métriques avec préfixes
 
-- Cette [section](../README.md#métriques-de-statsd-exporter) fait état de métriques préfixés.
+- Cette [section](../README.md#metriques-de-statsd-exporter) fait état de métriques préfixés.
 
 - Un dashboard a été créé :
 
